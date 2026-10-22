@@ -1,392 +1,286 @@
 {% comment %}
-    Add a wrapper with a [data-ajax-cart-section] attribute
-    so that Liquid Ajax Cart knows that the section should be rerendered
-    after user's cart state is changed.
+    Cart drawer: a native <dialog> (assets/dialog.js) whose content Liquid Ajax Cart re-renders after
+    every cart request ([data-ajax-cart-section]). The dialog element itself is never re-rendered,
+    so it stays open while the cart updates.
+    Also holds #CartNotification, used when Theme settings > Cart > "After adding to cart" is "Notification".
+    Rendered from layout/theme.liquid on every page except /cart.
 {% endcomment %}
+{%- liquid
+    assign upsell_products = settings.recommend_list
+    assign cart_product_ids = cart.items | map: 'product_id'
+-%}
 
-{% liquid
-    assign shipping_total = settings.shipping_total | times: 100
-    assign show_shipping = settings.show_shipping_total
-    assign size = settings.img_size_cart
-    assign bg_color = section.settings.background_color
-    assign title_color = section.settings.title_color
-    assign text_color = section.settings.text_color
-    assign link_color = section.settings.link_color
-    assign link_hover_color = section.settings.link_hover_color
-    assign divider_color = section.settings.divider_color
-    assign cart_note = settings.show_cart_note
-    assign cart_attributes = settings.show_cart_attributes
-    assign recommend_list = settings.recommend_list
-    assign recommend_type = settings.recommend_type
-    assign show_recommend = settings.show_recommend_prod
-    assign expiration_limit = settings.expiration_limit
-%}
-{% capture recommend_db %}[{% for product in recommend_list %}"{{ product.handle }}"{% if forloop.last %}{% else %},{% endif %}{% endfor %}]{% endcapture %}
-
-{% capture styles %}
-    --cart-drawer-background-color: {{ bg_color }};
-    --cart-drawer-title-color: {{ title_color }};
-    --cart-drawer-text-color: {{ text_color }};
-    --cart-drawer-link-color: {{ link_color }};
-    --cart-drawer-link-hover-color: {{ link_hover_color }};
-    --cart-drawer-divider-color: {{ divider_color }};
-{% endcapture %}
-
-{% assign styles = styles | strip_newlines %}
-
-<div class="cart-overlay" data-ajax-cart-toggle-class-button="js-show-ajax-cart | remove">
-    <span class="visually-hidden">{{ 'sections.cart.close' | t }}</span>
-</div>
-<div action="{{ routes.cart_url }}" method="post" data-ajax-cart-section class="cart-drawer" style="{{ styles }}">
-    <div>
-        <h3 class="cart-drawer__head h5">{{ 'sections.cart.cart' | t }}</h3>
-        <!-- Free shipping progress markup -->
-        {% if show_shipping %}
-            <div
-                class="cart-drawer-shipping__wrapper js-cart-drawer-shipping"
-                data-total="{{ shipping_total }}"
-            >
-                <p class="cart-drawer-shipping__numOuter">
-                    {{ 'sections.cart.shipping.outer_first' | t }}
-                    <span class="cart-drawer-shipping__num"></span> {{ 'sections.cart.shipping.outer_second' | t }}
-                </p>
-                <p class="cart-drawer-shipping__success">{{ 'sections.cart.shipping.success' | t }}</p>
-                <div class="cart-drawer-shippingThreshold__bar">
-                    <span class="cart-drawer-shippingThreshold__progress">
-                        <span class="cart-drawer-shippingThreshold__badge js-cart-threshold-badge">0%</span>
-                    </span>
-                </div>
-            </div>
-        {% endif %}
-
-        <a
-            class="cart-drawer__icon-close"
-            href="#CartDrawerClose"
-            aria-label="CartDrawerClose"
-            data-ajax-cart-toggle-class-button="js-show-ajax-cart | remove"
-        >
-            {% render 'icons-svg', icons: 'close' %}
-        </a>
-    </div>
-    {% if cart.item_count == 0 %}
-        <div class="cart-drawer__empty">
-            {% render 'icons-svg', icons: 'sad' %}
-            <p class="caption--large cart-drawer__text">{{ 'sections.cart.empty' | t }}</p>
-            <a href="{{ routes.collections_url }}" class="button button--secondary cart-drawer__empty--url-btn" data-ajax-cart-toggle-class-button="js-show-ajax-cart | remove">
-                {{ 'sections.cart.continue_shopping' | t }}
-            </a>
-            {%- if shop.customer_accounts_enabled and customer == null -%}
-                <h5 class="cart-drawer__login-title">{{ 'sections.cart.login.title' | t }}</h5>
-                <p class="cart-drawer__login-paragraph caption--medium">
-                  {{ 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url }}
-                </p>
-            {%- endif -%}
+<dialog
+    id="CartDrawer"
+    class="drawer color-{{ section.settings.color_scheme }}"
+    aria-labelledby="CartDrawer-title"
+>
+    <div class="drawer__inner" data-ajax-cart-section>
+        <div class="drawer__header">
+            <h2 id="CartDrawer-title" class="h5">
+                {{ 'sections.cart.cart' | t }}
+                {%- if cart.item_count > 0 %} <span class="muted">({{ cart.item_count }})</span>{% endif -%}
+            </h2>
+            <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'sections.cart.close' | t }}">
+                {%- render 'icon', name: 'close' -%}
+            </button>
         </div>
-    {% endif %}
-    <div class="cart-drawer__items" data-ajax-cart-section-scroll>
-        {% for item in cart.items %}
-            {%- assign property_discount = false -%}
-            {%- assign property_combo = false -%}
 
-            {%- if item.properties.size != 0 -%}
-                {%- for property in item.properties -%}
-                    {%- assign property_first_char = property.first | slice: 0 -%}
-                    {% if property.first contains '_hiddenCombo' %}
-                        {%- assign property_combo = true -%}
-                        {%- assign value_combo = property.last -%}
-                    {% endif %}
-                    {% if property.first contains 'ComboDiscount' %}
-                        {%- assign property_discount = true -%}
-                    {% endif %}
-                {%- endfor -%}
+        <div class="drawer__body cart-drawer__body" data-ajax-cart-section-scroll>
+            {%- render 'cart-free-shipping' -%}
+
+            {%- if cart.item_count == 0 -%}
+                <div class="cart-empty stack">
+                    <p class="h4">{{ 'sections.cart.empty' | t }}</p>
+                    <a href="{{ routes.all_products_collection_url }}" class="btn">
+                        {{- 'sections.cart.continue_shopping' | t -}}
+                    </a>
+                    {%- if shop.customer_accounts_enabled and customer == null -%}
+                        <p class="small">{{ 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url }}</p>
+                    {%- endif -%}
+                </div>
+            {%- else -%}
+                <ul class="cart-lines" role="list">
+                    {%- for item in cart.items -%}
+                        {%- render 'cart-line-item', item: item, line: forloop.index -%}
+                    {%- endfor -%}
+                </ul>
             {%- endif -%}
-            {% render 'cart-item',
-                item: item,
-                size: size,
-                forloop: forloop,
-                property_discount: property_discount,
-                template_cart: false
-            %}
-        {% endfor %}
-        {% if show_recommend %}
-            <div
-                id="cart-recommend"
-                data-ajax-cart-static-element
-                data-size="{{ size }}"
-                data-days="{{ expiration_limit }}"
-                data-type="{{ recommend_type }}"
-                data-count-desktop="2"
-                data-count-tablet="2"
-                data-count-mobile="2"
-            >
-                <span class="visually-hidden">{{ 'sections.cart.recommend' | t }}</span>
-            </div>
-        {% endif %}
-    </div>
-    <form action="{{ routes.cart_url }}" method="post">
-        <div class="cart-drawer__foter">
-            {% if cart_note or cart_attributes %}
-                <div
-                    class="cart-drawer__footer-toggler"
-                    onclick="javascript:document.body.classList.toggle('cart-drawer-show-footer')"
-                >
-                    {% render 'icons-svg', icons: 'plus' %}
-                    {% render 'icons-svg', icons: 'minus' %}
-                    {{ 'sections.cart.comments' | t }}
-                </div>
-                <div class="cart-drawer__footer-content">
-                    {% if cart_note %}
-                        <textarea
-                            id="cart-drawer_note"
-                            name="note"
-                            placeholder="{{- 'sections.cart.note' | t -}}"
-                            data-ajax-cart-property-input
-                        >{{ cart.note }}</textarea>
-                    {% endif %}
 
-                    {% if cart_attributes %}
-                        {%- for block in section.blocks -%}
-                            {%- case block.type -%}
-                                {%- when 'input' -%}
-                                    {%- assign input = block.settings.label | escape -%}
-                                    {% if input != blank %}
-                                        <div class="cart-drawer__property">
-                                            <input
-                                                type="text"
-                                                name="attributes[{{ input }}]"
-                                                value="{{ cart.attributes['input']}}"
-                                                placeholder="{{ input }}"
-                                                data-ajax-cart-property-input
-                                                class="cart-drawer__input cart-drawer__input--property"
-                                            >
-                                        </div>
-                                    {% endif %}
-                                {%- when 'select' -%}
-                                    {%- assign select_label = block.settings.label | escape -%}
-                                    {%- assign select_value = block.settings.value -%}
-                                    {% if select_value != blank %}
-                                        <div class="cart-drawer__property">
-                                            <select name="attributes[select_label]" data-ajax-cart-property-input>
-                                                {% assign suggested_days = select_value | split: '|' %}
-                                                <option
-                                                    value=""
-                                                    {% unless suggested_days contains cart.attributes.select_label %}
-                                                        selected
-                                                    {% endunless %}
-                                                >
-                                                    {{ select_label }}
-                                                </option>
-                                                {% for day in suggested_days %}
-                                                    <option
-                                                        value="{{ day }}"
-                                                        {% if day == cart.attributes.select_label %}
-                                                            selected
-                                                        {% endif %}
-                                                    >
-                                                        {{ day }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    {% endif %}
-
-                                {%- when 'radio' -%}
-                                    {%- assign radio_label = block.settings.label | escape -%}
-                                    {%- assign radio_value = block.settings.value -%}
-                                    {% if radio_value != blank %}
-                                        <div class="cart-drawer__property">
-                                            {% if radio_value != blank %}
-                                                <span class="cart-drawer__property-label">{{ radio_label }}:</span>
-                                            {% endif %}
-                                            {% assign suggested_time = radio_value | split: '|' %}
-                                            {% for time in suggested_time %}
-                                                <label>
-                                                    <input
-                                                        name="attributes[{{radio_label}}]"
-                                                        type="radio"
-                                                        value="{{ time }}"
-                                                        data-ajax-cart-property-input
-                                                        {% if cart.attributes['{{radio_label}}'] == time %}
-                                                            checked
-                                                        {% endif %}
-                                                    >
-                                                    {{ time }}
-                                                </label>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-
-                                {%- when 'checkbox' -%}
-                                    {%- assign checkbox = block.settings.label | escape -%}
-                                    {% if checkbox != blank %}
-                                        <div class="cart-drawer__property">
-                                            <label>
-                                                <input
-                                                    type="hidden"
-                                                    value=""
-                                                    name="attributes[{{ checkbox }}]"
-                                                    data-ajax-cart-property-input
-                                                >
-                                                <input
-                                                    type="checkbox"
-                                                    name="attributes[Leave at the door]"
-                                                    value="Yes"
-                                                    data-ajax-cart-property-input
-                                                    {% if cart.attributes['{{ checkbox }}'] == 'Yes' %}
-                                                        checked
-                                                    {% endif %}
-                                                >
-                                                {{ checkbox }}
-                                            </label>
-                                        </div>
-                                    {% endif %}
-                            {%- endcase -%}
-                        {%- endfor -%}
-                    {% endif %}
-                </div>
-            {% endif %}
-            <div class="cart-drawer__btns">
-                <div class="cart-drawer__total">
-                    <div class="cart-drawer__total--amount">
-                        <span>{{ 'sections.cart.total' | t }}</span>
-                        {% if settings.currency_code_enabled %}
-                            {{ cart.total_price | money_with_currency }}
-                       {% else %}
-                           {{ cart.total_price | money }}
-                       {% endif %}
+            {%- if settings.show_recommend_prod and upsell_products.count > 0 -%}
+                {%- capture upsell_items -%}
+                    {%- for product in upsell_products -%}
+                        {%- if cart_product_ids contains product.id or product.available == false -%}
+                            {%- continue -%}
+                        {%- endif -%}
+                        {%- render 'cart-upsell-item', product: product -%}
+                    {%- endfor -%}
+                {%- endcapture -%}
+                {%- if upsell_items != blank -%}
+                    <div class="cart-upsell stack">
+                        <h3 class="h6">{{ 'sections.cart.recommend' | t }}</h3>
+                        <ul class="cart-upsell__list" role="list">{{ upsell_items }}</ul>
                     </div>
-                    <div class="cart-drawer__total--taxes">{{ 'sections.cart.taxes_included_but_shipping_at_checkout' | t }}</div>
+                {%- endif -%}
+            {%- endif -%}
+        </div>
+
+        {%- if cart.item_count > 0 -%}
+            <form action="{{ routes.cart_url }}" method="post" class="drawer__footer stack" id="CartDrawer-form">
+                {%- if settings.show_cart_note or section.blocks.size > 0 -%}
+                    <details class="cart-extras">
+                        <summary class="cart-extras__summary small">
+                            {{- 'sections.cart.comments' | t -}}
+                            {%- render 'icon', name: 'chevron-down' -%}
+                        </summary>
+                        <div class="cart-extras__content stack">
+                            {%- if settings.show_cart_note -%}
+                                <label class="field">
+                                    <span class="field__label">{{ 'sections.cart.note' | t }}</span>
+                                    <textarea class="input" name="note" data-ajax-cart-property-input>
+                                        {{- cart.note -}}
+                                    </textarea>
+                                </label>
+                            {%- endif -%}
+                            {%- for block in section.blocks -%}
+                                {%- render 'cart-attribute', block: block -%}
+                            {%- endfor -%}
+                        </div>
+                    </details>
+                {%- endif -%}
+
+                <div class="cart-summary">
+                    <div class="cart-summary__row">
+                        <span>{{ 'sections.cart.total' | t }}</span>
+                        <strong>
+                            {%- if settings.currency_code_enabled -%}
+                                {{ cart.total_price | money_with_currency }}
+                            {%- else -%}
+                                {{ cart.total_price | money }}
+                            {%- endif -%}
+                        </strong>
+                    </div>
+                    {%- for discount in cart.cart_level_discount_applications -%}
+                        <div class="cart-summary__row small">
+                            <span>{{ discount.title }}</span>
+                            <span>−{{ discount.total_allocated_amount | money }}</span>
+                        </div>
+                    {%- endfor -%}
+                    <p class="small muted">{{ 'sections.cart.taxes_included_but_shipping_at_checkout' | t }}</p>
                 </div>
-                
-                <button type="submit" name="checkout" class="cart-drawer__checkout-btn">
-                    {{ 'sections.cart.checkout' | t }}
+
+                <button type="submit" name="checkout" class="btn btn--full">
+                    {{- 'sections.cart.checkout' | t -}}
                 </button>
-                <a href="{{ routes.cart_url }}" class="button cart-drawer__url-btn">
-                    {{ 'templates.cart.cart' | t }}
-                </a>
+                <a href="{{ routes.cart_url }}" class="btn btn--outline btn--full">{{ 'templates.cart.cart' | t }}</a>
+            </form>
+        {%- endif -%}
+    </div>
+</dialog>
+
+<dialog
+    id="CartNotification"
+    class="popup cart-added color-{{ section.settings.color_scheme }}"
+    aria-labelledby="CartNotification-title"
+>
+    <div class="cart-added__inner stack">
+        <div class="cart-added__head">
+            <p id="CartNotification-title" class="cluster">
+                {%- render 'icon', name: 'check' -%}
+                {{ 'sections.cart.added' | t }}
+            </p>
+            <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'sections.cart.close' | t }}">
+                {%- render 'icon', name: 'close' -%}
+            </button>
+        </div>
+        <div class="cart-added__item">
+            <img data-notification="image" class="cart-added__image" width="80" height="80" alt="" hidden>
+            <div class="stack" style="--stack-gap: var(--space-2xs);">
+                <p class="cart-line__title" data-notification="title"></p>
+                <p class="small muted" data-notification="variant"></p>
+                <p class="price-tag" data-notification="price"></p>
+                <p class="small muted" data-notification="quantity"></p>
             </div>
         </div>
-    </form>
-</div>
+        <div class="cluster cart-added__actions">
+            <a href="{{ routes.cart_url }}" class="btn btn--outline">
+                {{- 'templates.cart.cart' | t }}
+                (<span data-ajax-cart-bind="item_count">{{ cart.item_count }}</span>)
+            </a>
+            <form action="{{ routes.cart_url }}" method="post">
+                <button type="submit" name="checkout" class="btn">{{ 'sections.cart.checkout' | t }}</button>
+            </form>
+        </div>
+        <button type="button" class="btn btn--link small" data-dialog-close>
+            {{- 'sections.cart.continue_shopping' | t -}}
+        </button>
+    </div>
+</dialog>
 
 <script type="application/json" data-ajax-cart-initial-state>
     {{ cart | json }}
 </script>
-{% if show_recommend %}
-    <script>
-        localStorage.setItem("defaultRecommendSection", JSON.stringify({{ recommend_db }}))
-    </script>
-{% endif %}
-<script type="module">
-    import '{{ 'liquid-ajax-cart-v2.js' | asset_url }}';
-</script>
 
-<script src="{{ 'ajax-cart-v2.js' | asset_url }}" defer="defer"></script>
+{% stylesheet %}
+    @layer components {
+        .cart-drawer__body {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-l);
+        }
+
+        .cart-extras__summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .cart-extras__summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .cart-extras[open] .svg-icon--chevron-down {
+            rotate: 180deg;
+        }
+
+        .cart-extras__content {
+            padding-top: var(--space-s);
+        }
+
+        .cart-added__inner {
+            padding: var(--space-l);
+        }
+
+        .cart-added__head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cart-added__item {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: var(--space-m);
+            align-items: center;
+        }
+
+        .cart-added__image {
+            width: 8rem;
+            height: 8rem;
+            object-fit: cover;
+            border-radius: var(--radius-media);
+        }
+
+        .cart-added__actions > * {
+            flex: 1;
+        }
+
+        .cart-added__actions .btn {
+            width: 100%;
+        }
+    }
+{% endstylesheet %}
 
 {% schema %}
 {
-    "name": "Cart Drawer",
+    "name": "Cart drawer",
+    "class": "cart-drawer-section",
     "settings": [
         {
-            "type": "header",
-            "content": "Style Options"
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
         },
         {
-            "type": "color",
-            "id": "background_color",
-            "default": "#F5F5F5",
-            "label": "Background color"
-        },
-        {
-            "type": "color",
-            "id": "title_color",
-            "default": "#2e3131",
-            "label": "Title color"
-        },
-        {
-            "type": "color",
-            "id": "text_color",
-            "default": "#696e6e",
-            "label": "Text color"
-        },
-        {
-            "type": "color",
-            "id": "link_color",
-            "default": "#34495e",
-            "label": "Link color"
-        },
-        {
-            "type": "color",
-            "id": "link_hover_color",
-            "default": "#ec7163",
-            "label": "Link hover color"
-        },
-        {
-            "type": "color",
-            "id": "divider_color",
-            "default": "#4d4d4d",
-            "label": "Divider color"
+            "type": "paragraph",
+            "content": "Upsell products, cart note and the free-shipping bar are set in Theme settings > Cart. Add blocks below to collect order details (cart attributes)."
         }
     ],
     "blocks": [
         {
-            "name": "input",
-            "type": "input",
+            "type": "text",
+            "name": "Text field",
             "settings": [
-                {
-                    "type": "text",
-                    "id": "label",
-                    "label": "Label",
-                    "default": "Package text"
-                }
+                { "type": "text", "id": "label", "label": "Label", "default": "Gift message" },
+                { "type": "checkbox", "id": "required", "label": "Required", "default": false }
             ]
         },
         {
-            "name": "select",
             "type": "select",
+            "name": "Dropdown",
             "settings": [
+                { "type": "text", "id": "label", "label": "Label", "default": "Delivery day" },
                 {
                     "type": "text",
-                    "id": "label",
-                    "label": "Label",
-                    "default": "Delivery day"
-                },
-                {
-                    "type": "text",
-                    "id": "value",
-                    "label": "Value",
-                    "default": "Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday"
+                    "id": "options",
+                    "label": "Options",
+                    "info": "Separate options with |",
+                    "default": "Monday|Wednesday|Friday"
                 }
             ]
         },
         {
-            "name": "radio",
             "type": "radio",
+            "name": "Radio buttons",
             "settings": [
+                { "type": "text", "id": "label", "label": "Label", "default": "Delivery time" },
                 {
                     "type": "text",
-                    "id": "label",
-                    "label": "Label",
-                    "default": "Delivery time"
-                },
-                {
-                    "type": "text",
-                    "id": "value",
-                    "label": "Value",
-                    "default": "Any time|Day time|Evening"
+                    "id": "options",
+                    "label": "Options",
+                    "info": "Separate options with |",
+                    "default": "Morning|Afternoon|Evening"
                 }
             ]
         },
         {
-            "name": "checkbox",
             "type": "checkbox",
+            "name": "Checkbox",
             "settings": [
-                {
-                    "type": "text",
-                    "id": "label",
-                    "label": "Label",
-                    "default": "Leave at the door "
-                }
+                { "type": "text", "id": "label", "label": "Label", "default": "Leave at the door" }
             ]
         }
     ]

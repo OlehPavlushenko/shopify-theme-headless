@@ -259,30 +259,26 @@
                                 </li>
                             {% endif %}
                             <li class="header__list-icons-item header__item--cart">
+                                {%- comment -%}
+                                    Opens the cart drawer (assets/dialog.js); on /cart there is no drawer,
+                                    so the link simply navigates. The count is live via Liquid Ajax Cart.
+                                {%- endcomment -%}
                                 <a
-                                    type="button"
                                     href="{{ routes.cart_url }}"
-                                    data-ajax-cart-toggle-class-button="js-show-ajax-cart"
-                                    class="header__cart-item-link header__menu-item-link cart-page-link mobile-cart-page-link js-ajax-cart-btn"
+                                    {% unless template.name == 'cart' %}
+                                        data-dialog-open="CartDrawer"
+                                        aria-haspopup="dialog"
+                                    {% endunless %}
+                                    class="header__cart-item-link header__menu-item-link cart-page-link mobile-cart-page-link"
                                 >
                                     {%- render 'icons-svg', icons: 'cart' -%}
                                     <span class="header__menu-item-text">
                                         {{ 'sections.cart.cart' | t }}
                                     </span>
-                                    <span class="cart-count{% if cart.item_count == 0 %} hidden-count{% endif %}">
+                                    <span class="cart-count" data-cart-count-bubble{% if cart.item_count == 0 %} data-empty{% endif %}>
                                         <span class="cart-count-count" data-ajax-cart-bind="item_count">
                                             {{- cart.item_count -}}
                                         </span>
-                                        <span class="cart-count-line"> - </span>
-                                        {%- if settings.currency_code_enabled -%}
-                                            <span class="cart-count-ajax-cart" data-ajax-cart-bind="total_price | money_with_currency">
-                                                {{ cart.total_price | money_with_currency }}
-                                            </span>
-                                        {%- else -%}
-                                            <span class="cart-count-ajax-cart" data-ajax-cart-bind="total_price | money">
-                                                {{ cart.total_price | money }}
-                                            </span>
-                                        {%- endif -%}
                                     </span>
                                 </a>
                             </li>

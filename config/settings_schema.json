@@ -182,6 +182,55 @@
     ]
   },
   {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "label": "Page width",
+        "min": 1000,
+        "max": 1920,
+        "step": 20,
+        "unit": "px",
+        "default": 1440
+      },
+      {
+        "type": "header",
+        "content": "Corner radius"
+      },
+      {
+        "type": "range",
+        "id": "radius_card",
+        "label": "Cards & panels",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "default": 8
+      },
+      {
+        "type": "range",
+        "id": "radius_media",
+        "label": "Images & video",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "radius_badge",
+        "label": "Badges",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "default": 4
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.buttons.name",
     "settings": [
       {
@@ -670,90 +719,86 @@
     "name": "t:sections.cart.name",
     "settings": [
       {
-        "type": "product_list",
-        "id": "recommend_list",
-        "label": "Recommend List",
-        "limit": 4,
-        "info": "This is the default list of products that will be displayed if there are no complementary products configured for the product in the Search & Discovery admin panel"
-      },
-      {
         "type": "select",
-        "id": "recommend_type",
+        "id": "cart_type",
+        "label": "After adding to cart",
         "options": [
           {
-            "value": "complementary",
-            "label": "Complementary"
+            "value": "drawer",
+            "label": "Open cart drawer"
           },
           {
-            "value": "related",
-            "label": "Related"
+            "value": "notification",
+            "label": "Show notification"
+          },
+          {
+            "value": "page",
+            "label": "Go to cart page"
           }
         ],
-        "default": "complementary",
-        "label": "Recommend Type"
+        "default": "drawer"
       },
       {
-        "type": "checkbox",
-        "id": "show_recommend_prod",
-        "label": "Show Recommend Products",
-        "default": true
-      },
-      {
-        "type": "range",
-        "id": "expiration_limit",
-        "min": 1,
-        "max": 30,
-        "step": 1,
-        "default": 10,
-        "unit": "day",
-        "label": "Expiration Time Recommend"
-      },
-      {
-        "type": "number",
-        "id": "shipping_total",
-        "label": "Shipping Total",
-        "default": 1000,
-        "info": "This is an option to display the delivery, which is pre-configured in the shipping method. All recalculations will be on checkout."
+        "type": "header",
+        "content": "Free shipping bar"
       },
       {
         "type": "checkbox",
         "id": "show_shipping_total",
-        "label": "Show Shipping Total",
+        "label": "Show free shipping progress",
         "default": true
       },
       {
-        "type": "select",
-        "id": "img_size_cart",
-        "label": "Image size",
-        "options": [
-          {
-            "value": "cropped",
-            "label": "Cropped"
-          },
-          {
-            "value": "landscape",
-            "label": "Landscape"
-          },
-          {
-            "value": "square",
-            "label": "Square"
-          },
-          {
-            "value": "portrait",
-            "label": "Portrait"
-          }
-        ]
+        "type": "number",
+        "id": "shipping_total",
+        "label": "Free shipping threshold",
+        "info": "In your store currency, whole units (e.g. 100).",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Upsell"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_recommend_prod",
+        "label": "Show upsell products",
+        "default": true
+      },
+      {
+        "type": "product_list",
+        "id": "recommend_list",
+        "label": "Upsell products",
+        "limit": 6,
+        "info": "Shown in the cart drawer and on the cart page, skipping products already in the cart."
+      },
+      {
+        "type": "header",
+        "content": "Order details"
       },
       {
         "type": "checkbox",
         "id": "show_cart_note",
-        "label": "Show cart note",
+        "label": "Show order note",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Behavior",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "view_transitions",
+        "label": "Smooth page transitions",
+        "info": "Cross-fades between pages in supporting browsers (View Transitions API).",
         "default": true
       },
       {
         "type": "checkbox",
-        "id": "show_cart_attributes",
-        "label": "Show cart attributes",
+        "id": "prefetch_links",
+        "label": "Prefetch links on hover",
+        "info": "Starts loading the next page when a shopper hovers a link, so it opens faster (Speculation Rules API).",
         "default": true
       }
     ]

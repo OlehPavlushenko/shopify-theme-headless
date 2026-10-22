@@ -186,7 +186,7 @@
         "type": "cart-drawer",
         "blocks": {
           "f78ac03d-3e62-45de-876d-fd10bd3b1340": {
-            "type": "input",
+            "type": "text",
             "settings": {
               "label": "Package text"
             }
@@ -195,14 +195,14 @@
             "type": "select",
             "settings": {
               "label": "Delivery day",
-              "value": "Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday"
+              "options": "Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday"
             }
           },
           "2b42734e-b340-474c-83ff-0228bc67f726": {
             "type": "radio",
             "settings": {
               "label": "Delivery time",
-              "value": "Any time|Day time|Evening"
+              "options": "Any time|Day time|Evening"
             }
           },
           "969f05f0-2cc3-4001-8786-b8b0a5385735": {
@@ -219,12 +219,7 @@
           "969f05f0-2cc3-4001-8786-b8b0a5385735"
         ],
         "settings": {
-          "background_color": "#f5f5f5",
-          "title_color": "#2e3131",
-          "text_color": "#696e6e",
-          "link_color": "#34495e",
-          "link_hover_color": "#ec7163",
-          "divider_color": "#d8d8d8"
+          "color_scheme": "scheme-1"
         }
       },
       "announcement-bar": {

@@ -130,7 +130,7 @@
                 {% if title != blank %}
                     <div
                         class="announcement-bar-countdown full_width--{{ full_width }}"
-                        style="{{- styles -}}; background-image: url({{ image | image_url: width: 2050 }});"
+                        style="{{- styles -}};{% if image != blank %} background-image: url({{ image | image_url: width: 2050 }});{% endif %}"
                     >
                         <div class="announcement-bar-countdown__wrapper container">
                             <div class="row">

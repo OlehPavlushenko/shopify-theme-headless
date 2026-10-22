@@ -1,0 +1,55 @@
+{% doc %}
+    Compact upsell product row for the cart. Single-variant products get a one-click Ajax add
+    (<ajax-cart-product-form>); products with options link to the product page.
+
+    @param {object} product - Product to suggest
+{% enddoc %}
+{%- assign variant = product.selected_or_first_available_variant -%}
+<li class="cart-upsell__item">
+    <a href="{{ product.url }}" class="frame cart-upsell__media" style="--frame-ratio: 1;" tabindex="-1" aria-hidden="true">
+        {%- if product.featured_image -%}
+            {{ product.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', width: 120, height: 120, sizes: '60px' }}
+        {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag }}
+        {%- endif -%}
+    </a>
+    <div class="cart-upsell__info">
+        <a href="{{ product.url }}" class="cart-line__title small">{{ product.title | escape }}</a>
+        <span class="price-tag small"><span class="price-tag__current">{{ variant.price | money }}</span></span>
+    </div>
+    {%- if product.has_only_default_variant -%}
+        <ajax-cart-product-form>
+            {%- form 'product', product -%}
+                <input type="hidden" name="id" value="{{ variant.id }}">
+                <button type="submit" class="btn btn--outline btn--icon" aria-label="{{ 'products.product.add_to_cart' | t }}: {{ product.title | escape }}">
+                    {%- render 'icon', name: 'plus' -%}
+                </button>
+            {%- endform -%}
+        </ajax-cart-product-form>
+    {%- else -%}
+        <a href="{{ product.url }}" class="btn btn--outline btn--icon" aria-label="{{ product.title | escape }}">
+            {%- render 'icon', name: 'arrow-right' -%}
+        </a>
+    {%- endif -%}
+</li>
+
+{% stylesheet %}
+    @layer components {
+        .cart-upsell__item {
+            display: grid;
+            grid-template-columns: 6rem 1fr auto;
+            gap: var(--space-s);
+            align-items: center;
+        }
+
+        .cart-upsell__info {
+            display: grid;
+            gap: var(--space-2xs);
+        }
+
+        ajax-cart-product-form[loading] .btn {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    }
+{% endstylesheet %}

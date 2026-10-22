@@ -485,10 +485,10 @@
       "empty": "No products in your shopping cart",
       "continue_shopping": "Continue shopping",
       "quantity": "Quantity",
-      "total": "Total:",
+      "total": "Total",
       "remove": "Remove",
-      "comments": "Additional Comments",
-      "note": "Add comment to your order",
+      "comments": "Order details",
+      "note": "Order note",
       "attributes": "Cart attributes:",
       "package": "Package text:",
       "any_day": "Any day",
@@ -510,6 +510,16 @@
       "login": {
         "title": "Have an account?",
         "paragraph_html": "<a href=\"{{ link }}\" class=\"link underlined-link\">Log in</a> to check out faster."
+      },
+      "decrease": "Decrease quantity for {{ product }}",
+      "increase": "Increase quantity for {{ product }}",
+      "added": "Added to your cart",
+      "update": "Update cart",
+      "summary": "Order summary",
+      "free_shipping": {
+        "remaining_html": "You are <strong>{{ amount }}</strong> away from free shipping",
+        "unlocked": "You unlocked free shipping!",
+        "label": "Free shipping progress"
       }
     },
     "search": {

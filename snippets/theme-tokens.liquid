@@ -1,0 +1,36 @@
+{% doc %}
+    Outputs @font-face rules and global design tokens (typography, layout, radii) from Theme settings.
+    Colors live in snippets/color-schemes.liquid.
+{% enddoc %}
+{%- liquid
+    assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+    assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
+    assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+-%}
+{%- style -%}
+    {{ settings.type_body_font | font_face: font_display: 'swap' }}
+    {{ body_font_bold | font_face: font_display: 'swap' }}
+    {{ body_font_italic | font_face: font_display: 'swap' }}
+    {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+    {{ settings.type_header_font | font_face: font_display: 'swap' }}
+
+    :root {
+        --font-body-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+        --font-body-style: {{ settings.type_body_font.style }};
+        --font-body-weight: {{ settings.type_body_font.weight }};
+        --font-body-weight-bold: {{ settings.type_body_font.weight | plus: 300 | at_most: 1000 }};
+        --font-heading-family: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
+        --font-heading-style: {{ settings.type_header_font.style }};
+        --font-heading-weight: {{ settings.type_header_font.weight }};
+        --font-body-scale: {{ settings.body_scale | divided_by: 100.0 }};
+        --font-heading-scale: {{ settings.heading_scale | times: 1.0 | divided_by: settings.body_scale }};
+
+        --page-width: {{ settings.page_width | default: 1440 | divided_by: 10.0 }}rem;
+
+        --radius-button: {{ settings.button_border_radius }}px;
+        --radius-input: {{ settings.form_border_radius }}px;
+        --radius-card: {{ settings.radius_card | default: 0 }}px;
+        --radius-media: {{ settings.radius_media | default: 0 }}px;
+        --radius-badge: {{ settings.radius_badge | default: 4 }}px;
+    }
+{%- endstyle -%}

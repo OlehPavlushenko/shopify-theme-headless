@@ -1,0 +1,51 @@
+{% doc %}
+    Free-shipping progress bar. Rendered inside a [data-ajax-cart-section], so Liquid Ajax Cart
+    re-renders it after every cart change: no JavaScript needed.
+    Threshold: Theme settings > Cart > "Free shipping threshold" (store currency, whole units).
+{% enddoc %}
+{%- liquid
+    assign threshold = settings.shipping_total | times: 100
+    assign show = false
+    if settings.show_shipping_total and threshold > 0 and cart.item_count > 0
+        assign show = true
+        assign remaining = threshold | minus: cart.total_price
+        assign remaining_money = remaining | money
+        assign progress = cart.total_price | times: 100 | divided_by: threshold | at_most: 100
+    endif
+-%}
+{%- if show -%}
+    <div class="free-shipping" style="--progress: {{ progress }}%;">
+        <p class="free-shipping__text small">
+            {%- if remaining > 0 -%}
+                {{ 'sections.cart.free_shipping.remaining_html' | t: amount: remaining_money }}
+            {%- else -%}
+                {{ 'sections.cart.free_shipping.unlocked' | t }}
+            {%- endif -%}
+        </p>
+        <div
+            class="free-shipping__bar"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="{{ progress }}"
+            aria-label="{{ 'sections.cart.free_shipping.label' | t }}"
+        ></div>
+    </div>
+{%- endif -%}
+
+{% stylesheet %}
+    @layer components {
+        .free-shipping {
+            display: grid;
+            gap: var(--space-xs);
+        }
+
+        .free-shipping__bar {
+            height: 0.6rem;
+            border-radius: 99rem;
+            background: linear-gradient(var(--primary-primary), var(--primary-primary)) 0 / var(--progress) 100% no-repeat,
+                var(--neutral-light);
+            transition: background-size var(--duration-long) var(--ease);
+        }
+    }
+{% endstylesheet %}

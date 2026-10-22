@@ -14,11 +14,11 @@
       "settings": {
         "collections_sub_heading": "Keep Your Items Securely in Your Cart",
         "collections_title": "Your Cart - Shop with Ease",
-        "collections_text": "<p>Our Cart section makes shopping a breeze. Add items to your cart as you browse through our selection, and keep them securely stored until you're ready to check out. With our intuitive interface, you can easily manage quantities, apply discounts or coupons, and update your cart as needed. Plus, with our secure checkout process, you can shop with confidence, knowing that your personal information is protected. Take advantage of our Cart section to simplify your shopping experience and enjoy a seamless checkout process. Start filling up your cart and get ready to indulge in the items you love!<\/p>",
+        "collections_text": "<p>Our Cart section makes shopping a breeze. Add items to your cart as you browse through our selection, and keep them securely stored until you're ready to check out. With our intuitive interface, you can easily manage quantities, apply discounts or coupons, and update your cart as needed. Plus, with our secure checkout process, you can shop with confidence, knowing that your personal information is protected. Take advantage of our Cart section to simplify your shopping experience and enjoy a seamless checkout process. Start filling up your cart and get ready to indulge in the items you love!</p>",
         "btn": "Return to collections",
-        "link": "shopify:\/\/collections",
-        "image": "shopify:\/\/shop_images\/demo1-banner1.jpg",
-        "image_mobile": "shopify:\/\/shop_images\/demo1-banner1-m.jpg",
+        "link": "shopify://collections",
+        "image": "shopify://shop_images/demo1-banner1.jpg",
+        "image_mobile": "shopify://shop_images/demo1-banner1-m.jpg",
         "head_alignment": "left",
         "overlay_color": "#34495e",
         "opacity": 3,
@@ -34,7 +34,7 @@
       "type": "main-cart",
       "blocks": {
         "3ace3e5c-674d-40fe-8ff9-67a4c9067b92": {
-          "type": "input",
+          "type": "text",
           "settings": {
             "label": "Package text"
           }
@@ -43,14 +43,14 @@
           "type": "select",
           "settings": {
             "label": "Delivery day",
-            "value": "Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday"
+            "options": "Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday"
           }
         },
         "df00dedf-4670-4e64-a1dd-e2a312a3299f": {
           "type": "radio",
           "settings": {
             "label": "Delivery time",
-            "value": "Any time|Day time|Evening"
+            "options": "Any time|Day time|Evening"
           }
         },
         "1bc6fb1f-bc50-46de-822a-ad1dead873ad": {
@@ -67,27 +67,10 @@
         "1bc6fb1f-bc50-46de-822a-ad1dead873ad"
       ],
       "settings": {
-        "recommend_list": [
-          "aksho_geo_print_shorts",
-          "laceya_guipure_lace_swimsuit",
-          "illiana_mesh_detail_swimsuit",
-          "fella_diamond_print_polo_shirt"
-        ],
-        "shipping_total": 1200,
-        "show_shipping_total": true,
-        "img_size": "portrait",
-        "background_color": "#fafbfb",
-        "title_color": "#2e3131",
-        "text_color": "#696e6e",
-        "link_color": "#34495e",
-        "link_hover_color": "#ec7163",
-        "divider_color": "#d8d8d8",
-        "show_cart_note": true,
-        "show_cart_attributes": true,
-        "full_width": true,
-        "width": 1440,
-        "padding_top": 30,
-        "padding_bottom": 30
+        "color_scheme": "scheme-1",
+        "show_dynamic_checkout": true,
+        "padding_top": 32,
+        "padding_bottom": 32
       }
     }
   },

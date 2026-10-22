@@ -1,0 +1,37 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-404",
+      "settings": {
+        "collections_sub_heading": "Oops! 404",
+        "collections_title": "Page not found!",
+        "collections_text": "<p>THE PAGE YOU ARE LOOKING FOR WAS MOVED, REMOVED, RENAMED OR MIGHT NEVER EXISTED.<\/p>",
+        "btn": "Return to collections",
+        "link": "shopify:\/\/collections",
+        "image": "shopify:\/\/shop_images\/demo1-banner1.jpg",
+        "image_mobile": "shopify:\/\/shop_images\/demo1-banner1-m.jpg",
+        "head_alignment": "left",
+        "overlay_color": "#34495e",
+        "opacity": 3,
+        "sub_title_color": "#f5f5f5",
+        "title_color": "#fafbfb",
+        "text_color": "#fafbfb",
+        "full_width": true,
+        "padding_top": 30,
+        "padding_bottom": 30
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,26 @@
+{%- liquid
+    assign header_class = mod_header_class | default: false
+    assign links = mod_links
+    assign active_page = mod_active_page | default: ''
+-%}
+
+{% comment %}
+    Usage:
+    {% render 'account-nav' mod_header_class: 'h3', mod_links: linklists.my-account.links %}
+{% endcomment %}
+
+<div class="account__nav">
+    <nav class="account__nav__linklist">
+        <h2 class="{% if header_class %}{{ header_class }} {% endif %}account__nav__heading">
+            {{ 'customer.account.nav_title' | t }}
+        </h2>
+        {% for link in links %}
+            <a
+                href="{{ link.url }}"
+                class="account__nav__link utility{% if link.url contains active_page %} active-page{% endif %}"
+            >
+                {{ link.title }}
+            </a>
+        {% endfor %}
+    </nav>
+</div>

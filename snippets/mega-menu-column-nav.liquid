@@ -1,0 +1,119 @@
+{% liquid
+    assign menu_item_title = block.settings.title | handleize
+    assign current_link_title = link.title | handleize
+    assign title_link = block.settings.title_link
+%}
+
+{% if menu_item_title == current_link_title %}
+    {% capture mega_menu_dropdown %}
+      {% for i in (i..2) %}
+
+        {% liquid
+          assign current_column_title = 'column_menu_title_' | append: forloop.index
+          assign current_column_menu = 'column_menu_' | append: forloop.index
+
+          assign column_title = block.settings[current_column_title]
+          assign column_menu = block.settings[current_column_menu]
+        %}
+
+        {% if column_menu.links.size > 0 %}
+            <div class='mega-menu__item-submenu--links'>
+                {% if column_title != blank %}
+                    <div class='mega-menu__list-title'>
+                        <a class='not-link' href='#'>{{ column_title | escape }}</a>
+                    </div>
+                {% endif %}
+                <div class='mega-menu__submenu' tabindex='-1'>
+                    <ul class='mega-menu__list list-style-none' tabindex='-1'>
+                        {% for mega_menu_link in column_menu.links %}
+                        
+                        {% liquid
+                            if mega_menu_link.title contains ';'
+                            assign badge = mega_menu_link.title | split: ';'
+                            assign title = badge[0] | split: '["'
+                            assign badge_name = badge[1]
+                            assign badge_color = badge[2] | split: '"]'
+                            else
+                            assign title = mega_menu_link.title
+                            assign badge_name = ''
+                            assign badge_color = ''
+                            endif
+                        %}
+                        
+                        <li class='mega-menu__list-item'>
+                            <a class='mega-menu__list-link{% if mega_menu_link.current %} mega-menu__list-link--active{% endif %}' href='{{ mega_menu_link.url }}'>
+                            {{- title -}}
+                            {% if badge_name != blank %}
+                            <span style='background:{{ badge_color }};' class='mega-menu__list-badge'>{{ badge_name }}</span>
+                            {% endif %}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+      {% endfor %}
+    {% endcapture %}
+
+    {% if mega_menu_dropdown != blank %}
+        {%- liquid
+            assign mega_menu_background_color = block.settings.background_color
+            assign image = block.settings.image
+            assign image_size = block.settings.img_size
+            assign sub_title = block.settings.sub_title
+            assign ban_title = block.settings.ban_title
+            assign ban_button = block.settings.ban_button
+            assign ban_link = block.settings.ban_link
+            assign ban_text_color = block.settings.ban_text_color
+        -%}
+        {%- capture mega_menu_styles -%}
+        --mega-menu-background-color: {{ mega_menu_background_color }};
+        --mega-menu-banner-text-color: {{ ban_text_color }};
+        {%- endcapture -%}
+
+        {%- assign mega_menu_styles = mega_menu_styles | strip_newlines -%}
+        <li class="header__menu-item menu-item--{{ block.type }} has-submenu--lvl-1">
+            <menu-open>
+                <a
+                    id="headerMenuItemLink-{{ block.id }}"
+                    class="header__menu-item-link drawer-menu-link{% if link.child_active %} header__menu-item-link--active{% endif %} js-link-toggle"
+                    href="{{ link.url }}"
+                >
+                    {{ link.title }}
+                    {% render 'icons-svg', icons: 'down' %}
+                </a>
+                    
+                <div style="{{ mega_menu_styles }}" class="mega-menu js-link-details drawer-submenu--parent">
+                    <div class="mega-menu__wrapper page-width">
+                        <div class="mega-menu__row">
+                            <div class="mega-menu__column-list">
+                                <div class="mega-menu__list-row">
+                                    {{ mega_menu_dropdown }}
+                                </div>
+                            </div>
+                            {% if image != blank %}
+                            <div class="mega-menu__column-image">
+                                <picture class="mega-menu__image-media media__size--{{ image_size }} media">
+                                    {% render 'image', image_box: image, image_box_class: 'mega-menu__image' %}
+                                </picture>
+                                <div class="mega-menu__image-content">
+                                    {% if sub_title != blank %}
+                                        <span class="mega-menu__image-subtitle caption">{{ sub_title }}</span>
+                                    {% endif %}
+                                    {% if ban_title != blank %}
+                                        <h4 class="mega-menu__image-title">{{ ban_title }}</h4>
+                                    {% endif %}
+                                    {% if ban_link != blank %}
+                                        <a href='{{ ban_link }}' class="button button--small">{{ ban_button }}</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </menu-open>
+        </li>
+    {% endif %}
+{% endif %}

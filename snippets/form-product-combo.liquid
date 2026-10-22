@@ -1,0 +1,127 @@
+{% liquid
+    assign combo_products = product.metafields.custom.combo_products.value
+    assign combo_title = combo_products.title
+    assign combo_text = combo_products.text | metafield_tag
+    assign combo_discount = combo_products.title_of_discount
+    assign bundle_products = combo_products.products_of_bundle.value
+
+    assign new_badge = settings.new_badge
+    assign show_vendor = settings.show_vendor
+    assign show_rating = settings.show_rating
+    assign add_btn = settings.enable_add_btn
+    assign btn = settings.btn
+    assign variant_type = settings.variant
+    assign prod_img_size = settings.prod_img_size
+    assign secondary_image = settings.show_secondary_image
+    assign notify_me = settings.notify_me
+    assign price_variant = settings.price_variant
+%}
+<div class="main-product-action-combo js-combo-action">
+    <div class="main-product-combo">
+        <h3 class="main-product-combo__title">{{ combo_title | escape }}</h3>
+        <div class="main-product-combo__text">{{ combo_text }}</div>
+        <ul class="main-product-combo__list list-view">
+            {% for item in bundle_products %}
+                {%- assign bundle_product = all_products[item.handle] -%}
+                <li class="main-product-combo__item">
+                    {% render 'card-product',
+                        product: bundle_product,
+                        show_vendor: show_vendor,
+                        show_rating: show_rating,
+                        new_badge: new_badge,
+                        show_quantity: false,
+                        use_variant: price_variant,
+                        variant_type: variant_type,
+                        add_btn: add_btn,
+                        btn: btn,
+                        img_size: prod_img_size,
+                        secondary_image: secondary_image,
+                        notify_me: notify_me,
+                        image_custom: false,
+                        fill: false
+                    %}
+                    {% render 'icons-svg', icons: 'plus' %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% capture "form_id" %}product_form-{{ section.id }}-{{ product.id }}{%- endcapture %}
+    {% capture "form_class" %}main-product__form js-main-combo-action js{{form_sticky}}{%- endcapture %}
+    {% form 'product', product, id: form_id, class: form_class %}
+        <select
+            name="id"
+            id="ProductSelect-{{ product.id }}"
+            class="card-product__variants no-js"
+            data-product-select
+        >
+            {% for variant in product.variants %}
+                {% if variant.available %}
+                    <option
+                        {% if variant == product.selected_or_first_available_variant %}
+                            selected="selected"
+                        {% endif %}
+                        data-sku="{{ variant.sku }}"
+                        value="{{ variant.id }}"
+                    >
+                        {{ variant.title }} - {{ variant.price | money_with_currency }}
+                    </option>
+
+                {% else %}
+                    <option disabled="disabled">{{ variant.title }} - {{ 'products.product.sold_out' | t }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <input
+            hidden
+            id="Combo"
+            type="text"
+            name="properties[_hiddenCombo]"
+        >
+        <input
+            value="{{ combo_discount }}"
+            hidden
+            class="hidden"
+            id="ComboDiscount"
+            type="text"
+            name="properties[ComboDiscount]"
+        >
+        <div class="main-product__action--box">
+            <div class="main-product__action--quantity">
+                <quantity-input class="quantity">
+                    <button class="quantity__button quantity__button--minus" name="minus" type="button">
+                        {% render 'icons-svg', icons: 'minus' %}
+                    </button>
+
+                    <input
+                        class="quantity__input js-quantity"
+                        type="number"
+                        name="quantity"
+                        min="1"
+                        step="1"
+                        value="1"
+                        {% if product.variants[0].inventory_management == 'shopify'
+                            and product.variants[0].inventory_policy != 'continue'
+                        %}
+                            max="{{ product.variants[0].inventory_quantity }}"
+                        {% endif %}
+                    >
+
+                    <button class="quantity__button quantity__button--plus" name="plus" type="button">
+                        {% render 'icons-svg', icons: 'plus' %}
+                    </button>
+                </quantity-input>
+            </div>
+
+            <div class="main-product__action--btn">
+                <span
+                    id="AddToCart-{{ product.id }}"
+                    class="button button--secondary card-product__button-cart js-btn-cart-combo js-btn-cart"
+                >
+                    <span>{{ 'products.product.add_to_cart' | t }}</span>
+                </span>
+            </div>
+            <div class="main-product__action--cart-messages" data-ajax-cart-messages="form"></div>
+        </div>
+    {% endform %}
+</div>

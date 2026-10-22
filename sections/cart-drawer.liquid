@@ -1,0 +1,394 @@
+{% comment %}
+    Add a wrapper with a [data-ajax-cart-section] attribute
+    so that Liquid Ajax Cart knows that the section should be rerendered
+    after user's cart state is changed.
+{% endcomment %}
+
+{% liquid
+    assign shipping_total = settings.shipping_total | times: 100
+    assign show_shipping = settings.show_shipping_total
+    assign size = settings.img_size_cart
+    assign bg_color = section.settings.background_color
+    assign title_color = section.settings.title_color
+    assign text_color = section.settings.text_color
+    assign link_color = section.settings.link_color
+    assign link_hover_color = section.settings.link_hover_color
+    assign divider_color = section.settings.divider_color
+    assign cart_note = settings.show_cart_note
+    assign cart_attributes = settings.show_cart_attributes
+    assign recommend_list = settings.recommend_list
+    assign recommend_type = settings.recommend_type
+    assign show_recommend = settings.show_recommend_prod
+    assign expiration_limit = settings.expiration_limit
+%}
+{% capture recommend_db %}[{% for product in recommend_list %}"{{ product.handle }}"{% if forloop.last %}{% else %},{% endif %}{% endfor %}]{% endcapture %}
+
+{% capture styles %}
+    --cart-drawer-background-color: {{ bg_color }};
+    --cart-drawer-title-color: {{ title_color }};
+    --cart-drawer-text-color: {{ text_color }};
+    --cart-drawer-link-color: {{ link_color }};
+    --cart-drawer-link-hover-color: {{ link_hover_color }};
+    --cart-drawer-divider-color: {{ divider_color }};
+{% endcapture %}
+
+{% assign styles = styles | strip_newlines %}
+
+<div class="cart-overlay" data-ajax-cart-toggle-class-button="js-show-ajax-cart | remove">
+    <span class="visually-hidden">{{ 'sections.cart.close' | t }}</span>
+</div>
+<div action="{{ routes.cart_url }}" method="post" data-ajax-cart-section class="cart-drawer" style="{{ styles }}">
+    <div>
+        <h3 class="cart-drawer__head h5">{{ 'sections.cart.cart' | t }}</h3>
+        <!-- Free shipping progress markup -->
+        {% if show_shipping %}
+            <div
+                class="cart-drawer-shipping__wrapper js-cart-drawer-shipping"
+                data-total="{{ shipping_total }}"
+            >
+                <p class="cart-drawer-shipping__numOuter">
+                    {{ 'sections.cart.shipping.outer_first' | t }}
+                    <span class="cart-drawer-shipping__num"></span> {{ 'sections.cart.shipping.outer_second' | t }}
+                </p>
+                <p class="cart-drawer-shipping__success">{{ 'sections.cart.shipping.success' | t }}</p>
+                <div class="cart-drawer-shippingThreshold__bar">
+                    <span class="cart-drawer-shippingThreshold__progress">
+                        <span class="cart-drawer-shippingThreshold__badge js-cart-threshold-badge">0%</span>
+                    </span>
+                </div>
+            </div>
+        {% endif %}
+
+        <a
+            class="cart-drawer__icon-close"
+            href="#CartDrawerClose"
+            aria-label="CartDrawerClose"
+            data-ajax-cart-toggle-class-button="js-show-ajax-cart | remove"
+        >
+            {% render 'icons-svg', icons: 'close' %}
+        </a>
+    </div>
+    {% if cart.item_count == 0 %}
+        <div class="cart-drawer__empty">
+            {% render 'icons-svg', icons: 'sad' %}
+            <p class="caption--large cart-drawer__text">{{ 'sections.cart.empty' | t }}</p>
+            <a href="{{ routes.collections_url }}" class="button button--secondary cart-drawer__empty--url-btn" data-ajax-cart-toggle-class-button="js-show-ajax-cart | remove">
+                {{ 'sections.cart.continue_shopping' | t }}
+            </a>
+            {%- if shop.customer_accounts_enabled and customer == null -%}
+                <h5 class="cart-drawer__login-title">{{ 'sections.cart.login.title' | t }}</h5>
+                <p class="cart-drawer__login-paragraph caption--medium">
+                  {{ 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url }}
+                </p>
+            {%- endif -%}
+        </div>
+    {% endif %}
+    <div class="cart-drawer__items" data-ajax-cart-section-scroll>
+        {% for item in cart.items %}
+            {%- assign property_discount = false -%}
+            {%- assign property_combo = false -%}
+
+            {%- if item.properties.size != 0 -%}
+                {%- for property in item.properties -%}
+                    {%- assign property_first_char = property.first | slice: 0 -%}
+                    {% if property.first contains '_hiddenCombo' %}
+                        {%- assign property_combo = true -%}
+                        {%- assign value_combo = property.last -%}
+                    {% endif %}
+                    {% if property.first contains 'ComboDiscount' %}
+                        {%- assign property_discount = true -%}
+                    {% endif %}
+                {%- endfor -%}
+            {%- endif -%}
+            {% render 'cart-item',
+                item: item,
+                size: size,
+                forloop: forloop,
+                property_discount: property_discount,
+                template_cart: false
+            %}
+        {% endfor %}
+        {% if show_recommend %}
+            <div
+                id="cart-recommend"
+                data-ajax-cart-static-element
+                data-size="{{ size }}"
+                data-days="{{ expiration_limit }}"
+                data-type="{{ recommend_type }}"
+                data-count-desktop="2"
+                data-count-tablet="2"
+                data-count-mobile="2"
+            >
+                <span class="visually-hidden">{{ 'sections.cart.recommend' | t }}</span>
+            </div>
+        {% endif %}
+    </div>
+    <form action="{{ routes.cart_url }}" method="post">
+        <div class="cart-drawer__foter">
+            {% if cart_note or cart_attributes %}
+                <div
+                    class="cart-drawer__footer-toggler"
+                    onclick="javascript:document.body.classList.toggle('cart-drawer-show-footer')"
+                >
+                    {% render 'icons-svg', icons: 'plus' %}
+                    {% render 'icons-svg', icons: 'minus' %}
+                    {{ 'sections.cart.comments' | t }}
+                </div>
+                <div class="cart-drawer__footer-content">
+                    {% if cart_note %}
+                        <textarea
+                            id="cart-drawer_note"
+                            name="note"
+                            placeholder="{{- 'sections.cart.note' | t -}}"
+                            data-ajax-cart-property-input
+                        >{{ cart.note }}</textarea>
+                    {% endif %}
+
+                    {% if cart_attributes %}
+                        {%- for block in section.blocks -%}
+                            {%- case block.type -%}
+                                {%- when 'input' -%}
+                                    {%- assign input = block.settings.label | escape -%}
+                                    {% if input != blank %}
+                                        <div class="cart-drawer__property">
+                                            <input
+                                                type="text"
+                                                name="attributes[{{ input }}]"
+                                                value="{{ cart.attributes['input']}}"
+                                                placeholder="{{ input }}"
+                                                data-ajax-cart-property-input
+                                                class="cart-drawer__input cart-drawer__input--property"
+                                            >
+                                        </div>
+                                    {% endif %}
+                                {%- when 'select' -%}
+                                    {%- assign select_label = block.settings.label | escape -%}
+                                    {%- assign select_value = block.settings.value -%}
+                                    {% if select_value != blank %}
+                                        <div class="cart-drawer__property">
+                                            <select name="attributes[select_label]" data-ajax-cart-property-input>
+                                                {% assign suggested_days = select_value | split: '|' %}
+                                                <option
+                                                    value=""
+                                                    {% unless suggested_days contains cart.attributes.select_label %}
+                                                        selected
+                                                    {% endunless %}
+                                                >
+                                                    {{ select_label }}
+                                                </option>
+                                                {% for day in suggested_days %}
+                                                    <option
+                                                        value="{{ day }}"
+                                                        {% if day == cart.attributes.select_label %}
+                                                            selected
+                                                        {% endif %}
+                                                    >
+                                                        {{ day }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    {% endif %}
+
+                                {%- when 'radio' -%}
+                                    {%- assign radio_label = block.settings.label | escape -%}
+                                    {%- assign radio_value = block.settings.value -%}
+                                    {% if radio_value != blank %}
+                                        <div class="cart-drawer__property">
+                                            {% if radio_value != blank %}
+                                                <span class="cart-drawer__property-label">{{ radio_label }}:</span>
+                                            {% endif %}
+                                            {% assign suggested_time = radio_value | split: '|' %}
+                                            {% for time in suggested_time %}
+                                                <label>
+                                                    <input
+                                                        name="attributes[{{radio_label}}]"
+                                                        type="radio"
+                                                        value="{{ time }}"
+                                                        data-ajax-cart-property-input
+                                                        {% if cart.attributes['{{radio_label}}'] == time %}
+                                                            checked
+                                                        {% endif %}
+                                                    >
+                                                    {{ time }}
+                                                </label>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+                                {%- when 'checkbox' -%}
+                                    {%- assign checkbox = block.settings.label | escape -%}
+                                    {% if checkbox != blank %}
+                                        <div class="cart-drawer__property">
+                                            <label>
+                                                <input
+                                                    type="hidden"
+                                                    value=""
+                                                    name="attributes[{{ checkbox }}]"
+                                                    data-ajax-cart-property-input
+                                                >
+                                                <input
+                                                    type="checkbox"
+                                                    name="attributes[Leave at the door]"
+                                                    value="Yes"
+                                                    data-ajax-cart-property-input
+                                                    {% if cart.attributes['{{ checkbox }}'] == 'Yes' %}
+                                                        checked
+                                                    {% endif %}
+                                                >
+                                                {{ checkbox }}
+                                            </label>
+                                        </div>
+                                    {% endif %}
+                            {%- endcase -%}
+                        {%- endfor -%}
+                    {% endif %}
+                </div>
+            {% endif %}
+            <div class="cart-drawer__btns">
+                <div class="cart-drawer__total">
+                    <div class="cart-drawer__total--amount">
+                        <span>{{ 'sections.cart.total' | t }}</span>
+                        {% if settings.currency_code_enabled %}
+                            {{ cart.total_price | money_with_currency }}
+                       {% else %}
+                           {{ cart.total_price | money }}
+                       {% endif %}
+                    </div>
+                    <div class="cart-drawer__total--taxes">{{ 'sections.cart.taxes_included_but_shipping_at_checkout' | t }}</div>
+                </div>
+                
+                <button type="submit" name="checkout" class="cart-drawer__checkout-btn">
+                    {{ 'sections.cart.checkout' | t }}
+                </button>
+                <a href="{{ routes.cart_url }}" class="button cart-drawer__url-btn">
+                    {{ 'templates.cart.cart' | t }}
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="application/json" data-ajax-cart-initial-state>
+    {{ cart | json }}
+</script>
+{% if show_recommend %}
+    <script>
+        localStorage.setItem("defaultRecommendSection", JSON.stringify({{ recommend_db }}))
+    </script>
+{% endif %}
+<script type="module">
+    import '{{ 'liquid-ajax-cart-v2.js' | asset_url }}';
+</script>
+
+<script src="{{ 'ajax-cart-v2.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+    "name": "Cart Drawer",
+    "settings": [
+        {
+            "type": "header",
+            "content": "Style Options"
+        },
+        {
+            "type": "color",
+            "id": "background_color",
+            "default": "#F5F5F5",
+            "label": "Background color"
+        },
+        {
+            "type": "color",
+            "id": "title_color",
+            "default": "#2e3131",
+            "label": "Title color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "default": "#696e6e",
+            "label": "Text color"
+        },
+        {
+            "type": "color",
+            "id": "link_color",
+            "default": "#34495e",
+            "label": "Link color"
+        },
+        {
+            "type": "color",
+            "id": "link_hover_color",
+            "default": "#ec7163",
+            "label": "Link hover color"
+        },
+        {
+            "type": "color",
+            "id": "divider_color",
+            "default": "#4d4d4d",
+            "label": "Divider color"
+        }
+    ],
+    "blocks": [
+        {
+            "name": "input",
+            "type": "input",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "label",
+                    "label": "Label",
+                    "default": "Package text"
+                }
+            ]
+        },
+        {
+            "name": "select",
+            "type": "select",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "label",
+                    "label": "Label",
+                    "default": "Delivery day"
+                },
+                {
+                    "type": "text",
+                    "id": "value",
+                    "label": "Value",
+                    "default": "Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday"
+                }
+            ]
+        },
+        {
+            "name": "radio",
+            "type": "radio",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "label",
+                    "label": "Label",
+                    "default": "Delivery time"
+                },
+                {
+                    "type": "text",
+                    "id": "value",
+                    "label": "Value",
+                    "default": "Any time|Day time|Evening"
+                }
+            ]
+        },
+        {
+            "name": "checkbox",
+            "type": "checkbox",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "label",
+                    "label": "Label",
+                    "default": "Leave at the door "
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

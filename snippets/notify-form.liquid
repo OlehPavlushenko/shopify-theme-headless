@@ -1,0 +1,174 @@
+<div id="cardProductAsk" class="ask-product">
+    <button
+        type="button"
+        class="ask-product__close-button button--link link focus-inset js-modal-close-btn"
+        aria-label="{{ 'accessibility.close' | t }}"
+    >
+        {% render 'icons-svg', icons: 'close' %}
+    </button>
+    <div class="ask-product__content">
+        <h3 class="ask-product__title">{{ 'products.product.ask_text' | t }}</h3>
+        <div class="ask-product__notify">
+            {% form 'contact', class: 'notify__form' %}
+                {{ form.errors | default_errors }}
+
+                <input
+                    type="hidden"
+                    name="contact[tags]"
+                    value="{{ 'products.product.ask_value' | t }}"
+                >
+                <label for="product_notify_input" class="hidden">{{ 'products.product.ask_body' | t }}</label>
+                <input
+                    id="product_notify_input"
+                    type="hidden"
+                    name="contact[product name]"
+                    value="{{ product.title }}"
+                >
+                <input
+                    id="product_notify_input"
+                    type="hidden"
+                    name="contact[product]"
+                    value="{{ shop.url }}{{ product.url }}"
+                >
+                <div class="notify__wrapper">
+                    <div class="field field--with-error">
+                        {% liquid
+                            assign mod_name_placeholder = 'products.product.ask_name' | t | append: '*'
+                            assign mod_name_label = 'products.product.ask_name' | t | append: '*'
+                            if form.errors contains 'name'
+                                assign mod_name_error = true
+                            else
+                                assign mod_name_error = false
+                            endif
+                        %}
+
+                        {% render 'input',
+                            mod_input_id: 'AskСontactForm-name',
+                            mod_input_name: 'contact[name]',
+                            mod_input_type: 'text',
+                            mod_input_label: mod_name_label,
+                            mod_custom_input_classes: 'field__input notify__input',
+                            mod_autocomplete: 'name',
+                            mod_input_placeholder: mod_name_placeholder,
+                            mod_is_required: true,
+                            mod_has_error: mod_name_error,
+                            mod_form: form,
+                            mod_value: form.name
+                        %}
+                        {%- if form.errors contains 'name' -%}
+                            <small id="AskСontactForm-name-error">
+                                <span class="form__message error-message error-message--input">
+                                    {%- render 'icon-error' -%}
+                                    {{ form.errors.messages.name }}.</span
+                                >
+                            </small>
+                        {%- endif -%}
+                    </div>
+                    <div class="field field--with-error">
+                        {% liquid
+                            assign mod_email_placeholder = 'products.product.ask_email' | t | append: '*'
+                            assign mod_email_label = 'products.product.ask_email' | t | append: '*'
+                            if form.errors contains 'email'
+                                assign mod_email_error = true
+                            else
+                                assign mod_email_error = false
+                            endif
+                        %}
+
+                        {% render 'input',
+                            mod_input_id: 'AskСontactForm--email',
+                            mod_input_name: 'contact[email]',
+                            mod_input_type: 'email',
+                            mod_input_label: mod_email_label,
+                            mod_custom_input_classes: 'field__input notify__input',
+                            mod_autocomplete: 'email',
+                            mod_input_placeholder: mod_email_placeholder,
+                            mod_is_required: true,
+                            mod_has_error: mod_email_error,
+                            mod_form: form,
+                            mod_value: form.email
+                        %}
+                        {%- if form.errors contains 'email' -%}
+                            <small id="AskСontactForm-email-error">
+                                <span class="form__message error-message error-message--input">
+                                    {%- render 'icon-error' -%}
+                                    {{ form.errors.messages.email }}.</span
+                                >
+                            </small>
+                        {%- endif -%}
+                    </div>
+
+                    <div class="field field--with-error">
+                        {% liquid
+                            assign mod_phone_placeholder = 'products.product.ask_phone' | t | append: '*'
+                            assign mod_phone_label = 'products.product.ask_phone' | t | append: '*'
+                            if form.errors contains 'name'
+                                assign mod_phone_error = true
+                            else
+                                assign mod_phone_error = false
+                            endif
+                        %}
+
+                        {% render 'input',
+                            mod_input_id: 'AskСontactForm-phone',
+                            mod_input_name: 'contact[phone]',
+                            mod_input_type: 'text',
+                            mod_input_label: mod_phone_label,
+                            mod_custom_input_classes: 'field__input notify__input',
+                            mod_autocomplete: 'phone',
+                            mod_input_placeholder: mod_phone_placeholder,
+                            mod_is_required: true,
+                            mod_has_error: mod_phone_error,
+                            mod_form: form,
+                            mod_value: form.phone
+                        %}
+                        {%- if form.errors contains 'phone' -%}
+                            <small id="AskСontactForm-phone-error">
+                                <span class="form__message error-message error-message--input">
+                                    {%- render 'icon-error' -%}
+                                    {{ form.errors.messages.phone }}.</span
+                                >
+                            </small>
+                        {%- endif -%}
+                    </div>
+                    <div class="field field--with-error">
+                        {% liquid
+                            assign mod_body_placeholder = 'products.product.ask_comment' | t | append: '*'
+                            assign mod_body_label = 'products.product.ask_comment' | t | append: '*'
+                            if form.errors contains 'body'
+                                assign mod_body_error = true
+                            else
+                                assign mod_body_error = false
+                            endif
+                        %}
+
+                        {% render 'input',
+                            mod_input_id: 'AskСontactForm-body',
+                            mod_input_name: 'contact[body]',
+                            mod_use_textarea: true,
+                            mod_input_label: mod_body_label,
+                            mod_custom_input_classes: 'text-area field__input notify__input',
+                            mod_input_placeholder: mod_body_placeholder,
+                            mod_is_required: false,
+                            mod_has_error: mod_body_error,
+                            mod_form: form,
+                            mod_value: form.body
+                        %}
+
+                        {%- if form.errors contains 'body' -%}
+                            <small id="AskСontactForm-error">
+                                <span class="form__message error-message error-message--input">
+                                    {%- render 'icon-error' -%}
+                                    {{ form.errors.messages.body }}.</span
+                                >
+                            </small>
+                        {%- endif -%}
+                    </div>
+                    <button class="button button--secondary" type="submit">
+                        {{ 'products.product.ask_send' | t }}
+                    </button>
+                </div>
+            {% endform %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+<article
+    class="card-post "
+    aria-labelledby="Article"
+>
+    <div class="card-post__image-wrapper">
+        <time
+            class="card-post__time"
+        >
+            <span>15</span>
+            Jun
+        </time>
+        <picture class="card-post__media media__size--{{ img_size }} media">
+            <a href="#" class="card-post__image--link"><span class="hidden">Article title</span></a>
+
+            {{ 'blog-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </picture>
+    </div>
+    <div class="card-post__info">
+        <div class="card-post__flex">
+            <header class="card-post__header">
+                <h2 class="card-post__title h5">
+                    <a href="#">Article title</a>
+                </h2>
+            </header>
+            <p class="card-post__excerpt rte-width">These are things that are built to be bought once.</p>
+            <div class="card-post__footer">
+                <a
+                    href="#"
+                    class="card-post__link button button--secondary"
+                    aria-label="{{ 'blogs.article.read_more_title' | escape }}"
+                >
+                    {{ label }}
+                </a>
+            </div>
+        </div>
+    </div>
+</article>

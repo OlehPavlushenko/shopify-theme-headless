@@ -1,0 +1,24 @@
+{% if card_product and card_product != empty %}
+    {% if show_image %}
+        <div class='footer-product-post__madia-wrapper'>
+            <picture class='footer-product-post__media media media__size--{{ image_size }}'>
+                {% render 'image',
+                    image_box: card_product.featured_media,
+                    image_box_class: 'footer-product-post__image'
+                %}
+            </picture>
+        </div>
+    {% endif %}
+    <div class='footer-product-post__content'>
+        {% if show_vendor %}
+            <span class='visually-hidden'>{{ 'accessibility.vendor' | t }}</span>
+            <span class='footer-product-post__vendor'>{{ card_product.vendor }}</span>
+        {% endif %}
+        <h5 class='footer-product-post__title'>
+            <a href='{{ card_product.url | within: collection }}'>
+                {{ card_product.title | truncate: 30 | escape }}
+            </a>
+        </h5>
+        {% render 'price', product: card_product, price_class: 'card-product__price', use_variant: true %}
+    </div>
+{% endif %}

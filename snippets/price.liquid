@@ -1,0 +1,57 @@
+{%- liquid
+    if use_variant
+        assign target = product.selected_or_first_available_variant
+    else
+        assign target = product
+    endif
+
+    assign compare_at_price = target.compare_at_price
+    assign price = target.price
+    assign money_price = price | money
+    if settings.currency_code_enabled
+        assign money_price = price | money_with_currency
+    endif
+
+    if target == product and product.price_varies
+        assign money_price = 'products.product.price.from_price_html' | t: price: money_price
+    endif
+-%}
+
+<div
+    class="
+        price
+        {%- if price_class %} {{ price_class }}{% endif -%}
+        {%- if compare_at_price > price %} price--on-sale {% endif -%}
+    "
+>
+    <div class="price__box">
+        {%- unless product.price_varies == false and product.compare_at_price_varies %}
+            <span>
+                <s class="price__item price__item--regular">
+                    {% if settings.currency_code_enabled %}
+                        {{ compare_at_price | money_with_currency }}
+                    {% else %}
+                        {{ compare_at_price | money }}
+                    {% endif %}
+                </s>
+            </span>
+        {%- endunless -%}
+        <span class="price__item price__item--sale">
+            {{ money_price }}
+        </span>
+        <span class="badge sale js-percentage-badge"
+            >-
+            {{-
+                compare_at_price
+                | minus: price
+                | times: 100.0
+                | divided_by: compare_at_price
+                | money_without_currency
+                | replace: ',', '.'
+                | times: 100
+                | remove: '.0'
+            -}}
+            %
+        </span>
+    </div>
+</div>

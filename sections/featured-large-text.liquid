@@ -1,0 +1,134 @@
+{% liquid
+    assign text = section.settings.text
+    assign text_alignment = section.settings.text_alignment
+    assign width = section.settings.width
+    assign full_width = section.settings.full_width
+
+    assign background_color = section.settings.bg_color | default: 'transparent'
+    assign text_color = section.settings.text_color | default: 'inherit'
+    assign link_color = section.settings.link_color | default: 'inherit'
+    assign pad_top = section.settings.padding_top
+    assign pad_bot = section.settings.padding_bottom
+%}
+
+{% capture styles %}
+--link-color-large-text: {{ link_color }};
+--text-color-large-text: {{ text_color }};
+--background-color-large-text: {{ background_color }};
+--pad-top-large-text: {{ pad_top }}px;
+--pad-bot-large-text: {{ pad_bot }}px;
+--width-large-text: {{ width }}px;
+{% endcapture %}
+
+{% assign styles = styles | strip_newlines %}
+
+{{ 'section-featured-large-text.css' | asset_url | stylesheet_tag }}
+
+{% if text != blank %}
+    <div
+        class="featured-large-text text-alignment--{{ text_alignment }} full_width--{{ full_width }}"
+        style="{{ styles }}"
+    >
+        <div class="page-width container">
+            <div class="featured-large-text__blocks">
+                <div class="featured-large-text__text">{{ text }}</div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% schema %}
+{
+    "name": "Large text",
+    "tag": "section",
+    "class": "index-section",
+    "settings": [
+        {
+            "type": "richtext",
+            "id": "text",
+            "default": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>",
+            "label": "Description"
+        },
+        {
+            "type": "select",
+            "id": "text_alignment",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "right",
+                    "label": "Right"
+                }
+            ],
+            "default": "center",
+            "label": "Text alignment"
+        },
+        {
+            "type": "checkbox",
+            "id": "full_width",
+            "default": false,
+            "label": "Enabled full width?"
+        },
+        {
+            "type": "range",
+            "id": "width",
+            "min": 1000,
+            "max": 1800,
+            "step": 40,
+            "default": 1200,
+            "unit": "px",
+            "label": "Section Width"
+        },
+        {
+            "type": "paragraph",
+            "content": "Style Options"
+        },
+        {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Background Color"
+        },
+        {
+            "type": "color",
+            "id": "link_color",
+            "label": "Link color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text color"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding top",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding bottom",
+            "default": 30
+        }
+    ],
+    "presets": [
+        {
+            "name": "Large text"
+        }
+    ]
+}
+{% endschema %}

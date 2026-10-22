@@ -1,0 +1,637 @@
+{% liquid
+    assign style_header = section.settings.style_header
+    assign enable_transparent_header = section.settings.enable_transparent_header
+    assign enable_sticky_header = section.settings.enable_sticky_header
+    assign menu = section.settings.menu
+    assign top_menu = section.settings.top_menu
+    assign logo_width = section.settings.logo_width
+
+    assign background_color = section.settings.background_color
+    assign search_background_color = section.settings.search_background_color
+    assign mobile_background_color = section.settings.mobile_background_color
+    assign text_color = section.settings.text_color
+    assign line_color = section.settings.line_color
+    assign badge_color = section.settings.badge_color
+    assign blocks = section.blocks
+    assign settings = section.settings
+    assign full_width = section.settings.full_width
+
+    if enable_transparent_header == true and template == 'index'
+        assign transparent_header = ' transparent-header'
+    endif
+%}
+
+{% capture styles %}
+--header-background-color: {{ background_color }};
+--header-text-color: {{ text_color }};
+--header-line-color: {{ line_color }};
+--header-badge-color: {{ badge_color }};
+--header-search-background-color: {{ search_background_color }};
+--header-mobile-background-color: {{ mobile_background_color }};
+--header-logo-width: {{ logo_width }}px;
+{% endcapture %}
+
+{% assign styles = styles | strip_newlines %}
+
+{{ 'section-header.css' | asset_url | stylesheet_tag }}
+{{ 'component-mega-menu.css' | asset_url | stylesheet_tag }}
+{{ 'component-mobile-menu.css' | asset_url | stylesheet_tag }}
+{{ 'component-search-modal.css' | asset_url | stylesheet_tag }}
+{{ 'component-search-tabs.css' | asset_url | stylesheet_tag }}
+{{ 'component-swiper.css' | asset_url | stylesheet_tag }}
+
+<sticky-header
+    id="shopify-section-header"
+    class="header-wrapper full_width--{{ full_width }} sticky-header-{{ enable_sticky_header }} {{ style_header }} {{ transparent_header }}"
+    style="{{- styles -}}"
+    data-sticky-type="always"
+>
+    {% case style_header %}
+        {% when 'style-simple' %}
+            {% render 'header-style-simple', settings: settings, menu: menu, topmenu: top_menu, blocks: blocks %}
+        {% when 'style-simple-logo-center' %}
+            {% render 'header-style-simple-logo-center',
+                settings: settings,
+                menu: menu,
+                topmenu: top_menu,
+                blocks: blocks
+            %}
+        {% when 'style-minimal' %}
+            {% render 'header-style-minimal', settings: settings, menu: menu, topmenu: top_menu, blocks: blocks %}
+        {% when 'style-multi-row' %}
+            {% render 'header-style-multi-row', settings: settings, menu: menu, topmenu: top_menu, blocks: blocks %}
+    {% endcase %}
+</sticky-header>
+
+<script src="{{ 'section-header.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'details-open.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'header-search.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'component-tabs.js' | asset_url }}" defer="defer"></script>
+
+<script type="application/ld+json">
+    {
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "name": {{ shop.name | json }},
+    {% if section.settings.logo %}
+    {% assign image_size = section.settings.logo.width | append: 'x' %}
+    "logo": {{ section.settings.logo | img_url: image_size | prepend: "https:" | json }},
+    {% endif %}
+    "sameAs": [
+    {{ settings.social_twitter_link | json }}
+    {{ settings.social_facebook_link | json }}
+    {{ settings.social_pinterest_link | json }}
+    {{ settings.social_instagram_link | json }}
+    {{ settings.social_tiktok_link | json }}
+    {{ settings.social_whatsapp_link | json }}
+    {{ settings.social_youtube_link | json }}
+    ],
+    "url": {{ shop.url | append: page.url | json }}
+    }
+</script>
+
+{% if request.page_type == 'index' %}
+    {% assign potential_action_target = shop.url | append: routes.search_url | append: '?q={search_term_string}' %}
+    <script type="application/ld+json">
+        {
+        "@context": "http://schema.org",
+        "@type": "WebSite",
+        "name": {{ shop.name | json }},
+        "potentialAction": {
+        "@type": "SearchAction",
+        "target": {{ potential_action_target | json }},
+        "query-input": "required name=search_term_string"
+        },
+        "url": {{ shop.url | append: page.url | json }}
+        }
+    </script>
+{% endif %}
+
+{% schema %}
+{
+    "name": "Header",
+    "class": "index-header",
+    "settings": [
+        {
+            "type": "select",
+            "id": "style_header",
+            "label": "Style header",
+            "options": [
+                {
+                    "value": "style-simple",
+                    "label": "Style simple"
+                },
+                {
+                    "value": "style-simple-logo-center",
+                    "label": "Style simple logo center"
+                },
+                {
+                    "value": "style-minimal",
+                    "label": "Style minimal"
+                },
+                {
+                    "value": "style-multi-row",
+                    "label": "Style-multi-row"
+                }
+            ],
+            "default": "style-simple",
+            "info": "You can change the type of header"
+        },
+        {
+            "type": "image_picker",
+            "id": "logo",
+            "label": "Logo"
+        },
+        {
+            "type": "range",
+            "id": "logo_width",
+            "min": 50,
+            "max": 250,
+            "step": 10,
+            "default": 100,
+            "unit": "px",
+            "label": "Custom logo width"
+        },
+        {
+            "type": "link_list",
+            "id": "menu",
+            "default": "main-menu",
+            "label": "Menu"
+        },
+        {
+            "type": "link_list",
+            "id": "top_menu",
+            "label": "Second menu"
+        },
+        {
+            "type": "color",
+            "id": "background_color",
+            "label": "Background color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text color"
+        },
+        {
+            "type": "color",
+            "id": "line_color",
+            "label": "Line color"
+        },
+        {
+            "type": "color",
+            "id": "badge_color",
+            "label": "Badge color"
+        },
+        {
+            "type": "color",
+            "id": "search_background_color",
+            "label": "Search background color"
+        },
+        {
+            "type": "color",
+            "id": "mobile_background_color",
+            "label": "Mobile background color"
+        },
+        {
+            "type": "header",
+            "content": "Global Settings"
+        },
+        {
+            "type": "checkbox",
+            "id": "full_width",
+            "default": false,
+            "label": "Enabled full width?"
+        },
+        {
+            "type": "checkbox",
+            "id": "enable_sticky_header",
+            "default": true,
+            "label": "Enable sticky header",
+            "info": "Header shows on the screen as customers scroll up."
+        },
+        {
+            "type": "checkbox",
+            "id": "enable_transparent_header",
+            "default": false,
+            "label": "Enable transparent header on Home Page"
+        },
+        {
+            "type": "checkbox",
+            "id": "enable_currency",
+            "default": true,
+            "label": "Enable Currency"
+        },
+        {
+            "type": "checkbox",
+            "id": "enable_language",
+            "default": true,
+            "label": "Enable Language"
+        },
+        {
+            "type": "text",
+            "id": "add_mobile",
+            "label": "Add Mobile",
+            "default": "+775 872 4444"
+        },
+        {
+            "type": "text",
+            "id": "add_email",
+            "label": "Add Email",
+            "default": "contact@email.com"
+        },
+        {
+            "type": "text",
+            "id": "add_time",
+            "label": "Add Time",
+            "default": "Mon - Fri 8:00 - 17:30"
+        },
+        {
+            "type": "url",
+            "id": "link_compare",
+            "label": "Link for compare page"
+        },
+        {
+            "type": "url",
+            "id": "link_wishlist",
+            "label": "Link for wishlist page"
+        }
+    ],
+    "blocks": [
+        {
+            "name": "Simple linklist",
+            "type": "simple_linklist",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "title",
+                    "label": "Menu item heading"
+                },
+                {
+                    "type": "link_list",
+                    "id": "menu_item_links",
+                    "label": "Choose menu column"
+                },
+                {
+                    "type": "color",
+                    "id": "background_color",
+                    "label": "Background color"
+                },
+                {
+                    "type": "select",
+                    "id": "position",
+                    "options": [
+                        { "value": "left", "label": "left" },
+                        { "value": "right", "label": "right" }
+                    ],
+                    "label": "Position reltive to item"
+                },
+                {
+                    "type": "range",
+                    "id": "menu_item_width",
+                    "min": 150,
+                    "max": 300,
+                    "step": 50,
+                    "unit": "px",
+                    "label": "Dropdown Width",
+                    "default": 150
+                }
+            ]
+        },
+        {
+            "name": "3 Linklists",
+            "type": "mega_menu_three",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "title",
+                    "label": "Menu item heading"
+                },
+                {
+                    "type": "url",
+                    "id": "title_link",
+                    "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+                },
+                {
+                    "type": "color",
+                    "id": "background_color",
+                    "label": "Background color"
+                },
+                {
+                    "type": "text",
+                    "id": "column_menu_title_1",
+                    "label": "First menu column heading"
+                },
+                {
+                    "type": "link_list",
+                    "id": "column_menu_1",
+                    "label": "First menu column"
+                },
+                {
+                    "type": "url",
+                    "id": "column_link_1",
+                    "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+                },
+                {
+                    "type": "text",
+                    "id": "column_menu_title_2",
+                    "label": "Second menu column heading"
+                },
+                {
+                    "type": "link_list",
+                    "id": "column_menu_2",
+                    "label": "Second menu column"
+                },
+                {
+                    "type": "url",
+                    "id": "column_link_2",
+                    "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+                },
+                {
+                    "type": "text",
+                    "id": "column_menu_title_3",
+                    "label": "Third menu column heading"
+                },
+                {
+                    "type": "link_list",
+                    "id": "column_menu_3",
+                    "label": "Third menu column"
+                },
+                {
+                    "type": "url",
+                    "id": "column_link_3",
+                    "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Image"
+                }
+            ]
+        },
+        {
+            "name": "4 Linklists",
+            "type": "mega_menu_four",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "title",
+                    "label": "Menu item heading"
+                },
+                {
+                    "type": "url",
+                    "id": "menu_item_link",
+                    "label": "Link"
+                },
+                {
+                    "type": "color",
+                    "id": "background_color",
+                    "label": "Background color"
+                },
+                {
+                    "type": "select",
+                    "id": "img_size",
+                    "label": "Image size",
+                    "options": [
+                        {
+                            "value": "cropped",
+                            "label": "Cropped"
+                        },
+                        {
+                            "value": "landscape",
+                            "label": "Landscape"
+                        },
+                        {
+                            "value": "square",
+                            "label": "Square"
+                        },
+                        {
+                            "value": "portrait",
+                            "label": "Portrait"
+                        },
+                        {
+                            "value": "circle",
+                            "label": "Circle"
+                        }
+                    ]
+                },
+                {
+                    "type": "select",
+                    "id": "dropdown_width",
+                    "options": [
+                        { "value": "one-whole", "label": "one-whole" },
+                        { "value": "two-third", "label": "two-third" },
+                        { "value": "one-half", "label": "one-half" },
+                        { "value": "one-third", "label": "one-third" },
+                        { "value": "one-quarter", "label": "one-quarter" }
+                    ],
+                    "label": "Width Dropdown Box"
+                },
+                {
+                    "type": "select",
+                    "id": "position",
+                    "options": [
+                        { "value": "left", "label": "left" },
+                        { "value": "right", "label": "right" },
+                        { "value": "center", "label": "center" }
+                    ],
+                    "label": "Position relative to item"
+                },
+                {
+                    "type": "header",
+                    "content": "Information In Left column"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "column_menu_image_1",
+                    "label": "Image 1"
+                },
+                {
+                    "type": "text",
+                    "id": "column_menu_title_1",
+                    "label": "First menu column heading"
+                },
+                {
+                    "type": "link_list",
+                    "id": "column_menu_1",
+                    "label": "First menu column"
+                },
+                {
+                    "type": "url",
+                    "id": "column_link_1",
+                    "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "column_menu_image_2",
+                    "label": "Image 2"
+                },
+                {
+                    "type": "text",
+                    "id": "column_menu_title_2",
+                    "label": "Second menu column heading"
+                },
+                {
+                    "type": "link_list",
+                    "id": "column_menu_2",
+                    "label": "Second menu column"
+                },
+                {
+                    "type": "url",
+                    "id": "column_link_2",
+                    "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "column_menu_image_3",
+                    "label": "Image 3"
+                },
+                {
+                    "type": "text",
+                    "id": "column_menu_title_3",
+                    "label": "Third menu column heading"
+                },
+                {
+                    "type": "link_list",
+                    "id": "column_menu_3",
+                    "label": "Third menu column"
+                },
+                {
+                    "type": "url",
+                    "id": "column_link_3",
+                    "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "column_menu_image_4",
+                    "label": "Image 4"
+                },
+                {
+                    "type": "text",
+                    "id": "column_menu_title_4",
+                    "label": "Fourth menu column heading"
+                },
+                {
+                    "type": "link_list",
+                    "id": "column_menu_4",
+                    "label": "Fourth menu column"
+                },
+                {
+                    "type": "url",
+                    "id": "column_link_4",
+                    "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+                },
+                {
+                    "type": "header",
+                    "content": "Information In Right column"
+                },
+                {
+                    "type": "text",
+                    "id": "prod_title",
+                    "label": "Heading",
+                    "default": "Popular Product"
+                },
+                {
+                    "type": "collection",
+                    "id": "products",
+                    "label": "Choose collection"
+                },
+                {
+                    "type": "range",
+                    "id": "prod_limit",
+                    "label": "Product Post",
+                    "min": 1,
+                    "max": 5,
+                    "step": 1,
+                    "default": 3
+                },
+                {
+                    "type": "header",
+                    "content": "Information In Bottom column"
+                },
+                {
+                    "type": "header",
+                    "content": "Banner 1"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "column_ban_image_1",
+                    "label": "Banner first image"
+                },
+                {
+                    "type": "url",
+                    "id": "column_ban_link_1",
+                    "label": "Banner first link"
+                },
+                {
+                    "type": "text",
+                    "id": "column_ban_text_1",
+                    "label": "Banner first text"
+                },
+                {
+                    "type": "header",
+                    "content": "Banner 2"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "column_ban_image_2",
+                    "label": "Banner second image"
+                },
+                {
+                    "type": "url",
+                    "id": "column_ban_link_2",
+                    "label": "Banner second link"
+                },
+                {
+                    "type": "text",
+                    "id": "column_ban_text_2",
+                    "label": "Banner second text"
+                }
+            ]
+        },
+        {
+            "name": "Suggested term",
+            "type": "suggested_term",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "suggested_term",
+                    "label": "Search suggested term"
+                }
+            ]
+        },
+        {
+            "name": "Suggested link",
+            "type": "suggested_link",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "suggested_text",
+                    "label": "Text"
+                },
+                {
+                    "type": "url",
+                    "id": "suggested_link",
+                    "label": "Link"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "suggested_link_image",
+                    "label": "Image"
+                }
+            ]
+        },
+        {
+            "name": "Mobile Categories",
+            "type": "category_top",
+            "settings": [
+                {
+                    "type": "collection_list",
+                    "id": "category_top",
+                    "label": "Featured Collections"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

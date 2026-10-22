@@ -1,0 +1,173 @@
+<div id="estimate-shipping" data-ajax-cart-static-element>
+    <h4
+        class="estimate-shipping-toggler"
+        onclick="javascript:document.body.classList.toggle('estimate-shipping-show')"
+    >
+        {% render 'icons-svg', icons: 'plus' %}
+        {% render 'icons-svg', icons: 'minus' %}
+        Estimate Shipping
+    </h4>
+
+    <form action="{{ routes.cart_url }}" method="post" id="estimate-shipping-form" class="estimate-shipping-content">
+        <div class="estimate-shipping-property">
+            <span>Country/region </span>
+            <select name="shipping_address[country]" id="estimate-shipping-country" aria-required="true" required>
+                {{ all_country_option_tags }}
+            </select>
+        </div>
+        <div id="province-field" class="estimate-shipping-property" style="display: none;">
+            <span>Province/State</span>
+            <select name="shipping_address[province]" id="estimate-shipping-province" disabled>
+                <option value="">Select a province</option>
+            </select>
+        </div>
+
+        <div class="estimate-shipping-property">
+            <span>ZIP/Postal Code</span>
+            <input
+                type="text"
+                name="shipping_address[zip]"
+                id="estimate-shipping-zip"
+                placeholder="Postal Code"
+                aria-required="true"
+                required
+            >
+        </div>
+
+        <button type="submit" class="button button--secondary">Get Rates</button>
+    </form>
+
+    <div id="shipping-rates"></div>
+</div>
+
+<script>
+    let countrySelect = document.getElementById('estimate-shipping-country')
+    let provinceSelect = document.getElementById('estimate-shipping-province')
+    let provinceField = document.getElementById('province-field')
+    let zipInput = document.getElementById('estimate-shipping-zip')
+
+    countrySelect.addEventListener('change', function () {
+        loadProvinces()
+    })
+
+    // Loading provinces based on the saved country selection
+    function loadProvinces() {
+        if (countrySelect.value !== '') {
+            var selectedOption = countrySelect.options[countrySelect.selectedIndex]
+            var provinces = JSON.parse(selectedOption.getAttribute('data-provinces'))
+
+            if (provinces.length > 0) {
+                provinceSelect.innerHTML = ''
+                provinceSelect.disabled = false
+
+                provinces.forEach(function (province) {
+                    var option = document.createElement('option')
+                    option.value = province[0]
+                    option.text = province[1]
+                    provinceSelect.appendChild(option)
+                })
+
+                provinceField.style.display = 'flex'
+
+                // Selecting the saved province
+                if (localStorage.getItem('selectedProvince')) {
+                    provinceSelect.value = localStorage.getItem('selectedProvince')
+                }
+            } else {
+                provinceSelect.disabled = true
+                provinceField.style.display = 'none'
+            }
+        } else {
+            provinceSelect.innerHTML = ''
+            provinceSelect.disabled = true
+            provinceField.style.display = 'none'
+        }
+    }
+
+    // Saving selected Province/State to localStorage
+    provinceSelect.addEventListener('change', function () {
+        localStorage.setItem('selectedProvince', this.value)
+    })
+
+    document.getElementById('estimate-shipping-form').addEventListener('submit', async function (event) {
+        event.preventDefault()
+
+        const form = this
+        const url = form.getAttribute('action') + '/shipping_rates.json'
+        const data = new FormData(form)
+
+        fetch(url, {
+            method: 'POST',
+            body: data,
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json()
+                } else {
+                    throw response
+                }
+            })
+            .then((json) => {
+                var rates = json.shipping_rates
+                var ratesHtml = ''
+
+                if (rates.length > 0) {
+                    ratesHtml += '<h5>Shipping Rates:</h5>'
+
+                    rates.forEach(function (rate) {
+                        ratesHtml +=
+                            '<p>' +
+                            rate.name +
+                            ': ' +
+                            Shopify.formatMoney(rate.price * 100) +
+                            ' ' +
+                            rate.currency +
+                            '</p>'
+                    })
+                } else {
+                    ratesHtml += '<p>No shipping rates available for the provided address.</p>'
+                }
+
+                document.getElementById('shipping-rates').innerHTML = ratesHtml
+            })
+            .catch((error) => {
+                if (error instanceof Response && error.status === 422) {
+                    error.json().then((json) => {
+                        let errorMessage = ''
+                        if (json.country && Array.isArray(json.country)) {
+                            errorMessage = json.country[0]
+                        } else if (json.zip && Array.isArray(json.zip)) {
+                            errorMessage = json.zip[0]
+                        }
+                        if (errorMessage !== '') {
+                            console.error('Error fetching shipping rates:', errorMessage)
+                            document.getElementById('shipping-rates').innerHTML = `<p>${errorMessage}</p>`
+                        }
+                    })
+                } else {
+                    console.error('Error fetching shipping rates:', error)
+                    // Displaying the error in the ratesHtml block
+                    document.getElementById('shipping-rates').innerHTML =
+                        '<p>Error fetching shipping rates. Please try again later.</p>'
+                }
+            })
+
+        // Saving entered ZIP/Postal Code to localStorage
+        localStorage.setItem('enteredZip', zipInput.value)
+    })
+
+    // Restoring selected Province/State on page reload
+    window.addEventListener('DOMContentLoaded', function () {
+        loadProvinces()
+
+        // Restore the selected Province/State
+        if (localStorage.getItem('selectedProvince')) {
+            provinceSelect.value = localStorage.getItem('selectedProvince')
+        }
+
+        // Restore the entered ZIP/Postal Code
+        if (localStorage.getItem('enteredZip')) {
+            zipInput.value = localStorage.getItem('enteredZip')
+        }
+    })
+</script>

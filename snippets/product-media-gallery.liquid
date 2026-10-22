@@ -1,0 +1,139 @@
+<div class="main-product__details-img main-product__details-img--{{ img_fill }}  details-img-defaults details-img-column{% if grouped_product %} js-layout-grouped{% endif %}">
+    {%- if current_variant.featured_image != blank -%}
+        {% if grouped_product %}
+            <tab-element autofocus="false">
+                <ul class="js-tablist tabs" role="tablist">
+                    {% for variant in product.options_with_values %}
+                        {% if variant.position == 1 %}
+                            {% for value in variant.values %}
+                                <li class="tabs__item">
+                                    <button
+                                        role="button"
+                                        class="tabs__btn js-tab{% if forloop.first %} active{% endif %}"
+                                        role="tab"
+                                        aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                                        aria-controls="{{ value }}-panel"
+                                    >
+                                        {{ value }}
+                                    </button>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                    {%- endfor %}
+                </ul>
+                <div class="tabs__content-wrapper">
+                    {% for variant in product.options_with_values %}
+                        {% if variant.position == 1 %}
+                            {% for value in variant.values %}
+                                <div
+                                    id="{{ value }}-panel"
+                                    class="tabs__content js-tabpanel{% unless forloop.first %} hidden{% endunless %}"
+                                    role="tabpanel"
+                                >
+                                    {%- for variant in product.variants -%}
+                                        {% assign values = variant.options | join: ' ' %}
+                                        {% if variant.options contains value %}
+                                            {% if variant.featured_image != blank %}
+                                                <div class="main-product__media--item">
+                                                    <picture
+                                                        class="main-product__media media__size--{{ img_size }} media"
+                                                        data-size="{{ img_size }}"
+                                                    >
+                                                        {% render 'image',
+                                                            image_box: variant.featured_image,
+                                                            image_box_class: 'main-product__image'
+                                                        %}
+                                                    </picture>
+                                                </div>
+                                                {% assign variant_variable = variant.metafields.custom.images_group.value %}
+                                                {% for image in variant_variable -%}
+                                                    <div class="main-product__media--item">
+                                                        <picture
+                                                            class="main-product__media media__size--{{ img_size }} media"
+                                                            data-size="{{ img_size }}"
+                                                        >
+                                                            {% render 'image',
+                                                                image_box: image,
+                                                                image_box_class: 'main-product__image'
+                                                            %}
+                                                        </picture>
+                                                    </div>
+                                                {% endfor -%}
+                                            {% else %}
+                                                <div class="main-product__media--item">
+                                                    <picture
+                                                        class="main-product__media media__size--{{ img_size }} media"
+                                                        data-size="{{ img_size }}"
+                                                    >
+                                                        {% render 'image',
+                                                            image_box: current_variant.featured_image,
+                                                            image_box_class: 'main-product__image'
+                                                        %}
+                                                    </picture>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    {%- endfor -%}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {%- endfor %}
+                </div>
+            </tab-element>
+
+        {% else %}
+            {%- for variant in product.variants -%}
+                {% if variant.featured_image != blank %}
+                    <div class="main-product__media--item">
+                        <picture
+                            class="main-product__media media__size--{{ img_size }} media"
+                            data-size="{{ img_size }}"
+                        >
+                            {% render 'image',
+                                image_box: variant.featured_image,
+                                image_box_class: 'main-product__image'
+                            %}
+                        </picture>
+                    </div>
+                    {% assign variant_variable = variant.metafields.custom.images_group.value %}
+                    {% for image in variant_variable -%}
+                        <div class="main-product__media--item">
+                            <picture
+                                class="main-product__media media__size--{{ img_size }} media"
+                                data-size="{{ img_size }}"
+                            >
+                                {% render 'image', image_box: image, image_box_class: 'main-product__image' %}
+                            </picture>
+                        </div>
+                    {% endfor -%}
+                {% endif %}
+            {%- endfor -%}
+        {% endif %}
+
+        {% unless grouped_product %}
+            {%- for image in product.images -%}
+                {%- unless variant_images contains image -%}
+                    <div class="main-product__media--item">
+                        <picture
+                            class="main-product__media media__size--{{ img_size }} media"
+                            data-size="{{ img_size }}"
+                        >
+                            {% render 'image', image_box: image, image_box_class: 'main-product__image' %}
+                        </picture>
+                    </div>
+                {%- endunless -%}
+            {%- endfor -%}
+        {% endunless %}
+    {%- else -%}
+        {%- for image in product.images -%}
+            <div class="main-product__media--item">
+                <picture
+                    class="main-product__media media__size--{{ img_size }} media"
+                    data-size="{{ img_size }}"
+                >
+                    {% render 'image', image_box: image, image_box_class: 'main-product__image' %}
+                </picture>
+            </div>
+        {%- endfor -%}
+    {%- endif -%}
+</div>

@@ -1,0 +1,17 @@
+{% if article and article != empty %}
+    {% if show_image %}
+        <div class="search-blog-post__madia-wrapper">
+            <picture class="search-blog-post__media media__size--{{ settings.img_size }} media">
+                {% render 'image', image_box: article.image, image_box_class: 'search-blog-post__image' %}
+            </picture>
+        </div>
+    {% endif %}
+    <div class="search-blog-post__content">
+        <span class="search-blog-post__date">{{ article.published_at | time_tag: format: 'date' }}</span>
+        <h5 class="search-blog-post__title">
+            <a href="{{ article.url }}">
+                {{ article.title | truncate: 30 | escape }}
+            </a>
+        </h5>
+    </div>
+{% endif %}

@@ -1,0 +1,78 @@
+{% liquid
+    if use_variant
+        assign target = product.selected_or_first_available_variant
+    else
+        assign target = product
+    endif
+
+    assign grouped_product = product.metafields.custom.grouped_images.value
+%}
+
+{% if product and product != empty %}
+    {%- liquid
+        assign current_variant = product.selected_or_first_available_variant
+        if current_variant.featured_image != blank
+            assign image_box = current_variant.featured_image
+        else
+            assign image_box = product.featured_image
+        endif
+    -%}
+    <div class="card-product__wrapper js-card-product-wrapper js-sticky-product-content sticky-product-content">
+        <div class="card-product__media-wrapper">
+            <a class="card-product__link" href="{{ product.url | within: collection }}"
+                ><span class="hidden">{{ product.title }}</span></a
+            >
+            <picture
+                class="card-product__media media__size--{{ img_size }} media js-card-product-media"
+                data-size="{{ img_size }}"
+            >
+                {% render 'image', image_box: image_box, image_box_class: 'card-product__image' %}
+            </picture>
+        </div>
+        <div class="card-product__content">
+            <div class="card-product-sticky__text">
+                {% if show_vendor %}
+                    <div class="card-product__row hidden">
+                        <span class="card-product__vendor">{{ product.vendor }}</span>
+                        {%- for var in product.variants -%}
+                            {%- assign varQ = var.inventory_quantity -%}
+                        {%- endfor -%}
+                        <div class="card-product__stock">
+                            <span
+                                class="card-product__icon card-product__stock--{% if sold_out %}nostock {% elsif varQ < 10 and sold_out == false %}lowstock{% else %}normalstock{% endif %} js-card-product-stock"
+                            ></span>
+                            <span class="stock-level">{{ 'products.product.stock_level' | t }}</span>
+                        </div>
+                    </div>
+                {% endif %}
+                {%- if show_rating and product.metafields.reviews.rating.value != blank -%}
+                    {% render 'card-rating', product: product %}
+                {%- endif -%}
+                <h5 class="card-product__title js-card-product-title">
+                    <a href="{{ product.url | within: collection }}">
+                        {{ product.title | truncate: 60 | escape }}
+                    </a>
+                </h5>
+                <div class="card-product__desc" itemprop="name">
+                    {{ product.description | strip_html | truncate: 80 }}
+                </div>
+                {% render 'price',
+                    product: product,
+                    price_class: 'card-product__price js-card-product-price',
+                    use_variant: use_variant
+                %}
+            </div>
+            <div class="card-product-sticky__form">
+                {% render 'form-product',
+                    product: product,
+                    variant_type: variant_type,
+                    show_quantity: show_quantity,
+                    notify_me: notify_me,
+                    grouped_product: grouped_product,
+                    form_sticky: '-product-sticky',
+                    isSticky: true
+                %}
+            </div>
+        </div>
+    </div>
+{% endif %}

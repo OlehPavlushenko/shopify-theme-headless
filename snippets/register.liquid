@@ -1,0 +1,139 @@
+<div class="customer register">
+    {%- form 'create_customer', novalidate: 'novalidate' -%}
+        <input type="hidden" name="challenge" value="false">
+        {% unless template.name == 'login' %}
+            {%- if form.errors -%}
+                <div class="form-error form__error-heading form__message">
+                    <h2 class="form-status error-message" tabindex="-1" autofocus>
+                        {% render 'icon-error' %}
+                        {{ 'templates.contact.form.error_heading' | t }}
+                    </h2>
+                </div>
+            {%- endif -%}
+        {% endunless %}
+
+        <h1 class="account-tab__title h3">
+            {{ 'customer.register.title' | t }}
+        </h1>
+
+        {% liquid
+            assign mod_email_label = 'customer.register.email' | t
+
+            if template.name != 'login' and form.errors contains 'email'
+                assign mod_email_error = true
+            else
+                assign mod_email_error = false
+            endif
+        %}
+
+        {% render 'input',
+            mod_input_id: 'RegisterForm-email',
+            mod_input_name: 'customer[email]',
+            mod_input_type: 'email',
+            mod_input_label: mod_email_label,
+            mod_custom_container_classes: 'field',
+            mod_autocomplete: 'email',
+            mod_input_placeholder: mod_email_label,
+            mod_has_error: mod_email_error,
+            mod_form: form,
+            mod_value: form.email
+        %}
+
+        {% unless template.name == 'login' %}
+            {%- if form.errors contains 'email' -%}
+                <div class="form-error">
+                    <span id="RegisterForm-email-error" class="form__message error-message error-message--input">
+                        {% render 'icon-error' %}
+                        {{ form.errors.translated_fields.email | capitalize }}
+                        {{ form.errors.messages.email }}.
+                    </span>
+                </div>
+            {%- endif -%}
+        {% endunless %}
+
+        <div class="register-form__name-group">
+            {% assign mod_firstname_label = 'customer.register.first_name' | t %}
+
+            {% render 'input',
+                mod_input_id: 'RegisterForm-FirstName',
+                mod_input_name: 'customer[first_name]',
+                mod_input_type: 'text',
+                mod_input_label: mod_firstname_label,
+                mod_custom_container_classes: 'field',
+                mod_autocomplete: 'given-name',
+                mod_input_placeholder: mod_firstname_label,
+                mod_form: form,
+                mod_value: form.first_name
+            %}
+            {% unless template.name == 'login' %}
+                {%- if form.first_name contains 'first_name' -%}
+                    <div class="form-error">
+                        <span id="RegisterForm-email-error" class="form__message error-message error-message--input">
+                            {% render 'icon-error' %}
+                            {{ form.errors.translated_fields.first_name | capitalize }}
+                            {{ form.errors.messages.first_name }}.
+                        </span>
+                    </div>
+                {%- endif -%}
+            {% endunless %}
+
+            {% assign mod_lastname_label = 'customer.register.last_name' | t %}
+
+            {% render 'input',
+                mod_input_id: 'RegisterForm-LastName',
+                mod_input_name: 'customer[last_name]',
+                mod_input_type: 'text',
+                mod_input_label: mod_lastname_label,
+                mod_custom_container_classes: 'field',
+                mod_autocomplete: 'family-name',
+                mod_input_placeholder: mod_lastname_label,
+                mod_form: form,
+                mod_value: form.last_name
+            %}
+        </div>
+
+        {% liquid
+            assign mod_password_label = 'customer.register.password' | t
+
+            if template.name != 'login' and form.errors contains 'password'
+                assign mod_password_error = true
+            else
+                assign mod_password_error = false
+            endif
+        %}
+
+        {% render 'input',
+            mod_input_id: 'RegisterForm-password',
+            mod_input_name: 'customer[password]',
+            mod_input_type: 'password',
+            mod_input_label: mod_password_label,
+            mod_custom_container_classes: 'field',
+            mod_input_placeholder: mod_password_label,
+            mod_has_error: mod_password_error,
+            mod_form: form
+        %}
+
+        {% unless template.name == 'login' %}
+            {%- if form.errors contains 'password' -%}
+                <div class="form-error">
+                    <span id="RegisterForm-password-error" class="form__message error-message error-message--input">
+                        {% render 'icon-error' %}
+                        {{ form.errors.translated_fields.password | capitalize }}
+                        {{ form.errors.messages.password }}.
+                    </span>
+                </div>
+            {%- endif -%}
+        {% endunless %}
+
+        <div class="accepts-marketing field">
+            <input type="hidden" name="customer[accepts_marketing]" value="false">
+
+            <input type="checkbox" name="customer[accepts_marketing]" id="accepts-marketing">
+            <label for="accepts-marketing" class="caption">{{ 'customer.register.mailing_list' | t }}</label>
+        </div>
+
+        <button class="register-form__submit account-tab__submit">
+            {{ 'customer.register.submit' | t }}
+        </button>
+    {%- endform -%}
+</div>

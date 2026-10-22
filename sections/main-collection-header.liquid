@@ -1,0 +1,313 @@
+{% liquid
+    assign image = collection.image
+    assign show_image = section.settings.show_image
+    assign show_description = section.settings.show_description
+    assign show_sub_collections = section.settings.show_sub_collections
+    assign show_breadcrumbs = section.settings.show_breadcrumbs
+    assign full_width = section.settings.full_width
+    assign layout_position = section.settings.layout
+    assign image_size = section.settings.img_size
+
+    assign heading = collection.title
+    assign text = collection.description
+    assign button_label = section.settings.button_label
+    assign button_link = section.settings.button_link
+    assign sub_collections = collection.metafields.custom.sub_collections.value
+
+    assign bg_color = section.settings.bg_color | default: 'transparent'
+    assign text_color = section.settings.text_color | default: 'inherit'
+    assign title_color = section.settings.title_color | default: 'inherit'
+
+    assign btn_link_color = section.settings.btn_link_color | default: 'inherit'
+    assign btn_bg_color = section.settings.btn_bg_color | default: 'transparent'
+    assign btn_link_color_hover = section.settings.btn_link_color_hover | default: 'inherit'
+    assign btn_bg_color_hover = section.settings.btn_bg_color_hover | default: 'inherit'
+
+    assign pad_top = section.settings.padding_top
+    assign pad_bot = section.settings.padding_bottom
+    assign width = section.settings.width
+%}
+
+{% capture styles %}
+  --title-color-text-image: {{ title_color }};
+  --text-color-text-image: {{ text_color }};
+  --background-color-text-image: {{ bg_color }};
+  --btn_link_color-text-image: {{ btn_link_color -}};
+  --btn_bg_color-text-image: {{ btn_bg_color }};
+  --btn_link_color_hover-text-image: {{ btn_link_color_hover }};
+  --btn_bg_color_hover-text-image: {{ btn_bg_color_hover }};
+  --pad-top-text-image: {{ pad_top }}px;
+  --pad-bot-text-image: {{ pad_bot }}px;
+  --width-text-image: {{ width }}px;
+{% endcapture %}
+
+{%- assign styles = styles | strip_newlines -%}
+
+{% capture image_desktop %}
+  {%- if image.width >= 1100 -%}{{ image | image_url: width: 1100 }} 1100w,{%- endif -%}
+  {%- if image.width >= 1500 -%}{{ image | image_url: width: 1500 }} 1500w,{%- endif -%}
+  {%- if image.width >= 1780 -%}{{ image | image_url: width: 1780 }} 1780w,{%- endif -%}
+  {%- if image.width >= 2000 -%}{{ image | image_url: width: 2000 }} 2000w,{%- endif -%}
+  {%- if image.width >= 2800 -%}{{ image | image_url: width: 2800 }} 2800w{%- endif -%}
+{% endcapture %}
+
+{% capture image_mobile %}
+  {%- if image.width >= 375 -%}{{ image | image_url: width: 375 }} 375w,{%- endif -%}
+  {%- if image.width >= 550 -%}{{ image | image_url: width: 550 }} 550w,{%- endif -%}
+  {%- if image.width >= 750 -%}{{ image | image_url: width: 750 }} 750w,{%- endif -%}
+{% endcapture %}
+
+{{ 'section-featured-text-image.css' | asset_url | stylesheet_tag }}
+{{ 'component-sub_collection.css' | asset_url | stylesheet_tag }}
+{{ 'component-breadcrumbs.css' | asset_url | stylesheet_tag }}
+
+{% if heading != blank %}
+    <div
+        class="featured-text-image full_width--{{ full_width }}"
+        style="{{ styles }}"
+    >
+        <div class="page-width">
+            <div class="featured-text-image__grid {% if layout_position == 'text_first' %}featured-text-image__grid--reverse{% endif %} grid grid--1-col grid--2-col-tablet">
+                {% if image != blank and show_image %}
+                    <div class="grid__item grid__item--media">
+                        <picture class="featured-text-image__media media">
+                            {% if image != blank %}
+                                <source srcset="{{ image_mobile }}" media="(max-width: 749px)">
+                            {% endif %}
+
+                            <img
+                                srcset="{{ image_desktop }}"
+                                src="{{ image | image_url: width: 1440 }}"
+                                class="featured-text-image__media--image"
+                                sizes="100vw"
+                                alt="{{ image.alt | escape }}"
+                                width="{{ image.width }}"
+                                height="{{ image.width | divided_by: image.aspect_ratio }}"
+                                loading="lazy"
+                            >
+                        </picture>
+                    </div>
+                {% endif %}
+                <div class="grid__item grid__item--content">
+                    <div class="featured-text-image__content">
+                        {%- if heading != blank or text != blank -%}
+                            <div class="featured-text-image__element">
+                                {% if show_breadcrumbs %}
+                                    {% render 'breadcrumbs' %}
+                                {% endif %}
+                                {%- if heading != blank -%}
+                                    <h1 class="featured-text-image__heading h1">
+                                        {{ heading | escape }}
+                                    </h1>
+                                {%- endif -%}
+                                {%- if text != blank and show_description -%}
+                                    <div class="featured-text-image__text rte--large">
+                                        {{ text }}
+                                    </div>
+                                {%- endif -%}
+                                {% if sub_collections != blank and show_sub_collections %}
+                                    <div class="collection-sub-catagories">
+                                        <ul class="collection-sub-catagories__list">
+                                            {% for collection in sub_collections %}
+                                                <li class="collection-sub-catagories__item">
+                                                    <picture class="collection-sub-catagories__media media media__size--{{ image_size }}">
+                                                        {% render 'image',
+                                                            image_box: collection.featured_image,
+                                                            image_box_class: 'collection-sub-catagories__image'
+                                                        %}
+                                                    </picture>
+                                                    <a
+                                                        class="collection-sub-catagories__links"
+                                                        href="{{ collection.url }}"
+                                                    >
+                                                        {{- collection.title | escape -}}
+                                                    </a>
+                                                </li>
+                                            {%- endfor -%}
+                                        </ul>
+                                    </div>
+                                {%- endif -%}
+                            </div>
+                        {%- endif -%}
+                        {%- if button_label != blank and button_link != blank -%}
+                            <a
+                                href="{{ button_link }}"
+                                class="button button--primary button--middle"
+                            >
+                                {{ button_label | escape }}
+                            </a>
+                        {%- endif -%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% schema %}
+{
+    "name": "t:sections.main-collection-banner.name",
+    "class": "index-section",
+    "settings": [
+        {
+            "type": "checkbox",
+            "id": "full_width",
+            "default": false,
+            "label": "Enabled full width?"
+        },
+        {
+            "type": "range",
+            "id": "width",
+            "min": 1000,
+            "max": 1800,
+            "step": 40,
+            "default": 1200,
+            "unit": "px",
+            "label": "Section Width"
+        },
+        {
+            "type": "select",
+            "id": "img_size",
+            "label": "Image size for sub collections",
+            "options": [
+                {
+                    "value": "cropped",
+                    "label": "Cropped"
+                },
+                {
+                    "value": "landscape",
+                    "label": "Landscape"
+                },
+                {
+                    "value": "square",
+                    "label": "Square"
+                },
+                {
+                    "value": "portrait",
+                    "label": "Portrait"
+                },
+                {
+                    "value": "circle",
+                    "label": "Circle"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "layout",
+            "options": [
+                {
+                    "value": "image_first",
+                    "label": "Image first"
+                },
+                {
+                    "value": "text_first",
+                    "label": "Text first"
+                }
+            ],
+            "default": "text_first",
+            "label": "Desktop layout",
+            "info": "Image first is the default mobile layout."
+        },
+        {
+            "type": "text",
+            "id": "button_label",
+            "default": "Button label",
+            "label": "Button label",
+            "info": "Leave the label blank to hide the button."
+        },
+        {
+            "type": "url",
+            "id": "button_link",
+            "label": "Button link"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:sections.main-collection-banner.settings.paragraph.content"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_breadcrumbs",
+            "default": true,
+            "label": "t:sections.main-collection-banner.settings.show_breadcrumbs.label"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_description",
+            "default": true,
+            "label": "t:sections.main-collection-banner.settings.show_collection_description.label"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_sub_collections",
+            "default": true,
+            "label": "t:sections.main-collection-banner.settings.show_sub_collections.label"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_image",
+            "default": true,
+            "label": "t:sections.main-collection-banner.settings.show_collection_image.label",
+            "info": "t:sections.main-collection-banner.settings.show_collection_image.info"
+        },
+        {
+            "type": "paragraph",
+            "content": "Style options"
+        },
+        {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Background color"
+        },
+        {
+            "type": "color",
+            "id": "title_color",
+            "label": "Title color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "Description color"
+        },
+        {
+            "type": "color",
+            "id": "btn_bg_color",
+            "label": "Button background color"
+        },
+        {
+            "type": "color",
+            "id": "btn_link_color",
+            "label": "Button link color"
+        },
+        {
+            "type": "color",
+            "id": "btn_bg_color_hover",
+            "label": "Button background hover color"
+        },
+        {
+            "type": "color",
+            "id": "btn_link_color_hover",
+            "label": "Button link hover color"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding top",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding bottom",
+            "default": 30
+        }
+    ]
+}
+{% endschema %}

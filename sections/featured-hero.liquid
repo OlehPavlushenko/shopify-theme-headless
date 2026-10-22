@@ -1,0 +1,460 @@
+{% liquid
+    assign image = section.settings.image
+    assign mobile_image = section.settings.image_mobile
+
+    assign video = section.settings.video
+    assign video_type = section.settings.video_type
+    assign control_video = 1
+    assign control_audio = 1
+    assign loop_video = 1
+    assign hide_control = 0
+
+    assign block_position = section.settings.block_position
+    assign text_alignment = section.settings.text_alignment
+    assign adapt_height = section.settings.adapt_height_image
+
+    assign background_color = section.settings.full_bleed_color | default: 'transparent'
+    assign background_color_block = section.settings.block_color | default: 'transparent'
+    assign background_color_opacity = section.settings.opacity | times: 0.1
+    assign text_color = section.settings.text_color | default: 'inherit'
+    assign title_color = section.settings.title_color | default: 'inherit'
+    assign layout_options = section.settings.layout_options
+    assign text_width_block = section.settings.text_block_width
+
+    assign btn_link_color = section.settings.btn_link_color | default: 'inherit'
+    assign btn_bg_color = section.settings.btn_bg_color | default: 'transparent'
+    assign btn_link_color_hover = section.settings.btn_link_color_hover | default: 'inherit'
+    assign btn_bg_color_hover = section.settings.btn_bg_color_hover | default: 'inherit'
+%}
+
+{%- capture styles -%}
+--title-color-hero: {{- title_color -}};
+--text-color-hero: {{- text_color -}};
+--background-color-hero: {{- background_color -}};
+--background-color-block-hero: {{- background_color_block -}};
+--background-color-opacity-hero: {{- background_color_opacity -}};
+--text-width-block-hero: {{- text_width_block -}}%;
+--announcement-height: 0px;
+--btn_link_color-text-image: {{- btn_link_color -}};
+--btn_bg_color-text-image: {{- btn_bg_color -}};
+--btn_link_color_hover-text-image: {{- btn_link_color_hover -}};
+--btn_bg_color_hover-text-image: {{- btn_bg_color_hover -}};
+{%- endcapture -%}
+
+{%- assign styles = styles | strip_newlines -%}
+
+{%- capture image_desktop -%}
+  {%- if image.width >= 1100 -%}{{ image | image_url: width: 1100 }} 1100w,{%- endif -%}
+  {%- if image.width >= 1500 -%}{{ image | image_url: width: 1500 }} 1500w,{%- endif -%}
+  {%- if image.width >= 1780 -%}{{ image | image_url: width: 1780 }} 1780w,{%- endif -%}
+  {%- if image.width >= 2000 -%}{{ image | image_url: width: 2000 }} 2000w,{%- endif -%}
+  {%- if image.width >= 2800 -%}{{ image | image_url: width: 2800 }} 2800w{%- endif -%}
+{%- endcapture -%}
+
+{%- capture image_mobile -%}
+  {%- if mobile_image.width >= 375 -%}{{ mobile_image | image_url: width: 375 }} 375w,{%- endif -%}
+  {%- if mobile_image.width >= 550 -%}{{ mobile_image | image_url: width: 550 }} 550w,{%- endif -%}
+  {%- if mobile_image.width >= 750 -%}{{ mobile_image | image_url: width: 750 }} 750w,{%- endif -%}
+{%- endcapture -%}
+
+{{ 'section-featured-hero.css' | asset_url | stylesheet_tag }}
+
+<div
+    id="Banner-{{ section.id }}"
+    class="featured-hero{% if adapt_height and image != blank %} banner--fill{% endif %}{% if video != blank %} has-video{% endif %}"
+    style="{{- styles -}}"
+>
+    {% if video == blank %}
+        <picture class="featured-hero__media">
+            {% if mobile_image != blank %}
+                <source srcset="{{ image_mobile }}" media="(max-width: 767px)">
+            {% endif %}
+            {% if image != blank %}
+                <img
+                    srcset="{{ image_desktop }}"
+                    src="{{ image | image_url: width: 1440 }}"
+                    class="featured-hero__media--image"
+                    sizes="100vw"
+                    alt="{{ image.alt | escape }}"
+                    width="{{ image.width }}"
+                    height="{{ image.width | divided_by: image.aspect_ratio }}"
+                    fetchpriority="high"
+                    loading="eager"
+                >
+            {%- else -%}
+                {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+        </picture>
+    {% endif %}
+
+    {% if video != blank %}
+        <div class="video-media video-media--control-{{ hide_control }}">
+            {% case video_type %}
+                {% when 'files' %}
+                    <video
+                        class="hero__media"
+                        autoplay="autoplay"
+                        playsinline="playsinline"
+                        loop="loop"
+                        muted="muted"
+                        width="1440"
+                    >
+                        <source src="{{ video }}" type="video/mp4">
+                    </video>
+                {% when 'vimeo' %}
+                    <iframe
+                        src="https://player.vimeo.com/video/{{ video }}?autoplay={{ control_video }}&loop={{ loop_video }}&autopause=0&muted={{ control_audio }}&controls={{ hide_control }}&playsinline=1"
+                        class="js-vimeo"
+                        allow="autoplay; encrypted-media"
+                        allowfullscreen
+                        frameborder="0"
+                    ></iframe>
+                {% when 'youtube' %}
+                    <iframe
+                        src="https://www.youtube.com/embed/{{ video }}?autoplay={{ control_video }}&loop={{ loop_video }}&playlist={{ video}}&mute={{ control_audio }}&cc_load_policy=0&controls={{ hide_control }}&disablekb=0&fs=1&iv_load_policy=1&modestbranding=0&playsinline=1&rel=1&enablejsapi=1&widgetid=1"
+                        class="js-youtube"
+                        allow="autoplay; encrypted-media"
+                        allowfullscreen
+                        frameborder="0"
+                    ></iframe>
+            {% endcase %}
+        </div>
+    {% endif %}
+
+    <div class="featured-hero__content featured-hero__content--{{ layout_options }}  featured-hero__content--{{ block_position }} featured-hero__content--{{ layout_options }} featured-hero__content--{{ text_alignment }}">
+        <div class="featured-hero__box featured-hero__box--{{ layout_options }}">
+            {% for block in section.blocks %}
+                {% liquid
+                    assign sub_heading = block.settings.sub_heading
+                    assign heading = block.settings.heading
+                    assign text = block.settings.text
+                    assign button_label = block.settings.button_label
+                    assign button_link = block.settings.button_link
+                    assign button_label_second = block.settings.button_label_second
+                    assign button_link_second = block.settings.button_link_second
+                %}
+
+                {% case block.type %}
+                    {% when 'heading' %}
+                        <h5 class="featured-hero__sub_heading h5 section-move-top" {{ block.shopify_attributes }}>
+                            {{ sub_heading | escape }}
+                        </h5>
+                        <h2 class="featured-hero__heading h0 section-move-top" {{ block.shopify_attributes }}>
+                            {{ heading | escape }}
+                        </h2>
+                    {% when 'text' %}
+                        <div
+                            class="featured-hero__text {% if layout_options == 'layout_full' %}rte--large {% else %}rte {% endif %} section-move-top"
+                            {{ block.shopify_attributes }}
+                        >
+                            {{ text }}
+                        </div>
+                    {% when 'buttons' %}
+                        <div class="featured-hero__button section-move-top" {{ block.shopify_attributes }}>
+                            {% if button_label != blank and button_link != blank %}
+                                <a
+                                    href="{{ button_link }}"
+                                    class="button button--primary button--large"
+                                    {% if button_link == blank %}
+                                        aria-disabled="true"
+                                    {% endif %}
+                                >
+                                    {{ button_label | escape }}
+                                </a>
+                            {% endif %}
+                            {% if button_label_second != blank and button_link_second != blank %}
+                                <a
+                                    href="{{ button_link_second }}"
+                                    class="button button--secondary button--large"
+                                    {% if button_link_second == blank %}
+                                        aria-disabled="true"
+                                    {% endif %}
+                                >
+                                    {{ button_label_second | escape }}
+                                </a>
+                            {% endif %}
+                        </div>
+                {% endcase %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% schema %}
+{
+    "name": "Hero banner",
+    "tag": "section",
+    "class": "index-section",
+    "disabled_on": {
+        "groups": ["header", "footer"]
+    },
+    "settings": [
+        {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Desktop image"
+        },
+        {
+            "type": "image_picker",
+            "id": "image_mobile",
+            "label": "Mobile image"
+        },
+        {
+            "type": "select",
+            "id": "video_type",
+            "options": [
+                {
+                    "value": "vimeo",
+                    "label": "Vimeo"
+                },
+                {
+                    "value": "youtube",
+                    "label": "YouTube"
+                },
+                {
+                    "value": "files",
+                    "label": "Shopify files"
+                }
+            ],
+            "default": "files",
+            "label": "Video type"
+        },
+        {
+            "type": "text",
+            "id": "video",
+            "label": "Video",
+            "info": "For Vimeo and YouTube, we insert only the video identifier (40648169 or _9VUPq3SxOc), and for the file, the full path from the storage location (https:\/\/cdn.plyr.io\/static\/demo\/View_From_A_Blue_Moon_Trailer-576p.mp4)"
+        },
+        {
+            "type": "select",
+            "id": "block_position",
+            "options": [
+                {
+                    "value": "top-left",
+                    "label": "Top-left"
+                },
+                {
+                    "value": "top-middle",
+                    "label": "Top-middle"
+                },
+                {
+                    "value": "top-right",
+                    "label": "Top-right"
+                },
+                {
+                    "value": "middle-left",
+                    "label": "Middle-left"
+                },
+                {
+                    "value": "middle-middle",
+                    "label": "Middle-middle"
+                },
+                {
+                    "value": "middle-right",
+                    "label": "Middle-right"
+                },
+                {
+                    "value": "bottom-left",
+                    "label": "Bottom-left"
+                },
+                {
+                    "value": "bottom-middle",
+                    "label": "Bottom-middle"
+                },
+                {
+                    "value": "bottom-right",
+                    "label": "Bottom-right"
+                }
+            ],
+            "default": "bottom-left",
+            "label": "Desktop block position"
+        },
+        {
+            "type": "select",
+            "id": "text_alignment",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "right",
+                    "label": "Right"
+                }
+            ],
+            "default": "left",
+            "label": "Text alignment"
+        },
+        {
+            "type": "checkbox",
+            "id": "adapt_height_image",
+            "default": false,
+            "label": "Fill section height"
+        },
+        {
+            "type": "paragraph",
+            "content": "Style options"
+        },
+        {
+            "type": "color",
+            "id": "full_bleed_color",
+            "label": "Background Full-bleed"
+        },
+        {
+            "type": "color",
+            "id": "block_color",
+            "label": "Background 1\/3 Colorblock"
+        },
+        {
+            "type": "range",
+            "label": "Background opacity",
+            "id": "opacity",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "default": 10
+        },
+        {
+            "type": "color",
+            "id": "title_color",
+            "label": "Title color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text color"
+        },
+        {
+            "type": "select",
+            "id": "layout_options",
+            "options": [
+                {
+                    "value": "layout_full",
+                    "label": "Full-bleed"
+                },
+                {
+                    "value": "layout_part",
+                    "label": "1\/3 Colorblock"
+                }
+            ],
+            "default": "layout_full",
+            "label": "Layout options"
+        },
+        {
+            "type": "range",
+            "label": "Text block width",
+            "info": "Only for Full-bleed layout",
+            "id": "text_block_width",
+            "min": 10,
+            "max": 100,
+            "step": 10,
+            "default": 60
+        },
+        {
+            "type": "color",
+            "id": "btn_bg_color",
+            "label": "Button background color"
+        },
+        {
+            "type": "color",
+            "id": "btn_link_color",
+            "label": "Button link color"
+        },
+        {
+            "type": "color",
+            "id": "btn_bg_color_hover",
+            "label": "Button background hover color"
+        },
+        {
+            "type": "color",
+            "id": "btn_link_color_hover",
+            "label": "Button link hover color"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "heading",
+            "name": "Heading",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "sub_heading",
+                    "default": "Image banner",
+                    "label": "Sub Heading"
+                },
+                {
+                    "type": "text",
+                    "id": "heading",
+                    "default": "Image banner",
+                    "label": "Heading"
+                }
+            ]
+        },
+        {
+            "type": "text",
+            "name": "Text",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "richtext",
+                    "id": "text",
+                    "default": "<p>Give customers details about the banner image(s) or content on the template.</p>",
+                    "label": "Description"
+                }
+            ]
+        },
+        {
+            "type": "buttons",
+            "name": "Buttons",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "button_label",
+                    "default": "Button label",
+                    "label": "Button label first",
+                    "info": "Leave the label blank to hide the button."
+                },
+                {
+                    "type": "url",
+                    "id": "button_link",
+                    "label": "Button link first"
+                },
+                {
+                    "type": "text",
+                    "id": "button_label_second",
+                    "default": "Button label",
+                    "label": "Button label second",
+                    "info": "Leave the label blank to hide the button."
+                },
+                {
+                    "type": "url",
+                    "id": "button_link_second",
+                    "label": "Button link second"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Hero banner",
+            "blocks": [
+                {
+                    "type": "heading"
+                },
+                {
+                    "type": "text"
+                },
+                {
+                    "type": "buttons"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

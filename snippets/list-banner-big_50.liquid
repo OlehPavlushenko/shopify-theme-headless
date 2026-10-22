@@ -1,0 +1,71 @@
+<div class="featured-list-banners__box featured-list-banners__box--big-50 big-banners">
+    <div class="container">
+        <div class="row featured-list-banners__scroll">
+            {% for block in blocks %}
+                {% liquid
+                    assign image = block.settings.item_img
+                    assign img_size = settings.img_size
+                    assign title = block.settings.item_title
+                    assign subtitle = block.settings.item_subtitle
+                    assign text = block.settings.item_text
+                    assign button = block.settings.button_text
+                    assign link = block.settings.item_link
+                    assign position = block.settings.block_position
+                    assign text_alignment = block.settings.text_alignment
+                    assign style = block.settings.style
+                %}
+
+                {% if title != blank %}
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-6 card-list-banner__{{ block.type }}">
+                        <div class="card-list-banner__item">
+                            {% if link.size > 0 %}
+                                <a href="{{ link }}">
+                                    <span class="visually-hidden">
+                                        {{ title }}
+                                    </span>
+                                </a>
+                            {% endif %}
+                            {% if image.size > 0 %}
+                                <div class="card-list-banner__media-wrapper ">
+                                    <picture class="card-list-banner__media media__size--{{ img_size }} media">
+                                        {% render 'image',
+                                            image_box: image,
+                                            image_box_class: 'card-list-banner__image'
+                                        %}
+                                    </picture>
+                                </div>
+                            {%- else -%}
+                                <div class="card-list-banner__media-wrapper ">
+                                    <picture class="card-list-banner__media media__size--{{ img_size }} media">
+                                        {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                                    </picture>
+                                </div>
+                            {% endif %}
+                            {% if title.size > 0 or subtitle.size > 0 or text.size > 0 or button.size > 0 %}
+                                <div class="card-list-banner__caption caption__content--{{ style }} caption__content--{{ position }} caption__content--{{ text_alignment }}">
+                                    {% if subtitle.size > 0 %}
+                                        <span class="card-list-banner__subtitle">{{ subtitle }}</span>
+                                    {% endif %}
+
+                                    {% if title.size > 0 %}
+                                        <h3 class="card-list-banner__title h2">{{ title }}</h3>
+                                    {% endif %}
+
+                                    {% if text.size > 0 %}
+                                        <div class="card-list-banner__text">{{ text }}</div>
+                                    {% endif %}
+
+                                    {% if button.size > 0 and link.size > 0 %}
+                                        <span class="card-list-banner__btn button button--primary button--middle">
+                                            {{- button -}}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>

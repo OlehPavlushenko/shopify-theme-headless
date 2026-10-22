@@ -1,0 +1,1039 @@
+{% liquid
+    assign bg_color = section.settings.background_color
+    assign title_color = section.settings.title_color
+    assign text_color = section.settings.text_color
+    assign link_color = section.settings.link_color
+    assign link_hover_color = section.settings.link_hover_color
+    assign divider_color = section.settings.divider_color
+    assign social_icon_color = section.settings.social_icon_color
+    assign pad_top = section.settings.padding_top
+    assign pad_bot = section.settings.padding_bottom
+    assign bg_color_copyright = section.settings.background_color_copyright
+    assign text_color_copyright = section.settings.text_color_copyright
+    assign link_color_copyright = section.settings.link_color_copyright
+    assign link_hover_color_copyright = section.settings.link_hover_color_copyright
+    assign pad_top_copyright = section.settings.padding_top_copyright
+    assign pad_bot_copyright = section.settings.padding_bottom_copyright
+    assign blocks = section.blocks
+    assign full_width = section.settings.full_width
+%}
+
+{% capture styles %}
+--footer-background-color: {{ bg_color }};
+--footer-title-color: {{ title_color }};
+--footer-text-color: {{ text_color }};
+--footer-link-color: {{ link_color }};
+--footer-link-hover-color: {{ link_hover_color }};
+--footer-divider-color: {{ divider_color }};
+--footer-social-icon-color: {{- social_icon_color }};
+--footer-pad-top: {{ pad_top }}px;
+--footer-pad-bot: {{ pad_bot }}px;
+--copyright-background-color: {{ bg_color_copyright }};
+--copyright-text-color: {{ text_color_copyright }};
+--copyright-link-color: {{ link_color_copyright }};
+--copyright-link-hover-color: {{ link_hover_color_copyright }};
+--copyright-pad-top: {{ pad_top_copyright }}px;
+--copyright-pad-bot: {{ pad_bot_copyright }}px;
+{% endcapture %}
+
+{% assign styles = styles | strip_newlines %}
+
+<footer class="footer full_width--{{ full_width }}" style="{{ styles }}">
+    {% if blocks.size > 0 %}
+        <div class="footer__row">
+            <div class="footer__wrapper page-width">
+                <div class="footer__grid">
+                    {% for block in blocks %}
+                        {% case block.type %}
+                            {% when 'linklist' %}
+                                {% liquid
+                                    assign linklist = block.settings.links
+                                    assign width = block.settings.column_link
+                                %}
+
+                                <accordion-element class="footer__item footer__item-size--{{ width }}">
+                                    <details class="footer__item--links" open>
+                                        <summary class="h3 footer__title js-accordion-toggle" tabindex="0">
+                                            {{ linklists[linklist].title }}
+                                            <i class="footer_trigger">
+                                                {% render 'icons-svg', icons: 'plus' %}
+                                                {% render 'icons-svg', icons: 'minus' %}
+                                            </i>
+                                        </summary>
+                                        <ul
+                                            class="footer__block footer__block-links js-accordion-content"
+                                            tabindex="-1"
+                                        >
+                                            {% for link in linklists[linklist].links %}
+                                                <li class="footer__block--item footer__block-links--item{% if link.active == true %} active{% endif %}">
+                                                    <a href="{{ link.url }}">
+                                                        {{- link.title -}}
+                                                        {%- render 'icons-svg', icons: 'next' -%}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </details>
+                                </accordion-element>
+
+                            {% when 'contacts' %}
+                                {% liquid
+                                    assign title = block.settings.contacts_title
+                                    assign name = block.settings.contacts_name
+                                    assign address = block.settings.contacts_address
+                                    assign phone = block.settings.contacts_phone
+                                    assign email = block.settings.contacts_email
+                                    assign time = block.settings.contacts_time
+                                    assign width = block.settings.column_contact
+                                %}
+
+                                <accordion-element class="footer__item footer__item-size--{{ width }}">
+                                    <details class="footer__item--contacts" open>
+                                        <summary class="h3 footer__title js-accordion-toggle" tabindex="0">
+                                            {{ title | escape }}
+                                            <i class="footer_trigger">
+                                                {% render 'icons-svg', icons: 'plus' %}
+                                                {% render 'icons-svg', icons: 'minus' %}
+                                            </i>
+                                        </summary>
+                                        <div class="footer__block js-accordion-content" tabindex="-1">
+                                            {% if name.size > 0 %}
+                                                <p class="footer__contact-name">
+                                                    {%- render 'icons-svg', icons: 'home' -%}
+                                                    {{ name | escape }}
+                                                </p>
+                                            {% endif %}
+
+                                            {% if address.size > 0 %}
+                                                <p class="footer__contact-address">
+                                                    {%- render 'icons-svg', icons: 'map' -%}
+                                                    {{ address | escape }}
+                                                </p>
+                                            {% endif %}
+
+                                            {% if phone.size > 0 %}
+                                                <p class="footer__contact-phone">
+                                                    <a href="tel:{{ phone | escape }}">
+                                                        {%- render 'icons-svg', icons: 'phone' -%}
+                                                        {{ phone | escape -}}
+                                                    </a>
+                                                </p>
+                                            {% endif %}
+
+                                            {% if email.size > 0 %}
+                                                <p class="footer__contact-email">
+                                                    <a href="mailto:{{ email | escape }}">
+                                                        {%- render 'icons-svg', icons: 'envelope' -%}
+                                                        {{ email | escape -}}
+                                                    </a>
+                                                </p>
+                                            {% endif %}
+
+                                            {% if time.size > 0 %}
+                                                <span class="footer__contact-time">
+                                                    {%- render 'icons-svg', icons: 'calendar' -%}
+                                                    {{ time | escape -}}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </details>
+                                </accordion-element>
+
+                            {% when 'prod-list' %}
+                                {% liquid
+                                    assign title = block.settings.prod_title
+                                    assign collection = collections[block.settings.prod_collection]
+                                    assign limit = block.settings.prod_limit
+                                    assign show_vendor = block.settings.prod_show_vendor
+                                    assign show_image = block.settings.prod_show_image
+                                    assign img_size = block.settings.prod_img_size
+                                    assign view_all = block.settings.show_view_all
+                                    assign width = block.settings.column_prod
+                                %}
+
+                                <accordion-element class="footer__item footer__item-size--{{ width }}">
+                                    <details class="footer__item--products" open>
+                                        {% if title != blank %}
+                                            <summary class="h3 footer__title js-accordion-toggle" tabindex="0">
+                                                {{ title | escape }}
+                                                <i class="footer_trigger">
+                                                    {% render 'icons-svg', icons: 'plus' %}
+                                                    {% render 'icons-svg', icons: 'minus' %}
+                                                </i>
+                                            </summary>
+                                        {% endif %}
+                                        <div class="footer__block js-accordion-content" tabindex="-1">
+                                            <div class="footer__block--grid">
+                                                {% for product in collection.products limit: limit %}
+                                                    <div class="footer__grid--item footer-product-post">
+                                                        {% render 'footer-product-listing',
+                                                            card_product: product,
+                                                            show_vendor: show_vendor,
+                                                            show_image: show_image,
+                                                            image_size: img_size
+                                                        %}
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            {% if view_all %}
+                                                <div class="footer__view-all">
+                                                    <a href="{{ collection.url }}" class="button button--link">
+                                                        {{ 'sections.footer.view_all' | t }}
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </details>
+                                </accordion-element>
+
+                            {% when 'blog-list' %}
+                                {% liquid
+                                    assign title = block.settings.blog_title
+                                    assign blog = blogs[block.settings.blog]
+                                    assign limit = block.settings.post_limit
+                                    assign show_date = block.settings.blog_show_date
+                                    assign show_image = block.settings.blog_show_image
+                                    assign img_size = block.settings.blog_img_size
+                                    assign view_all = block.settings.show_view_all
+                                    assign width = block.settings.column_blog
+                                %}
+
+                                <accordion-element class="footer__item footer__item-size--{{ width }}">
+                                    <details class="footer__item--blog" open>
+                                        {% if title != blank %}
+                                            <summary class="h3 footer__title js-accordion-toggle" tabindex="0">
+                                                {{ title | escape }}
+                                                <i class="footer_trigger">
+                                                    {% render 'icons-svg', icons: 'plus' %}
+                                                    {% render 'icons-svg', icons: 'minus' %}
+                                                </i>
+                                            </summary>
+                                        {% endif %}
+                                        <div class="footer__block js-accordion-content" tabindex="-1">
+                                            <div class="footer__block--grid">
+                                                {% for article in blog.articles limit: limit %}
+                                                    <div class="footer__grid--item footer-blog-post">
+                                                        {% render 'footer-blog-listing',
+                                                            article: article,
+                                                            show_date: show_date,
+                                                            show_image: show_image,
+                                                            image_size: img_size
+                                                        %}
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            {% if view_all %}
+                                                <div class="footer__view-all">
+                                                    <a href="{{ blog.url }}" class="button button--link">
+                                                        {{ 'sections.footer.view_all' | t }}
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </details>
+                                </accordion-element>
+
+                            {% when 'newsletter' %}
+                                {% liquid
+                                    assign title = block.settings.heading
+                                    assign subheading = block.settings.subheading
+                                    assign width = block.settings.column_news
+                                %}
+
+                                <accordion-element class="footer__item footer__item-size--{{ width }}">
+                                    <details
+                                        class="footer__item--newsletter"
+                                        data-section-id="{{ section.id }}"
+                                        data-section-type="newsletter-section"
+                                        open
+                                    >
+                                        {% if title != blank %}
+                                            <summary class="h3 footer__title js-accordion-toggle" tabindex="0">
+                                                {{ title | escape }}
+                                                <i class="footer_trigger">
+                                                    {% render 'icons-svg', icons: 'plus' %}
+                                                    {% render 'icons-svg', icons: 'minus' %}
+                                                </i>
+                                            </summary>
+                                        {% endif %}
+                                        <div
+                                            class="footer__block footer__newsletter js-accordion-content"
+                                            tabindex="-1"
+                                        >
+                                            {% if subheading != blank %}
+                                                <div class="footer__newsletter-subheading">
+                                                    {{ subheading }}
+                                                </div>
+                                            {% endif %}
+                                            {% form 'customer',
+                                                id: 'ContactFooter',
+                                                class: 'footer__newsletter-form js-newsletter-form'
+                                            %}
+                                                <input
+                                                    type="hidden"
+                                                    name="contact[tags]"
+                                                    value="newsletter"
+                                                >
+                                                <input type="hidden" name="challenge" value="false">
+                                                {% capture newsletter_button %}
+                                                <button
+                                                type="submit"
+                                                class="footer__newsletter-button"
+                                                name="commit"
+                                                aria-label="{{ 'sections.newsletter.button' | t }}">
+                                                {% render 'icons-svg', icons: 'arrow-right' %}
+                                                </button>
+                                            {% endcapture %}
+
+                                                {% liquid
+                                                    assign input_id = 'NewsletterForm--' | append: section.id
+                                                    assign input_label = 'sections.newsletter.label' | t
+                                                    assign input_placeholder = 'sections.newsletter.placeholder' | t
+
+                                                    render 'input', mod_input_id: input_id, mod_input_name: 'contact[email]', mod_value: form.email, mod_input_type: 'email', mod_input_label: input_label, mod_form: true, mod_input_placeholder: input_placeholder, mod_is_required: true, mod_autocomplete: 'email', mod_custom_html: newsletter_button, mod_custom_input_classes: 'js-newsletter-email'
+
+                                                    if form.errors
+                                                        assign error_message = form.errors.translated_fields.email | capitalize | append: '&nbsp' | append: form.errors.messages.email
+                                                        assign error_message_id = form.id | append: '-error'
+
+                                                        render 'error-message', mod_message: error_message, mod_is_input: true, mod_id: error_message_id
+
+                                                    elsif form.posted_successfully?
+                                                        assign success_message_id = form.id | append: '-success'
+                                                        assign form_success_message = 'sections.newsletter.success' | t
+
+                                                        render 'success-message', mod_message: form_success_message, mod_id: success_message_id
+                                                    endif
+                                                %}
+                                            {% endform %}
+                                        </div>
+                                    </details>
+                                </accordion-element>
+                            {% when 'about' %}
+                                {% liquid
+                                    assign title = block.settings.about_title
+                                    assign show_title = block.settings.show_title
+                                    assign subheading = block.settings.subheading
+                                    assign text = block.settings.about_text
+                                    assign width = block.settings.column_about
+                                    assign image = block.settings.about_image
+                                    assign img_width = block.settings.about_img_width
+                                    assign img_height = block.settings.about_img_height
+                                %}
+
+                                {% capture styles %}
+                                --footer-image-width: {{ img_width }}%;
+                                --footer-image-height: {{ img_height }}%;
+                                {% endcapture %}
+
+                                {% assign styles = styles | strip_newlines %}
+
+                                <accordion-element class="footer__item footer__item-size--{{ width }}">
+                                    <details
+                                        class="footer__item--about"
+                                        style="{{ styles }}"
+                                        open
+                                    >
+                                        {% if title != blank %}
+                                            <summary
+                                                class="h3 footer__title js-accordion-toggle footer__title--show-{{ show_title }}"
+                                                tabindex="0"
+                                            >
+                                                {{ title | escape }}
+                                                <i class="footer_trigger">
+                                                    {% render 'icons-svg', icons: 'plus' %}
+                                                    {% render 'icons-svg', icons: 'minus' %}
+                                                </i>
+                                            </summary>
+                                        {% endif %}
+                                        <div
+                                            class="footer__block footer__about js-accordion-content"
+                                            tabindex="-1"
+                                        >
+                                            {% if image != blank %}
+                                                <div class="footer__about--wrapper">
+                                                    <picture class="footer__about--media media">
+                                                        {% render 'image',
+                                                            image_box: image,
+                                                            image_box_class: 'footer__about--image'
+                                                        %}
+                                                    </picture>
+                                                </div>
+                                            {% endif %}
+                                            {% if text != blank %}
+                                                <div class="footer__about--text">{{ text }}</div>
+                                            {% endif %}
+                                            <div class="footer__about--social">
+                                                {% render 'social-list' %}
+                                            </div>
+                                        </div>
+                                    </details>
+                                </accordion-element>
+                            {% when 'divider' %}
+                                {% liquid
+                                    assign column_width = block.settings.column_divider
+                                    assign marg_top = block.settings.marg_top
+                                    assign marg_bot = block.settings.margin_bottom
+                                %}
+
+                                {% capture styles %}
+                                --footer-marg-top: {{- marg_top -}}px;
+                                --footer-marg-bot: {{- marg_bot -}}px;
+                                {% endcapture %}
+
+                                {% assign styles = styles | strip_newlines %}
+
+                                <div class="footer__item footer__item-size--{{ column_width }}" style="{{ styles }}">
+                                    <div class="footer-item-divider">
+                                        <span class="visually-hidden">{{ 'sections.footer.divider' | t }}</span>
+                                    </div>
+                                </div>
+                        {% endcase %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {% if section.settings.powered_toggle %}
+        <div class="copyright__row">
+            <div class="copyright__wrapper container">
+                <div class="copyright__grid">
+                    <div class="copyright__text copyright__has--{{ section.settings.payment_icons_toggle }}">
+                        {% if section.settings.powered_toggle %}
+                            <small class="copyright__content">
+                                {{ 'sections.footer.reserved' | t }} &copy; {{ 'now' | date: '%Y' }},
+                                {{ shop.name | link_to: routes.root_url -}}
+                            </small>
+                            {%- if section.settings.show_policy -%}
+                                <ul class="copyright__policies list-unstyled">
+                                    {%- for policy in shop.policies -%}
+                                        {%- if policy != blank -%}
+                                            <li>
+                                                <small class="copyright__content"
+                                                    ><a href="{{ policy.url }}">{{ policy.title }}</a></small
+                                                >
+                                            </li>
+                                        {%- endif -%}
+                                    {%- endfor -%}
+                                </ul>
+                            {%- endif -%}
+                        {% endif %}
+                    </div>
+                    {% if section.settings.payment_icons_toggle %}
+                        {% assign payment_icons = 'amazon|maestro|paypal|visa|mastercard' | split: '|' %}
+                        <div class="copyright__payments">
+                            <ul class="copyright__payments--icons">
+                                {% for icon in payment_icons %}
+                                    <li>
+                                        {% render 'icons-svg', icons: icon %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <scroll-up class="footer__scroll-up button button--secondary" aria-label="{{ 'sections.footer.scroll_up' | t }}">
+        {% render 'icons-svg', icons: 'up' %}
+    </scroll-up>
+</footer>
+
+{% schema %}
+{
+    "name": "Footer",
+    "class": "index-footer",
+    "max_blocks": 12,
+    "settings": [
+        {
+            "type": "header",
+            "content": "Footer Options"
+        },
+        {
+            "type": "color",
+            "id": "background_color",
+            "default": "#F5F5F5",
+            "label": "Background color"
+        },
+        {
+            "type": "color",
+            "id": "title_color",
+            "default": "#2e3131",
+            "label": "Title color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "default": "#696e6e",
+            "label": "Text color"
+        },
+        {
+            "type": "color",
+            "id": "link_color",
+            "default": "#34495e",
+            "label": "Link color"
+        },
+        {
+            "type": "color",
+            "id": "link_hover_color",
+            "default": "#ec7163",
+            "label": "Link hover color"
+        },
+        {
+            "type": "color",
+            "id": "divider_color",
+            "default": "#4d4d4d",
+            "label": "Divider color"
+        },
+        {
+            "type": "color",
+            "id": "social_icon_color",
+            "default": "#fff",
+            "label": "Social icon color"
+        },
+        {
+            "type": "checkbox",
+            "id": "full_width",
+            "default": false,
+            "label": "Enabled full width?"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding top",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding bottom",
+            "default": 30
+        },
+        {
+            "type": "header",
+            "content": "Copyright Options"
+        },
+        {
+            "type": "color",
+            "id": "background_color_copyright",
+            "default": "#F5F5F5",
+            "label": "Background color"
+        },
+        {
+            "type": "color",
+            "id": "text_color_copyright",
+            "default": "#696e6e",
+            "label": "Text color"
+        },
+        {
+            "type": "color",
+            "id": "link_color_copyright",
+            "default": "#34495e",
+            "label": "Link color"
+        },
+        {
+            "type": "color",
+            "id": "link_hover_color_copyright",
+            "default": "#ec7163",
+            "label": "Link hover color"
+        },
+        {
+            "type": "range",
+            "id": "padding_top_copyright",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding top",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom_copyright",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding bottom",
+            "default": 30
+        },
+        {
+            "type": "checkbox",
+            "id": "powered_toggle",
+            "label": "Show 'Powered by Shopify'",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "show_policy",
+            "label": "Show policy",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "payment_icons_toggle",
+            "label": "Show payment icons",
+            "default": true
+        }
+    ],
+    "blocks": [
+        {
+            "type": "linklist",
+            "name": "Linklist",
+            "settings": [
+                {
+                    "type": "link_list",
+                    "id": "links",
+                    "label": "Choose linklist"
+                },
+                {
+                    "type": "select",
+                    "id": "column_link",
+                    "options": [
+                        {
+                            "value": "one-whole",
+                            "label": "one-whole"
+                        },
+                        {
+                            "value": "one-half",
+                            "label": "one-half"
+                        },
+                        {
+                            "value": "one-third",
+                            "label": "one-third"
+                        },
+                        {
+                            "value": "one-quarter",
+                            "label": "one-quarter"
+                        }
+                    ],
+                    "label": "Column Width"
+                }
+            ]
+        },
+        {
+            "type": "prod-list",
+            "name": "Product List",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "prod_title",
+                    "label": "Heading",
+                    "default": "Popular Product"
+                },
+                {
+                    "id": "prod_collection",
+                    "type": "collection",
+                    "label": "Collection"
+                },
+                {
+                    "type": "range",
+                    "id": "prod_limit",
+                    "label": "Posts",
+                    "min": 1,
+                    "max": 3,
+                    "step": 1,
+                    "default": 3
+                },
+                {
+                    "type": "checkbox",
+                    "id": "prod_show_vendor",
+                    "label": "Show vendor",
+                    "default": false
+                },
+                {
+                    "type": "checkbox",
+                    "id": "prod_show_image",
+                    "label": "Show cover image",
+                    "default": false
+                },
+                {
+                    "type": "checkbox",
+                    "id": "show_view_all",
+                    "label": "Show 'View all' button",
+                    "default": false
+                },
+                {
+                    "type": "select",
+                    "id": "prod_img_size",
+                    "label": "Image size",
+                    "options": [
+                        {
+                            "value": "cropped",
+                            "label": "Cropped"
+                        },
+                        {
+                            "value": "landscape",
+                            "label": "Landscape"
+                        },
+                        {
+                            "value": "square",
+                            "label": "Square"
+                        },
+                        {
+                            "value": "portrait",
+                            "label": "Portrait"
+                        },
+                        {
+                            "value": "circle",
+                            "label": "Circle"
+                        }
+                    ]
+                },
+                {
+                    "type": "select",
+                    "id": "column_prod",
+                    "options": [
+                        {
+                            "value": "one-whole",
+                            "label": "one-whole"
+                        },
+                        {
+                            "value": "one-half",
+                            "label": "one-half"
+                        },
+                        {
+                            "value": "one-third",
+                            "label": "one-third"
+                        },
+                        {
+                            "value": "one-quarter",
+                            "label": "one-quarter"
+                        }
+                    ],
+                    "label": "Column Width"
+                }
+            ]
+        },
+        {
+            "type": "blog-list",
+            "name": "Blog List",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "blog_title",
+                    "label": "Heading",
+                    "default": "Blog"
+                },
+                {
+                    "id": "blog",
+                    "type": "blog",
+                    "label": "Blog"
+                },
+                {
+                    "type": "range",
+                    "id": "post_limit",
+                    "label": "Posts",
+                    "min": 1,
+                    "max": 3,
+                    "step": 1,
+                    "default": 3
+                },
+                {
+                    "type": "checkbox",
+                    "id": "blog_show_date",
+                    "label": "Show date",
+                    "default": true
+                },
+                {
+                    "type": "checkbox",
+                    "id": "blog_show_image",
+                    "label": "Show cover image",
+                    "default": false
+                },
+                {
+                    "type": "checkbox",
+                    "id": "show_view_all",
+                    "label": "Show 'View all' button",
+                    "default": false
+                },
+                {
+                    "type": "select",
+                    "id": "blog_img_size",
+                    "label": "Image size",
+                    "options": [
+                        {
+                            "value": "cropped",
+                            "label": "Cropped"
+                        },
+                        {
+                            "value": "landscape",
+                            "label": "Landscape"
+                        },
+                        {
+                            "value": "square",
+                            "label": "Square"
+                        },
+                        {
+                            "value": "portrait",
+                            "label": "Portrait"
+                        },
+                        {
+                            "value": "circle",
+                            "label": "Circle"
+                        }
+                    ]
+                },
+                {
+                    "type": "select",
+                    "id": "column_blog",
+                    "options": [
+                        {
+                            "value": "one-whole",
+                            "label": "one-whole"
+                        },
+                        {
+                            "value": "one-half",
+                            "label": "one-half"
+                        },
+                        {
+                            "value": "one-third",
+                            "label": "one-third"
+                        },
+                        {
+                            "value": "one-quarter",
+                            "label": "one-quarter"
+                        }
+                    ],
+                    "label": "Column Width"
+                }
+            ]
+        },
+        {
+            "type": "about",
+            "name": "About block",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "about_title",
+                    "label": "Block title",
+                    "default": "About"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "show_title",
+                    "label": "Show title in Desktop",
+                    "default": true
+                },
+                {
+                    "type": "image_picker",
+                    "id": "about_image",
+                    "label": "Image"
+                },
+                {
+                    "type": "range",
+                    "id": "about_img_height",
+                    "min": 0,
+                    "max": 100,
+                    "step": 10,
+                    "unit": "%",
+                    "label": "Image height",
+                    "default": 30
+                },
+                {
+                    "type": "range",
+                    "id": "about_img_width",
+                    "min": 0,
+                    "max": 100,
+                    "step": 10,
+                    "unit": "%",
+                    "label": "Image Width",
+                    "default": 50
+                },
+                {
+                    "type": "richtext",
+                    "id": "about_text",
+                    "label": "About text"
+                },
+                {
+                    "type": "select",
+                    "id": "column_about",
+                    "options": [
+                        {
+                            "value": "one-whole",
+                            "label": "one-whole"
+                        },
+                        {
+                            "value": "one-half",
+                            "label": "one-half"
+                        },
+                        {
+                            "value": "one-third",
+                            "label": "one-third"
+                        },
+                        {
+                            "value": "one-quarter",
+                            "label": "one-quarter"
+                        }
+                    ],
+                    "label": "Column Width"
+                }
+            ]
+        },
+        {
+            "type": "newsletter",
+            "name": "Newsletter",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "heading",
+                    "label": "Heading",
+                    "default": "Subscribe to our newsletter"
+                },
+                {
+                    "type": "richtext",
+                    "id": "subheading",
+                    "label": "Subheading",
+                    "default": "<p>A short sentence describing what someone will receive by subscribing</p>"
+                },
+                {
+                    "type": "select",
+                    "id": "column_news",
+                    "options": [
+                        {
+                            "value": "one-whole",
+                            "label": "one-whole"
+                        },
+                        {
+                            "value": "one-half",
+                            "label": "one-half"
+                        },
+                        {
+                            "value": "one-third",
+                            "label": "one-third"
+                        },
+                        {
+                            "value": "one-quarter",
+                            "label": "one-quarter"
+                        }
+                    ],
+                    "label": "Column Width"
+                },
+                {
+                    "type": "paragraph",
+                    "content": "Any customers who sign up will have an account created for them in Shopify. [View customers](/admin/customers?query=&accepts_marketing=1)"
+                }
+            ]
+        },
+        {
+            "type": "divider",
+            "name": "Divider block",
+            "settings": [
+                {
+                    "type": "range",
+                    "id": "margin_top",
+                    "min": 0,
+                    "max": 60,
+                    "step": 5,
+                    "unit": "px",
+                    "label": "Margin top",
+                    "default": 30
+                },
+                {
+                    "type": "range",
+                    "id": "margin_bottom",
+                    "min": 0,
+                    "max": 60,
+                    "step": 5,
+                    "unit": "px",
+                    "label": "Margin bottom",
+                    "default": 30
+                },
+                {
+                    "type": "select",
+                    "id": "column_divider",
+                    "options": [
+                        {
+                            "value": "one-whole",
+                            "label": "one-whole"
+                        },
+                        {
+                            "value": "one-half",
+                            "label": "one-half"
+                        },
+                        {
+                            "value": "one-third",
+                            "label": "one-third"
+                        },
+                        {
+                            "value": "one-quarter",
+                            "label": "one-quarter"
+                        }
+                    ],
+                    "label": "Column Width"
+                }
+            ]
+        },
+        {
+            "type": "contacts",
+            "name": "Contacts block",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "contacts_title",
+                    "label": "Block title"
+                },
+                {
+                    "type": "text",
+                    "id": "contacts_name",
+                    "label": "Contacts name"
+                },
+                {
+                    "type": "text",
+                    "id": "contacts_address",
+                    "label": "Contacts address"
+                },
+                {
+                    "type": "text",
+                    "id": "contacts_phone",
+                    "label": "Contacts phone"
+                },
+                {
+                    "type": "text",
+                    "id": "contacts_email",
+                    "label": "Contacts email"
+                },
+                {
+                    "type": "text",
+                    "id": "contacts_time",
+                    "label": "Contacts time"
+                },
+                {
+                    "type": "select",
+                    "id": "column_contact",
+                    "options": [
+                        {
+                            "value": "one-whole",
+                            "label": "one-whole"
+                        },
+                        {
+                            "value": "one-half",
+                            "label": "one-half"
+                        },
+                        {
+                            "value": "one-third",
+                            "label": "one-third"
+                        },
+                        {
+                            "value": "one-quarter",
+                            "label": "one-quarter"
+                        }
+                    ],
+                    "label": "Column Width"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

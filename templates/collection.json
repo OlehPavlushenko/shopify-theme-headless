@@ -1,0 +1,76 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main-header": {
+      "type": "main-collection-header",
+      "settings": {
+        "full_width": true,
+        "width": 1440,
+        "img_size": "portrait",
+        "layout": "text_first",
+        "button_label": "Return to list collections",
+        "button_link": "shopify:\/\/collections",
+        "show_breadcrumbs": true,
+        "show_description": true,
+        "show_sub_collections": true,
+        "show_image": true,
+        "bg_color": "#f5f5f5",
+        "title_color": "#2e3131",
+        "text_color": "#696e6e",
+        "btn_bg_color": "#ec7163",
+        "btn_link_color": "#fafbfb",
+        "btn_bg_color_hover": "#34495e",
+        "btn_link_color_hover": "#fafbfb",
+        "padding_top": 30,
+        "padding_bottom": 30
+      }
+    },
+    "main": {
+      "type": "main-collection-product",
+      "settings": {
+        "load_more": true,
+        "products_per_page": 12,
+        "columns_desktop": 4,
+        "full_width": true,
+        "width": 1440,
+        "content_alignment": "left",
+        "enable_filtering": true,
+        "filter_type": "vertical",
+        "enable_sorting": true,
+        "bg_color": "#fafbfb",
+        "title_color": "#2e3131",
+        "text_color": "#696e6e",
+        "link_color": "#ec7163",
+        "padding_top": 30,
+        "padding_bottom": 30
+      }
+    },
+    "b17f19c3-f68e-465a-ab9f-e94bce4dff19": {
+      "type": "featured-large-text",
+      "settings": {
+        "text": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.<\/p>",
+        "text_alignment": "center",
+        "full_width": true,
+        "width": 1200,
+        "bg_color": "#5cc2ed",
+        "link_color": "#fafbfb",
+        "text_color": "#fafbfb",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    }
+  },
+  "order": [
+    "main-header",
+    "main",
+    "b17f19c3-f68e-465a-ab9f-e94bce4dff19"
+  ]
+}

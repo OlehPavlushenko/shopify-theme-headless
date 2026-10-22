@@ -1,0 +1,184 @@
+{% if product.available %}
+    {% capture "form_id" %}product_form-{{ section.id }}-{{ product.id }}{{form_sticky}}{%- endcapture %}
+    {% capture "form_class" %}main-product__form{%- endcapture %}
+    {% form 'product', product, id: form_id, class: form_class %}
+        {% if product.available and product.variants.size > 1 %}
+            <variant-product
+                class="swatch-wrap js{{form_sticky}}"
+                data-section="{{ section.id }}-{{ product.id }}{{form_sticky}}"
+                data-url="{{ product.url | within: collection }}"
+            >
+                <div class="swatch-container js-swatch">
+                    {% render 'swatch'
+                        for product.options as swatch,
+                        product: product,
+                        variant_type: variant_type,
+                        grouped_product: grouped_product,
+                        form_id: form_sticky
+                    %}
+                </div>
+                <script type="application/json">
+                    {{ product.variants | json }}
+                </script>
+                <select
+                    name="id"
+                    id="ProductSelect-{{ product.id }}{{form_sticky}}"
+                    class="card-product__variants no-js"
+                    data-product-select
+                >
+                    {% for variant in product.variants %}
+                        {% if variant.available %}
+                            <option
+                                {% if variant == product.selected_or_first_available_variant %}
+                                    selected="selected"
+                                {% endif %}
+                                data-sku="{{ variant.sku }}"
+                                data-qty="{{ variant.inventory_quantity }}"
+                                data-inventory-policy="{{ variant.inventory_policy }}"
+                                value="{{ variant.id }}"
+                            >
+                                {{ variant.title }} - {{ variant.price | money_with_currency }}
+                            </option>
+
+                        {% else %}
+                            <option disabled="disabled">
+                                {{ variant.title }} - {{ 'products.product.sold_out' | t }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+
+                <div class="main-product__action--box">
+                    <div class="main-product__action--quantity">
+                        <quantity-input class="quantity">
+                            <button
+                                class="quantity__button quantity__button--minus no-js-hidden"
+                                name="minus"
+                                type="button"
+                            >
+                                {% render 'icons-svg', icons: 'minus' %}
+                            </button>
+                            <input
+                                class="quantity__input quantity-selector js-quantity"
+                                type="number"
+                                name="quantity"
+                                id="Quantity-{{ product.id }}{{form_sticky}}"
+                                min="1"
+                                step="1"
+                                value="1"
+                                {% if product.selected_or_first_available_variant.inventory_management == 'shopify'
+                                    and product.selected_or_first_available_variant.inventory_policy != 'continue'
+                                %}
+                                    max="{{ product.selected_or_first_available_variant.inventory_quantity }}"
+                                {% endif %}
+                            >
+                            <button
+                                class="quantity__button quantity__button--plus no-js-hidden"
+                                name="plus"
+                                type="button"
+                            >
+                                {% render 'icons-svg', icons: 'plus' %}
+                            </button>
+                        </quantity-input>
+                    </div>
+                    <div class="main-product__action--btn">
+                        <button
+                            type="submit"
+                            name="add"
+                            id="AddToCart-{{ product.id }}{{form_sticky}}"
+                            class="button--secondary card-product__button-cart js-btn-cart"
+                        >
+                            <span>{{ 'products.product.add_to_cart' | t }}</span>
+                        </button>
+                    </div>
+                    <div class="main-product__action--cart-messages" data-ajax-cart-messages="form"></div>
+                </div>
+                {% unless isSticky %}
+                    <div class="main-product__action--pay">
+                        {{ form | payment_button }}
+                    </div>
+                {% endunless %}
+            </variant-product>
+
+        {% else %}
+            <select
+                name="id"
+                id="ProductSelect-{{ product.id }}{{form_sticky}}"
+                class="card-product__variants no-js"
+                data-product-select
+            >
+                {% for variant in product.variants %}
+                    {% if variant.available %}
+                        <option
+                            {% if variant == product.selected_or_first_available_variant %}
+                                selected="selected"
+                            {% endif %}
+                            data-sku="{{ variant.sku }}"
+                            value="{{ variant.id }}"
+                        >
+                            {{ variant.title }} - {{ variant.price | money_with_currency }}
+                        </option>
+
+                    {% else %}
+                        <option disabled="disabled">{{ variant.title }} - {{ 'products.product.sold_out' | t }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <div class="main-product__action--box">
+                <div class="main-product__action--quantity">
+                    <quantity-input class="quantity">
+                        <button class="quantity__button quantity__button--minus" name="minus" type="button">
+                            {% render 'icons-svg', icons: 'minus' %}
+                        </button>
+
+                        <input
+                            class="quantity__input js-quantity"
+                            type="number"
+                            name="quantity"
+                            min="1"
+                            step="1"
+                            value="1"
+                            {% if product.variants[0].inventory_management == 'shopify'
+                                and product.variants[0].inventory_policy != 'continue'
+                            %}
+                                max="{{ product.variants[0].inventory_quantity }}"
+                            {% endif %}
+                        >
+
+                        <button class="quantity__button quantity__button--plus" name="plus" type="button">
+                            {% render 'icons-svg', icons: 'plus' %}
+                        </button>
+                    </quantity-input>
+                </div>
+
+                <div class="main-product__action--btn">
+                    <button
+                        type="submit"
+                        name="add"
+                        id="AddToCart-{{ product.id }}{{form_sticky}}"
+                        class="button--secondary card-product__button-cart js-btn-cart"
+                    >
+                        <span>{{ 'products.product.add_to_cart' | t }}</span>
+                    </button>
+                </div>
+                <div class="main-product__action--cart-messages" data-ajax-cart-messages="form"></div>
+            </div>
+            {% unless isSticky %}
+                <div class="main-product__action--pay">
+                    {{ form | payment_button }}
+                </div>
+            {% endunless %}
+        {% endif %}
+    {% endform %}
+{% else %}
+    <div class="main-product__action--btn">
+        <button
+            type="button"
+            id="SoldOutText-{{ product.id }}{{form_sticky}}"
+            class="button--secondary card-product__button-sold card-product__button-cart"
+            disabled=""
+        >
+            <span id="SoldOutText">{{ 'products.product.sold_out' | t }}</span>
+        </button>
+    </div>
+{% endif %}

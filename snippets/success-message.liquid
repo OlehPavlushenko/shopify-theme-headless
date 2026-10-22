@@ -1,0 +1,23 @@
+{% comment %}
+    Shows an success message block.
+    Props:
+    - mod_message: the message to be shown. Defaults to 'This is a success message.'
+    - mod_id: block id. Defaults to false.
+
+    Example:
+    {% render 'success-message',
+      mod_message: 'That was a nice one!'
+    %}
+{% endcomment %}
+{% assign message = mod_message | default: 'This is a success message.' %}
+{% assign id = mod_id | default: false %}
+
+<p
+    class='success-message'
+    {% if id %}
+        id='{{ id }}'
+    {% endif %}
+>
+    <img src='{{ 'success.svg' | asset_url }}' alt='' loading='lazy' height='14' width='14'>
+    {{ message }}
+</p>

@@ -1,0 +1,212 @@
+{% liquid
+    assign background_color = section.settings.bg_color | default: 'transparent'
+    assign title_color = section.settings.title_color | default: 'inherit'
+    assign text_color = section.settings.text_color | default: 'inherit'
+    assign pad_top = section.settings.padding_top
+    assign pad_bot = section.settings.padding_bottom
+    assign full_width = section.settings.full_width
+%}
+
+{% capture styles %}
+  --title-color-multi-column: {{- title_color -}};
+  --text-color-multi-column: {{- text_color -}};
+  --background-color-multi-column: {{- background_color -}};
+  --pad-top-multi-column: {{ pad_top }}px;
+  --pad-bot-multi-column: {{ pad_bot }}px;
+{% endcapture %}
+
+{% assign styles = styles | strip_newlines %}
+
+{{ 'section-featured-multi-column.css' | asset_url | stylesheet_tag }}
+
+<div class="featured-multi-column full_width--{{ full_width }}" style="{{ styles }}">
+    <div class="featured-multi-column-width page-width">
+        <ul class="featured-multi-column-list grid--3-col-desktop" role="list">
+            <li class="featured-multi-column-list__item grid__item">
+                {% for block in section.blocks %}
+                    {% if block.type == 'column-first' %}
+                        {% render 'multi-column-text', block: block %}
+                    {% endif %}
+                {% endfor %}
+            </li>
+            <li class="featured-multi-column-list__item grid__item">
+                {% for block in section.blocks %}
+                    {% if block.type == 'column-second' %}
+                        {% render 'multi-column-text', block: block %}
+                    {% endif %}
+                {% endfor %}
+            </li>
+            <li class="featured-multi-column-list__item grid__item">
+                {% for block in section.blocks %}
+                    {% if block.type == 'column-third' %}
+                        {% render 'multi-column-text', block: block %}
+                    {% endif %}
+                {% endfor %}
+            </li>
+        </ul>
+    </div>
+</div>
+
+{% schema %}
+{
+    "name": "Services listing",
+    "class": "index-section",
+    "tag": "section",
+    "disabled_on": {
+        "groups": ["header", "footer"]
+    },
+    "max_blocks": 9,
+    "settings": [
+        {
+            "type": "paragraph",
+            "content": "Style option"
+        },
+        {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Background color"
+        },
+        {
+            "type": "color",
+            "id": "title_color",
+            "label": "Title color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "Caption color"
+        },
+        {
+            "type": "checkbox",
+            "id": "full_width",
+            "default": false,
+            "label": "Enabled full width?"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding top",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding bottom",
+            "default": 30
+        }
+    ],
+    "blocks": [
+        {
+            "type": "column-first",
+            "limit": 3,
+            "name": "First Column",
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Image"
+                },
+                {
+                    "type": "text",
+                    "id": "title",
+                    "default": "Column",
+                    "label": "Title"
+                },
+                {
+                    "type": "richtext",
+                    "id": "text",
+                    "default": "<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorem reiciendis suscipit sint inventore quae! </p>",
+                    "label": "Caption"
+                },
+                {
+                    "type": "url",
+                    "id": "link",
+                    "label": "Link"
+                }
+            ]
+        },
+        {
+            "type": "column-second",
+            "limit": 3,
+            "name": "Second Column",
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Image"
+                },
+                {
+                    "type": "text",
+                    "id": "title",
+                    "default": "Column",
+                    "label": "Title"
+                },
+                {
+                    "type": "richtext",
+                    "id": "text",
+                    "default": "<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorem reiciendis suscipit sint inventore quae! </p>",
+                    "label": "Caption"
+                },
+                {
+                    "type": "url",
+                    "id": "link",
+                    "label": "Link"
+                }
+            ]
+        },
+        {
+            "type": "column-third",
+            "limit": 3,
+            "name": "Third Column",
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Image"
+                },
+                {
+                    "type": "text",
+                    "id": "title",
+                    "default": "Column",
+                    "label": "Title"
+                },
+                {
+                    "type": "richtext",
+                    "id": "text",
+                    "default": "<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorem reiciendis suscipit sint inventore quae! </p>",
+                    "label": "Caption"
+                },
+                {
+                    "type": "url",
+                    "id": "link",
+                    "label": "Link"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Services listing",
+            "blocks": [
+                {
+                    "type": "column-first"
+                },
+                {
+                    "type": "column-second"
+                },
+                {
+                    "type": "column-third"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

@@ -1,0 +1,45 @@
+{% liquid
+    assign img_fill = 'fill'
+    assign img_size = 'square'
+    assign img_view = 'slider'
+    assign grouped_product = product.metafields.custom.grouped_images.value
+
+    assign current_variant = product.selected_or_first_available_variant
+    if current_variant.featured_image != blank
+        assign image_box = current_variant.featured_image
+    else
+        assign image_box = product.featured_image
+    endif
+    assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src'
+%}
+
+{% if img_view == 'slider' %}
+    {% render 'product-media-slider',
+        product: product,
+        image_box: image_box,
+        img_size: img_size,
+        img_fill: img_fill,
+        grouped_product: grouped_product,
+        current_variant: current_variant,
+        variant_images: variant_images
+    %}
+{% else %}
+    {% render 'product-media-gallery',
+        product: product,
+        image_box: image_box,
+        img_size: img_size,
+        img_fill: img_fill,
+        grouped_product: grouped_product,
+        current_variant: current_variant,
+        variant_images: variant_images
+    %}
+{% endif %}
+
+<div class="card-product__media-wrapper hidden">
+    <picture
+        class="card-product__media media__size--{{ img_size }} media js-card-product-media"
+        data-size="{{ img_size }}"
+    >
+        {% render 'image', image_box: image_box, image_box_class: 'card-product__image' %}
+    </picture>
+</div>

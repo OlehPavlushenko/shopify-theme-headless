@@ -1,0 +1,124 @@
+{% liquid
+    assign new_badge = settings.new_badge
+    assign show_vendor = settings.show_vendor
+    assign show_rating = settings.show_rating
+    assign add_btn = settings.enable_add_btn
+    assign btn = settings.btn
+    assign variant_type = settings.variant
+    assign prod_img_size = settings.prod_img_size
+    assign secondary_image = settings.show_secondary_image
+    assign notify_me = settings.notify_me
+    assign price_variant = settings.price_variant
+%}
+{% liquid
+    assign heading = complementary.settings.title
+    assign text = complementary.settings.text
+    assign head_alignment = complementary.settings.head_alignment
+
+    assign products_limit = complementary.settings.products_to_show
+    assign columns_desktop = complementary.settings.columns_desktop
+    assign content_alignment = complementary.settings.content_alignment
+
+    assign bg_color = complementary.settings.bg_color | default: 'transparent'
+    assign text_color = complementary.settings.text_color | default: 'inherit'
+    assign title_color = complementary.settings.title_color | default: 'inherit'
+
+    assign text_post_color = complementary.settings.text_post_color | default: 'inherit'
+    assign title_post_color = complementary.settings.title_post_color | default: 'inherit'
+    assign link_post_color = complementary.settings.link_post_color | default: 'inherit'
+
+    assign pad_top = complementary.settings.padding_top
+    assign pad_bot = complementary.settings.padding_bottom
+    assign pad_left = complementary.settings.padding_left
+    assign pad_right = complementary.settings.padding_right
+%}
+
+{% capture styles %}
+    --title-color-product-complementary: {{ title_color }};
+    --text-color-product-complementary: {{ text_color }};
+    --title-post-color-product-complementary: {{ title_post_color }};
+    --text-post-color-product-complementary: {{ text_post_color }};
+    --link-post-color-product-complementary: {{ link_post_color }};
+    --background-color-product-complementary: {{ bg_color }};
+    --pad-top-product-complementary: {{ pad_top }}px;
+    --pad-bot-product-complementary: {{ pad_bot }}px;
+    --pad-left-product-complementary: {{ pad_left }}px;
+    --pad-right-product-complementary: {{ pad_right }}px;
+{% endcapture %}
+
+{%- assign styles = styles | strip_newlines -%}
+
+{{ 'section-product-complementary.css' | asset_url | stylesheet_tag }}
+
+<product-recommendations data-url="?product_id={{ product.id }}&limit={{ products_limit }}&intent=complementary&section_id={{ section.id }}">
+    <div class="main-product__row main-product__row--complementary">
+        {%- if recommendations.performed? -%}
+            <div
+                id="product-complementary"
+                class="product-complementary content--{{ content_alignment }}"
+                style="{{ styles }}"
+            >
+                {%- if recommendations.products_count > 0 -%}
+                    <swiper-section>
+                        {% if sub_heading != blank or heading != blank or text != blank %}
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="product-complementary__head head-alignment--{{ head_alignment }}">
+                                        {% if heading != blank %}
+                                            <h2 class="product-complementary__heading h2">
+                                                {{ heading | escape }}
+                                            </h2>
+                                        {% endif %}
+                                        {% if text != blank %}
+                                            <div class="product-complementary__text rte">
+                                                {{ text }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div
+                            class="swiper-container js-swiper"
+                            data-count-desktop="{{ columns_desktop }}"
+                            data-count-tablet="2"
+                            data-count-mobile="1"
+                        >
+                            <ul class="product-complementary__list swiper-wrapper list-view">
+                                {%- for product in recommendations.products -%}
+                                    <li class="grid__item product-complementary__item swiper-slide">
+                                        {% render 'card-product',
+                                            product: product,
+                                            show_vendor: show_vendor,
+                                            show_rating: show_rating,
+                                            new_badge: new_badge,
+                                            show_quantity: false,
+                                            use_variant: price_variant,
+                                            variant_type: variant_type,
+                                            add_btn: add_btn,
+                                            btn: btn,
+                                            img_size: prod_img_size,
+                                            secondary_image: secondary_image,
+                                            notify_me: notify_me,
+                                            image_custom: false,
+                                            fill: false
+                                        %}
+                                    </li>
+                                {%- endfor -%}
+                            </ul>
+                            <div class="swiper-button-prev js-button-prev">
+                                {% render 'icons-svg', icons: 'prev' %}
+                            </div>
+                            <div class="swiper-button-next js-button-next">
+                                {% render 'icons-svg', icons: 'next' %}
+                            </div>
+                            <div
+                                class="swiper-pagination product-complementary__pagination js-pagination"
+                            ></div>
+                        </div>
+                    </swiper-section>
+                {%- endif -%}
+            </div>
+        {%- endif -%}
+    </div>
+</product-recommendations>

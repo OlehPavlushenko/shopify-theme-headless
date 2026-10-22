@@ -1,0 +1,224 @@
+{{ 'section-main-customer.css' | asset_url | stylesheet_tag }}
+
+<div class="page-wrapper">
+    {% render 'account-header', mod_header_class: 'h3', mod_screen_size: 'mobile' %}
+
+    {% render 'account-nav',
+        mod_header_class: 'h3',
+        mod_links: linklists['my-account'].links,
+        mod_active_page: 'orders'
+    %}
+
+    <div class="customer order account__main">
+        <div class="order__header">
+            <div class="breadcrumbs --color-subdued --mobile">
+                {{ 'customer.account_fallback' | t }} / {{ 'customer.orders.orders' | t }}
+            </div>
+
+            <div class="breadcrumbs --desktop">
+                <span class="color-subdued">
+                    {{- 'customer.account_fallback' | t }} / {{ 'customer.orders.order_number' | t }} /</span
+                >
+                {{ 'customer.order.title' | t: name: order.name }}
+            </div>
+
+            <h2 class="h3">{{ 'customer.order.title' | t: name: order.name }}</h2>
+            {%- if order.cancelled -%}
+                {%- assign cancelled_at = order.cancelled_at | time_tag: format: 'date_at_time' -%}
+                <p>{{ 'customer.order.cancelled_html' | t: date: cancelled_at }}</p>
+                <p>{{ 'customer.order.cancelled_reason' | t: reason: order.cancel_reason_label }}</p>
+            {%- endif -%}
+        </div>
+
+        <div class="order__status">
+            <div class="order-status__date">
+                <p class="h5">{{ order.created_at | time_tag: format: 'date' }}</p>
+
+                {%- capture order_id %}#{{ order.id }}{%- endcapture -%}
+                <p>{{ 'customer.order.title' | t: name: order_id }}</p>
+            </div>
+
+            <div class="order-status__total">
+                <p class="h5">
+                    {{ order.subtotal_line_items.size }}
+                    {{ 'customer.orders.item_count' | t }}
+                </p>
+
+                <p>{{ 'customer.orders.total' | t }}: {{ order.total_price | money }}</p>
+            </div>
+
+            <div class="order-status__delivery">
+                <p class="h5">{{ 'customer.order.delivery_status' | t }}</p>
+
+                {%- if order.fulfillment_status == 'fulfilled' -%}
+                    {%- for line_item in order.line_items -%}
+                        {%- if line_item.fulfillment -%}
+                            {%- if forloop.first == true
+                                or last_tracking_num != line_item.fulfillment.tracking_number
+                            %}
+                                <p>
+                                    <span>{{ 'customer.order.shipped' | t }} </span>
+                                    <a
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        href="{{- line_item.fulfillment.tracking_url -}}"
+                                    >
+                                        #{{ line_item.fulfillment.tracking_number }}
+                                    </a>
+                                </p>
+                                {%- assign last_tracking_num = line_item.fulfillment.tracking_number -%}
+                            {%- endif -%}
+                        {%- endif -%}
+                    {%- endfor -%}
+                {%- else -%}
+                    <p>{{ order.fulfillment_status_label }}</p>
+                {%- endif -%}
+            </div>
+
+            <div class="order-status__shipping-address">
+                <h3 class="h5">{{ 'customer.order.shipped_to' | t }}:</h3>
+                <p>
+                    {{ order.shipping_address | format_address }}
+                </p>
+            </div>
+
+            <div class="order-status__billing-address">
+                <h3 class="h5">{{ 'customer.order.billed_to' | t }}:</h3>
+                <p>
+                    {{ order.billing_address | format_address }}
+                </p>
+            </div>
+
+            <div class="order-status__help">
+                <p>{{ 'customer.order.help' | t: email: settings.email }}</p>
+            </div>
+        </div>
+
+        <div class="order__item-list">
+            <div class="order__item-list__header order__item">
+                <div class="order-item__info-group">
+                    <div class="order-item__image" style="visibility: hidden;"></div>
+                    <div class="order-item__details">
+                        {{ 'customer.orders.single_item' | t }}
+                    </div>
+                </div>
+                <div class="order-item__price">{{ 'products.product.price.price' | t }}</div>
+                <div class="order-item__quantity">{{ 'customer.order.quantity' | t }}</div>
+                <div class="order-item__total">{{ 'customer.order.total' | t }}</div>
+            </div>
+
+            {%- for line_item in order.line_items -%}
+                <div class="order__item">
+                    <div class="order-item__info-group">
+                        <div class="order-item__image order__product__image media">
+                            {% render 'image',
+                                image_box: line_item.product.featured_image,
+                                alt: line_item.product.featured_image.alt,
+                                image_box_class: 'order__product--image',
+                                width: 180,
+                                height: 240
+                            %}
+                        </div>
+                        <div class="order-item__details">
+                            {%- if line_item.product.url != blank -%}
+                                {%- assign item_title = line_item.title | split: ' - ' %}
+                                <a href="{{ line_item.product.url }}" class="body">{{ item_title[0] }}</a>
+                            {%- else -%}
+                                <p>{{ line_item.title }}</p>
+                            {%- endif -%}
+
+                            {%- unless line_item.product.options == null
+                                or line_item.product.has_only_default_variant
+                            -%}
+                                {%- assign mod_option_num = 0 -%}
+                                {%- for option in line_item.product.options -%}
+                                    <div class="order-item__property">
+                                        <h4 class="utility">{{ option }}</h4>
+                                        <p>{{ line_item.variant.options[mod_option_num] }}</p>
+                                    </div>
+                                    {% assign mod_option_num = mod_option_num | plus: 1 %}
+                                {%- endfor -%}
+                            {%- endunless -%}
+                        </div>
+                    </div>
+                    <div class="order-item__price">
+                        <span class="--early-mobile">{{ 'products.product.price.price' | t }}: </span>
+
+                        {% if line_item.final_price != line_item.original_price %}
+                            <span class="--color-subdued order-item__price--original">
+                                <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}: </span>
+                                {{ line_item.original_price | money }}
+                            </span>
+                            <span class="--color-subdued order-item__price--final">
+                                <span class="visually-hidden">{{ 'products.product.price.sale_price' | t }}: </span>
+                                {{ line_item.final_price | money }}
+                            </span>
+                        {% else %}
+                            <span class="--color-subdued">
+                                {{ line_item.original_price | money }}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="order-item__quantity">
+                        <span class="--early-mobile">{{ 'customer.order.quantity' | t }}: </span>
+                        {{ line_item.quantity }}
+                    </div>
+                    <div class="order-item__total">
+                        <span class="--early-mobile">{{ 'customer.order.total' | t }}: </span>
+                        <span class="--color-subdued">{{ line_item.final_line_price | money }}</span>
+                    </div>
+                </div>
+            {%- endfor -%}
+        </div>
+        <div class="order__totals">
+            <div class="order-totals__subtotal">
+                <span>{{ 'customer.order.subtotal' | t }}</span>
+                <span>{{ order.line_items_subtotal_price | money }}</span>
+            </div>
+
+            {%- if order.cart_level_discount_applications != blank -%}
+                {%- for discount_application in order.cart_level_discount_applications -%}
+                    <div class="order-totals__discount">
+                        <span>
+                            {{- 'customer.order.discount_applied' | t }}
+                            <span class="--color-subdued">
+                                {%- render 'icon-discount' -%}
+                                {{- discount_application.title -}}
+                            </span>
+                        </span>
+                        <span>-{{ discount_application.total_allocated_amount | money }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {%- for shipping_method in order.shipping_methods -%}
+                <div class="order-totals__shipping">
+                    <span>{{ 'customer.order.shipping' | t }} ({{ shipping_method.title }}) </span>
+                    <span>{{ shipping_method.price | money }}</span>
+                </div>
+            {% endfor %}
+
+            {%- if order.tax_lines.size != 0 -%}
+                {%- for tax_line in order.tax_lines -%}
+                    <div class="order-totals__tax">
+                        <span>
+                            {{- 'customer.order.tax' | t }} ({{ tax_line.title }}
+                            {{ tax_line.rate | times: 100 }}%)
+                        </span>
+                        <span>{{ tax_line.price | money }}</span>
+                    </div>
+                {%- endfor -%}
+            {%- else -%}
+                <div class="order-totals__tax">
+                    <span>{{ 'customer.order.tax' | t }} </span>
+                    <span>{{ order.tax_price | money }}</span>
+                </div>
+            {%- endif -%}
+
+            <div class="order-totals__total">
+                <span>{{ 'customer.order.total' | t }} </span>
+                <span>{{ order.total_price | money }}</span>
+            </div>
+        </div>
+    </div>
+</div>

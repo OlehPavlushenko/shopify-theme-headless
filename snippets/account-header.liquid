@@ -1,0 +1,16 @@
+{%- liquid
+  assign header_class = mod_header_class | default: false
+  assign screen_size = mod_screen_size | default: false
+-%}
+
+{% comment %} 
+  Usage:
+  {% render 'account-header' mod_header_class: 'h3', mod_screen_size: 'mobile' %}
+{% endcomment %}
+
+<div class="account__main__header {% if screen_size %}--{{ screen_size }}{% endif %}">
+  <h1 {% if header_class %}class="{{ header_class }}"{% endif %}>
+    {{ 'customer.account.title_short' | t }}{%- if customer.first_name -%}, {{ customer.first_name }} {%- endif -%}
+  </h1>
+  <a href="{{ routes.account_logout_url }}" class="button button--reverse">{{ 'customer.log_out' | t }}</a>
+</div>

@@ -1,0 +1,170 @@
+{{ 'component-recently-viewed.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+    if product.title != blank
+        if use_variant
+            assign target = product.selected_or_first_available_variant
+        else
+            assign target = product
+        endif
+
+        assign compare_at_price = target.compare_at_price | money
+        assign money_price = target.price
+        assign money_compare = target.compare_at_price
+        assign price = target.price | money
+
+        if settings.currency_code_enabled
+            assign money_price = price | money_with_currency
+            assign price = target.price | money_with_currency
+            assign compare_at_price = compare_at_price | money_with_currency
+        endif
+
+        if target == product and product.price_varies
+            assign price = 'products.product.price.from_price_html' | t: price: price
+        endif
+    endif
+-%}
+
+<h2 class="recently__heading">{{ 'products.product.recently' | t }}</h2>
+<ul class="recently__viewed" role="list">
+    <!-- Recently viewed products will appear here -->
+</ul>
+
+<script>
+    
+    
+    const recentlyViewedProductsKey = 'recentlyViewedProduct'
+    {% if product.title != blank %}
+      let productCart = true
+      let productData = {
+        productTitle: '{{ product.title }}',
+        productImg: '{{ product.featured_media | image_url: width: 533 }}',
+        imgWidth: '{{ product.featured_media.width }}',
+        imgHeight: '{{ product.featured_media.height }}',
+        imgSize: '{{ prod_img_size }}',
+        productPrice: '{{ price }}',
+        productComparePrice: '{{ compare_at_price }}',
+        productMoneyPrice: '{{ money_price }}',
+        compareAtPrice: '{{ money_compare }}',
+        productUrl: '{{ product.url }}',
+        productImageAltText: '{{ product.featured_media.alt | escape }}',
+      };
+    {% else %}
+        let productCart = false
+    {% endif %}
+    
+    function setRecentlyViewedProducts() {
+      const productList = [productData];
+      const currProductPageTitle = productData.productTitle;
+      const productDataString = JSON.stringify(productList);
+      const localData = localStorage.getItem(recentlyViewedProductsKey);
+
+      if (localData === null) {
+        localStorage.setItem(recentlyViewedProductsKey, productDataString);
+      } else if (localData) {
+        const oldProductData = localStorage.getItem(recentlyViewedProductsKey);
+        const countProductData = getCountOfProducts(oldProductData);
+        const sameProduct = isSameProduct(currProductPageTitle, oldProductData);
+        if (countProductData < 6 && !sameProduct) {
+          addNewProduct(productList, oldProductData);
+        } else if (countProductData >= 6 && !sameProduct) {
+          removeOldProductAddNew(productList, oldProductData);
+        }
+      }
+    }
+
+    function getCountOfProducts(oldProductData) {
+      return (oldProductData.match(/productTitle/g) || []).length;
+    }
+
+    function isSameProduct(currProductPageTitle, oldProductData) {
+      return oldProductData.includes(currProductPageTitle);
+    }
+
+    function addNewProduct(productList, oldProductData) {
+      const jsonResp = JSON.parse(oldProductData);
+      const jsonRespArr = jsonResp.concat(productList);
+      const jsonRespArrStr = JSON.stringify(jsonRespArr);
+      localStorage.setItem(recentlyViewedProductsKey, jsonRespArrStr);
+    }
+
+    function removeOldProductAddNew(productList, oldProductData) {
+      const jsonResp = JSON.parse(oldProductData);
+      jsonResp.shift();
+      const jsonRespArr = jsonResp.concat(productList);
+      const jsonRespArrStr = JSON.stringify(jsonRespArr);
+      localStorage.setItem(recentlyViewedProductsKey, jsonRespArrStr);
+    }
+
+    const localViewed = localStorage.getItem(recentlyViewedProductsKey)
+    if (productCart) {
+        setRecentlyViewedProducts()
+    }
+
+    function renderProductCard(product) {
+        let priceHtml = `
+            <div class="price card-product__price">
+                <div class="price__box">
+                    <div class="price__item price__item--sale">${product.productPrice}</div>
+                </div>
+            </div>
+        `;
+        if (product.compareAtPrice && product.productMoneyPrice < product.compareAtPrice) {
+            priceHtml = `
+            <div class="price card-product__price price--on-sale">
+                <div class="price__box">
+                    <div class="price-item price-item--compare-at">${product.productComparePrice}</div>
+                    <div class="price__item price__item--sale">${product.productPrice}</div>
+                    <div class="price__badge badge sale">${Math.round(((product.compareAtPrice - product.productMoneyPrice) / product.compareAtPrice) * 100)}%</div>
+                </div>
+            </div>
+            `;
+        }
+
+        return `
+            <li class="grid__item recently__item">
+            <div class="card-product__wrapper">
+                <div class="card-product__media-wrapper">
+                <a class="card-product__link" href="${product.productUrl}"><span class="hidden">${product.productTitle}</span></a>
+                <div class="card-product__media media media__size--${product.imgSize}">
+                    <img class="media__image" src="${product.productImg}" width="${product.imgWidth}" height="${product.imgHeight}" loading="lazy" alt="${product.productImageAltText}"/>
+                </div>
+                </div>
+                <div class="card-product__content">
+                <h5 class="card-product__title h5">
+                    <a class="full-unstyled-link" href="${product.productUrl}">${product.productTitle}</a>
+                </h5>
+                <div class="card-information">
+                    ${priceHtml}
+                </div>
+                </div>
+            </div>
+            </li>
+        `;
+    }
+
+    function setDisplayNone(selector) {
+        const element = document.querySelector(selector)
+        if (element) {
+            element.style.display = 'none'
+        }
+    }
+
+    function getRecentlyViewedProducts() {
+        const productData = JSON.parse(localStorage.getItem('recentlyViewedProduct'))
+        if (!productData || productData.length === 0) {
+            setDisplayNone('.recently__products')
+            return
+        }
+
+        const recentlyViewedHtml = productData.map(renderProductCard).join('')
+        const fullContent = document.querySelector('.recently__viewed')
+        fullContent.innerHTML = recentlyViewedHtml
+    }
+
+    document.addEventListener('DOMContentLoaded', function (event) {
+        getRecentlyViewedProducts()
+    })
+
+
+</script>

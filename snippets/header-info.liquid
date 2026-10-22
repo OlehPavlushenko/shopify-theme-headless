@@ -1,0 +1,67 @@
+{% liquid
+    assign mobile = settings.add_mobile
+    assign email = settings.add_email
+    assign time = settings.add_time
+
+    assign compare = settings.link_compare
+    assign wishlist = settings.link_wishlist
+%}
+
+<div class="top-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-7 col-sm-7 col-md-8 col-lg-8 align-self-center justify-content-start top-header__left">
+                <ul class="top-header__info">
+                    {% if mobile != blank %}
+                        <li class="top-header__mobile">
+                            {% render 'icons-svg', icons: 'phone' %}
+                            <a href="tel:+7758724444">{{ mobile }}</a>
+                        </li>
+                    {% endif %}
+                    {% if email != blank %}
+                        <li class="top-header__email">
+                            {% render 'icons-svg', icons: 'envelope' %}
+                            <a href="mailto:{{ email }}">{{ email }}</a>
+                        </li>
+                    {% endif %}
+                    {% if time != blank %}
+                        <li class="top-header__time">
+                            {% render 'icons-svg', icons: 'calendar' %}
+                            {{ time }}
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-5 col-sm-5 col-md-4 col-lg-4 align-self-center icons-col text-right d-flex justify-content-end top-header__left">
+                <div class="top-header__icon-blocks">
+                    {% if compare != blank %}
+                        <div class="mod-compare top-icon-block">
+                            <div class="top-icon-button">
+                                <a
+                                    class="compare_total js-compare-total"
+                                    href="{{ compare }}"
+                                >
+                                    {% render 'icons-svg', icons: 'compare' -%}
+                                    <i class="text">{{ 'pages.compare' | t }}</i><span>0</span></a
+                                >
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if wishlist != blank %}
+                        <div class="mod-wishlist top-icon-block">
+                            <div class="top-icon-button">
+                                <a
+                                    class="wishlist_total js-wishlist-total"
+                                    href="{{ wishlist }}"
+                                >
+                                    {% render 'icons-svg', icons: 'heart' -%}
+                                    <i class="text">{{ 'pages.wishlist' | t }}</i><span>0</span></a
+                                >
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+<div class="currency-picker">
+    <span class="h6">{{ 'header.currency' | t }}:</span>
+    <localization-form>
+        {%- form 'localization', id: 'CurrencyForm', class: 'localization-form' -%}
+            <div class="no-js-hidden">
+                <ul
+                    id="CurrencyList"
+                    role="list"
+                    class="header__menu-select list-unstyled"
+                >
+                    {%- for currency in shop.enabled_currencies -%}
+                        <li class="localization-form__item">
+                            <a
+                                class="link link--text localization-form{% if currency == cart.currency %} active{% endif %}"
+                                href="#"
+                                lang="{{ currency.iso_code }}"
+                                {%- if currency == cart.currency -%}
+                                    aria-current="true"
+                                {%- endif -%}
+                                data-value="{{ currency.iso_code }}"
+                            >
+                                {{ currency.iso_code -}}
+                                {{- currency.symbol }}
+                            </a>
+                        </li>
+                    {%- endfor -%}
+                </ul>
+                <input
+                    type="hidden"
+                    name="currency_code"
+                    value="{{ localization.country.iso_code }}"
+                >
+            </div>
+        {%- endform -%}
+    </localization-form>
+</div>

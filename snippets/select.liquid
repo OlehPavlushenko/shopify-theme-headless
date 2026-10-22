@@ -1,0 +1,118 @@
+{% comment %}
+    select component.
+    Props:
+    - mod_container_tag (optional): wrapper tag. Defaults to 'div'
+    - mod_input_id (optional): the input element id
+    - mod_input_name (optional): the input element name. Defaults to 'my-input'
+    - mod_input_label (optional): the label text. Defaults to ''
+    - mod_is_required (optional): whether the input is required or not. Defaults to false
+    - mod_custom_container_classes (optional): wrapper custom classes.
+    - mod_custom_input_classes (optional): input custom classes.
+    - mod_custom_options (optional): options to show. Defaults to '<option value="Option 1">Option 1</option>'
+    - mod_is_multiple (optional): allows selecting more than one option. Defaults to false
+    - mod_handleize_input_name: handleize mod_input_name. Defaults to true
+
+    Examples:
+    {% render 'custom-dropdown',
+      mod_input_id: 'user-email'
+      mod_input_name: 'user-email'
+      mod_input_label: 'Your email'
+    %}
+{% endcomment %}
+{% liquid
+    assign tag_name = mod_container_tag | default: 'div'
+    assign input_id = mod_input_id | default: false
+    assign input_name = mod_input_name | default: 'my-input'
+    assign input_label = mod_input_label | default: ''
+    assign is_required = mod_is_required | default: false
+    assign custom_container_classes = mod_custom_container_classes | default: false
+    assign custom_input_classes = mod_custom_input_classes | default: false
+    assign custom_options = mod_custom_options | default: false
+    assign is_multiple = mod_is_multiple | default: false
+    assign handleize_input_name = mod_handleize_input_name | default: true
+
+    assign handleized_input_name = input_name
+    unless handleize_input_name
+        assign handleized_input_name = handleized_input_name | handleize
+    endunless
+%}
+{% capture default_options %}
+<option value="Option 1">Option 1</option>
+<option value="Option 2">Option 2</option>
+<option value="Option 3">Option 3</option>
+{% endcapture %}
+
+{% liquid
+    assign custom_data = custom_options | default: default_options
+    assign custom_data = custom_data | newline_to_br | split: '<br />'
+    assign data_options = ''
+    for option in custom_data
+        assign option_value = option | strip_html | strip
+        if option_value == ''
+            assign data_options = '&nbsp;'
+        endif
+
+        assign data_options = data_options | append: option_value
+        unless forloop.last
+            assign data_options = data_options | append: ','
+        endunless
+    endfor
+%}
+
+<{{ tag_name }}
+    class='input-label{% if custom_container_classes %} {{ custom_container_classes }}{% endif %}'
+>
+    <label
+        id='{{ handleized_input_name }}-label'
+        class='label'
+        {% if input_id %}
+            for='{{ input_id }}'
+        {% endif %}
+    >
+        {{ input_label }}
+    </label>
+    <div
+        class='custom-select js-select'
+        data-multiple='{{ is_multiple }}'
+    >
+        <div
+            aria-controls='listbox-{{ handleized_input_name }}'
+            aria-expanded='false'
+            aria-haspopup='listbox'
+            aria-labelledby='{{ handleized_input_name }}-label'
+            id='{{ handleized_input_name }}'
+            class='custom-select__input'
+            role='combobox'
+            tabindex='0'
+        >
+            &nbsp;
+        </div>
+        <ul
+            class='custom-select__dropdown{% if is_multiple %} custom-select__dropdown--multiple{% endif %}'
+            role='listbox'
+            id='listbox-{{ handleized_input_name }}'
+            aria-labelledby='{{ handleized_input_name }}-label'
+            tabindex='-1'
+        ></ul>
+
+        <select
+            class='visually-hidden{% if custom_input_classes %} {{ custom_input_classes }}{% endif %}'
+            name='{{ handleized_input_name }}'
+            tabindex='-1'
+            {% if input_id %}
+                id='{{ input_id }}'
+            {% endif %}
+            {% if is_multiple %}
+                multiple
+            {% endif %}
+            {% if is_required %}
+                required
+            {% endif %}
+        >
+            {{ custom_options | default: default_options }}
+        </select>
+        <svg width='14' height='8' view-box='0 0 14 8' fill='none' xmlns='http://www.w3.org/2000/svg'>
+            <path d="M13.4165 1.08325L6.99984 6.69784L0.583171 1.08325" stroke="#333333"/>
+        </svg>
+    </div>
+</{{ tag_name }}>

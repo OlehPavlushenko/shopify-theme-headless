@@ -1,0 +1,135 @@
+{% liquid
+    assign sub_heading = block.settings.collections_sub_heading
+    assign heading = block.settings.collections_title
+    assign text = block.settings.collections_text
+    assign head_alignment = block.settings.head_alignment
+
+    assign collections = block.settings.featured_collections
+    assign img_size = block.settings.img_size
+    assign text_alignment = block.settings.content_alignment
+    assign full_width = block.settings.full_width
+
+    assign count = block.settings.count_products
+    assign columns_desktop = block.settings.columns_desktop
+    assign columns_mobile = block.settings.columns_mobile
+
+
+
+
+    if columns_desktop == 4
+        assign columns_class = 'col-md-6 col-lg-3'
+    elsif columns_desktop == 6
+        assign columns_class = 'col-md-4 col-lg-2'
+    elsif columns_desktop == 5
+        assign columns_class = 'col-md-custom col-lg-custom'
+    elsif columns_desktop == 3
+        assign columns_class = 'col-md-4 col-lg-4'
+    else
+        assign columns_class = 'col-md-6 col-lg-6'
+    endif
+
+    if columns_mobile == '2'
+        assign columns_mobile_class = 'col-6 col-sm-6'
+    else
+        assign columns_mobile_class = 'col-12 col-sm-6'
+    endif
+
+    assign background_color = block.settings.block_color | default: 'transparent'
+    assign text_color = block.settings.text_color | default: 'inherit'
+    assign title_color = block.settings.title_color | default: 'inherit'
+    assign sub_title_color = block.settings.sub_title_color | default: 'inherit'
+
+    assign pad_top = block.settings.padding_top
+    assign pad_bot = block.settings.padding_bottom
+%}
+{%- capture styles -%}
+    --sub_title_color-list-collections-default: {{ sub_title_color }};
+    --title-color-list-collections-default: {{ title_color }};
+    --text-color-list-collections-default: {{ text_color }};
+    --background-color-list-collections-default: {{ background_color }};
+    --pad-top-list-collections-default: {{ pad_top }}px;
+    --pad-bot-list-collections-default: {{ pad_bot }}px;
+
+{%- endcapture -%}
+
+{%- assign styles = styles | strip_newlines -%}
+
+<div
+    class="collections-default full_width--{{ full_width }}"
+    style="{{ styles }}"
+    {{ block.shopify_attributes }}
+>
+    <div class="collections-default__wrapper container">
+        {% if sub_heading != blank or heading != blank or text != blank %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="collections-list__head head-alignment--{{head_alignment}}">
+                        {% if sub_heading != blank %}
+                            <h5 class="featured-list-collections__sub_heading h5">
+                                {{ sub_heading | escape }}
+                            </h5>
+                        {% endif %}
+                        {% if heading != blank %}
+                            <h3 class="featured-list-collections__heading h3">
+                                {{ heading | escape }}
+                            </h3>
+                        {% endif %}
+                        {% if text != blank %}
+                            <div class="featured-list-collections__text rte">
+                                {{ text }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="row list-collections-grid">
+            {%- if collections != blank -%}
+                {% for collection in collections %}
+                    <div class="{{columns_mobile_class}} {{ columns_class }} list-collections-grid__item">
+                        <div class="card-collection">
+                            <div class="card-collection__media-wrapper ">
+                                <picture class="card-collection__media media__size--{{ img_size }} media">
+                                    <a href="{{ collection.url }}"
+                                        ><span class="visually-hidden">
+                                            {{ collection.title }}
+                                        </span></a
+                                    >
+                                    {% render 'image',
+                                        image_box: collection.featured_image,
+                                        image_box_class: 'card-collection__image'
+                                    %}
+                                </picture>
+                            </div>
+
+                            <div class="card-collection__content card-collection__content--{{ text_alignment }}">
+                                <h5>
+                                    <a href="{{ collection.url }}">
+                                        {{ collection.title | escape }}
+                                    </a>
+                                </h5>
+                                {% if count %}
+                                    <h6>
+                                        {{ collection.all_products_count }}
+                                        {{ 'sections.collections.products' | t }}
+                                    </h6>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {%- else -%}
+                {% for i in (1..6) %}
+                    <div class="{{ columns_mobile_class }} {{ columns_class }} list-collections-grid__item">
+                        {%-
+                            render 'onboarding-card-collections',
+                            img_size: img_size,
+                            text_alignment: text_alignment,
+                            svg: 'collection-apparel-1',
+                        -%}
+                    </div>
+                {% endfor %}
+            {%- endif -%}
+        </div>
+    </div>
+</div>

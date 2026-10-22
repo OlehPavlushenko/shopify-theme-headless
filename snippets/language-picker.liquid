@@ -1,0 +1,36 @@
+<div class="language-picker">
+    <span class="h6">{{ 'header.language' | t }}:</span>
+    <localization-form>
+        {%- form 'localization', id: 'LanguageForm', class: 'localization-form' -%}
+            <div class="no-js-hidden">
+                <ul
+                    id="LanguageList"
+                    role="list"
+                    class="header__menu-select list-unstyled"
+                >
+                    {%- for language in localization.available_languages -%}
+                        <li class="localization-form__item">
+                            <a
+                                class="link link--text localization-form{% if language.iso_code == localization.language.iso_code %} active{% endif %}"
+                                href="#"
+                                hreflang="{{ language.iso_code }}"
+                                lang="{{ language.iso_code }}"
+                                {%- if language.iso_code == localization.language.iso_code -%}
+                                    aria-current="true"
+                                {%- endif -%}
+                                data-value="{{ language.iso_code }}"
+                            >
+                                {{ language.endonym_name | capitalize }}
+                            </a>
+                        </li>
+                    {%- endfor -%}
+                </ul>
+                <input
+                    type="hidden"
+                    name="locale_code"
+                    value="{{ localization.language.iso_code }}"
+                >
+            </div>
+        {%- endform -%}
+    </localization-form>
+</div>

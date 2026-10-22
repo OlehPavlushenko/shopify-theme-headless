@@ -1,0 +1,135 @@
+{% if predictive_search.performed %}
+    <div class="header-search-results">
+        {% liquid
+            assign products_count = predictive_search.resources.products.size
+            assign articles_count = predictive_search.resources.articles.size
+            assign pages_count = predictive_search.resources.pages.size
+            assign limit = 4
+        %}
+        <tab-element autofocus="false">
+            <ul class="search-tabs js-tablist" role="tablist">
+                <li class="search-tabs__item">
+                    <button
+                        role="button"
+                        class="search-tabs__btn active js-tab"
+                        role="tab"
+                        aria-selected="true"
+                        aria-controls="products-panel"
+                    >
+                        Products ({{ products_count }})
+                    </button>
+                </li>
+                <li class="search-tabs__item">
+                    <button
+                        role="button"
+                        class="search-tabs__btn js-tab"
+                        role="tab"
+                        aria-selected="false"
+                        aria-controls="articles-panel"
+                    >
+                        Articles ({{ articles_count }})
+                    </button>
+                </li>
+                <li class="search-tabs__item">
+                    <button
+                        role="button"
+                        class="search-tabs__btn js-tab"
+                        role="tab"
+                        aria-selected="false"
+                        aria-controls="pages-panel"
+                    >
+                        Pages ({{ pages_count }})
+                    </button>
+                </li>
+            </ul>
+            <div class="search-tabs__content-wrapper">
+                <div id="products-panel" class="search-tabs__content js-tabpanel products" role="tabpanel">
+                    {% if predictive_search.resources.products.size > 0 %}
+                        <ul
+                            class="search-tabs__list list-unstyled"
+                            role="list"
+                            data-mobile-offset="true"
+                        >
+                            {% for product in predictive_search.resources.products limit: limit %}
+                                <li class="search-tabs__list-item">
+                                    {% render 'search-product-card', card_product: product, show_image: true %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="no-search-results">
+                            {{ 'sections.search.terms.no_results_terms' | t: terms: predictive_search.terms }}
+                            <span>{{ 'sections.search.terms.no_results_description' | t }} </span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div id="articles-panel" class="search-tabs__content js-tabpanel articles hidden" role="tabpanel">
+                    {% if predictive_search.resources.articles.size > 0 %}
+                        <ul
+                            class="search-tabs__list list-unstyled"
+                            role="list"
+                            data-mobile-offset="true"
+                        >
+                            {% for article in predictive_search.resources.articles limit: limit %}
+                                <li class="search-tabs__list-item">
+                                    {% render 'search-article-card', article: article, show_image: true %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="no-search-results">
+                            {{ 'sections.search.terms.no_results_terms' | t: terms: predictive_search.terms }}
+                            <span>{{ 'sections.search.terms.no_results_description' | t }} </span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div id="pages-panel" class="search-tabs__content js-tabpanel pages hidden" role="tabpanel">
+                    {% if predictive_search.resources.pages.size > 0 %}
+                        <ul
+                            class="search-tabs__list list-unstyled"
+                            role="list"
+                            data-mobile-offset="true"
+                        >
+                            {% for page in predictive_search.resources.pages limit: limit %}
+                                <li class="search-tabs__list-item">
+                                    <a href="{{ page.url }}">{{ page.title | truncate: 50 | escape }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                    {% else %}
+                        <div class="no-search-results">
+                            {{ 'sections.search.terms.no_results_terms' | t: terms: predictive_search.terms }}
+                            <span>{{ 'sections.search.terms.no_results_description' | t }} </span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </tab-element>
+    </div>
+    {% if predictive_search.resources.products.size
+        or predictive_search.resources.articles.size > 0
+        or predictive_search.resources.pages.size > 0
+    %}
+        <div class="search-main__cta">
+            <a href="/search?q={{ predictive_search.terms }}">
+                {{- 'sections.search.view_all_results' | t -}}
+            </a>
+        </div>
+    {% endif %}
+
+    <div class="header-search__loading-state">
+        <svg
+            aria-hidden="true"
+            focusable="false"
+            role="presentation"
+            class="spinner"
+            viewBox="0 0 66 66"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+        </svg>
+    </div>
+{% endif %}

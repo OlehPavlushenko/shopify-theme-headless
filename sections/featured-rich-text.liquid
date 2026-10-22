@@ -1,0 +1,256 @@
+{% liquid
+    assign text_alignment = section.settings.text_alignment
+    assign full_width = section.settings.full_width
+    assign bg_color = section.settings.bg_color | default: 'transparent'
+    assign text_color = section.settings.text_color | default: 'inherit'
+    assign title_color = section.settings.title_color | default: 'inherit'
+
+    assign btn_link_color = section.settings.btn_link_color | default: 'inherit'
+    assign btn_bg_color = section.settings.btn_bg_color | default: 'transparent'
+    assign btn_link_color_hover = section.settings.btn_link_color_hover | default: 'inherit'
+    assign btn_bg_color_hover = section.settings.btn_bg_color_hover | default: 'inherit'
+
+    assign pad_top = section.settings.padding_top
+    assign pad_bot = section.settings.padding_bottom
+    assign width = section.settings.width
+%}
+
+{% capture styles %}
+    --title-color-rich-text: {{ title_color }};
+    --text-color-rich-text: {{ text_color }};
+    --background-color-rich-text: {{ bg_color }};
+    --btn_link_color-rich-text: {{ btn_link_color -}};
+    --btn_bg_color-rich-text: {{ btn_bg_color }};
+    --btn_link_color_hover-rich-text: {{ btn_link_color_hover }};
+    --btn_bg_color_hover-rich-text: {{ btn_bg_color_hover }};
+    --pad-top-rich-text: {{ pad_top }}px;
+    --pad-bot-rich-text: {{ pad_bot }}px;
+    --width-rich-text: {{ width }}px;
+{% endcapture %}
+
+{%- assign styles = styles | strip_newlines -%}
+
+<link rel="stylesheet" href="{{ 'section-rich-text.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'section-rich-text.css' | asset_url | stylesheet_tag }}</noscript>
+
+<div class="rich-text text-alignment--{{ text_alignment }} full_width--{{ full_width }}" style="{{ styles }}">
+    <div class="rich-text__blocks container">
+        {%- for block in section.blocks -%}
+            {%- case block.type -%}
+                {%- when 'heading' -%}
+                    <h2
+                        class="{% if block.settings.heading_size == 'small' %}h1{% else %}h0{% endif %}"
+                        {{ block.shopify_attributes }}
+                    >
+                        {{ block.settings.heading | escape }}
+                    </h2>
+                {%- when 'text' -%}
+                    <div class="rich-text__text rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+                {%- when 'button' -%}
+                    <a
+                        {% if block.settings.button_link == blank %}
+                            aria-disabled="true"
+                        {% else %}
+                            href="{{ block.settings.button_link }}"
+                        {% endif %}
+                        class="button{% if block.settings.button_style_secondary %} button--outline{% else %} button--primary{% endif %} button--middle"
+                        {{ block.shopify_attributes }}
+                    >
+                        {{ block.settings.button_label | escape }}
+                    </a>
+            {%- endcase -%}
+        {%- endfor -%}
+    </div>
+</div>
+
+{% schema %}
+{
+    "name": "t:sections.rich-text.name",
+    "tag": "section",
+    "class": "spaced-section spaced-section--full-width",
+    "disabled_on": {
+        "groups": ["header", "footer"]
+    },
+    "settings": [
+        {
+            "type": "select",
+            "id": "text_alignment",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "right",
+                    "label": "Right"
+                }
+            ],
+            "default": "center",
+            "label": "Text alignment"
+        },
+        {
+            "type": "checkbox",
+            "id": "full_width",
+            "default": false,
+            "label": "Enabled full width?"
+        },
+        {
+            "type": "range",
+            "id": "width",
+            "min": 1000,
+            "max": 1800,
+            "step": 40,
+            "default": 1200,
+            "unit": "px",
+            "label": "Section Width"
+        },
+        {
+            "type": "paragraph",
+            "content": "Style options"
+        },
+        {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Background color"
+        },
+        {
+            "type": "color",
+            "id": "title_color",
+            "label": "Title color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "Description color"
+        },
+        {
+            "type": "color",
+            "id": "btn_bg_color",
+            "label": "Button background color"
+        },
+        {
+            "type": "color",
+            "id": "btn_link_color",
+            "label": "Button link color"
+        },
+        {
+            "type": "color",
+            "id": "btn_bg_color_hover",
+            "label": "Button background hover color"
+        },
+        {
+            "type": "color",
+            "id": "btn_link_color_hover",
+            "label": "Button link hover color"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding top",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding bottom",
+            "default": 30
+        }
+    ],
+    "blocks": [
+        {
+            "type": "heading",
+            "name": "t:sections.rich-text.blocks.heading.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "heading",
+                    "default": "Talk about your brand",
+                    "label": "t:sections.rich-text.blocks.heading.settings.heading.label"
+                },
+                {
+                    "type": "select",
+                    "id": "heading_size",
+                    "options": [
+                        {
+                            "value": "small",
+                            "label": "t:sections.rich-text.blocks.heading.settings.heading_size.options__1.label"
+                        },
+                        {
+                            "value": "medium",
+                            "label": "t:sections.rich-text.blocks.heading.settings.heading_size.options__2.label"
+                        }
+                    ],
+                    "default": "medium",
+                    "label": "t:sections.rich-text.blocks.heading.settings.heading_size.label"
+                }
+            ]
+        },
+        {
+            "type": "text",
+            "name": "t:sections.rich-text.blocks.text.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "richtext",
+                    "id": "text",
+                    "default": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>",
+                    "label": "t:sections.rich-text.blocks.text.settings.text.label"
+                }
+            ]
+        },
+        {
+            "type": "button",
+            "name": "t:sections.rich-text.blocks.button.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "button_label",
+                    "default": "Button label",
+                    "label": "t:sections.rich-text.blocks.button.settings.button_label.label"
+                },
+                {
+                    "type": "url",
+                    "id": "button_link",
+                    "label": "t:sections.rich-text.blocks.button.settings.button_link.label"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "button_style_secondary",
+                    "default": false,
+                    "label": "t:sections.rich-text.blocks.button.settings.button_style_secondary.label"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "t:sections.rich-text.presets.name",
+            "blocks": [
+                {
+                    "type": "heading"
+                },
+                {
+                    "type": "text"
+                },
+                {
+                    "type": "button"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

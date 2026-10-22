@@ -1,0 +1,148 @@
+<div class="header__search search_wrapper header__search-{{ style_search }}">
+    <a href="#" class="search-modal__toggle-open header__menu-item-link js-summary">
+        {% render 'icons-svg', icons: 'search' %}
+        {% render 'icons-svg', icons: 'close' %}
+        <span class="header__menu-item-text">{{ 'sections.search.search' | t }}</span>
+    </a>
+
+    <div
+        class="search-modal js-details"
+        role="dialog"
+        aria-modal="false"
+        aria-label="{{ 'sections.search.search' | t }}"
+    >
+        <div class="search-drawer__top">
+            <h3 class="search-drawer__head h5">Search</h3>
+            
+            <a class="search-drawer__icon-close js-search-drawer-close" href="#SearchDrawerClose" aria-label="SearchDrawerClose">
+            {% render 'icons-svg', icons: 'close' %}
+            </a>
+        </div>
+        <div class="search-modal__content page-width" tabindex="-1">
+            <header-search data-style="{{ style_search }}">
+                <form action="{{ routes.search_url }}" method="get" role="search" class="search search-modal__form">
+                    <div class="search-modal__focusable">
+                        <div class="field search-modal__field">
+                            <input
+                                class="search-modal__input js-modal-input"
+                                id="SearchInModal"
+                                type="search"
+                                name="q"
+                                autocorrect="off"
+                                value="{{ search.terms | escape }}"
+                                autocomplete="off"
+                                placeholder="{{ 'sections.search.placeholder' | t }}"
+                            >
+                            <div class="search-modal__buttons">
+                                <button
+                                    type="submit"
+                                    class="search-modal__search-button"
+                                >
+                                    {{ 'sections.search.search' | t }}
+                                </button>
+                                <button
+                                    type="button"
+                                    class="search-modal__close-button js-modal-clear-btn"
+                                    aria-label="{{ 'accessibility.close' | t }}"
+                                >
+                                    {% render 'icons-svg', icons: 'close' %}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="suggestions">
+                            {% comment %} Suggested Terms {% endcomment %}
+                            {% assign suggested_terms = blocks | where: 'type', 'suggested_term' %}
+                            {% if suggested_terms.size > 0 %}
+                                <div class="suggestions__title">{{ 'sections.search.suggestions' | t }}</div>
+                                <ul class="search-modal__suggested">
+                                    <li>{{ 'sections.search.suggestions' | t }}</li>
+                                    {% for term in suggested_terms %}
+                                        {% if term.settings.suggested_term != blank %}
+                                            <li>
+                                                <button
+                                                    class="button button--secondary"
+                                                    type="button"
+                                                    data-term="{{ term.settings.suggested_term }}"
+                                                >
+                                                    {{ term.settings.suggested_term }}
+                                                </button>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+
+                            {% comment %} Suggested Links {% endcomment %}
+                            {% assign suggested_links = blocks | where: 'type', 'suggested_link' %}
+                            {% assign suggested_products = blocks | where: 'type', 'suggested_products' %}
+
+                            <div class="search-modal__row-links">
+                            {% if suggested_links.size > 0 %}
+                                <div class="search-modal__links">
+                                    {% for link in suggested_links %}
+                                        {% liquid
+                                            assign image = link.settings.suggested_link_image
+                                            assign url = link.settings.suggested_link
+                                            assign text = link.settings.suggested_text
+                                        %}
+                                        <a href="{{ url }}" class="search-modal__item">
+                                            <div class="search-modal__media media__size--{{ settings.prod_img_size }} media">
+                                                {% if link.settings.suggested_link_image != blank %}
+                                                    {% render 'image',
+                                                        image_box: image,
+                                                        image_box_class: 'search-modal__image'
+                                                    %}
+                                                {%- else -%}
+                                                    {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                                                {%- endif -%}
+                                            </div>
+                                            {% if text != blank %}
+                                                <span class="h5">
+                                                    {{ text }}
+                                                </span>
+                                            {% endif %}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if suggested_products.size > 0 %}
+                                {% for link in suggested_products %}
+                                    {% liquid
+                                        assign product_title = link.settings.prod_title
+                                        assign limit = 2
+                                        assign collection = collections[link.settings.products]
+                                    %}
+                                    <div class='search-modal__block'>
+                                        {% if product_title != blank %}
+                                            <div class='search-modal__list-title h5'>
+                                                {{ product_title | escape }}
+                                            </div>
+                                        {% endif %}
+                                        <div class='search-modal__block--grid'>
+                                            {% for product in collection.products limit: limit %}
+                                            <div class='search-modal__grid--item search-modal-product-post'>
+                                            {% render 'menu-product-listing', card_product: product, image_size:  settings.prod_img_size %}
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                              
+                            {% endif %}
+                        </div>
+                        </div>
+                    </div>
+                    <div class="results">
+                        <div class="header-search__loading-state">
+                            <svg width="24" height="24" stroke="#000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_V8m1{transform-origin:center;animation:spinner_zKoa 2s linear infinite}.spinner_V8m1 circle{stroke-linecap:round;animation:spinner_YpZS 1.5s ease-in-out infinite}@keyframes spinner_zKoa{100%{transform:rotate(360deg)}}@keyframes spinner_YpZS{0%{stroke-dasharray:0 150;stroke-dashoffset:0}47.5%{stroke-dasharray:42 150;stroke-dashoffset:-16}95%,100%{stroke-dasharray:42 150;stroke-dashoffset:-59}}</style><g class="spinner_V8m1"><circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3"></circle></g></svg>
+                        </div>
+                    </div>
+                </form>
+            </header-search>
+        </div>
+    </div>
+    <div class="search-modal__overlay">
+        <span class="visually-hidden">{{ 'accessibility.close' | t }}</span>
+    </div>
+</div>

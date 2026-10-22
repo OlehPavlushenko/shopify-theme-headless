@@ -1,0 +1,179 @@
+{% liquid
+    assign new_badge = settings.new_badge
+    assign add_btn = settings.enable_add_btn
+    assign btn = settings.btn
+    assign variant_type = settings.variant
+    assign prod_img_size = settings.prod_img_size
+    assign secondary_image = settings.show_secondary_image
+    assign notify_me = settings.notify_me
+    assign price_variant = settings.price_variant
+
+    assign price_variant = false
+    if btn == 'quick'
+        assign price_variant = true
+    endif
+
+    assign url = canonical_url | url_decode | split: '?'
+    assign url = url[1] | split: '='
+%}
+
+{%- if url != blank -%}
+    <div class="js-page-block">
+        <div class="main-compare-page__table" id="main-compare-page-table">
+            <div class="main-compare-page__head compare-head-js">
+                <div class="main-compare-page__head--item item-main"><span>Main block</span></div>
+                <div class="main-compare-page__head--item item-desc item-bg">Description</div>
+                <div class="main-compare-page__head--item item-rating">Rating</div>
+                <div class="main-compare-page__head--item item-vendor item-bg">Vendor</div>
+                <div class="main-compare-page__head--item item-available">Availability</div>
+                <div class="main-compare-page__head--item item-type item-bg">Product Type</div>
+                <div class="main-compare-page__head--item item-option-first">Color</div>
+                <div class="main-compare-page__head--item item-option-second item-bg">Size</div>
+                <div class="main-compare-page__head--item item-option-third">Material</div>
+                <div class="main-compare-page__head--item item-tags item-bg">Tag</div>
+            </div>
+            <div class="main-compare-page__body">
+                <div
+                    class="main-compare-page__slider swiper-container js-swiper"
+                >
+                    <div class="main-compare-page__items swiper-wrapper" tabindex="0">
+                        {%- for item in url -%}
+                            {% if item != 'handle' %}
+                                {%- assign product = all_products[item] -%}
+                                <div class="main-compare-page__item js-card-item swiper-slide">
+                                    <div class="main-compare-page__body--item item-main">
+                                        {% render 'card-product',
+                                            product: product,
+                                            show_vendor: false,
+                                            show_rating: false,
+                                            new_badge: new_badge,
+                                            show_quantity: false,
+                                            use_variant: price_variant,
+                                            variant_type: variant_type,
+                                            add_btn: add_btn,
+                                            btn: btn,
+                                            img_size: prod_img_size,
+                                            secondary_image: secondary_image,
+                                            notify_me: notify_me,
+                                            image_custom: false,
+                                            fill: false
+                                        %}
+                                    </div>
+                                    <div class="main-compare-page__body--item item-desc item-bg">
+                                        {{ product.description | strip_html | truncate: 120 }}
+                                    </div>
+                                    <div class="main-compare-page__body--item item-rating">
+                                        {%- if product.metafields.reviews.rating.value != blank -%}
+                                            {% render 'card-rating', product: product %}
+                                        {%- else -%}
+                                            -
+                                        {%- endif -%}
+                                    </div>
+                                    <div class="main-compare-page__body--item item-vendor item-bg">
+                                        {{ product.vendor }}
+                                    </div>
+                                    <div class="main-compare-page__body--item item-available">
+                                        {% liquid
+                                            assign sold_out = true
+                                            if product.available
+                                                assign sold_out = false
+                                            endif
+                                        %}
+                                        {%- for var in product.variants -%}
+                                            {%- assign varQ = var.inventory_quantity -%}
+                                        {%- endfor -%}
+                                        <div class="card-product__stock">
+                                            <span
+                                                class="card-product__icon card-product__stock--{% if sold_out %}nostock {% elsif varQ < 10 and sold_out == false %}lowstock{% else %}normalstock{% endif %} js-card-product-stock"
+                                            ></span>
+                                            <span class="stock-level">
+                                                {{- 'products.product.stock_level' | t -}}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="main-compare-page__body--item item-type item-bg">
+                                        {{ product.type }}
+                                    </div>
+                                    <div class="main-compare-page__body--item item-option-first">
+                                        {% if product.options[0] != 'Title' -%}
+                                            {% for variant in product.options_with_values %}
+                                                {% if variant.position == 1 %}
+                                                    {% for value in variant.values %}
+                                                        {%- if forloop.last -%}
+                                                            {{- value -}}
+                                                        {%- else -%}
+                                                            {{- value -}}
+                                                            ;
+                                                        {%- endif -%}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {%- endfor %}
+                                        {%- else %}
+                                            -
+                                        {%- endif %}
+                                    </div>
+                                    <div class="main-compare-page__body--item item-option-second item-bg">
+                                        {% if product.options[0] != 'Title' and product.options[1] != blank -%}
+                                            {% for variant in product.options_with_values %}
+                                                {% if variant.position == 2 %}
+                                                    {% for value in variant.values %}
+                                                        {%- if forloop.last -%}
+                                                            {{- value -}}
+                                                        {%- else -%}
+                                                            {{- value -}}
+                                                            ;
+                                                        {%- endif -%}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {%- endfor %}
+                                        {%- else %}
+                                            -
+                                        {%- endif %}
+                                    </div>
+                                    <div class="main-compare-page__body--item item-option-third">
+                                        {% if product.options[0] != 'Title'
+                                            and product.options[1] != blank
+                                            and product.options[2] != blank
+                                        -%}
+                                            {% for variant in product.options_with_values %}
+                                                {% if variant.position == 3 %}
+                                                    {% for value in variant.values %}
+                                                        {%- if forloop.last -%}
+                                                            {{- value -}}
+                                                        {%- else -%}
+                                                            {{- value -}}
+                                                            ;
+                                                        {%- endif -%}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {%- endfor %}
+                                        {%- else %}
+                                            -
+                                        {%- endif %}
+                                    </div>
+                                    <div class="main-compare-page__body--item item-tags item-bg">
+                                        {% if product.tags.size > 0 %}
+                                            {% for value in product.tags %}
+                                                {%- if forloop.last -%}
+                                                    {{- value -}}
+                                                {%- else -%}
+                                                    {{- value -}}
+                                                    ;
+                                                {%- endif -%}
+                                            {% endfor %}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {%- endfor -%}
+                    </div>
+                    <div class="swiper-button-prev">{% render 'icons-svg', icons: 'prev' %}</div>
+                    <div class="swiper-button-next">{% render 'icons-svg', icons: 'next' %}</div>
+                    <div class="swiper-pagination featured-posts__pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{%- endif -%}

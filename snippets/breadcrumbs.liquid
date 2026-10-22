@@ -1,0 +1,102 @@
+{% if template.name != 'index' %}
+    <div class="breadcrumbs">
+        <div class="wrapper">
+            <ul>
+                <li>
+                    <a href="/">{{ 'breadcrumbs.home' | t }}</a>
+                </li>
+
+                {% case template %}
+                    {% when 'list-collections' %}
+                        <li>
+                            <span>{{ 'breadcrumbs.collections' | t }}</span>
+                        </li>
+
+                    {% when 'collection' %}
+                        {% if current_tags %}
+                            <li>
+                                <a href="/collections/">{{ 'breadcrumbs.collections' | t }}</a>
+                            </li>
+                            <li>
+                                <a href="{{ collection.url }}">{{ collection.title }}</a>
+                            </li>
+                            <li>
+                                <span>{{ current_tags }}</span>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="/collections/">{{ 'breadcrumbs.collections' | t }}</a>
+                            </li>
+                            <li>
+                                <span>{{ collection.title }}</span>
+                            </li>
+                        {% endif %}
+
+                    {% when 'product' %}
+                        {% if collection.id.size > 0 %}
+                            <li>
+                                <a href="/collections/">{{ 'breadcrumbs.collections' | t }}</a>
+                            </li>
+                            <li>
+                                <a href="{{ collection.url }}">{{ collection.title }}</a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="/collections/all">{{ 'breadcrumbs.products' | t }}</a>
+                            </li>
+                        {% endif %}
+                        <li>
+                            <span>{{ product.title }}</span>
+                        </li>
+
+                    {% when 'blog' %}
+                        {% if canonical_url contains 'tagged' %}
+                            <li>
+                                <a href="{{ blog.url }}">{{ blog.title }}</a>
+                            </li>
+                            <li>
+                                <span>{{ current_tags }}</span>
+                            </li>
+                        {% else %}
+                            <li>
+                                <span>{{ blog.title }}</span>
+                            </li>
+                        {% endif %}
+
+                    {% when 'article' %}
+                        <li>
+                            <a href="{{ blog.url }}">{{ blog.title }}</a>
+                        </li>
+                        <li>
+                            <span>{{ article.title }}</span>
+                        </li>
+
+                    {% when 'search' %}
+                        <li>
+                            <span>
+                                {{- 'breadcrumbs.search' | t -}}
+                                {%- if search.terms %}: {{ search.terms }}{% endif -%}
+                            </span>
+                        </li>
+
+                    {% when 'customers/addresses', 'customers/order' %}
+                        <li>
+                            <a href="/account">{{ 'breadcrumbs.account' | t }}</a>
+                        </li>
+                        <li>
+                            <span>{{ page_title }}</span>
+                        </li>
+                    {% when 'page', 'page.contact', 'cart' %}
+                        <li>
+                            <span>{{ page_title }}</span>
+                        </li>
+
+                    {% else %}
+                        <li>
+                            <span>{{ page_title }}</span>
+                        </li>
+                {% endcase %}
+            </ul>
+        </div>
+    </div>
+{%- endif %}

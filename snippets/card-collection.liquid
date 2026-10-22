@@ -1,0 +1,29 @@
+<div class="{{columns_mobile_class}} {{ columns_class }} list-collections-grid__item">
+    <div class="card-collection">
+        <div class="card-collection__media-wrapper ">
+            <picture class="card-collection__media media__size--{{ img_size }} media">
+                <a href="{{ collection.url }}"
+                    ><span class="visually-hidden">
+                        {{ collection.title }}
+                    </span></a
+                >
+                {% render 'image', image_box: collection.featured_image, image_box_class: 'card-collection__image' %}
+            </picture>
+        </div>
+
+        <div class="card-collection__content card-collection__content--{{ text_alignment }}">
+            <h3>
+                <a href="{{ collection.url }}">
+                    {{ collection.title | escape }}
+                    {% render 'icons-svg', icons: 'arrow' %}
+                </a>
+            </h3>
+            {% if count %}
+                <h5>
+                    {{ collection.all_products_count }}
+                    {{ 'sections.collections.products' | t }}
+                </h5>
+            {% endif %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+{{ 'section-main-customer.css' | asset_url | stylesheet_tag }}
+{{ 'component-login.css' | asset_url | stylesheet_tag }}
+{{ 'component-account-tabs.css' | asset_url | stylesheet_tag }}
+
+<tab-element class="page-width" data-mobile-only="true">
+    <div class="account-tablist js-tablist" role="tablist">
+        <button
+            type="button"
+            class="account-tablist__item link active js-tab"
+            role="tab"
+            aria-selected="true"
+            id="login-tab"
+            aria-controls="login-panel"
+        >
+            {{- 'customer.log_in' | t -}}
+        </button>
+        <button
+            type="button"
+            class="account-tablist__item link js-tab"
+            role="tab"
+            aria-selected="false"
+            id="register-tab"
+            aria-controls="register-panel"
+        >
+            {{- 'customer.sign_up' | t -}}
+        </button>
+    </div>
+
+    <div id="login-panel" class="account-tab js-tabpanel" role="tabpanel" aria-labelledby="login-tab" tabindex="-1">
+        {% render 'login' %}
+    </div>
+    <div id="register-panel" class="account-tab hidden js-tabpanel" role="tabpanel" aria-labelledby="register-tab">
+        {% render 'register' %}
+    </div>
+</tab-element>

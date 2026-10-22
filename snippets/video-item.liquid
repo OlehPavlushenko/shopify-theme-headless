@@ -1,0 +1,133 @@
+{% if control_audio == true %}
+    {% assign audio = 1 %}
+{% else %}
+    {% assign audio = 0 %}
+{% endif %}
+
+{% if loop_video == true %}
+    {% assign loop = 1 %}
+{% else %}
+    {% assign loop = 0 %}
+{% endif %}
+
+{% if autoplay == true %}
+    <div class="video-media">
+        {% case type %}
+            {% when 'files' %}
+                <video
+                    class="js-link hero__media html5"
+                    title="{{ title | escape }}"
+                    autoplay
+                    playsinline
+                    loop
+                    muted
+                    disablePictureInPicture
+                    width="1440"
+                    controlsList="noplaybackrate nodownload"
+                >
+                    <source src="{{ video }}" type="video/mp4">
+                </video>
+            {% when 'vimeo' %}
+                <iframe
+                    title="{{ title | escape }}"
+                    src="https://player.vimeo.com/video/{{ video }}?autoplay=1&loop={{ loop }}&autopause=0&muted=1&controls=0&playsinline=1"
+                    class="js-vimeo js-link iframe"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen
+                    frameborder="0"
+                ></iframe>
+            {% when 'youtube' %}
+                <iframe
+                    title="{{ title | escape }}"
+                    src="https://www.youtube.com/embed/{{ video }}?autoplay=1&loop={{ loop }}&playlist={{ video}}&mute=1&cc_load_policy=0&controls=0&disablekb=0&fs=1&iv_load_policy=1&modestbranding=0&playsinline=1&rel=1&enablejsapi=1&widgetid=1"
+                    class="js-youtube js-link iframe"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen
+                    frameborder="0"
+                ></iframe>
+        {% endcase %}
+    </div>
+{% else %}
+    <deferred-media class="video-media no-js-hidden" data-media-id="{{ section.id }}">
+        <button
+            id="Deferred-Poster-Modal-{{ section.id }}"
+            class="video-media__poster"
+            type="button"
+        >
+            {%- if image != blank -%}
+                {%- capture image_srcset -%}
+                {%- if image.width >= 375 -%}{{ image | image_url: width: 375 }} 375w,{%- endif -%}
+                {%- if image.width >= 550 -%}{{ image | image_url: width: 550 }} 550w,{%- endif -%}
+                {%- if image.width >= 750 -%}{{ image | image_url: width: 750 }} 750w,{%- endif -%}
+                {%- if image.width >= 1100 -%}{{ image | image_url: width: 1100 }} 1100w,{%- endif -%}
+                {%- if image.width >= 1500 -%}{{ image | image_url: width: 1500 }} 1500w,{%- endif -%}
+                {%- if image.width >= 1780 -%}{{ image | image_url: width: 1780 }} 1780w,{%- endif -%}
+                {%- if image.width >= 2000 -%}{{ image | image_url: width: 2000 }} 2000w,{%- endif -%}
+                {%- if image.width >= 2800 -%}{{ image | image_url: width: 2800 }} 2800w{%- endif -%}
+                {%- endcapture -%}
+
+                <img
+                    srcset="{{ image_srcset }}"
+                    src="{{ image | image_url: width: 1440 }}"
+                    sizes="100vw"
+                    alt="{{ title | escape }}"
+                    loading="lazy"
+                    width="{{ image.width }}"
+                    height="{{ image.height }}"
+                    class="video-media__image"
+                >
+            {%- else -%}
+                {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+            <span class="video-media__poster-button">
+                {% render 'icons-svg', icons: 'play' %}
+            </span>
+        </button>
+        {% case type %}
+            {% when 'files' %}
+                <template>
+                    <video
+                        title="{{ title | escape }}"
+                        class="hero__media js-link html5"
+                        disablePictureInPicture
+                        controls
+                        autoplay
+                        muted
+                        defaultmuted
+                        playsinline
+                        {% if loop == 1 %}
+                            loop
+                        {% endif %}
+                        preload="auto"
+                        controlsList="noplaybackrate nodownload"
+                        width="1440"
+                        data-muted="{{ control_audio }}"
+                    >
+                        <source src="{{ video }}" type="video/mp4">
+                    </video>
+                </template>
+            {% when 'vimeo' %}
+                <template>
+                    <iframe
+                        src="https://player.vimeo.com/video/{{ video }}?autoplay=1&loop={{ loop }}&autopause=0&muted={{ audio }}&controls=1&playsinline=1"
+                        class="js-vimeo js-link iframe"
+                        allow="autoplay; encrypted-media"
+                        allowfullscreen
+                        frameborder="0"
+                        title="{{ title | escape }}"
+                    ></iframe>
+                </template>
+            {% when 'youtube' %}
+                <template>
+                    <iframe
+                        src="https://www.youtube.com/embed/{{ video }}?autoplay=1&loop={{ loop }}&playlist={{ video}}&mute={{ audio }}&cc_load_policy=0&controls=1&disablekb=0&fs=1&iv_load_policy=1&modestbranding=0&playsinline=1&rel=1&enablejsapi=1&widgetid=1"
+                        class="js-youtube js-link iframe"
+                        allow="autoplay; encrypted-media"
+                        allowfullscreen
+                        frameborder="0"
+                        title="{{ title | escape }}"
+                    ></iframe>
+                </template>
+        {% endcase %}
+    </deferred-media>
+{% endif %}

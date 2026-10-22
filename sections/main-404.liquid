@@ -1,0 +1,227 @@
+{% liquid
+    assign sub_heading = section.settings.collections_sub_heading
+    assign heading = section.settings.collections_title
+    assign text = section.settings.collections_text
+    assign btn = section.settings.btn
+    assign link = section.settings.link
+    assign head_alignment = section.settings.head_alignment
+    assign image = section.settings.image
+    assign mobile_image = section.settings.image_mobile
+    assign full_width = section.settings.full_width
+
+    assign overlay_color = section.settings.overlay_color | default: 'transparent'
+    assign overlay_color_opacity = section.settings.opacity | times: 0.1
+    assign text_color = section.settings.text_color | default: 'inherit'
+    assign title_color = section.settings.title_color | default: 'inherit'
+    assign sub_title_color = section.settings.sub_title_color | default: 'inherit'
+    assign pad_top = section.settings.padding_top
+    assign pad_bot = section.settings.padding_bottom
+%}
+{%- capture styles -%}
+    --sub_title_color-main-head: {{ sub_title_color }};
+    --title-color-main-head: {{ title_color }};
+    --text-color-main-head: {{ text_color }};
+    --overlay-color-main-head: {{ overlay_color }};
+    --overlay-color-opacity-main-head: {{ overlay_color_opacity }};
+    --pad-top-main-head: {{ pad_top }}px;
+    --pad-bot-main-head: {{ pad_bot }}px;
+{%- endcapture -%}
+
+{%- assign styles = styles | strip_newlines -%}
+
+{%- capture image_desktop -%}
+{%- if image.width >= 1100 -%}{{ image | image_url: width: 1100 }} 1100w,{%- endif -%}
+{%- if image.width >= 1500 -%}{{ image | image_url: width: 1500 }} 1500w,{%- endif -%}
+{%- if image.width >= 1780 -%}{{ image | image_url: width: 1780 }} 1780w,{%- endif -%}
+{%- if image.width >= 2000 -%}{{ image | image_url: width: 2000 }} 2000w,{%- endif -%}
+{%- if image.width >= 2800 -%}{{ image | image_url: width: 2800 }} 2800w{%- endif -%}
+{%- endcapture -%}
+
+{%- capture image_mobile -%}
+{%- if mobile_image.width >= 375 -%}{{ mobile_image | image_url: width: 375 }} 375w,{%- endif -%}
+{%- if mobile_image.width >= 550 -%}{{ mobile_image | image_url: width: 550 }} 550w,{%- endif -%}
+{%- if mobile_image.width >= 750 -%}{{ mobile_image | image_url: width: 750 }} 750w,{%- endif -%}
+{%- endcapture -%}
+
+{{ 'main-head.css' | asset_url | stylesheet_tag }}
+
+<div
+    class="main-head main-head-404 full_width--{{ full_width }}"
+    style="{{ styles }}"
+>
+    <div class="main-head__head head-alignment--{{ head_alignment }}">
+        {% if image != blank %}
+            <picture class="main-head__media">
+                {% if mobile_image != blank %}
+                    <source srcset="{{ image_mobile }}" media="(max-width: 749px)">
+                {% endif %}
+
+                <img
+                    srcset="{{ image_desktop }}"
+                    src="{{ image | image_url: width: 1440 }}"
+                    class="main-head__media--image"
+                    sizes="100vw"
+                    alt="{{ image.alt | escape }}"
+                    width="{{ image.width }}"
+                    height="{{ image.width | divided_by: image.aspect_ratio }}"
+                    loading="lazy"
+                >
+            </picture>
+        {% endif %}
+        <div class="main-head__wrapper container">
+            {% if sub_heading != blank or heading != blank or text != blank %}
+                <div class="row">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="main-head__content">
+                            {% if sub_heading != blank %}
+                                <h5 class="main-head__sub_heading h5">
+                                    {{ sub_heading | escape }}
+                                </h5>
+                            {% endif %}
+                            {% if heading != blank %}
+                                <h2 class="main-head__heading h0">
+                                    {{ heading | escape }}
+                                </h2>
+                            {% endif %}
+                            {% if text != blank %}
+                                <div class="main-head__text rte--large">
+                                    {{ text }}
+                                </div>
+                            {% endif %}
+                            {% if link != blank %}
+                                <a href="{{ link }}" class="button btn--arrow">{{ btn }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% schema %}
+{
+    "name": "Main Head",
+    "class": "section",
+    "settings": [
+        {
+            "type": "text",
+            "id": "collections_sub_heading",
+            "default": "Image banner",
+            "label": "Sub Heading"
+        },
+        {
+            "type": "text",
+            "id": "collections_title",
+            "default": "Image banner",
+            "label": "Heading"
+        },
+        {
+            "type": "richtext",
+            "id": "collections_text",
+            "label": "Heading"
+        },
+        {
+            "type": "text",
+            "id": "btn",
+            "default": "Return to collections",
+            "label": "Button"
+        },
+        {
+            "type": "url",
+            "id": "link",
+            "label": "Link"
+        },
+        {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Desktop image"
+        },
+        {
+            "type": "image_picker",
+            "id": "image_mobile",
+            "label": "Mobile image"
+        },
+        {
+            "type": "select",
+            "id": "head_alignment",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "right",
+                    "label": "Right"
+                }
+            ],
+            "default": "left",
+            "label": "Head Text alignment"
+        },
+
+        {
+            "type": "paragraph",
+            "content": "Style options"
+        },
+        {
+            "type": "color",
+            "id": "overlay_color",
+            "label": "Overlay Color"
+        },
+        {
+            "type": "range",
+            "label": "Background opacity",
+            "id": "opacity",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "default": 10
+        },
+        {
+            "type": "color",
+            "id": "sub_title_color",
+            "label": "Sub Title color"
+        },
+        {
+            "type": "color",
+            "id": "title_color",
+            "label": "Title color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text color"
+        },
+        {
+            "type": "checkbox",
+            "id": "full_width",
+            "default": false,
+            "label": "Enabled full width?"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding top",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding bottom",
+            "default": 30
+        }
+    ]
+}
+{% endschema %}

@@ -1,0 +1,337 @@
+{% liquid
+    assign blocks = section.blocks
+    assign sub_heading = section.settings.sub_heading
+    assign heading = section.settings.title
+    assign text = section.settings.text
+    assign head_alignment = section.settings.head_alignment
+    assign full_width = section.settings.full_width
+
+    assign columns_desktop = section.settings.columns_desktop
+    assign columns_mobile = section.settings.columns_mobile
+    assign content_alignment = section.settings.content_alignment
+
+    assign bg_color = section.settings.bg_color | default: 'transparent'
+    assign text_color = section.settings.text_color | default: 'inherit'
+    assign title_color = section.settings.title_color | default: 'inherit'
+    assign sub_title_color = section.settings.sub_title_color | default: 'inherit'
+
+    assign text_post_color = section.settings.text_post_color | default: 'inherit'
+    assign title_post_color = section.settings.title_post_color | default: 'inherit'
+    assign link_post_color = section.settings.link_post_color | default: 'inherit'
+
+    assign img_size = section.settings.img_size
+    assign width = section.settings.width
+    assign pad_top = section.settings.padding_top
+    assign pad_bot = section.settings.padding_bottom
+%}
+
+{% capture styles %}
+    --sub_title_color-featured-posts: {{ sub_title_color }};
+    --title-color-featured-posts: {{ title_color }};
+    --text-color-featured-posts: {{ text_color }};
+    --title-post-color-featured-posts: {{ title_post_color }};
+    --text-post-color-featured-posts: {{ text_post_color }};
+    --link-post-color-featured-posts: {{ link_post_color }};
+    --background-color-featured-posts: {{ bg_color }};
+    --width-featured-posts: {{ width }}px;
+    --pad-top-featured-posts: {{ pad_top }}px;
+    --pad-bot-featured-posts: {{ pad_bot }}px;
+{% endcapture %}
+
+{%- assign styles = styles | strip_newlines -%}
+
+{{ 'section-featured-posts.css' | asset_url | stylesheet_tag }}
+
+{% if blocks.size > 0 %}
+    <div
+        class="featured-posts full_width--{{ full_width }} content--{{ content_alignment }}"
+        style="{{ styles }}"
+    >
+        <div class="page-width container">
+            <swiper-section>
+                {% if sub_heading != blank or heading != blank or text != blank %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="featured-posts__head head-alignment--{{ head_alignment }}">
+                                {% if sub_heading != blank %}
+                                    <h5 class="featured-posts__sub_heading h5">
+                                        {{ sub_heading | escape }}
+                                    </h5>
+                                {% endif %}
+                                {% if heading != blank %}
+                                    <h3 class="featured-posts__heading h3">
+                                        {{ heading | escape }}
+                                    </h3>
+                                {% endif %}
+                                {% if text != blank %}
+                                    <div class="featured-posts__text rte">
+                                        {{ text }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                <div
+                    class="swiper-container js-swiper"
+                    data-count-desktop="{{ columns_desktop }}"
+                    data-count-tablet="3"
+                    data-count-mobile="{{ columns_mobile }}"
+                >
+                    <ul class="featured-posts__list columns__desktop--{{ columns_desktop }} columns__mobile--{{ columns_mobile }} swiper-wrapper">
+                        {%- for block in blocks -%}
+                            {% liquid
+                                assign post = block.settings.post
+                                assign fill_image = block.settings.fill_image
+                                assign button = block.settings.button
+                            %}
+
+                            <li class="featured-posts__item swiper-slide">
+                                {% render 'card-post',
+                                    article: post,
+                                    img_size: img_size,
+                                    fill: fill_image,
+                                    label: button
+                                %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="swiper-button-prev js-button-prev">{% render 'icons-svg', icons: 'prev' %}</div>
+                    <div class="swiper-button-next js-button-next">{% render 'icons-svg', icons: 'next' %}</div>
+                    <div class="swiper-pagination featured-posts__pagination js-pagination"></div>
+                </div>
+            </swiper-section>
+        </div>
+    </div>
+{% endif %}
+
+{% schema %}
+{
+    "name": "Featured Posts",
+    "class": "index-section",
+    "tag": "section",
+    "disabled_on": {
+        "groups": ["header", "footer"]
+    },
+    "settings": [
+        {
+            "type": "text",
+            "id": "sub_heading",
+            "default": "Image banner",
+            "label": "Sub Heading"
+        },
+        {
+            "type": "text",
+            "id": "title",
+            "default": "Featured Posts",
+            "label": "Title"
+        },
+        {
+            "type": "richtext",
+            "id": "text",
+            "label": "Heading"
+        },
+        {
+            "type": "select",
+            "id": "head_alignment",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "right",
+                    "label": "Right"
+                }
+            ],
+            "default": "left",
+            "label": "Head Text alignment"
+        },
+        {
+            "type": "range",
+            "id": "columns_desktop",
+            "min": 2,
+            "max": 4,
+            "step": 1,
+            "default": 4,
+            "label": "Number of columns on desktop"
+        },
+        {
+            "type": "select",
+            "id": "columns_mobile",
+            "default": "2",
+            "label": "Number of columns on mobile",
+            "options": [
+                {
+                    "value": "1",
+                    "label": "1 column"
+                },
+                {
+                    "value": "2",
+                    "label": "2 columns"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "content_alignment",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "right",
+                    "label": "Right"
+                }
+            ],
+            "default": "left",
+            "label": "Text alignment"
+        },
+        {
+            "type": "paragraph",
+            "content": "Style option Head"
+        },
+        {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Background color"
+        },
+        {
+            "type": "color",
+            "id": "sub_title_color",
+            "label": "Sub Head color"
+        },
+        {
+            "type": "color",
+            "id": "title_color",
+            "label": "Head color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "head Text color"
+        },
+        {
+            "type": "select",
+            "id": "img_size",
+            "label": "Image size",
+            "options": [
+                {
+                    "value": "cropped",
+                    "label": "Cropped"
+                },
+                {
+                    "value": "landscape",
+                    "label": "Landscape"
+                },
+                {
+                    "value": "square",
+                    "label": "Square"
+                },
+                {
+                    "value": "portrait",
+                    "label": "Portrait"
+                },
+                {
+                    "value": "circle",
+                    "label": "Circle"
+                }
+            ]
+        },
+        {
+            "type": "checkbox",
+            "id": "full_width",
+            "default": false,
+            "label": "Enabled full width?"
+        },
+        {
+            "type": "range",
+            "id": "width",
+            "min": 1000,
+            "max": 1800,
+            "step": 40,
+            "default": 1200,
+            "unit": "px",
+            "label": "Section Width"
+        },
+        {
+            "type": "paragraph",
+            "content": "Style options Post"
+        },
+        {
+            "type": "color",
+            "id": "title_post_color",
+            "label": "Title post color"
+        },
+        {
+            "type": "color",
+            "id": "text_post_color",
+            "label": "Text post color"
+        },
+        {
+            "type": "color",
+            "id": "link_post_color",
+            "label": "Link post color"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding top",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding bottom",
+            "default": 30
+        }
+    ],
+    "blocks": [
+        {
+            "name": "Post ",
+            "type": "post",
+            "settings": [
+                {
+                    "type": "article",
+                    "id": "post",
+                    "label": "Post"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "fill_image",
+                    "default": false,
+                    "label": "Fill Image"
+                },
+                {
+                    "type": "text",
+                    "id": "button",
+                    "default": "Read More",
+                    "label": "Button"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Featured Posts"
+        }
+    ]
+}
+{% endschema %}

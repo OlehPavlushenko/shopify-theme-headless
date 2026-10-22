@@ -1,0 +1,158 @@
+<div class="customer login">
+    <h1 id="recover" class="account-tab__title h3">
+        {{ 'customer.recover_password.title' | t }}
+    </h1>
+    <div>
+        <p class="recover-password__text h5">
+            {{ 'customer.recover_password.subtext' | t }}
+        </p>
+
+        {%- form 'recover_customer_password' -%}
+            <input type="hidden" name="challenge" value="false">
+            {%- liquid
+                assign recover_success = form.posted_successfully?
+                assign mod_recover_label = 'customer.login_page.email' | t
+            -%}
+
+            {% render 'input',
+                mod_input_id: 'RecoverEmail',
+                mod_input_name: 'email',
+                mod_input_type: 'email',
+                mod_input_label: mod_recover_label,
+                mod_custom_container_classes: 'field',
+                mod_autocomplete: 'email',
+                mod_form: form
+            %}
+
+            {%- if form.errors -%}
+                <small id="RecoverEmail-email-error" class="form__message error-message error-message--input">
+                    {% render 'icon-error' %}
+                    {{ form.errors.messages.form }}
+                </small>
+            {%- endif -%}
+
+            <button class="account-tab__submit">
+                {{ 'customer.login_page.submit' | t }}
+            </button>
+
+            <a href="#login">
+                {{ 'customer.login_page.cancel' | t }}
+            </a>
+        {%- endform -%}
+    </div>
+
+    <div id="login" class="visually-hidden"></div>
+
+    <div>
+        {%- if recover_success == true -%}
+            <h3 class="h3">
+                {{ 'customer.recover_password.title_success' | t }}
+            </h3>
+            <h5>{{ 'customer.recover_password.success' | t }}</h5>
+            <h5>{{ 'customer.recover_password.success_2' | t }}</h5>
+        {%- endif -%}
+        {%- if recover_success != true -%}
+            {%- form 'customer_login', novalidate: 'novalidate' -%}
+                <input type="hidden" name="challenge" value="false">
+                {% unless template.name == 'register' %}
+                    {%- if form.errors -%}
+                        <div class="form-error form__error-heading form__message">
+                            <h2 class="form-status error-message" tabindex="-1" autofocus>
+                                <span class="visually-hidden">{{ 'accessibility.error' | t }} </span>
+                                {% render 'icon-error' %}
+                                {{ 'templates.contact.form.error_heading' | t }}
+                                {{ form.errors.messages.form }}
+                            </h2>
+                        </div>
+                    {%- endif -%}
+                {% endunless %}
+
+                <div class="login-form__header-group">
+                    <h1 class="account-tab__title h3" tabindex="-1">
+                        {{ 'customer.login_page.sign_in' | t }}
+                    </h1>
+
+                    {%- if form.password_needed -%}
+                        <a href="#recover" class="login__recover-password --desktop">
+                            {{ 'customer.login_page.forgot_password' | t }}
+                        </a>
+                    {% endif %}
+                </div>
+
+                {% liquid
+                    assign mod_email_label = 'customer.login_page.email' | t
+
+                    if template.name != 'register' and form.errors.messages.form contains 'email'
+                        assign mod_email_error = true
+                    else
+                        assign mod_email_error = false
+                    endif
+                %}
+
+                {% render 'input',
+                    mod_input_id: 'CustomerEmail',
+                    mod_input_name: 'customer[email]',
+                    mod_input_type: 'email',
+                    mod_is_required: true,
+                    mod_input_label: mod_email_label,
+                    mod_custom_container_classes: 'field',
+                    mod_autocomplete: 'email',
+                    mod_has_error: mod_email_error,
+                    mod_form: form
+                %}
+
+                {%- if form.password_needed -%}
+                    {% liquid
+                        assign mod_password_label = 'customer.login_page.password' | t
+
+                        if template.name != 'register' and form.errors.messages.form contains 'password'
+                            assign mod_password_error = true
+                        else
+                            assign mod_password_error = false
+                        endif
+                    %}
+
+                    {% render 'input',
+                        mod_input_id: 'CustomerPassword',
+                        mod_input_name: 'customer[password]',
+                        mod_input_type: 'password',
+                        mod_is_required: true,
+                        mod_input_label: mod_password_label,
+                        mod_custom_container_classes: 'field',
+                        mod_autocomplete: 'current-password',
+                        mod_form: form,
+                        mod_has_error: mod_password_error
+                    %}
+                {%- endif -%}
+
+                <button class="login-form__submit account-tab__submit">
+                    {{ 'customer.login_page.sign_in' | t }}
+                </button>
+
+                {%- if form.password_needed -%}
+                    <a href="#recover" class="login__recover-password --mobile">
+                        {{ 'customer.login_page.forgot_password' | t }}
+                    </a>
+                {% endif %}
+            {%- endform -%}
+        {% endif %}
+    </div>
+</div>
+<script>
+    document.querySelector('a[href="#recover"]').addEventListener('click', function (event) {
+        event.preventDefault()
+
+        document.querySelector('#login-panel').classList.add('recover-open')
+    })
+    document.querySelector('a[href="#login"]').addEventListener('click', function (event) {
+        event.preventDefault()
+
+        document.querySelector('#login-panel').classList.remove('recover-open')
+    })
+    if (window.location.hash === '#recover') {
+        document.querySelector('#login-panel').classList.add('recover-open')
+        setTimeout(() => {
+            window.scrollTo(0, 0)
+        }, '1')
+    }
+</script>

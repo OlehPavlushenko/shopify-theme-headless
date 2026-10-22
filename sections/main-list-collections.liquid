@@ -1,0 +1,273 @@
+{%- liquid
+    case section.settings.sort
+        when 'products_high', 'products_low'
+            assign collections = collections | sort: 'all_products_count'
+        when 'date', 'date_reversed'
+            assign collections = collections | sort: 'published_at'
+    endcase
+
+    if section.settings.sort == 'products_high' or section.settings.sort == 'date_reversed' or section.settings.sort == 'alphabetical_reversed'
+        assign collections = collections | reverse
+    endif
+-%}
+
+{% liquid
+    assign limit_collections = section.settings.limit_collections
+    assign full_width = section.settings.full_width
+
+    assign background_color = section.settings.block_color | default: 'transparent'
+    assign text_color = section.settings.text_color | default: 'inherit'
+    assign title_color = section.settings.title_color | default: 'inherit'
+
+    assign pad_top = section.settings.padding_top
+    assign pad_bot = section.settings.padding_bottom
+%}
+
+{%- capture styles -%}
+    --title-color-main-list-collections: {{ title_color }};
+    --text-color-main-list-collections: {{ text_color }};
+    --background-color-main-list-collections: {{ background_color }};
+    --pad-top-main-list-collections: {{ pad_top }}px;
+    --pad-bot-main-list-collections: {{ pad_bot }}px;
+
+{%- endcapture -%}
+
+{%- assign styles = styles | strip_newlines -%}
+
+{{ 'section-main-list-collections.css' | asset_url | stylesheet_tag }}
+
+<div
+    class="collections-default full_width--{{ full_width }}"
+    style="{{ styles }}"
+>
+    <div class="collections-default__wrapper container">
+        {%- paginate collections by limit_collections -%}
+            {% liquid
+                assign img_size = section.settings.img_size
+                assign text_alignment = section.settings.content_alignment
+
+                assign count = section.settings.count_products
+                assign columns_desktop = section.settings.columns_desktop
+                assign columns_mobile = section.settings.columns_mobile
+
+                if columns_desktop == 4
+                    assign columns_class = 'col-md-6 col-lg-3'
+                elsif columns_desktop == 6
+                    assign columns_class = 'col-md-4 col-lg-2'
+                elsif columns_desktop == 5
+                    assign columns_class = 'col-md-custom col-lg-custom'
+                elsif columns_desktop == 3
+                    assign columns_class = 'col-md-4 col-lg-4'
+                else
+                    assign columns_class = 'col-md-6 col-lg-6'
+                endif
+
+                if columns_mobile == '2'
+                    assign columns_mobile_class = 'col-6 col-sm-6'
+                else
+                    assign columns_mobile_class = 'col-12 col-sm-6'
+                endif
+            %}
+            <div class="row list-collections-grid">
+                {%- for collection in collections -%}
+                    {% render 'card-collection',
+                        collection: collection,
+                        columns_mobile_class: columns_mobile_class,
+                        columns_class: columns_class,
+                        text_alignment: text_alignment,
+                        img_size: img_size,
+                        count: count
+                    %}
+                {%- endfor -%}
+            </div>
+            <div class="list-collections-box">
+                {% render 'pagination', paginate: paginate %}
+                {%- liquid
+                    assign count = paginate.items
+                    assign item_count = paginate.page_size | times: paginate.current_page
+                    if item_count > count
+                        assign item_count = count
+                    endif
+                -%}
+                <p class="list-collections-count" role="status">
+                    {{ 'sections.collection_template.item_count_html' | t: item_count: item_count, count: count }}
+                </p>
+            </div>
+        {%- endpaginate -%}
+    </div>
+</div>
+
+{% schema %}
+{
+    "name": "Main list collections",
+    "class": "section",
+    "settings": [
+        {
+            "type": "select",
+            "id": "sort",
+            "options": [
+                {
+                    "value": "alphabetical",
+                    "label": "t:sections.main-list-collections.settings.sort.options__1.label"
+                },
+                {
+                    "value": "alphabetical_reversed",
+                    "label": "t:sections.main-list-collections.settings.sort.options__2.label"
+                },
+                {
+                    "value": "date_reversed",
+                    "label": "t:sections.main-list-collections.settings.sort.options__3.label"
+                },
+                {
+                    "value": "date",
+                    "label": "t:sections.main-list-collections.settings.sort.options__4.label"
+                },
+                {
+                    "value": "products_high",
+                    "label": "t:sections.main-list-collections.settings.sort.options__5.label"
+                },
+                {
+                    "value": "products_low",
+                    "label": "t:sections.main-list-collections.settings.sort.options__6.label"
+                }
+            ],
+            "default": "alphabetical",
+            "label": "t:sections.main-list-collections.settings.sort.label"
+        },
+
+        {
+            "type": "range",
+            "id": "limit_collections",
+            "min": 8,
+            "max": 24,
+            "step": 1,
+            "default": 8,
+            "label": "Maximum products to show"
+        },
+        {
+            "type": "range",
+            "id": "columns_desktop",
+            "min": 2,
+            "max": 6,
+            "step": 1,
+            "default": 4,
+            "label": "Number of columns on desktop"
+        },
+        {
+            "type": "select",
+            "id": "columns_mobile",
+            "default": "2",
+            "label": "Number of columns on mobile",
+            "options": [
+                {
+                    "value": "1",
+                    "label": "1 column"
+                },
+                {
+                    "value": "2",
+                    "label": "2 columns"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "img_size",
+            "label": "Image size",
+            "options": [
+                {
+                    "value": "cropped",
+                    "label": "Cropped"
+                },
+                {
+                    "value": "landscape",
+                    "label": "Landscape"
+                },
+                {
+                    "value": "square",
+                    "label": "Square"
+                },
+                {
+                    "value": "portrait",
+                    "label": "Portrait"
+                },
+                {
+                    "value": "circle",
+                    "label": "Circle"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "content_alignment",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "right",
+                    "label": "Right"
+                }
+            ],
+            "default": "left",
+            "label": "Text alignment"
+        },
+        {
+            "type": "paragraph",
+            "content": "Style options"
+        },
+        {
+            "type": "color",
+            "id": "block_color",
+            "label": "Background Color"
+        },
+
+        {
+            "type": "color",
+            "id": "title_color",
+            "label": "Title color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text color"
+        },
+        {
+            "type": "checkbox",
+            "id": "count_products",
+            "default": true,
+            "label": "Show count Products"
+        },
+        {
+            "type": "checkbox",
+            "id": "full_width",
+            "default": false,
+            "label": "Enabled full width?"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding top",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding bottom",
+            "default": 30
+        }
+    ]
+}
+{% endschema %}

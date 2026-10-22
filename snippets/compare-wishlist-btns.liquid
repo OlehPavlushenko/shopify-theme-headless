@@ -1,0 +1,38 @@
+<compare-wishlist>
+    <button
+        type="button"
+        name="add-to-compare"
+        id="AddToCompare-{{ product.id }}"
+        data-compare-id="{{ product.id }}"
+        data-handle="{{ product.handle }}"
+        title="{{ 'products.product.add_to_compare' | t }}"
+        class="button--secondary js-btn-compare card-product__button-compare"
+    >
+        {% render 'icons-svg', icons: 'compare' %}
+        {% render 'icons-svg', icons: 'trash' %}
+        <span class="js-add-compare-title" title="{{ 'products.product.add_to_compare' | t }}">
+            {{- 'products.product.add_to_compare' | t -}}
+        </span>
+        <span class="js-remove-compare-title" title="{{ 'products.product.remove_from_list' | t }}">
+            {{- 'products.product.remove_from_list' | t -}}
+        </span>
+    </button>
+    <button
+        type="button"
+        name="add-to-wishlist"
+        id="AddToWishlist-{{ product.id }}"
+        data-wishlist-id="{{ product.id }}"
+        data-handle="{{ product.handle }}"
+        title="{{ 'products.product.add_to_wishlist' | t }}"
+        class="button--secondary js-btn-wishlist js-tooltip card-product__button-wishlist"
+    >
+        {% render 'icons-svg', icons: 'heart' %}
+        {% render 'icons-svg', icons: 'trash' %}
+        <span class="js-add-wishlist-title" title="{{ 'products.product.add_to_wishlist' | t }}">
+            {{- 'products.product.add_to_wishlist' | t -}}
+        </span>
+        <span class="js-remove-wishlist-title" title="{{ 'products.product.remove_from_list' | t }}">
+            {{- 'products.product.remove_from_list' | t -}}
+        </span>
+    </button>
+</compare-wishlist>

@@ -1,0 +1,35 @@
+{%- comment -%}
+    Shows an error message block.
+    Props:
+    - mod_message: the message to be shown. Defaults to 'This is an error message.'
+    - mod_is_input: if the message applies to an input. Defaults to false.
+    - mod_is_inline: if the message will be shown inline. Defaults to false.
+    - mod_id: block id. Defaults to false.
+
+    Example:
+    {% render 'error-message',
+      mod_message: 'Please enter a valid email',
+      mod_is_input: true,
+      mod_is_inline: true
+    %}
+{%- endcomment -%}
+{%- liquid
+    assign error_message = mod_message | default: 'This is an error message.'
+    assign is_input = mod_is_input | default: false
+    assign is_inline = mod_is_inline | default: false
+    assign id = mod_id | default: false
+    assign img_source = 'error.svg'
+    if is_input
+        assign img_source = 'error.svg'
+    endif
+-%}
+
+<p
+    class="error-message{% if is_input %} error-message--input{% endif %}{% if is_inline %} display--inline{% endif %}"
+    {% if id %}
+        id="id{{ id }}"
+    {% endif %}
+>
+    <img src="{{ img_source | asset_url }}" alt="" loading="lazy" height="14" width="14">
+    {{ error_message }}
+</p>

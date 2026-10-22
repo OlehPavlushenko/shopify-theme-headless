@@ -1,0 +1,116 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "Header",
+  "type": "header",
+  "sections": {
+    "0f17c7ca-b770-4bab-b5d0-5f73a5794421": {
+      "type": "announcement-bar",
+      "blocks": {
+        "d93a6318-724d-453c-ba86-7029c74247ce": {
+          "type": "countdown",
+          "settings": {
+            "title": "Merry",
+            "sub_title": "Christmas",
+            "sale": "Sale",
+            "sale_number": "70% <span>off</span>",
+            "btn": "Shop now",
+            "link": "shopify://collections",
+            "countdown_toggle": true,
+            "countdown_date_day": "1",
+            "countdown_date_month": "01",
+            "countdown_date_year": "2024",
+            "background_color": "#212121",
+            "text_color": "#ffffff",
+            "primary_color": "#9c0929",
+            "secondary_color": "#500515",
+            "full_width": false,
+            "padding_top": 20,
+            "padding_bottom": 20
+          }
+        },
+        "389e99ba-9fc1-4793-b49c-47cd111c7eb3": {
+          "type": "marquee",
+          "settings": {
+            "text": "<p>DUE TO LOCKDOWNS  <a href=\"/collections\" title=\"All collections\">ACROSS THE COUNTRY</a>, PLEASE EXPECT A DELAY IN PICKUP OR DELIVERY OF YOUR ORDERS. WE REGRET THE INCONVENIENCE CAUSED.</p><p>GREAT VARIETY TO CHOOSE FROM AT GREAT PRICES</p><p>RENOVATE YOUR HOME BY UPGRADING TO NEW DESIGNS</p><p>WE REGRET THE INCONVENIENCE CAUSED.</p><p>DUE TO LOCKDOWNS  ACROSS THE COUNTRY, PLEASE EXPECT A DELAY IN PICKUP OR DELIVERY OF YOUR ORDERS. WE REGRET THE INCONVENIENCE CAUSED.</p><p>GREAT VARIETY TO CHOOSE FROM AT GREAT PRICES</p><p>RENOVATE YOUR HOME BY UPGRADING TO NEW DESIGNS</p><p>WE REGRET THE INCONVENIENCE CAUSED.</p>",
+            "background_color": "#ffffff",
+            "text_color": "#212121",
+            "link_color": "#500515",
+            "full_width": false,
+            "padding_top": 10,
+            "padding_bottom": 10
+          }
+        }
+      },
+      "block_order": [
+        "d93a6318-724d-453c-ba86-7029c74247ce",
+        "389e99ba-9fc1-4793-b49c-47cd111c7eb3"
+      ],
+      "settings": {}
+    },
+    "f877d199-be44-42ac-b107-66c9bd291560": {
+      "type": "announcement-bar",
+      "blocks": {
+        "7b353fa9-844e-4baf-af3e-932ef743c781": {
+          "type": "default",
+          "settings": {
+            "text": "<p><strong>10% Back </strong>In Rewards On <strong>First Day </strong>Of Purchases! <a href=\"/collections\" title=\"All collections\">Click Here For Details</a></p>",
+            "text_alignment": "center",
+            "background_color": "#212121",
+            "text_color": "#ffffff",
+            "link_color": "#9c0929",
+            "full_width": false,
+            "padding_top": 15,
+            "padding_bottom": 15
+          }
+        }
+      },
+      "block_order": [
+        "7b353fa9-844e-4baf-af3e-932ef743c781"
+      ],
+      "settings": {}
+    },
+    "header_style_simple_e8wBR9": {
+      "type": "header-style-simple",
+      "name": "Header Style Simple",
+      "settings": {
+        "logo_width": 100,
+        "menu": "main-menu",
+        "top_menu": "",
+        "header_bg_color": "",
+        "drawer_bg_color": "",
+        "text_color": "",
+        "link_color": "",
+        "link_hover_color": "",
+        "icon_color": "",
+        "badge_bg_color": "",
+        "badge_text_color": "",
+        "style_drawer_search": "horizontal",
+        "full_width": false,
+        "enable_sticky_header": true,
+        "enable_transparent_header": false,
+        "enable_currency": true,
+        "enable_language": true,
+        "add_mobile": "+775 872 4444",
+        "add_email": "contact@email.com",
+        "add_time": "Mon - Fri 8:00 - 17:30",
+        "link_compare": "",
+        "link_wishlist": "",
+        "padding_top": 30,
+        "padding_bottom": 30
+      }
+    }
+  },
+  "order": [
+    "0f17c7ca-b770-4bab-b5d0-5f73a5794421",
+    "f877d199-be44-42ac-b107-66c9bd291560",
+    "header_style_simple_e8wBR9"
+  ]
+}

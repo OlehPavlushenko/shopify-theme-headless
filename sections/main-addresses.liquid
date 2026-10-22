@@ -1,0 +1,458 @@
+{{ 'section-main-customer.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'customer.js' | asset_url }}" defer></script>
+
+{%- paginate customer.addresses by 4 -%}
+    <div class="address-page page-wrapper">
+        {% render 'account-header', mod_header_class: 'h3', mod_screen_size: 'mobile' %}
+
+        {% render 'account-nav',
+            mod_header_class: 'h3',
+            mod_links: linklists['my-account'].links,
+            mod_active_page: 'addresses'
+        %}
+
+        <div class="customer addresses account__main" data-customer-addresses>
+            <h1 class="h3 --desktop">{{ 'customer.addresses.address_book' | t }}</h1>
+
+            {%- if customer.addresses -%}
+                <ul role="list" class="addresses-list">
+                    {%- for address in customer.addresses -%}
+                        <li data-address class="address-item">
+                            {%- if address == customer.default_address -%}
+                                <h2 class="utility">{{ 'customer.addresses.default' | t }}</h2>
+                            {%- endif -%}
+                            {{ address | format_address }}
+                            <p>{{ address.phone }}</p>
+                            <button
+                                type="button"
+                                id="EditFormButton_{{ address.id }}"
+                                aria-label="{{ 'customer.addresses.edit_address' | t }} {{ forloop.index }}"
+                                aria-controls="EditAddress_{{ address.id }}"
+                                aria-expanded="false"
+                                data-address-id="{{ address.id }}"
+                                class="button button--link"
+                            >
+                                {{ 'customer.addresses.edit' | t }}
+                            </button>
+                            <button
+                                type="button"
+                                aria-label="{{ 'customer.addresses.delete_address' | t }} {{ forloop.index }}"
+                                data-target="{{ address.url }}"
+                                data-confirm-message="{{ 'customer.addresses.delete_confirm' | t }}"
+                                class="button button--link"
+                            >
+                                {{ 'customer.addresses.delete' | t }}
+                            </button>
+                            <div id="EditAddress_{{ address.id }}" data-address-modal>
+                                <button
+                                    type="reset"
+                                    class="floating-form__background"
+                                    aria-hidden="true"
+                                    tabindex="-1"
+                                ></button>
+                                <div class="floating-form__container">
+                                    <div class="floating-form__header">
+                                        <h2 class="h3">{{ 'customer.addresses.edit_address' | t }}</h2>
+                                        <button
+                                            type="reset"
+                                            aria-label="Close pop-up"
+                                            class="button--svg button--link button--close"
+                                        >
+                                            {%- render 'icons-svg', icons: 'close' -%}
+                                        </button>
+                                    </div>
+
+                                    {%- form 'customer_address', address -%}
+                                        <div class="floating-form__field-group field">
+                                            {% assign mod_firstname_label = 'customer.addresses.first_name' | t %}
+                                            {% capture mod_input_id %}AddressFirstName_{{ form.id }}{% endcapture %}
+                                            {% render 'input',
+                                                mod_input_id: mod_input_id,
+                                                mod_input_name: 'address[first_name]',
+                                                mod_input_type: 'text',
+                                                mod_input_label: mod_firstname_label,
+                                                mod_input_placeholder: mod_firstname_label,
+                                                mod_custom_container_classes: 'field',
+                                                mod_autocomplete: 'given-name',
+                                                mod_value: form.first_name,
+                                                mod_form: form
+                                            %}
+
+                                            {% assign mod_lastname_label = 'customer.addresses.last_name' | t %}
+                                            {% capture mod_input_id %}AddressLastName_{{ form.id }}{% endcapture %}
+                                            {% render 'input',
+                                                mod_input_id: mod_input_id,
+                                                mod_input_name: 'address[first_name]',
+                                                mod_input_type: 'text',
+                                                mod_input_label: mod_lastname_label,
+                                                mod_input_placeholder: mod_lastname_label,
+                                                mod_custom_container_classes: 'field',
+                                                mod_autocomplete: 'family-name',
+                                                mod_value: form.last_name,
+                                                mod_form: form
+                                            %}
+                                        </div>
+
+                                        {% assign mod_company_label = 'customer.addresses.company' | t %}
+                                        {% capture mod_input_id %}AddressCompany_{{ form.id }}{% endcapture %}
+                                        {% render 'input',
+                                            mod_input_id: mod_input_id,
+                                            mod_input_name: 'address[company]',
+                                            mod_input_type: 'text',
+                                            mod_input_label: mod_company_label,
+                                            mod_input_placeholder: mod_company_label,
+                                            mod_custom_container_classes: 'field',
+                                            mod_autocomplete: 'organization',
+                                            mod_value: form.company,
+                                            mod_form: form
+                                        %}
+                                        {% assign mod_address1_label = 'customer.addresses.address1' | t %}
+                                        {% capture mod_input_id %}AddressAddress1_{{ form.id }}{% endcapture %}
+                                        {% render 'input',
+                                            mod_input_id: mod_input_id,
+                                            mod_input_name: 'address[address1]',
+                                            mod_input_type: 'text',
+                                            mod_input_label: mod_address1_label,
+                                            mod_input_placeholder: mod_address1_label,
+                                            mod_custom_container_classes: 'field',
+                                            mod_autocomplete: 'address-line1',
+                                            mod_value: form.address1,
+                                            mod_form: form
+                                        %}
+
+                                        {% assign mod_address2_label = 'customer.addresses.address2' | t %}
+                                        {% capture mod_input_id %}AddressAddress2_{{ form.id }}{% endcapture %}
+                                        {% render 'input',
+                                            mod_input_id: mod_input_id,
+                                            mod_input_name: 'address[address2]',
+                                            mod_input_type: 'text',
+                                            mod_input_label: mod_address2_label,
+                                            mod_input_placeholder: mod_address2_label,
+                                            mod_custom_container_classes: 'field',
+                                            mod_autocomplete: 'address-line2',
+                                            mod_value: form.address2,
+                                            mod_form: form
+                                        %}
+
+                                        {% assign mod_city_label = 'customer.addresses.city' | t %}
+                                        {% capture mod_input_id %}AddressCity_{{ form.id }}{% endcapture %}
+                                        {% render 'input',
+                                            mod_input_id: mod_input_id,
+                                            mod_input_name: 'address[city]',
+                                            mod_input_type: 'text',
+                                            mod_input_label: mod_city_label,
+                                            mod_input_placeholder: mod_city_label,
+                                            mod_custom_container_classes: 'field',
+                                            mod_autocomplete: 'address-level2',
+                                            mod_value: form.city,
+                                            mod_form: form
+                                        %}
+
+                                        <div class="floating-form__field-group field">
+                                            <div class="input-with-floating-label field">
+                                                <label for="AddressCountry_{{ form.id }}" class="floating-label">
+                                                    {{ 'customer.addresses.country' | t }}
+                                                </label>
+                                                <div class="select">
+                                                    <select
+                                                        id="AddressCountry_{{ form.id }}"
+                                                        name="address[country]"
+                                                        data-address-country-select
+                                                        data-default="{{ form.country }}"
+                                                        data-form-id="{{ form.id }}"
+                                                        autocomplete="country"
+                                                    >
+                                                        {{ all_country_option_tags }}
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div
+                                                id="AddressProvinceContainer_{{ form.id }}"
+                                                class="input-with-floating-label field"
+                                                style="display:none;"
+                                            >
+                                                <label for="AddressProvince_{{ form.id }}" class="floating-label">
+                                                    {{ 'customer.addresses.province' | t }}
+                                                </label>
+                                                <div class="select">
+                                                    <select
+                                                        id="AddressProvince_{{ form.id }}"
+                                                        name="address[province]"
+                                                        data-default="{{ form.province }}"
+                                                        autocomplete="address-level1"
+                                                    ></select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {% assign mod_zip_label = 'customer.addresses.zip' | t %}
+                                        {% capture mod_input_id %}AddressZip_{{ form.id }}{% endcapture %}
+                                        {% render 'input',
+                                            mod_input_id: mod_input_id,
+                                            mod_input_name: 'address[zip]',
+                                            mod_input_type: 'text',
+                                            mod_input_label: mod_zip_label,
+                                            mod_input_placeholder: mod_zip_label,
+                                            mod_custom_container_classes: 'field',
+                                            mod_autocomplete: 'postal-code',
+                                            mod_autocapitalize: 'characters',
+                                            mod_value: form.zip,
+                                            mod_form: form
+                                        %}
+
+                                        {% assign mod_phone_label = 'customer.addresses.phone' | t %}
+                                        {% capture mod_input_id %}AddressPhone_{{ form.id }}{% endcapture %}
+                                        {% render 'input',
+                                            mod_input_id: mod_input_id,
+                                            mod_input_name: 'address[phone]',
+                                            mod_input_type: 'text',
+                                            mod_input_label: mod_phone_label,
+                                            mod_input_placeholder: mod_phone_label,
+                                            mod_custom_container_classes: 'field',
+                                            mod_autocomplete: 'tel',
+                                            mod_value: form.phone,
+                                            mod_form: form
+                                        %}
+
+                                        <div class="floating-form__default-checkbox">
+                                            {{ form.set_as_default_checkbox }}
+                                            <label for="address_default_address_{{ form.id }}">
+                                                {{- 'customer.addresses.set_default' | t -}}
+                                            </label>
+                                        </div>
+
+                                        <div class="floating-form__footer floating-form__field-group field">
+                                            <button class="button button--half">
+                                                {{ 'customer.addresses.update' | t }}
+                                            </button>
+                                            <button
+                                                type="reset"
+                                                class="button button--secondary button--outline button--half"
+                                            >
+                                                {{ 'customer.addresses.cancel' | t }}
+                                            </button>
+                                        </div>
+                                    {%- endform -%}
+                                </div>
+                            </div>
+                        </li>
+                    {%- endfor -%}
+                </ul>
+            {%- else -%}
+                <p>You do not have any addresses associated with your account.</p>
+            {%- endif -%}
+
+            <div data-address>
+                <button
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="AddAddress"
+                    class="button button--full-width button--new-address"
+                >
+                    {{ 'customer.addresses.add_new' | t }}
+                </button>
+                <div id="AddAddress" data-address-modal>
+                    <button type="reset" class="floating-form__background" aria-hidden="true" tabindex="-1"></button>
+                    <div class="floating-form__container">
+                        <div class="floating-form__header">
+                            <h2 id="AddressNewHeading" class="h3">{{ 'customer.addresses.add_new' | t }}</h2>
+                            <button
+                                type="reset"
+                                aria-label="Close pop-up"
+                                class="button--svg button--close button--link"
+                            >
+                                {%- render 'icons-svg', icons: 'close' -%}
+                            </button>
+                        </div>
+
+                        {%- form 'customer_address', customer.new_address, aria-labelledBy: 'AddressNewHeading' -%}
+                            <div class="floating-form__field-group field">
+                                {% assign mod_firstname_label = 'customer.addresses.first_name' | t %}
+                                {% render 'input',
+                                    mod_input_id: 'AddressFirstNameNew',
+                                    mod_input_name: 'address[first_name]',
+                                    mod_input_type: 'text',
+                                    mod_input_label: mod_firstname_label,
+                                    mod_input_placeholder: mod_firstname_label,
+                                    mod_custom_container_classes: 'field',
+                                    mod_autocomplete: 'given-name',
+                                    mod_value: form.first_name,
+                                    mod_form: form
+                                %}
+
+                                {% assign mod_lastname_label = 'customer.addresses.last_name' | t %}
+                                {% render 'input',
+                                    mod_input_id: 'AddressLastNameNew',
+                                    mod_input_name: 'address[last_name]',
+                                    mod_input_type: 'text',
+                                    mod_input_label: mod_lastname_label,
+                                    mod_input_placeholder: mod_lastname_label,
+                                    mod_custom_container_classes: 'field',
+                                    mod_autocomplete: 'family-name',
+                                    mod_value: form.last_name,
+                                    mod_form: form
+                                %}
+                            </div>
+
+                            {% assign mod_company_label = 'customer.addresses.company' | t %}
+                            {% render 'input',
+                                mod_input_id: 'AddressCompanyNew',
+                                mod_input_name: 'address[company]',
+                                mod_input_type: 'text',
+                                mod_input_label: mod_company_label,
+                                mod_input_placeholder: mod_company_label,
+                                mod_custom_container_classes: 'field',
+                                mod_autocomplete: 'organization',
+                                mod_value: form.company,
+                                mod_form: form
+                            %}
+
+                            {% assign mod_address1_label = 'customer.addresses.address1' | t %}
+                            {% render 'input',
+                                mod_input_id: 'AddressAddress1New',
+                                mod_input_name: 'address[address1]',
+                                mod_input_type: 'text',
+                                mod_input_label: mod_address1_label,
+                                mod_input_placeholder: mod_address1_label,
+                                mod_custom_container_classes: 'field',
+                                mod_autocomplete: 'address-line1',
+                                mod_value: form.address1,
+                                mod_form: form
+                            %}
+
+                            {% assign mod_address2_label = 'customer.addresses.address2' | t %}
+                            {% render 'input',
+                                mod_input_id: 'AddressAddress2New',
+                                mod_input_name: 'address[address2]',
+                                mod_input_type: 'text',
+                                mod_input_label: mod_address2_label,
+                                mod_input_placeholder: mod_address2_label,
+                                mod_custom_container_classes: 'field',
+                                mod_autocomplete: 'address-line2',
+                                mod_value: form.address2,
+                                mod_form: form
+                            %}
+
+                            {% assign mod_city_label = 'customer.addresses.city' | t %}
+                            {% render 'input',
+                                mod_input_id: 'AddressCityNew',
+                                mod_input_name: 'address[city]',
+                                mod_input_type: 'text',
+                                mod_input_label: mod_city_label,
+                                mod_input_placeholder: mod_city_label,
+                                mod_custom_container_classes: 'field',
+                                mod_autocomplete: 'address-level2',
+                                mod_value: form.city,
+                                mod_form: form
+                            %}
+
+                            <div class="floating-form__field-group field">
+                                <div class="input-with-floating-label field">
+                                    <label for="AddressCountryNew" class="floating-label">
+                                        {{- 'customer.addresses.country' | t -}}
+                                    </label>
+                                    <div class="select">
+                                        <select
+                                            id="AddressCountryNew"
+                                            name="address[country]"
+                                            data-default="{{ form.country }}"
+                                            autocomplete="country"
+                                        >
+                                            {{ all_country_option_tags }}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div
+                                    id="AddressProvinceContainerNew"
+                                    class="input-with-floating-label field"
+                                    style="display: none"
+                                >
+                                    <label for="AddressProvinceNew" class="floating-label">
+                                        {{- 'customer.addresses.province' | t -}}
+                                    </label>
+                                    <div class="select">
+                                        <select
+                                            id="AddressProvinceNew"
+                                            name="address[province]"
+                                            data-default="{{ form.province }}"
+                                            autocomplete="address-level1"
+                                        ></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% assign mod_zip_label = 'customer.addresses.zip' | t %}
+                            {% render 'input',
+                                mod_input_id: 'AddressZipNew',
+                                mod_input_name: 'address[zip]',
+                                mod_input_type: 'text',
+                                mod_input_label: mod_zip_label,
+                                mod_input_placeholder: mod_zip_label,
+                                mod_custom_container_classes: 'field',
+                                mod_autocomplete: 'postal-code',
+                                mod_autocapitalize: 'characters',
+                                mod_value: form.zip,
+                                mod_form: form
+                            %}
+
+                            {% assign mod_phone_label = 'customer.addresses.phone' | t %}
+                            {% render 'input',
+                                mod_input_id: 'AddressPhoneNew',
+                                mod_input_name: 'address[phone]',
+                                mod_input_type: 'text',
+                                mod_input_label: mod_phone_label,
+                                mod_input_placeholder: mod_phone_label,
+                                mod_custom_container_classes: 'field',
+                                mod_autocomplete: 'tel',
+                                mod_value: form.phone,
+                                mod_form: form
+                            %}
+
+                            <div class="floating-form__default-checkbox">
+                                {{ form.set_as_default_checkbox }}
+                                <label for="address_default_address_new">
+                                    {{- 'customer.addresses.set_default' | t -}}
+                                </label>
+                            </div>
+                            <div class="floating-form__footer floating-form__field-group field">
+                                <button class="button button--half">
+                                    {{ 'customer.addresses.save' | t }}
+                                </button>
+                                <button type="reset" class="button button--secondary button--outline button--half">
+                                    {{ 'customer.addresses.cancel' | t }}
+                                </button>
+                            </div>
+                        {%- endform -%}
+                    </div>
+                </div>
+            </div>
+
+            {%- if paginate.pages > 1 and paginate.parts.size > 0 -%}
+                <nav
+                    class="pagination{% if paginate.previous and paginate.next %} paginate--spaced{% endif %}"
+                    role="navigation"
+                    aria-label="{{ 'general.pagination.label' | t }}"
+                >
+                    {%- if paginate.previous -%}
+                        <a href="{{ paginate.previous.url }}" class="button button--secondary paginate__button--prev">
+                            {{ 'general.pagination.previous' | t }}
+                        </a>
+                    {%- endif -%}
+
+                    {%- if paginate.next -%}
+                        <a href="{{ paginate.next.url }}" class="button button--secondary paginate__button--next">
+                            {{ 'general.pagination.next' | t }}
+                        </a>
+                    {%- endif -%}
+                </nav>
+            {%- endif -%}
+        </div>
+    </div>
+{%- endpaginate -%}
+
+<script>
+    window.onload = () => {
+        typeof CustomerAddresses !== 'undefined' && new CustomerAddresses()
+    }
+</script>

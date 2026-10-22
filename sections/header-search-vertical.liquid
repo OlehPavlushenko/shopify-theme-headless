@@ -1,0 +1,102 @@
+{% if predictive_search.performed %}
+    
+    <div class="header-search-results">
+        <div class="search-results__content-wrapper">
+            <div class="search-modal__row-links">
+                <div class="search-modal__links">
+                {% if predictive_search.resources.products.size > 0 %}
+                    <div id="products-panel" class="search-results-product__column products">
+                        <h5
+                            id="search-results-products"
+                            class="search-results__heading"
+                        >
+                            {{- 'templates.search.products' | t -}}
+                        </h5>
+                        <ul
+                            class="search-results__list list-style-none"
+                            role="list"
+                            data-mobile-offset="true"
+                        >
+                            {% for product in predictive_search.resources.products limit: 5 %}
+                                <li class="search-results__list-item">
+                                    <a
+                                        href="{{ product.url }}"
+                                        class="search-results__link link--text"
+                                    >
+                                        {{ product.title }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {%- if predictive_search.resources.articles.size > 0 or predictive_search.resources.pages.size > 0 -%}
+                    <div id="pages-panel" class="search-results-pages__column pages">
+                        <h5
+                            id="search-results-pages"
+                            class="search-results__heading"
+                        >
+                            {{- 'templates.search.pages' | t -}}
+                        </h5>
+                        <ul
+                            class="search-results__list list-style-none"
+                            role="list"
+                            data-mobile-offset="true"
+                        >
+                            {%- for page in predictive_search.resources.pages limit: 5 -%}
+                                <li
+                                    class="search-results__list-item"
+                                >
+                                    <a
+                                        href="{{ page.url }}"
+                                        class="search-results__link link--text"
+                                    >
+                                    {{ page.title }}
+                                    </a>
+                                </li>
+                            {%- endfor -%}
+                            {%- for article in predictive_search.resources.articles limit: 5 -%}
+                                <li
+                                    class="search-results__list-item"
+                                >
+                                    <a
+                                        href="{{ article.url }}"
+                                        class="search-results__link link--text"
+                                    >
+                                        {{ article.title }}
+                                    </a>
+                                </li>
+                            {%- endfor -%}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="search-modal__block">
+                <div class='search-modal__block--grid'>
+                    {% for product in predictive_search.resources.products limit: 3 %}
+                    <div class='search-modal__grid--item search-modal-product-post'>
+                    {% render 'menu-product-listing', card_product: product, image_size: settings.prod_img_size %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            </div>    
+        </div>
+    </div>
+    {% if predictive_search.resources.products.size
+        or predictive_search.resources.articles.size > 0
+        or predictive_search.resources.pages.size > 0
+    %}
+        <div class="search-modal__cta">
+            <a href="/search?q={{ predictive_search.terms }}">
+                {{- 'templates.search.search_for' | t: terms: predictive_search.terms -}}
+                {%- render 'icons-svg', icons: 'arrow' -%}
+            </a>
+            
+        </div>
+    {% endif %}
+
+    <div class="header-search__loading-state">
+        <svg width="24" height="24" stroke="#000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_V8m1{transform-origin:center;animation:spinner_zKoa 2s linear infinite}.spinner_V8m1 circle{stroke-linecap:round;animation:spinner_YpZS 1.5s ease-in-out infinite}@keyframes spinner_zKoa{100%{transform:rotate(360deg)}}@keyframes spinner_YpZS{0%{stroke-dasharray:0 150;stroke-dashoffset:0}47.5%{stroke-dasharray:42 150;stroke-dashoffset:-16}95%,100%{stroke-dasharray:42 150;stroke-dashoffset:-59}}</style><g class="spinner_V8m1"><circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3"></circle></g></svg>
+    </div>
+{% endif %}

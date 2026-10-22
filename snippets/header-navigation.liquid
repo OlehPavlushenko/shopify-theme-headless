@@ -1,0 +1,123 @@
+{%- if menu.links.size > 0 -%}
+    <ul class="header__menu-list list-style-none">
+        {%- for link in menu.links -%}
+            {%- liquid
+                capture mega_menu_snippet
+                    for block in blocks
+                        case block.type
+                            when 'mega_menu_three'
+                                render 'mega-menu-column-nav', block: block, link: link
+
+                            when 'mega_menu_four'
+                                render 'mega-menu-column-advanced', block: block, link: link
+                        endcase
+                    endfor
+                endcapture
+            -%}
+            {%- if mega_menu_snippet != blank -%}
+                {{ mega_menu_snippet }}
+            {%- else -%}
+                {%- if link.links != blank -%}
+                    <li class="header__menu-item has-submenu has-submenu--lvl-1{% if link.child_active %} header__menu-item--active{% endif %}">
+                        <menu-open>
+                        <a
+                            id="headerMenuItemLink-{{ forloop.index }}"
+                            class="header__menu-item-link drawer-menu-link js-link-toggle"
+                            href="{{ link.url }}"
+                            {% if link.current %}
+                                aria-current="page"
+                            {% endif %}
+                        >
+                            {{ link.title }}
+                            {% render 'icons-svg', icons: 'down' %}
+                        </a>
+                        <div
+                            id="link-{{ link.handle | escape }}"
+                            class="header__drawer-submenu header__drawer-submenu--parent js-link-details"
+                            
+                        >
+
+                            <ul class="header__drawer-menu list-style-none" role="list" tabindex="-1">
+                                {%- for childlink in link.links -%}
+                                    {%- if childlink.links == blank -%}
+                                        <li class="header__drawer-menu-item{% if childlink.current %} header__drawer-menu-item--active{% endif %}">
+                                        
+                                            <a
+                                                id="HeaderDrawer-{{ link.handle }}-{{ childlink.handle }}"
+                                                href="{{ childlink.url }}"
+                                                class="header__drawer-menu-link drawer-menu-link"
+                                                {% if childlink.current %}
+                                                    aria-current="page"
+                                                {% endif %}
+                                            >
+                                                {{ childlink.title | escape }}
+                                            </a>
+                                        </li>
+                                    {%- else -%}
+                                    <li class="header__drawer-menu-item has-submenu has-submenu--lvl-2{% if childlink.current or childlink.child_active %} header__drawer-menu-item--active{% endif %}">
+                                        <sub-menu-open>
+                                        <a
+                                            id="HeaderDrawer-{{ link.handle }}-{{ childlink.handle }}"
+                                            href="{{ childlink.url }}"
+                                            class="header__drawer-menu-link drawer-menu-link header__drawer-menu-link--child js-link-toggle"
+                                            {% if childlink.current %}
+                                                aria-current="page"
+                                            {% endif %}
+                                        >
+                                            {{ childlink.title | escape }}
+                                            {% render 'icons-svg', icons: 'down' %}
+                                        </a>
+                                            
+                                        <div
+                                            id="childlink-{{ childlink.handle | escape }}"
+                                            class="header__drawer-submenu header__drawer-submenu--child js-link-details"
+                                        >
+                                            
+                                            <ul
+                                                class="header__drawer-menu drawer-submenu--child list-style-none"
+                                                role="list"
+                                                tabindex="-1"
+                                            >
+                                                {%- for grandchildlink in childlink.links -%}
+                                                    <li class="header__drawer-menu-item {% if grandchildlink.current %} header__drawer-menu-item--active{% endif %}">
+                                                        <a
+                                                            id="HeaderDrawer-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                                                            href="{{ grandchildlink.url }}"
+                                                            class="header__drawer-menu-link drawer-submenu--child-link"
+                                                            {% if grandchildlink.current %}
+                                                                aria-current="page"
+                                                            {% endif %}
+                                                        >
+                                                            {{ grandchildlink.title | escape }}
+                                                        </a>
+                                                    </li>
+                                                {%- endfor -%}
+                                            </ul>
+                                        </div>
+                                        </sub-menu-open>
+                                     </li>
+                                    {%- endif -%}
+                                    
+                                {%- endfor -%}
+                            </ul>
+                        </div>
+                    </menu-open>
+                    </li>
+                {%- else -%}
+                    <li class="header__menu-item{% if link.current %} header__menu-item--active{% endif %}">
+                        <a
+                            id="headerMenuItemLink-{{ forloop.index }}"
+                            class="header__menu-item-link drawer-menu-link"
+                            href="{{ link.url }}"
+                            {% if link.current %}
+                                aria-current="page"
+                            {% endif %}
+                        >
+                            {{ link.title }}
+                        </a>
+                    </li>
+                {%- endif -%}
+            {%- endif -%}
+        {%- endfor -%}
+    </ul>
+{%- endif -%}

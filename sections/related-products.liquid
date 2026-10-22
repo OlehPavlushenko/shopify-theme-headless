@@ -1,0 +1,309 @@
+{% liquid
+    assign new_badge = settings.new_badge
+    assign show_vendor = settings.show_vendor
+    assign show_rating = settings.show_rating
+    assign add_btn = settings.enable_add_btn
+    assign btn = settings.btn
+    assign variant_type = settings.variant
+    assign prod_img_size = settings.prod_img_size
+    assign secondary_image = settings.show_secondary_image
+    assign notify_me = settings.notify_me
+    assign price_variant = settings.price_variant
+%}
+
+{% liquid
+    assign sub_heading = section.settings.sub_heading
+    assign heading = section.settings.title
+    assign text = section.settings.text
+    assign head_alignment = section.settings.head_alignment
+    assign full_width = section.settings.full_width
+
+    assign products_limit = section.settings.products_to_show
+    assign columns_desktop = section.settings.columns_desktop
+    assign columns_mobile = section.settings.columns_mobile
+    assign content_alignment = section.settings.content_alignment
+
+    assign bg_color = section.settings.bg_color | default: 'transparent'
+    assign text_color = section.settings.text_color | default: 'inherit'
+    assign title_color = section.settings.title_color | default: 'inherit'
+    assign sub_title_color = section.settings.sub_title_color | default: 'inherit'
+
+    assign text_post_color = section.settings.text_post_color | default: 'inherit'
+    assign title_post_color = section.settings.title_post_color | default: 'inherit'
+    assign link_post_color = section.settings.link_post_color | default: 'inherit'
+
+    assign width = section.settings.width
+    assign pad_top = section.settings.padding_top
+    assign pad_bot = section.settings.padding_bottom
+%}
+
+{% capture styles %}
+  --sub_title_color-product-recommendations: {{ sub_title_color }};
+  --title-color-product-recommendations: {{ title_color }};
+  --text-color-product-recommendations: {{ text_color }};
+  --title-post-color-product-recommendations: {{ title_post_color }};
+  --text-post-color-product-recommendations: {{ text_post_color }};
+  --link-post-color-product-recommendations: {{ link_post_color }};
+  --background-color-product-recommendations: {{ bg_color }};
+  --width-product-recommendations: {{ width }}px;
+  --pad-top-product-recommendations: {{ pad_top }}px;
+  --pad-bot-product-recommendations: {{ pad_bot }}px;
+{% endcapture %}
+
+{%- assign styles = styles | strip_newlines -%}
+
+{{ 'section-product-recommendations.css' | asset_url | stylesheet_tag }}
+{{ 'component-card-products.css' | asset_url | stylesheet_tag }}
+{{ 'component-rating.css' | asset_url | stylesheet_tag }}
+
+<product-recommendations data-url="?product_id={{ product.id }}&limit={{ products_limit }}&intent=related&section_id={{ section.id }}">
+    {%- if recommendations.performed? -%}
+        <div
+            id="product-recommendations"
+            class="product-recommendations full_width--{{ full_width }} content--{{ content_alignment }}"
+            style="{{ styles }}"
+        >
+            {%- if recommendations.products_count > 0 -%}
+                <div class="page-width container">
+                    <swiper-section>
+                        {% if sub_heading != blank or heading != blank or text != blank %}
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="product-recommendations__head head-alignment--{{ head_alignment }}">
+                                        {% if sub_heading != blank %}
+                                            <h5 class="product-recommendations__sub_heading h5">
+                                                {{ sub_heading | escape }}
+                                            </h5>
+                                        {% endif %}
+                                        {% if heading != blank %}
+                                            <h2 class="product-recommendations__heading h2">
+                                                {{ heading | escape }}
+                                            </h2>
+                                        {% endif %}
+                                        {% if text != blank %}
+                                            <div class="product-recommendations__text rte">
+                                                {{ text }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div
+                            class="swiper-container js-swiper"
+                            data-count-desktop="{{ columns_desktop }}"
+                            data-count-tablet="3"
+                            data-count-mobile="{{ columns_mobile }}"
+                        >
+                            <ul class="product-recommendations__list columns__desktop--{{ columns_desktop }} columns__mobile--{{ columns_mobile }} swiper-wrapper">
+                                {%- for product in recommendations.products -%}
+                                    <li class="grid__item product-recommendations__item swiper-slide">
+                                        {% render 'card-product',
+                                            product: product,
+                                            show_vendor: show_vendor,
+                                            show_rating: show_rating,
+                                            new_badge: new_badge,
+                                            show_quantity: false,
+                                            use_variant: price_variant,
+                                            variant_type: variant_type,
+                                            add_btn: add_btn,
+                                            btn: btn,
+                                            img_size: prod_img_size,
+                                            secondary_image: secondary_image,
+                                            notify_me: notify_me,
+                                            image_custom: false,
+                                            fill: false
+                                        %}
+                                    </li>
+                                {%- endfor -%}
+                            </ul>
+                            <div class="swiper-button-prev js-button-prev">{% render 'icons-svg', icons: 'prev' %}</div>
+                            <div class="swiper-button-next js-button-next">{% render 'icons-svg', icons: 'next' %}</div>
+                            <div class="swiper-pagination product-recommendations__pagination js-pagination"></div>
+                        </div>
+                    </swiper-section>
+                </div>
+            {%- endif -%}
+        </div>
+    {%- endif -%}
+</product-recommendations>
+
+{% schema %}
+{
+    "name": "Related products",
+    "class": "index-section",
+    "tag": "section",
+    "settings": [
+        {
+            "type": "text",
+            "id": "sub_heading",
+            "default": "Image banner",
+            "label": "Sub Heading"
+        },
+        {
+            "type": "text",
+            "id": "title",
+            "default": "Featured Posts",
+            "label": "Title"
+        },
+        {
+            "type": "richtext",
+            "id": "text",
+            "label": "Heading"
+        },
+        {
+            "type": "select",
+            "id": "head_alignment",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "right",
+                    "label": "Right"
+                }
+            ],
+            "default": "left",
+            "label": "Head Text alignment"
+        },
+        {
+            "type": "range",
+            "id": "products_to_show",
+            "min": 2,
+            "max": 10,
+            "step": 1,
+            "default": 6,
+            "label": "Products to show"
+        },
+        {
+            "type": "range",
+            "id": "columns_desktop",
+            "min": 2,
+            "max": 4,
+            "step": 1,
+            "default": 4,
+            "label": "Number of columns on desktop"
+        },
+        {
+            "type": "select",
+            "id": "columns_mobile",
+            "default": "2",
+            "label": "Number of columns on mobile",
+            "options": [
+                {
+                    "value": "1",
+                    "label": "1 column"
+                },
+                {
+                    "value": "2",
+                    "label": "2 columns"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "content_alignment",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "right",
+                    "label": "Right"
+                }
+            ],
+            "default": "left",
+            "label": "Text alignment"
+        },
+        {
+            "type": "paragraph",
+            "content": "Style option Head"
+        },
+        {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Background color"
+        },
+        {
+            "type": "color",
+            "id": "sub_title_color",
+            "label": "Sub Head color"
+        },
+        {
+            "type": "color",
+            "id": "title_color",
+            "label": "Head color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "head Text color"
+        },
+        {
+            "type": "checkbox",
+            "id": "full_width",
+            "default": false,
+            "label": "Enabled full width?"
+        },
+        {
+            "type": "range",
+            "id": "width",
+            "min": 1000,
+            "max": 1800,
+            "step": 40,
+            "default": 1200,
+            "unit": "px",
+            "label": "Section Width"
+        },
+        {
+            "type": "paragraph",
+            "content": "Style options Post"
+        },
+        {
+            "type": "color",
+            "id": "title_post_color",
+            "label": "Title post color"
+        },
+        {
+            "type": "color",
+            "id": "text_post_color",
+            "label": "Text post color"
+        },
+        {
+            "type": "color",
+            "id": "link_post_color",
+            "label": "Link post color"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding top",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding bottom",
+            "default": 30
+        }
+    ]
+}
+{% endschema %}

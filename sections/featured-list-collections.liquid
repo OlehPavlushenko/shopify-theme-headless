@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 <div class="featured-list-collections">
     <div class="featured-list-collections__content">
         <div class="featured-list-collections__box">
@@ -20,6 +21,7 @@
         </div>
     </div>
 </div>
+</div>
 
 {% schema %}
 {
@@ -29,7 +31,14 @@
     "disabled_on": {
         "groups": ["header", "footer"]
     },
-    "settings": [],
+    "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        }
+    ],
     "blocks": [
         {
             "type": "default",

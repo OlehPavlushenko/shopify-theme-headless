@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign new_badge = settings.new_badge
     assign show_vendor = settings.show_vendor
@@ -125,6 +126,7 @@
         </div>
     {%- endif -%}
 </product-recommendations>
+</div>
 
 {% schema %}
 {
@@ -132,6 +134,12 @@
     "class": "index-section",
     "tag": "section",
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "text",
             "id": "sub_heading",

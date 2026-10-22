@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {%- liquid
     assign collage = section.settings.layout_collage
     assign post = section.settings.post_per_page
@@ -137,6 +138,7 @@
 </div>
 
 <script src="{{ 'main-blog.js' | asset_url }}" defer="defer"></script>
+</div>
 
 {% schema %}
 {
@@ -144,6 +146,12 @@
     "tag": "section",
     "class": "spaced-section",
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "range",
             "id": "post_per_page",

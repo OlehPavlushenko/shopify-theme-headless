@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign bg_color = section.settings.background_color
     assign title_color = section.settings.title_color
@@ -439,6 +440,7 @@
         {% render 'icons-svg', icons: 'up' %}
     </scroll-up>
 </footer>
+</div>
 
 {% schema %}
 {
@@ -446,6 +448,12 @@
     "class": "index-footer",
     "max_blocks": 12,
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "header",
             "content": "Footer Options"

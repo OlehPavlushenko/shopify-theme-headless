@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign sub_heading = section.settings.collections_sub_heading
     assign heading = section.settings.collections_title
@@ -98,12 +99,19 @@
         </div>
     </div>
 </div>
+</div>
 
 {% schema %}
 {
     "name": "Main Head",
     "class": "section",
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "text",
             "id": "collections_sub_heading",

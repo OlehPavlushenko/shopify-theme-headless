@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign text = section.settings.text
     assign text_alignment = section.settings.text_alignment
@@ -36,6 +37,7 @@
         </div>
     </div>
 {% endif %}
+</div>
 
 {% schema %}
 {
@@ -43,6 +45,12 @@
     "tag": "section",
     "class": "index-section",
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "richtext",
             "id": "text",

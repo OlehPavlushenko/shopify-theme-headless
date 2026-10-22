@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign full_width = section.settings.full_width
     assign bg_color = section.settings.bg_color | default: 'transparent'
@@ -38,6 +39,7 @@
         endif
     -%}
 </div>
+</div>
 
 {% schema %}
 {
@@ -47,6 +49,12 @@
         "groups": ["header", "footer"]
     },
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "color",
             "id": "bg_color",

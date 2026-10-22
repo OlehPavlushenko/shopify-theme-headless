@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign load_more = section.settings.load_more
     assign new_badge = settings.new_badge
@@ -331,12 +332,19 @@
 </div>
 
 <script src="{{ 'main-collection.js' | asset_url }}" defer="defer"></script>
+</div>
 
 {% schema %}
 {
     "name": "t:sections.main-collection-product-grid.name",
     "class": "section",
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "checkbox",
             "id": "load_more",

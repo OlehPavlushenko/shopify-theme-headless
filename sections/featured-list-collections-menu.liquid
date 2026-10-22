@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {{ 'section-featured-list-collections-menu.css' | asset_url | stylesheet_tag }}
 <div class="featured-list-collections">
     <div class="featured-list-collections__content">
@@ -5,6 +6,7 @@
             {% render 'list-collections-style-block-menu', settings: section.settings, blocks: section.blocks %}
         </div>
     </div>
+</div>
 </div>
 
 {% schema %}
@@ -16,6 +18,12 @@
         "groups": ["header", "footer"]
     },
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "text",
             "id": "collections_sub_heading",

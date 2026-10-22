@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign full_width = true
     assign blocks = section.blocks
@@ -248,13 +249,21 @@
         </sticky-add-to-cart>
     {% endunless %}
 </section>
+</div>
 
 {% schema %}
 {
     "name": "Main product",
     "class": "main-section",
     "tag": "section",
-    "settings": [],
+    "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        }
+    ],
     "blocks": [
         {
             "type": "@app"

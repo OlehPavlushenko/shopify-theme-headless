@@ -1,0 +1,124 @@
+{% comment %}
+    Outputs theme-wide CSS variables and one `.color-<scheme-id>` class per color scheme
+    (Theme settings > Colors). The first scheme also applies to :root, so it is the store default.
+    A section opts into a scheme by adding `color-{{ section.settings.color_scheme }}` to its root element.
+
+    Each scheme defines the current variable names (--base-*, --button-*, --form-*) and the legacy
+    --color-* names the compiled CSS still uses. *-rgb style values (e.g. --color-base-text) are
+    "r, g, b" triplets because the CSS consumes them as rgb(var(--x)) / rgba(var(--x), .5).
+{% endcomment %}
+{%- style -%}
+    :root {
+        --color-success: {{ settings.colors_success }};
+        --color-info: {{ settings.colors_info }};
+        --color-warning: {{ settings.colors_warning }};
+        --color-danger: {{ settings.colors_danger }};
+        --color-error: {{ settings.color_error }};
+        --color-focus: {{ settings.color_focus }};
+        --form-focus: {{ settings.color_focus }};
+        --form-error: {{ settings.color_error }};
+
+        --button-border-radius: {{ settings.button_border_radius }}px;
+        --form-border-radius: {{ settings.form_border_radius }}px;
+
+        --duration-short: 100ms;
+        --duration-default: 200ms;
+    }
+
+    {% for scheme in settings.color_schemes -%}
+        {%- liquid
+            assign s = scheme.settings
+            assign background = s.background
+            assign text = s.text
+            assign link = s.link
+        -%}
+        {% if forloop.first %}:root,{% endif %}
+        .color-{{ scheme.id }} {
+            /* Base */
+            --base-background: {{ background }};
+            --base-text: {{ text }};
+            --base-link: {{ link }};
+            --base-link-hover: {{ s.link_hover }};
+            --base-drawer-bg: {{ background }};
+            --gradient-base-background-1: {{ s.background_gradient | default: background }};
+
+            /* Accents */
+            --primary-primary: {{ s.accent }};
+            --primary-darker: {{ s.accent | color_darken: 10 }};
+            --primary-lighter: {{ s.accent | color_lighten: 15 }};
+            --secondary-secondary: {{ s.accent_2 }};
+            --secondary-lighter: {{ s.accent_2 | color_lighten: 10 }};
+
+            /* Neutrals */
+            --neutral-light: {{ s.surface }};
+            --neutral-neutral: {{ s.surface }};
+            --neutral-dark: {{ text }};
+            --neutral-black: {{ link }};
+            --neutral-white: #ffffff;
+
+            /* Buttons */
+            --button-primary-background: {{ s.primary_button }};
+            --button-primary-text: {{ s.button_label }};
+            --button-primary-background-hover: {{ s.button_hover }};
+            --button-primary-text-hover: {{ s.button_label_hover }};
+            --button-primary-background-disabled: {{ s.surface }};
+            --button-primary-text-disabled: {{ text }};
+            --button-secondary-background: {{ s.secondary_button }};
+            --button-secondary-text: {{ s.secondary_button_label }};
+            --button-secondary-background-hover: {{ s.button_hover }};
+            --button-secondary-text-hover: {{ s.button_label_hover }};
+            --button-secondary-background-disabled: {{ s.surface }};
+            --button-secondary-text-disabled: {{ text }};
+
+            /* Forms */
+            --form-label: {{ text }};
+            --form-input: {{ s.input_text }};
+            --form-border: {{ s.border }};
+            --form-background: {{ s.input_background }};
+
+            /* Legacy names used by compiled CSS */
+            --color-white: {{ background }};
+            --color-black: {{ link }};
+            --color-primary: {{ s.accent }};
+            --color-secondary: {{ s.accent_2 }};
+            --color-light: {{ s.surface }};
+            --color-dark: {{ text }};
+            --color-body-text: {{ text }};
+            --color-body-background: {{ background }};
+            --color-link-text: {{ link }};
+            --color-link-hover-text: {{ s.link_hover }};
+            --color-label: {{ text }};
+            --color-input: {{ s.input_text }};
+            --color-input-border: {{ s.border }};
+            --color-input-background: {{ s.input_background }};
+            --color-primary-button-background: {{ s.primary_button }};
+            --color-primary-button-text: {{ s.button_label }};
+            --color-primary-button-background-hover: {{ s.button_hover }};
+            --color-primary-button-background-disabled: {{ s.surface }};
+            --color-secondary-button-background: {{ s.secondary_button }};
+            --color-secondary-button-text: {{ s.secondary_button_label }};
+            --color-secondary-button-background-hover: {{ s.button_hover }};
+            --color-secondary-button-background-disabled: {{ s.surface }};
+
+            /* Legacy rgb triplets */
+            --color-base-text: {{ text.red }}, {{ text.green }}, {{ text.blue }};
+            --color-foreground: {{ text.red }}, {{ text.green }}, {{ text.blue }};
+            --color-shadow: {{ text.red }}, {{ text.green }}, {{ text.blue }};
+            --color-base-background-1: {{ background.red }}, {{ background.green }}, {{ background.blue }};
+            --color-background: {{ background.red }}, {{ background.green }}, {{ background.blue }};
+            --color-link: {{ link.red }}, {{ link.green }}, {{ link.blue }};
+            --color-base-outline-button-labels: {{ link.red }}, {{ link.green }}, {{ link.blue }};
+            --color-base-solid-button-labels: {{ s.button_label.red }}, {{ s.button_label.green }}, {{ s.button_label.blue }};
+            --color-base-accent-1: {{ s.accent.red }}, {{ s.accent.green }}, {{ s.accent.blue }};
+        }
+
+        .color-{{ scheme.id }} {
+            {%- if s.background_gradient != blank %}
+                background: {{ s.background_gradient }};
+            {%- else %}
+                background-color: {{ background }};
+            {%- endif %}
+            color: {{ text }};
+        }
+    {% endfor %}
+{%- endstyle -%}

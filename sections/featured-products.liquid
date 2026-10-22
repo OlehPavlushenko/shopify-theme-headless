@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign blocks = section.blocks
     assign heading = section.settings.heading
@@ -120,6 +121,7 @@
         </div>
     </div>
 {% endif %}
+</div>
 
 {% schema %}
 {
@@ -130,6 +132,12 @@
         "groups": ["header", "footer"]
     },
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "text",
             "id": "sub_heading",

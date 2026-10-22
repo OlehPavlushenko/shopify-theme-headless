@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {{ 'main-page-blog-post.css' | asset_url | stylesheet_tag }}
 
 {%- liquid
@@ -341,6 +342,7 @@
         </div>
     {%- endif -%}
 </article>
+</div>
 
 {% schema %}
 {
@@ -348,6 +350,12 @@
     "tag": "section",
     "class": "section",
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "select",
             "id": "img_size",

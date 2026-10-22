@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign bg_color = section.settings.bg_color | default: 'transparent'
 
@@ -40,12 +41,19 @@
 </div>
 
 <script src="{{ 'main-wishlist.js' | asset_url }}" defer="defer"></script>
+</div>
 
 {% schema %}
 {
     "name": "Main Page Wishlist",
     "class": "section",
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "checkbox",
             "id": "full_width",

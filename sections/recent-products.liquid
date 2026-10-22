@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign full_width = section.settings.full_width
 
@@ -42,6 +43,7 @@
         %}
     </div>
 </div>
+</div>
 
 {% schema %}
 {
@@ -49,6 +51,12 @@
     "class": "index-section",
     "tag": "section",
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "select",
             "id": "content_alignment",

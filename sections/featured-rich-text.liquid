@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign text_alignment = section.settings.text_alignment
     assign full_width = section.settings.full_width
@@ -62,6 +63,7 @@
         {%- endfor -%}
     </div>
 </div>
+</div>
 
 {% schema %}
 {
@@ -72,6 +74,12 @@
         "groups": ["header", "footer"]
     },
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "select",
             "id": "text_alignment",

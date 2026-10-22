@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {%- liquid
     case section.settings.sort
         when 'products_high', 'products_low'
@@ -96,12 +97,19 @@
         {%- endpaginate -%}
     </div>
 </div>
+</div>
 
 {% schema %}
 {
     "name": "Main list collections",
     "class": "section",
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "select",
             "id": "sort",

@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign image = section.settings.image
     assign img_size = section.settings.img_size
@@ -220,6 +221,7 @@
         </div>
     </div>
 </div>
+</div>
 
 {% schema %}
 {
@@ -231,6 +233,12 @@
     },
     "max_blocks": 5,
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "text",
             "id": "title",

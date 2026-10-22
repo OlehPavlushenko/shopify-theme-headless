@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign background_color = section.settings.bg_color | default: 'transparent'
     assign title_color = section.settings.title_color | default: 'inherit'
@@ -46,6 +47,7 @@
         </ul>
     </div>
 </div>
+</div>
 
 {% schema %}
 {
@@ -57,6 +59,12 @@
     },
     "max_blocks": 9,
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "paragraph",
             "content": "Style option"

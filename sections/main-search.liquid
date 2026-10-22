@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign fill_image = settings.fill_image
     assign button = settings.button
@@ -331,6 +332,7 @@
 </div>
 
 <script src="{{ 'main-search.js' | asset_url }}" defer="defer"></script>
+</div>
 
 {% schema %}
 {
@@ -338,6 +340,12 @@
     "tag": "section",
     "class": "spaced-section",
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "range",
             "id": "padding_top",

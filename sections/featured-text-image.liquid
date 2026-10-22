@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign image = section.settings.image
     assign mobile_image = section.settings.image_mobile
@@ -134,6 +135,8 @@
         </div>
     </div>
 {% endif %}
+</div>
+
 {% schema %}
 {
     "name": "Featured text image",
@@ -142,6 +145,12 @@
         "groups": ["header", "footer"]
     },
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "image_picker",
             "id": "image",

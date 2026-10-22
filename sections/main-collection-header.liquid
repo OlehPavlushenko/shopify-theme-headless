@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% liquid
     assign image = collection.image
     assign show_image = section.settings.show_image
@@ -143,11 +144,19 @@
         </div>
     </div>
 {% endif %}
+</div>
+
 {% schema %}
 {
     "name": "t:sections.main-collection-banner.name",
     "class": "index-section",
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "checkbox",
             "id": "full_width",

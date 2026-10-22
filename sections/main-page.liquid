@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {%- style -%}
     .main-page-{{ section.id }} {
         padding-top: {{ section.settings.padding_top }}px;
@@ -25,6 +26,7 @@
         </div>
     </div>
 </div>
+</div>
 
 {% schema %}
 {
@@ -32,6 +34,12 @@
     "tag": "section",
     "class": "section",
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "checkbox",
             "id": "show_title",

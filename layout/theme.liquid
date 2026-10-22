@@ -64,62 +64,10 @@
                 --font-body-scale: {{ settings.body_scale | divided_by: 100.0 }};
                 --font-heading-scale: {{ settings.heading_scale | times: 1.0 | divided_by: settings.body_scale }};
 
-                /* Base Colors*/
-                --base-background: {{ settings.body_background }};
-                --base-text: {{ settings.body_text }};
-                --base-link: {{ settings.body_link }};
-                --base-link-hover: {{ settings.body_link_hover }};
-                --base-drawer-bg: {{ settings.drawer_bg }};
-
-                /* Primary Colors */
-                --primary-primary: {{ settings.primary }};
-                --primary-darker: {{ settings.primary_darker }};
-                --primary-lighter: {{ settings.primary_lighter }};
-
-                /* Secondary Colors */
-                --secondary-secondary: {{ settings.secondary }};
-                --secondary-lighter: {{ settings.secondary_lighter }};
-
-                /* Alert Colors */
-                --color-success: {{ settings.colors_success }};
-                --color-info: {{ settings.colors_info }};
-                --color-warning: {{ settings.colors_warning }};
-                --color-danger: {{ settings.colors_danger }};
-
-                /* Neutral Colors */
-                --neutral-light: {{ settings.light }};
-                --neutral-dark: {{ settings.dark }};
-                --neutral-neutral: {{ settings.neutral }};
-                --neutral-white: {{ settings.white }};
-                --neutral-black: {{ settings.black }};
-
-                /* Button Primary Colors */
-                --button-border-radius: {{ settings.button_border_radius }}px;
-                --button-primary-background: {{ settings.button_background }};
-                --button-primary-text: {{ settings.button_text }};
-                --button-primary-background-hover: {{ settings.button_background_hover }};
-                --button-primary-text-hover: {{ settings.button_text_hover }};
-                --button-primary-background-disabled: {{ settings.button_background_disabled }};
-                --button-primary-text-disabled: {{ settings.button_text_disabled }};
-
-                /* Button Secondary Colors */
-                --button-secondary-background: {{ settings.secondary_button_background }};
-                --button-secondary-text: {{ settings.secondary_button_text }};
-                --button-secondary-background-hover: {{ settings.secondary_button_background_hover }};
-                --button-secondary-text-hover: {{ settings.secondary_button_text_hover }};
-                --button-secondary-background-disabled: {{ settings.secondary_button_background_disabled }};
-                --button-secondary-text-disabled: {{ settings.secondary_button_text_disabled }};
-
-                /* Form Color */
-                --form-border-radius: {{ settings.form_border_radius }}px;
-                --form-label: {{ settings.color_label }};
-                --form-input: {{ settings.color_input }};
-                --form-border: {{ settings.color_border }};
-                --form-background: {{ settings.color_background }};
-                --form-focus: {{ settings.color_focus }};
-                --form-error: {{ settings.color_error }};
             }
         {%- endstyle -%}
+
+        {%- render 'color-schemes' -%}
 
         {{ 'base.css' | asset_url | stylesheet_tag }}
         {{ 'vendor.css' | asset_url | stylesheet_tag }}

@@ -1,3 +1,4 @@
+<div class="color-{{ section.settings.color_scheme }} section-color-scheme">
 {% comment %}
     /sections/ajax-cart.liquid
 
@@ -278,11 +279,18 @@
 </script>
 
 <script src="{{ 'ajax-cart.js' | asset_url }}" defer="defer"></script>
+</div>
 
 {% schema %}
 {
     "name": "Cart Drawer",
     "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme",
+            "default": "scheme-1"
+        },
         {
             "type": "product_list",
             "id": "recommend_list",

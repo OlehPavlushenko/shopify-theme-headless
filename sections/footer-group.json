@@ -8,15 +8,118 @@
  * ------------------------------------------------------------
  */
 {
-    "name":"Footer",
-    "type":"footer",
-    "sections":{
-        "footer":{
-            "type":"footer",
-            "settings":{
-                
-            }
+  "name": "Footer",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "6166f034-19ee-430b-9e77-b25bdc832e43": {
+          "type": "about",
+          "settings": {
+            "about_title": "About",
+            "show_title": false,
+            "about_img_height": 30,
+            "about_img_width": 50,
+            "about_text": "",
+            "column_about": "one-third"
+          }
+        },
+        "9ca6c8cb-fbfb-4aba-b20f-d9842a90afe4": {
+          "type": "linklist",
+          "settings": {
+            "links": "footer",
+            "column_link": "one-third"
+          }
+        },
+        "8a825b95-fc15-4f55-97b1-62f341caf158": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Subscribe to our newsletter",
+            "subheading": "",
+            "column_news": "one-third"
+          }
+        },
+        "0a149c24-4fd5-4033-8ddc-f9e67779679a": {
+          "type": "divider",
+          "settings": {
+            "margin_top": 30,
+            "margin_bottom": 30,
+            "column_divider": "one-whole"
+          }
+        },
+        "e2a7cde6-789b-4399-9619-fa549e13958e": {
+          "type": "contacts",
+          "settings": {
+            "contacts_title": "Contacts",
+            "contacts_name": "",
+            "contacts_address": "",
+            "contacts_phone": "",
+            "contacts_email": "",
+            "contacts_time": "",
+            "column_contact": "one-quarter"
+          }
+        },
+        "16d9aff7-afa1-4565-a84c-882f57c4f87c": {
+          "type": "prod-list",
+          "settings": {
+            "prod_title": "Popular products",
+            "prod_collection": "all",
+            "prod_limit": 3,
+            "prod_show_vendor": true,
+            "prod_show_image": true,
+            "show_view_all": false,
+            "prod_img_size": "portrait",
+            "column_prod": "one-quarter"
+          }
+        },
+        "818ed80f-92ac-43c3-bf71-ac2585de311f": {
+          "type": "blog-list",
+          "settings": {
+            "blog_title": "Latest news",
+            "blog": "news",
+            "post_limit": 2,
+            "blog_show_date": true,
+            "blog_show_image": true,
+            "show_view_all": false,
+            "blog_img_size": "portrait",
+            "column_blog": "one-quarter"
+          }
         }
-    },
-    "order":["footer"]
+      },
+      "block_order": [
+        "6166f034-19ee-430b-9e77-b25bdc832e43",
+        "9ca6c8cb-fbfb-4aba-b20f-d9842a90afe4",
+        "8a825b95-fc15-4f55-97b1-62f341caf158",
+        "0a149c24-4fd5-4033-8ddc-f9e67779679a",
+        "e2a7cde6-789b-4399-9619-fa549e13958e",
+        "16d9aff7-afa1-4565-a84c-882f57c4f87c",
+        "818ed80f-92ac-43c3-bf71-ac2585de311f"
+      ],
+      "settings": {
+        "background_color": "#f5f5f5",
+        "title_color": "#2e3131",
+        "text_color": "#696e6e",
+        "link_color": "#34495e",
+        "link_hover_color": "#ec7163",
+        "divider_color": "#b8b9b9",
+        "social_icon_color": "#ffffff",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "background_color_copyright": "#34495e",
+        "text_color_copyright": "#fafbfb",
+        "link_color_copyright": "#ffffff",
+        "link_hover_color_copyright": "#ec7163",
+        "padding_top_copyright": 20,
+        "padding_bottom_copyright": 20,
+        "powered_toggle": true,
+        "show_policy": true,
+        "payment_icons_toggle": true
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
 }

@@ -2,7 +2,7 @@
 {% liquid
     assign full_width = true
     assign blocks = section.blocks
-    assign isComboProducts = product.metafields.custom.combo_products.value
+    assign is_combo_products = product.metafields.custom.combo_products.value
 %}
 {{ 'main-page-product.css' | asset_url | stylesheet_tag }}
 {{ 'component-breadcrumbs.css' | asset_url | stylesheet_tag }}
@@ -230,7 +230,7 @@
             {% endif %}
         </div>
     </div>
-    {% unless isComboProducts %}
+    {% unless is_combo_products %}
         <sticky-add-to-cart>
             {% render 'sticky-card-product',
                 product: product,

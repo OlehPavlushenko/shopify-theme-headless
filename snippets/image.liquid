@@ -1,3 +1,13 @@
+{% comment %}
+    Renders a responsive image.
+    Accepts:
+    - image_box: {Object} image object (required)
+    - alt: {String} alt text (default: image alt)
+    - image_box_class: {String} class (default: 'image__box')
+    - width / height: {Number} override intrinsic size
+    - sizes: {String} sizes attribute (default: half width on desktop, full width on mobile)
+    - priority: {Boolean} true for the above-the-fold (LCP) image: loads eagerly with high fetch priority
+{% endcomment %}
 {% assign alt = alt | default: image_box.src.alt | escape %}
 {% if image_box != blank %}
     <img
@@ -10,11 +20,16 @@
             {% if image_box.width >= 3000 %}{{ image_box | image_url: width: 3000 }} 3000w,{% endif %}
         "
         src="{{ image_box | image_url: width: 1440 }}"
-        sizes="(min-width: 1440px) {{ '1440px' | minus: 100 | divided_by: 2 }}px, (min-width: 750px) calc(100vw / 2)"
+        sizes="{{ sizes | default: '(min-width: 750px) 50vw, 100vw' }}"
         alt="{{ alt }}"
         height="{{ height | default: image_box.height }}"
         width="{{ width | default: image_box.width }}"
-        loading="lazy"
+        {% if priority %}
+            loading="eager"
+            fetchpriority="high"
+        {% else %}
+            loading="lazy"
+        {% endif %}
         class="{{ image_box_class | default: 'image__box' }} media__image"
     >
 {%- endif -%}

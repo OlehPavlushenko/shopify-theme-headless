@@ -1,3 +1,5 @@
+{%- comment -%} lcp_pending: the first rendered slide is the page's LCP image, so it loads eagerly; every later image stays lazy. {%- endcomment -%}
+{%- assign lcp_pending = true -%}
 <div class="main-product__details-img main-product__details-img--{{ img_fill }}  details-img-slider{% if grouped_product %} js-layout-grouped{% else %} js-layout-slider{% endif %}">
     {%- if current_variant.featured_image != blank -%}
         {% if grouped_product %}
@@ -46,11 +48,11 @@
                                                                         class="main-product__media media__size--{{ img_size }} media"
                                                                         data-size="{{ img_size }}"
                                                                     >
-                                                                        {% render 'image',
+                                                                        {% render 'image', priority: lcp_pending,
                                                                             image_box: variant.featured_image,
                                                                             image_box_class: 'main-product__image'
                                                                         %}
-                                                                    </picture>
+                                                                    </picture>{%- assign lcp_pending = false -%}
                                                                 </div>
                                                             </li>
                                                             {% assign variant_variable = variant.metafields.custom.images_group.value %}
@@ -61,11 +63,11 @@
                                                                             class="main-product__media media__size--{{ img_size }} media"
                                                                             data-size="{{ img_size }}"
                                                                         >
-                                                                            {% render 'image',
+                                                                            {% render 'image', priority: lcp_pending,
                                                                                 image_box: image,
                                                                                 image_box_class: 'main-product__image'
                                                                             %}
-                                                                        </picture>
+                                                                        </picture>{%- assign lcp_pending = false -%}
                                                                     </div>
                                                                 </li>
                                                             {% endfor -%}
@@ -76,11 +78,11 @@
                                                                         class="main-product__media media__size--{{ img_size }} media"
                                                                         data-size="{{ img_size }}"
                                                                     >
-                                                                        {% render 'image',
+                                                                        {% render 'image', priority: lcp_pending,
                                                                             image_box: current_variant.featured_image,
                                                                             image_box_class: 'main-product__image'
                                                                         %}
-                                                                    </picture>
+                                                                    </picture>{%- assign lcp_pending = false -%}
                                                                 </div>
                                                             </li>
                                                         {% endif %}
@@ -104,11 +106,11 @@
                                                                             class="main-product__media media__size--{{ img_size }} media"
                                                                             data-size="{{ img_size }}"
                                                                         >
-                                                                            {% render 'image',
+                                                                            {% render 'image', priority: lcp_pending,
                                                                                 image_box: variant.featured_image,
                                                                                 image_box_class: 'main-product__image'
                                                                             %}
-                                                                        </picture>
+                                                                        </picture>{%- assign lcp_pending = false -%}
                                                                     </div>
                                                                 </li>
                                                                 {% assign variant_variable = variant.metafields.custom.images_group.value %}
@@ -119,11 +121,11 @@
                                                                                 class="main-product__media media__size--{{ img_size }} media"
                                                                                 data-size="{{ img_size }}"
                                                                             >
-                                                                                {% render 'image',
+                                                                                {% render 'image', priority: lcp_pending,
                                                                                     image_box: image,
                                                                                     image_box_class: 'main-product__image'
                                                                                 %}
-                                                                            </picture>
+                                                                            </picture>{%- assign lcp_pending = false -%}
                                                                         </div>
                                                                     </li>
                                                                 {% endfor -%}
@@ -134,11 +136,11 @@
                                                                             class="main-product__media media__size--{{ img_size }} media"
                                                                             data-size="{{ img_size }}"
                                                                         >
-                                                                            {% render 'image',
+                                                                            {% render 'image', priority: lcp_pending,
                                                                                 image_box: current_variant.featured_image,
                                                                                 image_box_class: 'main-product__image'
                                                                             %}
-                                                                        </picture>
+                                                                        </picture>{%- assign lcp_pending = false -%}
                                                                     </div>
                                                                 </li>
                                                             {% endif %}
@@ -175,11 +177,11 @@
                                             class="main-product__media media__size--{{ img_size }} media"
                                             data-size="{{ img_size }}"
                                         >
-                                            {% render 'image',
+                                            {% render 'image', priority: lcp_pending,
                                                 image_box: variant.featured_image,
                                                 image_box_class: 'main-product__image'
                                             %}
-                                        </picture>
+                                        </picture>{%- assign lcp_pending = false -%}
                                     </div>
                                 </li>
                                 {% assign variant_variable = variant.metafields.custom.images_group.value %}
@@ -190,11 +192,11 @@
                                                 class="main-product__media media__size--{{ img_size }} media"
                                                 data-size="{{ img_size }}"
                                             >
-                                                {% render 'image',
+                                                {% render 'image', priority: lcp_pending,
                                                     image_box: image,
                                                     image_box_class: 'main-product__image'
                                                 %}
-                                            </picture>
+                                            </picture>{%- assign lcp_pending = false -%}
                                         </div>
                                     </li>
                                 {% endfor -%}
@@ -208,11 +210,11 @@
                                             class="main-product__media media__size--{{ img_size }} media"
                                             data-size="{{ img_size }}"
                                         >
-                                            {% render 'image',
+                                            {% render 'image', priority: lcp_pending,
                                                 image_box: image,
                                                 image_box_class: 'main-product__image'
                                             %}
-                                        </picture>
+                                        </picture>{%- assign lcp_pending = false -%}
                                     </div>
                                 </li>
                             {%- endunless -%}
@@ -237,11 +239,11 @@
                                                 class="main-product__media media__size--{{ img_size }} media"
                                                 data-size="{{ img_size }}"
                                             >
-                                                {% render 'image',
+                                                {% render 'image', priority: lcp_pending,
                                                     image_box: variant.featured_image,
                                                     image_box_class: 'main-product__image'
                                                 %}
-                                            </picture>
+                                            </picture>{%- assign lcp_pending = false -%}
                                         </div>
                                     </li>
                                     {% assign variant_variable = variant.metafields.custom.images_group.value %}
@@ -252,11 +254,11 @@
                                                     class="main-product__media media__size--{{ img_size }} media"
                                                     data-size="{{ img_size }}"
                                                 >
-                                                    {% render 'image',
+                                                    {% render 'image', priority: lcp_pending,
                                                         image_box: image,
                                                         image_box_class: 'main-product__image'
                                                     %}
-                                                </picture>
+                                                </picture>{%- assign lcp_pending = false -%}
                                             </div>
                                         </li>
                                     {% endfor -%}
@@ -270,11 +272,11 @@
                                                 class="main-product__media media__size--{{ img_size }} media"
                                                 data-size="{{ img_size }}"
                                             >
-                                                {% render 'image',
+                                                {% render 'image', priority: lcp_pending,
                                                     image_box: image,
                                                     image_box_class: 'main-product__image'
                                                 %}
-                                            </picture>
+                                            </picture>{%- assign lcp_pending = false -%}
                                         </div>
                                     </li>
                                 {%- endunless -%}
@@ -299,8 +301,8 @@
                                     class="main-product__media media__size--{{ img_size }} media"
                                     data-size="{{ img_size }}"
                                 >
-                                    {% render 'image', image_box: image, image_box_class: 'main-product__image' %}
-                                </picture>
+                                    {% render 'image', priority: lcp_pending, image_box: image, image_box_class: 'main-product__image' %}
+                                </picture>{%- assign lcp_pending = false -%}
                             </div>
                         </li>
                     {% endfor %}
@@ -319,8 +321,8 @@
                                         class="main-product__media media__size--{{ img_size }} media"
                                         data-size="{{ img_size }}"
                                     >
-                                        {% render 'image', image_box: image, image_box_class: 'main-product__image' %}
-                                    </picture>
+                                        {% render 'image', priority: lcp_pending, image_box: image, image_box_class: 'main-product__image' %}
+                                    </picture>{%- assign lcp_pending = false -%}
                                 </div>
                             </li>
                         {% endfor %}

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="">
         <link rel="canonical" href="{{ canonical_url }}">
         <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
@@ -123,6 +123,7 @@
 
         {{ 'base.css' | asset_url | stylesheet_tag }}
         {{ 'vendor.css' | asset_url | stylesheet_tag }}
+        {{ 'main-index.css' | asset_url | stylesheet_tag }}
 
         {%- unless settings.type_body_font.system? -%}
             {{ settings.type_body_font | font_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
@@ -137,18 +138,6 @@
     </head>
 
     <body class="template-{{ template }} template-{{ template | replace: '.', ' ' | handle }}">
-        <div id="page_preloader__bg">
-            <svg
-                aria-hidden="true"
-                focusable="false"
-                role="presentation"
-                class="spinner"
-                viewBox="0 0 66 66"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
-            </svg>
-        </div>
         <a class="skip-to-content-link button visually-hidden" href="#MainContent">
             {{ 'accessibility.skip_to_text' | t }}
         </a>
@@ -174,8 +163,6 @@
             <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
         </ul>
 
-        {{ 'main-index.css' | asset_url | stylesheet_tag }}
-
         {%- if settings.currency_code_enabled -%}
             {%- assign amount_format = shop.money_with_currency_format -%}
         {%- else -%}
@@ -183,12 +170,7 @@
         {%- endif -%}
 
         <script type="text/javascript">
-            preloaderBg = document.getElementById('page_preloader__bg')
-            window.addEventListener('load', function () {
-                preloaderBg.classList.add('off')
-            })
-
-            Shopify.money_format = '{{ amount_format }}'
+            Shopify.money_format = {{ amount_format | json }}
         </script>
         <script src="{{ 'swiper-bundle.min.js' | asset_url }}" defer="defer"></script>
         <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>

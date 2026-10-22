@@ -8,8 +8,7 @@
                         src="{{ item.image | image_url: width: 300 }}"
                         class="ajax-cart-item__image media__image"
                         alt="{{ item.product.title }}"
-                        loading="eager"
-                        fetchpriority="high"
+                        loading="{% if template.name == 'cart' %}eager{% else %}lazy{% endif %}"
                         width="150"
                         height="{{ 150 | divided_by: item.image.aspect_ratio | ceil }}"
                     >

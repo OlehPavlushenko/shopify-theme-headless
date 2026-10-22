@@ -81,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function(){
             .getAttribute("data-size")
         let modal = document.querySelector(".js-cart-notification")
         trapFocus(modal)
-        console.log(state.responseData.body)
         if (state.responseData?.ok) {
             
             if (state.requestBody instanceof FormData) {
@@ -161,14 +160,12 @@ document.addEventListener('DOMContentLoaded', function(){
     document.addEventListener("liquid-ajax-cart:request-start", function(event) {
         const {requestState} = event.detail;
         // Print the requestState before the request is performed
-        console.log(requestState);
     });
 
     // Listen for the "liquid-ajax-cart:request-end" event which is fired
     // after a Shopify Cart API Ajax request is performed
     document.addEventListener('liquid-ajax-cart:request-end', event => {
         const {requestState} = event.detail;
-        console.log("requestState",event.detail.cart.total_price)
 
         const cartDrawerShipping = document.querySelector(
             ".js-cart-drawer-shipping"
@@ -191,7 +188,6 @@ document.addEventListener('DOMContentLoaded', function(){
     });
 
     function runWhenInit() {
-        console.log("The current cart state is: ", window.liquidAjaxCart.cart);
         toggleClass()
         const cartDrawerShipping = document.querySelector(
             ".js-cart-drawer-shipping"

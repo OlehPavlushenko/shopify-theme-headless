@@ -65,12 +65,22 @@
                                         %}
                                     </ul>
                                 </div>
-                                <div class="main-product__pay-pal">
-                                    <img
-                                        src="//cdn.shopify.com/s/files/1/2318/9533/files/pay-pal_03_300x_crop_top.png?v=1613735657"
-                                        alt="payment"
-                                    >
-                                </div>
+                                {%- if shop.enabled_payment_types.size > 0 -%}
+                                    <div class="main-product__pay-pal">
+                                        <span class="visually-hidden">{{ 'sections.footer.payment' | t }}</span>
+                                        <ul
+                                            class="list-payment"
+                                            role="list"
+                                            style="display:flex;flex-wrap:wrap;gap:.6rem;list-style:none;margin:0;padding:0;"
+                                        >
+                                            {%- for type in shop.enabled_payment_types -%}
+                                                <li style="height:2.4rem;">
+                                                    {{- type | payment_type_svg_tag: class: 'icon icon--full-color', style: 'height:100%;width:auto;' -}}
+                                                </li>
+                                            {%- endfor -%}
+                                        </ul>
+                                    </div>
+                                {%- endif -%}
                             </div>
                         </div>
                     </div>

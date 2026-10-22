@@ -83,7 +83,7 @@
                                 alt="{{ image.alt | escape }}"
                                 width="{{ image.width }}"
                                 height="{{ image.width | divided_by: image.aspect_ratio }}"
-                                loading="lazy"
+                                {%- if section.index == 1 %} loading="eager" fetchpriority="high"{% else %} loading="lazy"{% endif -%}
                             >
                         </picture>
                     </div>

@@ -7,8 +7,6 @@ class MenuOpen extends HTMLElement {
         
         this.addEventListener("keydown", (event) => {
             const condition = event.target.closest(".drawer-submenu--parent")
-            console.log("MenuOpen", event.target)
-            console.log("condition", condition)
             if ((event.key === "Escape" && event.target.classList.contains("drawer-menu-link")) || (event.key === "Escape" && condition )) {
                 this.close()
             }
@@ -65,7 +63,6 @@ class SubMenuOpen extends HTMLElement {
         this.listDdetails = this.querySelector(".js-link-details ul")
 
         this.addEventListener("keydown", (event) => {
-            console.log("SubMenuOpen", event.target)
             if (event.key === "Escape" &&  (event.target.classList.contains("drawer-submenu--child") || event.target.classList.contains("drawer-submenu--child-link"))) {
                 this.close()
             }
@@ -126,7 +123,6 @@ class HeaderSearch extends HTMLElement {
         this.input = this.querySelector('.search_wrapper input[type="search"]')
         this.dataStyle = this.getAttribute("data-style")
        
-        console.log(" this.style",  this.dataStyle)
         this.headerSearchResults = this.querySelector(".results")
         this.headerSearchSuggestions = this.querySelector(".suggestions")
         this.headerSearchFocusable = this.querySelector(
@@ -518,7 +514,6 @@ class Accordion extends HTMLElement {
     }
 
     onKeyUp(event) {
-        console.log(event)
         if (event.code.toUpperCase() !== "ESCAPE") return
         if (
             event.target.classList.contains("js-accordion-toggle") &&

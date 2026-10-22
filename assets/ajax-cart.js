@@ -39,7 +39,6 @@ if ("liquidAjaxCart" in window) {
                             requestState.requestBody &&
                             requestState.requestBody.items
                         ) {
-                            console.log("requestState", requestState)
                         } else {
                             recommendProducts[product_key] = product_id
                             buildNotification(requestState)
@@ -278,7 +277,6 @@ function addBuyMore(addToCartButtonBuyMore) {
                         "js-ajax-cart-form-in-progress"
                     )
                     if (requestState.requestType === "add") {
-                        //console.log("requestType", requestState)
 
                         buildNotification(requestState)
                         if (requestState.responseData.ok) {
@@ -447,7 +445,6 @@ function getNotification(state) {
         .getAttribute("data-size")
     let modal = document.querySelector(".js-cart-notification")
     trapFocus(modal)
-    console.log(state.responseData.body)
     if (state.responseData?.ok) {
         
         if (state.requestBody instanceof FormData) {

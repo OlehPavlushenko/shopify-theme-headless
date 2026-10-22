@@ -41,10 +41,10 @@
                     </div>
                     
                     <div class="modal__button">
-                        <a href="/collections/all" class="button button--link js-modal-close">
+                        <a href="{{ routes.all_products_collection_url }}" class="button button--link js-modal-close">
                             {{- 'products.product.continue_shopping' | t -}}
                         </a>
-                        <a href="/checkout" class="button">Checkout</a>
+                        <form action="{{ routes.cart_url }}" method="post"><button type="submit" name="checkout" class="button">{{ 'sections.cart.checkout' | t }}</button></form>
                     </div>
                 </div>
                 <div class="modal__close">

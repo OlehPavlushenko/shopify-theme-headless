@@ -71,19 +71,19 @@
                 {% endcase %}
                 {% if action[1] == 'addcompare' or action[1] == 'removecompare' or action[1] == 'fullcompare' %}
                     <div class="modal__button modal__button--compare">
-                        <a href="/collections/all" class="button button--link js-modal-close">
+                        <a href="{{ routes.all_products_collection_url }}" class="button button--link js-modal-close">
                             {{- 'products.product.continue_shopping' | t -}}
                         </a>
 
-                        <a href="/pages/compare" class="button">{{ 'products.product.go_to_compare' | t }}</a>
+                        <a href="{{ pages['compare'].url }}" class="button">{{ 'products.product.go_to_compare' | t }}</a>
                     </div>
                 {% else %}
                     <div class="modal__button modal__button--wishlist">
-                        <a href="/collections/all" class="button button--link js-modal-close">
+                        <a href="{{ routes.all_products_collection_url }}" class="button button--link js-modal-close">
                             {{- 'products.product.continue_shopping' | t -}}
                         </a>
 
-                        <a href="/pages/whishlist" class="button">{{ 'products.product.go_to_wishlist' | t }}</a>
+                        <a href="{{ pages['wishlist'].url }}" class="button">{{ 'products.product.go_to_wishlist' | t }}</a>
                     </div>
                 {% endif %}
             </div>

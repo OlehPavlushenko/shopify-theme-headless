@@ -45,6 +45,7 @@
 
 {% liquid
     assign counter = 1
+    assign similarItems = ""
     for tag in article.tags
         assign skip_articles = article.handle | split: '.....'
         for related_article in blog.articles
@@ -347,6 +348,6 @@
             "name": "Featured Posts Similar"
         }
     ],
-    "templates": ["article"]
+    "enabled_on": { "templates": ["article"] }
 }
 {% endschema %}

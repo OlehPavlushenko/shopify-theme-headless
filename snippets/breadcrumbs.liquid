@@ -3,7 +3,7 @@
         <div class="wrapper">
             <ul>
                 <li>
-                    <a href="/">{{ 'breadcrumbs.home' | t }}</a>
+                    <a href="{{ routes.root_url }}">{{ 'breadcrumbs.home' | t }}</a>
                 </li>
 
                 {% case template %}
@@ -15,7 +15,7 @@
                     {% when 'collection' %}
                         {% if current_tags %}
                             <li>
-                                <a href="/collections/">{{ 'breadcrumbs.collections' | t }}</a>
+                                <a href="{{ routes.collections_url }}">{{ 'breadcrumbs.collections' | t }}</a>
                             </li>
                             <li>
                                 <a href="{{ collection.url }}">{{ collection.title }}</a>
@@ -25,7 +25,7 @@
                             </li>
                         {% else %}
                             <li>
-                                <a href="/collections/">{{ 'breadcrumbs.collections' | t }}</a>
+                                <a href="{{ routes.collections_url }}">{{ 'breadcrumbs.collections' | t }}</a>
                             </li>
                             <li>
                                 <span>{{ collection.title }}</span>
@@ -35,14 +35,14 @@
                     {% when 'product' %}
                         {% if collection.id.size > 0 %}
                             <li>
-                                <a href="/collections/">{{ 'breadcrumbs.collections' | t }}</a>
+                                <a href="{{ routes.collections_url }}">{{ 'breadcrumbs.collections' | t }}</a>
                             </li>
                             <li>
                                 <a href="{{ collection.url }}">{{ collection.title }}</a>
                             </li>
                         {% else %}
                             <li>
-                                <a href="/collections/all">{{ 'breadcrumbs.products' | t }}</a>
+                                <a href="{{ routes.all_products_collection_url }}">{{ 'breadcrumbs.products' | t }}</a>
                             </li>
                         {% endif %}
                         <li>
@@ -81,7 +81,7 @@
 
                     {% when 'customers/addresses', 'customers/order' %}
                         <li>
-                            <a href="/account">{{ 'breadcrumbs.account' | t }}</a>
+                            <a href="{{ routes.account_url }}">{{ 'breadcrumbs.account' | t }}</a>
                         </li>
                         <li>
                             <span>{{ page_title }}</span>

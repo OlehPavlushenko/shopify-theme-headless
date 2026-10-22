@@ -114,7 +114,7 @@
         or predictive_search.resources.pages.size > 0
     %}
         <div class="search-main__cta">
-            <a href="/search?q={{ predictive_search.terms }}">
+            <a href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}">
                 {{- 'sections.search.view_all_results' | t -}}
             </a>
         </div>

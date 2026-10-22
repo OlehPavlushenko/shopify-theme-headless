@@ -75,6 +75,8 @@
                     {%- if article.tags.size > 0 -%}
                         <ul class="article-template__tags">
                             {%- liquid
+                                assign tags_current = ""
+                                assign tags_link_state = ""
                                 assign tags_link = canonical_url
                                 if tags_link contains 'tagged'
                                     assign tags_link = tags_link | split: 'tagged/'

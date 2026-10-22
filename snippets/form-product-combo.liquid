@@ -46,8 +46,8 @@
         </ul>
     </div>
 
-    {% capture "form_id" %}product_form-{{ section.id }}-{{ product.id }}{%- endcapture %}
-    {% capture "form_class" %}main-product__form js-main-combo-action js{{form_sticky}}{%- endcapture %}
+    {% capture form_id %}product_form-{{ section.id }}-{{ product.id }}{%- endcapture %}
+    {% capture form_class %}main-product__form js-main-combo-action js{{form_sticky}}{%- endcapture %}
     {% form 'product', product, id: form_id, class: form_class %}
         <select
             name="id"

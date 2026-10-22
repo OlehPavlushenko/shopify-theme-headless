@@ -88,7 +88,7 @@
         or predictive_search.resources.pages.size > 0
     %}
         <div class="search-modal__cta">
-            <a href="/search?q={{ predictive_search.terms }}">
+            <a href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}">
                 {{- 'templates.search.search_for' | t: terms: predictive_search.terms -}}
                 {%- render 'icons-svg', icons: 'arrow' -%}
             </a>

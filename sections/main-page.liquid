@@ -1,0 +1,87 @@
+{%- style -%}
+    .main-page-{{ section.id }} {
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+    .main-page-{{ section.id }} .main-page__inner {
+        max-width: {{ section.settings.content_width }}px;
+        margin: 0 auto;
+        text-align: {{ section.settings.text_alignment }};
+    }
+    .main-page-{{ section.id }} .main-page__title {
+        margin: 0 0 2.4rem;
+    }
+{%- endstyle -%}
+
+<div class="main-page main-page-{{ section.id }}">
+    <div class="page-width">
+        <div class="main-page__inner">
+            {%- if section.settings.show_title -%}
+                <h1 class="main-page__title">{{ page.title | escape }}</h1>
+            {%- endif -%}
+            <div class="main-page__content rte">
+                {{ page.content }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% schema %}
+{
+    "name": "Page content",
+    "tag": "section",
+    "class": "section",
+    "settings": [
+        {
+            "type": "checkbox",
+            "id": "show_title",
+            "label": "Show page title",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "text_alignment",
+            "label": "Text alignment",
+            "options": [
+                { "value": "left", "label": "Left" },
+                { "value": "center", "label": "Center" }
+            ],
+            "default": "left"
+        },
+        {
+            "type": "range",
+            "id": "content_width",
+            "label": "Max content width",
+            "min": 600,
+            "max": 1600,
+            "step": 50,
+            "unit": "px",
+            "default": 900
+        },
+        {
+            "type": "header",
+            "content": "Spacing"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "label": "Top padding",
+            "min": 0,
+            "max": 120,
+            "step": 4,
+            "unit": "px",
+            "default": 40
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "label": "Bottom padding",
+            "min": 0,
+            "max": 120,
+            "step": 4,
+            "unit": "px",
+            "default": 40
+        }
+    ]
+}
+{% endschema %}

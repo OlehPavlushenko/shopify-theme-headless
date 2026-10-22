@@ -1,4 +1,4 @@
-{{ 'section-main-customer.css' | asset_url | stylesheet_tag }}
+{{ 'main-page-customer.css' | asset_url | stylesheet_tag }}
 
 <div class="page-wrapper">
     {% render 'account-header', mod_header_class: 'h3', mod_screen_size: 'mobile' %}
@@ -50,6 +50,7 @@
             <div class="order-status__delivery">
                 <p class="h5">{{ 'customer.order.delivery_status' | t }}</p>
 
+                {%- assign last_tracking_num = '' -%}
                 {%- if order.fulfillment_status == 'fulfilled' -%}
                     {%- for line_item in order.line_items -%}
                         {%- if line_item.fulfillment -%}
@@ -182,7 +183,7 @@
                         <span>
                             {{- 'customer.order.discount_applied' | t }}
                             <span class="--color-subdued">
-                                {%- render 'icon-discount' -%}
+                                {%- render 'icons-svg', icons: 'discount' -%}
                                 {{- discount_application.title -}}
                             </span>
                         </span>

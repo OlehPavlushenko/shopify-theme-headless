@@ -1,6 +1,6 @@
 {% if product.available %}
-    {% capture "form_id" %}product_form-{{ section.id }}-{{ product.id }}{{form_sticky}}{%- endcapture %}
-    {% capture "form_class" %}main-product__form{%- endcapture %}
+    {% capture form_id %}product_form-{{ section.id }}-{{ product.id }}{{form_sticky}}{%- endcapture %}
+    {% capture form_class %}main-product__form{%- endcapture %}
     {% form 'product', product, id: form_id, class: form_class %}
         {% if product.available and product.variants.size > 1 %}
             <variant-product

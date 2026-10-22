@@ -1,4 +1,4 @@
-{{ 'section-main-customer.css' | asset_url | stylesheet_tag }}
+{{ 'main-page-customer.css' | asset_url | stylesheet_tag }}
 
 <div class="page-wrapper">
     {% render 'account-header', mod_header_class: 'h3', mod_screen_size: 'mobile' %}
@@ -22,7 +22,7 @@
                 {% for address in customer.addresses %}
                     {% if address == customer.default_address %}
                     <span>{{ address.street }}</span>
-                    <span>{{ address.city }}{% if address.province_code %}, {{address.province_code}}</span> {% endif %}
+                    <span>{{ address.city }}{% if address.province_code %}, {{ address.province_code }}{% endif %}</span>
                     <span>{{ address.country }}, {{address.zip}}</span>
                     <span>{{ address.phone }}</span>
                     {% endif %}

@@ -38,7 +38,7 @@
         <div class="list-image__box" tabindex="-1">
             {% if image != blank %}
                 <picture class="list-image__media-placeholder media__size--{{ img_size }} media">
-                    {% render 'image', image_box: image, image_box_class: 'list-image__media--image-placeholder', alt: title | escape %}
+                    {% render 'image', image_box: image, image_box_class: 'list-image__media--image-placeholder', alt: title %}
                 </picture>
             {% endif %}
             {% if title != blank %}
@@ -100,7 +100,7 @@
                                                         render 'image',
                                                         image_box: collection_block,
                                                         image_box_class: 'list-image__media--image',
-                                                        alt: collection.title | escape
+                                                        alt: collection.title
                                                     %}
                                                 </picture>
                                             {% else %}
@@ -109,7 +109,7 @@
                                                         render 'image',
                                                         image_box: image_block,
                                                         image_box_class: 'list-image__media--image',
-                                                        alt: collection.title | escape
+                                                        alt: collection.title
                                                     %}
                                                 </picture>
                                             {% endif %}
@@ -159,7 +159,7 @@
                                                     render 'image',
                                                     image_box: product_block,
                                                     image_box_class: 'list-image__media--image',
-                                                    alt: product.title | escape
+                                                    alt: product.title
                                                 %}
                                             </picture>
                                         {% else %}
@@ -168,7 +168,7 @@
                                                     render 'image',
                                                     image_box: image_block,
                                                     image_box_class: 'list-image__media--image',
-                                                    alt: product.title | escape
+                                                    alt: product.title
                                                 %}
                                             </picture>
                                         {% endif %}
@@ -207,7 +207,7 @@
                                                     render 'image',
                                                     image_box: image_block,
                                                     image_box_class: 'list-image__media--image',
-                                                    alt: title | escape
+                                                    alt: title
                                                 %}
                                             </picture>
                                         {% endif %}

@@ -40,7 +40,7 @@
 
     {%- if search.performed and search.results_count > 0 -%}
       {%- paginate search.results by per_page -%}
-        <ul id="SearchResults" class="main-search__grid" role="list">
+        <ul id="SearchResults" class="grid main-search__grid" role="list" style="--grid-columns: 4; --grid-columns-mobile: 2;">
           {%- for item in search.results -%}
             <li>
               {%- case item.object_type -%}

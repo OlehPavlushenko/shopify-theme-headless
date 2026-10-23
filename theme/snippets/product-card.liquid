@@ -9,7 +9,6 @@
   @param {string} [sizes] - sizes attribute for the image (default: grid of 2 / 4 columns)
   @param {boolean} [eager] - Load the image eagerly (first row above the fold)
   @param {string} [heading_tag] - Title element (default h3)
-  @param {boolean} [compact] - Smaller type and spacing (search panel, mini lists)
 {% enddoc %}
 {%- liquid
   assign media = product.featured_media
@@ -33,7 +32,7 @@
     assign on_sale = true
   endif
 -%}
-<article class="product-card{% if second %} product-card--hover{% endif %}{% if compact %} product-card--compact{% endif %}">
+<article class="product-card{% if second %} product-card--hover{% endif %}">
   <a href="{{ product.url }}" class="product-card__media frame" style="--frame-ratio: 1;" tabindex="-1" aria-hidden="true">
     {%- if media -%}
       {{

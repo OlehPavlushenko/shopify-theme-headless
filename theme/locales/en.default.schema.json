@@ -203,6 +203,12 @@
     "main_search": {
       "results_per_page": "Results per page",
       "show_vendor": "Show vendor"
+    },
+    "main_collection": {
+      "show_description": "Show collection description",
+      "products_per_page": "Products per page",
+      "columns_desktop": "Columns on desktop",
+      "columns_mobile": "Columns on mobile"
     }
   },
   "blocks": {

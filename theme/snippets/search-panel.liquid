@@ -93,15 +93,17 @@
             {%- endif -%}
             {%- if block.settings.title != blank -%}
               <li {{ block.shopify_attributes }}>
-                <a href="{{ block.settings.link | default: routes.root_url }}" class="search-tile">
-                  <span class="search-tile__media frame" style="--frame-ratio: 1;">
-                    {%- if block.settings.image -%}
-                      {{ block.settings.image | image_url: width: 320 | image_tag: loading: 'lazy', sizes: '96px', alt: '' }}
-                    {%- else -%}
-                      {%- render 'icon', name: 'arrow-right' -%}
-                    {%- endif -%}
-                  </span>
-                  <span class="search-tile__title">{{ block.settings.title | escape }}</span>
+                <a
+                  href="{{ block.settings.link | default: routes.root_url }}"
+                  class="search-tile{% if block.settings.image == blank %} search-tile--text{% endif %}"
+                >
+                  {%- if block.settings.image -%}
+                    <span class="search-tile__media frame" style="--frame-ratio: 1;">
+                      {{ block.settings.image | image_url: width: 160 | image_tag: loading: 'lazy', sizes: '40px', alt: '' }}
+                    </span>
+                  {%- endif -%}
+                  {{ block.settings.title | escape }}
+                  {%- render 'icon', name: 'arrow-right', class: 'search-tile__arrow' -%}
                 </a>
               </li>
             {%- endif -%}
@@ -129,7 +131,6 @@
                       {%- render 'product-card',
                         product: product,
                         show_secondary_image: false,
-                        compact: true,
                         sizes: card_sizes,
                         heading_tag: 'p'
                       -%}
@@ -149,15 +150,17 @@
                   {%- for collection in block.settings.collections -%}
                     {%- assign collection_image = collection.featured_image | default: collection.products.first.featured_image -%}
                     <li>
-                      <a href="{{ collection.url }}" class="search-tile">
-                        <span class="search-tile__media frame" style="--frame-ratio: 1;">
-                          {%- if collection_image -%}
-                            {{ collection_image | image_url: width: 320 | image_tag: loading: 'lazy', sizes: '96px', alt: '' }}
-                          {%- else -%}
-                            {{ 'collection-1' | placeholder_svg_tag }}
-                          {%- endif -%}
-                        </span>
-                        <span class="search-tile__title">{{ collection.title | escape }}</span>
+                      <a
+                        href="{{ collection.url }}"
+                        class="search-tile{% if collection_image == blank %} search-tile--text{% endif %}"
+                      >
+                        {%- if collection_image -%}
+                          <span class="search-tile__media frame" style="--frame-ratio: 1;">
+                            {{ collection_image | image_url: width: 160 | image_tag: loading: 'lazy', sizes: '40px', alt: '' }}
+                          </span>
+                        {%- endif -%}
+                        {{ collection.title | escape }}
+                        {%- render 'icon', name: 'arrow-right', class: 'search-tile__arrow' -%}
                       </a>
                     </li>
                   {%- endfor -%}

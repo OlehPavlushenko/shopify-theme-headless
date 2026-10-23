@@ -67,7 +67,12 @@
     }
   },
   "collections": {
-    "title": "Collections"
+    "title": "Collections",
+    "product_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    },
+    "empty": "This collection has no products yet."
   },
   "gift_card": {
     "add_to_apple_wallet": "Add to Apple Wallet",

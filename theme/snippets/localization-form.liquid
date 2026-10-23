@@ -19,10 +19,37 @@
         <div class="localization__options">
           {%- for code in currency_codes -%}
             {%- liquid
+              comment
+                Pick the country to submit for this currency, preferring the least disruptive one:
+                1. the current country (already uses the currency)
+                2. a country in the current market
+                3. a country whose market offers the current language
+                4. the first country with the currency
+              endcomment
               assign target = null
               if current_country.currency.iso_code == code
                 assign target = current_country
-              else
+              endif
+              if target == null
+                for country in localization.available_countries
+                  if country.currency.iso_code == code and country.market.id == localization.market.id
+                    assign target = country
+                    break
+                  endif
+                endfor
+              endif
+              if target == null
+                for country in localization.available_countries
+                  if country.currency.iso_code == code
+                    assign country_languages = country.available_languages | map: 'iso_code'
+                    if country_languages contains localization.language.iso_code
+                      assign target = country
+                      break
+                    endif
+                  endif
+                endfor
+              endif
+              if target == null
                 for country in localization.available_countries
                   if country.currency.iso_code == code
                     assign target = country

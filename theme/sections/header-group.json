@@ -15,7 +15,7 @@
       "type": "header",
       "settings": {
         "color_scheme": "",
-        "layout": "logo-left",
+        "layout": "logo-center-left",
         "menu": "main-menu",
         "sticky": "scroll-up",
         "transparent": false,

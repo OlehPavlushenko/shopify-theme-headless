@@ -79,6 +79,10 @@
         "imports": {
           "@ui/dialog": "{{ 'ui-dialog.js' | asset_url }}",
           "@ui/money": "{{ 'ui-money.js' | asset_url }}",
+          "@ui/header": "{{ 'ui-header.js' | asset_url }}",
+          "@ui/nav-menu": "{{ 'ui-nav-menu.js' | asset_url }}",
+          "@ui/drill-menu": "{{ 'ui-drill-menu.js' | asset_url }}",
+          "@ui/autosubmit": "{{ 'ui-autosubmit.js' | asset_url }}",
           "liquid-ajax-cart": "{{ 'liquid-ajax-cart-v2.2.0.js' | asset_url }}",
           "cart": "{{ 'cart.js' | asset_url }}"
         }
@@ -89,6 +93,10 @@
     <link rel="modulepreload" href="{{ 'liquid-ajax-cart-v2.2.0.js' | asset_url }}">
     <script type="module">
       import '@ui/dialog';
+      import '@ui/header';
+      import '@ui/nav-menu';
+      import '@ui/drill-menu';
+      import '@ui/autosubmit';
       import 'cart';
     </script>
 

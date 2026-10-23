@@ -1,0 +1,96 @@
+{% doc %}
+  Mobile menu drawer content with drill-down panels (behavior: @ui/drill-menu).
+  Root panel lists top-level links; every link with children opens its own panel, and so on
+  for the 3rd level. Account link and the country/language selector sit at the bottom.
+
+  @param {object} menu - link_list
+  @param {boolean} show_account - Show the account link
+  @param {boolean} show_localization - Show the country/language selector
+{% enddoc %}
+<drill-menu class="mobile-nav">
+  <div class="mobile-nav__panel" data-panel="root">
+    <ul class="mobile-nav__list" role="list">
+      {%- for link in menu.links -%}
+        {%- assign panel_id = 'menu-' | append: forloop.index -%}
+        <li>
+          {%- if link.links.size > 0 -%}
+            <button type="button" class="mobile-nav__link" data-panel-open="{{ panel_id }}">
+              {{- link.title | escape -}}
+              {%- render 'icon', name: 'arrow-right' -%}
+            </button>
+          {%- else -%}
+            <a href="{{ link.url }}" class="mobile-nav__link"{% if link.current %} aria-current="page"{% endif %}>
+              {{- link.title | escape -}}
+            </a>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    <div class="mobile-nav__footer">
+      {%- if show_account and shop.customer_accounts_enabled -%}
+        <a href="{{ routes.account_url }}" class="mobile-nav__utility">
+          {%- render 'icon', name: 'account' -%}
+          {%- if customer -%}{{ 'accessibility.account' | t }}{%- else -%}{{ 'customers.login.title' | t }}{%- endif -%}
+        </a>
+      {%- endif -%}
+      {%- if show_localization -%}
+        {%- render 'localization-form', id: 'MobileLocalization' -%}
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- for link in menu.links -%}
+    {%- if link.links.size == 0 -%}{%- continue -%}{%- endif -%}
+    {%- assign panel_id = 'menu-' | append: forloop.index -%}
+    <div class="mobile-nav__panel" data-panel="{{ panel_id }}" hidden>
+      <button type="button" class="mobile-nav__back" data-panel-back>
+        {%- render 'icon', name: 'arrow-left' -%}
+        {{ link.title | escape }}
+      </button>
+      <ul class="mobile-nav__list" role="list">
+        <li>
+          <a href="{{ link.url }}" class="mobile-nav__link mobile-nav__link--all">{{ 'general.view_all' | t }}</a>
+        </li>
+        {%- for child in link.links -%}
+          {%- assign child_panel_id = panel_id | append: '-' | append: forloop.index -%}
+          <li>
+            {%- if child.links.size > 0 -%}
+              <button type="button" class="mobile-nav__link" data-panel-open="{{ child_panel_id }}">
+                {{- child.title | escape -}}
+                {%- render 'icon', name: 'arrow-right' -%}
+              </button>
+            {%- else -%}
+              <a href="{{ child.url }}" class="mobile-nav__link"{% if child.current %} aria-current="page"{% endif %}>
+                {{- child.title | escape -}}
+              </a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+
+    {%- for child in link.links -%}
+      {%- if child.links.size == 0 -%}{%- continue -%}{%- endif -%}
+      {%- assign child_panel_id = panel_id | append: '-' | append: forloop.index -%}
+      <div class="mobile-nav__panel" data-panel="{{ child_panel_id }}" hidden>
+        <button type="button" class="mobile-nav__back" data-panel-back>
+          {%- render 'icon', name: 'arrow-left' -%}
+          {{ child.title | escape }}
+        </button>
+        <ul class="mobile-nav__list" role="list">
+          <li>
+            <a href="{{ child.url }}" class="mobile-nav__link mobile-nav__link--all">{{ 'general.view_all' | t }}</a>
+          </li>
+          {%- for grandchild in child.links -%}
+            <li>
+              <a href="{{ grandchild.url }}" class="mobile-nav__link"{% if grandchild.current %} aria-current="page"{% endif %}>
+                {{- grandchild.title | escape -}}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endfor -%}
+  {%- endfor -%}
+</drill-menu>

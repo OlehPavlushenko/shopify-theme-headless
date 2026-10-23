@@ -9,10 +9,35 @@
  */
 {
   "current": {
+    "type_heading_font": "bricolage_grotesque_n7",
+    "type_body_font": "dm_sans_n4",
+    "radius_button": 40,
+    "radius_input": 12,
+    "radius_card": 20,
+    "radius_media": 20,
+    "radius_badge": 40,
+    "cart_type": "drawer",
+    "free_shipping_threshold": 1200,
+    "upsell_products": [
+      "the-out-of-stock-snowboard",
+      "the-multi-managed-snowboard",
+      "the-multi-location-snowboard",
+      "the-inventory-not-tracked-snowboard"
+    ],
+    "sections": {
+      "cart-drawer": {
+        "type": "cart-drawer",
+        "settings": {
+          "color_scheme": ""
+        }
+      }
+    },
+    "content_for_index": [],
     "color_schemes": {
       "scheme-1": {
         "settings": {
           "background": "#fbfaf7",
+          "background_gradient": "",
           "foreground": "#3d4440",
           "heading": "#1b2a23",
           "link_hover": "#2f6b4f",
@@ -27,13 +52,13 @@
           "button_secondary": "#dfe8df",
           "button_secondary_label": "#1b2a23",
           "input_background": "#ffffff",
-          "input_text": "#1b2a23",
-          "background_gradient": ""
+          "input_text": "#1b2a23"
         }
       },
       "scheme-2": {
         "settings": {
           "background": "#dfe8df",
+          "background_gradient": "",
           "foreground": "#3d4440",
           "heading": "#1b2a23",
           "link_hover": "#2f6b4f",
@@ -48,13 +73,13 @@
           "button_secondary": "#fbfaf7",
           "button_secondary_label": "#1b2a23",
           "input_background": "#ffffff",
-          "input_text": "#1b2a23",
-          "background_gradient": ""
+          "input_text": "#1b2a23"
         }
       },
       "scheme-3": {
         "settings": {
           "background": "#1b2a23",
+          "background_gradient": "",
           "foreground": "#d5ddd8",
           "heading": "#fbfaf7",
           "link_hover": "#a8d5b8",
@@ -69,13 +94,13 @@
           "button_secondary": "#2f6b4f",
           "button_secondary_label": "#fbfaf7",
           "input_background": "#24372e",
-          "input_text": "#fbfaf7",
-          "background_gradient": ""
+          "input_text": "#fbfaf7"
         }
       },
       "scheme-4": {
         "settings": {
           "background": "#efeee8",
+          "background_gradient": "",
           "foreground": "#3d4440",
           "heading": "#1b2a23",
           "link_hover": "#2f6b4f",
@@ -90,25 +115,9 @@
           "button_secondary": "#fbfaf7",
           "button_secondary_label": "#1b2a23",
           "input_background": "#ffffff",
-          "input_text": "#1b2a23",
-          "background_gradient": ""
+          "input_text": "#1b2a23"
         }
       }
-    },
-    "cart_type": "drawer",
-    "free_shipping_threshold": 100,
-    "upsell_products": [
-      "the-out-of-stock-snowboard",
-      "the-multi-managed-snowboard",
-      "the-multi-location-snowboard",
-      "the-inventory-not-tracked-snowboard"
-    ],
-    "type_heading_font": "bricolage_grotesque_n7",
-    "type_body_font": "dm_sans_n4",
-    "radius_button": 40,
-    "radius_input": 12,
-    "radius_card": 20,
-    "radius_media": 20,
-    "radius_badge": 40
+    }
   }
 }

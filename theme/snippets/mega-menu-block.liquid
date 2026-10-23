@@ -1,0 +1,68 @@
+{% doc %}
+  Extra content inside a mega menu, from a header block.
+  - menu_promo: image card with heading, text and a link
+  - menu_products: a few products from a list
+
+  @param {object} block - Header block of type menu_promo or menu_products
+{% enddoc %}
+{%- case block.type -%}
+  {%- when 'menu_promo' -%}
+    {%- liquid
+      assign promo_url = block.settings.link | default: '#'
+    -%}
+    <a href="{{ promo_url }}" class="mega-promo" {{ block.shopify_attributes }}>
+      <span class="mega-promo__media frame" style="--frame-ratio: 4 / 3;">
+        {%- if block.settings.image -%}
+          {{
+            block.settings.image
+            | image_url: width: 800
+            | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 320px, 100vw', alt: block.settings.heading
+          }}
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag }}
+        {%- endif -%}
+      </span>
+      {%- if block.settings.heading != blank -%}
+        <span class="mega-promo__heading">{{ block.settings.heading | escape }}</span>
+      {%- endif -%}
+      {%- if block.settings.text != blank -%}
+        <span class="mega-promo__text small">{{ block.settings.text | escape }}</span>
+      {%- endif -%}
+      {%- if block.settings.link_label != blank -%}
+        <span class="mega-promo__cta small">
+          {{- block.settings.link_label | escape -}}
+          {%- render 'icon', name: 'arrow-right' -%}
+        </span>
+      {%- endif -%}
+    </a>
+
+  {%- when 'menu_products' -%}
+    <div class="mega-products" {{ block.shopify_attributes }}>
+      {%- if block.settings.heading != blank -%}
+        <p class="mega-menu__heading">{{ block.settings.heading | escape }}</p>
+      {%- endif -%}
+      <ul class="mega-products__list" role="list">
+        {%- for product in block.settings.products -%}
+          <li>
+            <a href="{{ product.url }}" class="mega-products__item">
+              <span class="frame" style="--frame-ratio: 1;">
+                {%- if product.featured_image -%}
+                  {{
+                    product.featured_image
+                    | image_url: width: 240
+                    | image_tag: loading: 'lazy', sizes: '96px', alt: product.featured_image.alt
+                  }}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag }}
+                {%- endif -%}
+              </span>
+              <span class="mega-products__info">
+                <span class="mega-products__title">{{ product.title | escape }}</span>
+                <span class="price-tag small"><span class="price-tag__current">{{ product.price | money }}</span></span>
+              </span>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+{%- endcase -%}

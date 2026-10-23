@@ -1,15 +1,16 @@
 {
+  "404": {
+    "title": "404",
+    "not_found": "Page not found.",
+    "back_to_shopping": "Back to shopping"
+  },
   "accessibility": {
     "skip_to_content": "Skip to content",
     "close": "Close",
     "menu": "Menu",
     "account": "Account",
-    "cart_count": "{{ count }} items in cart"
-  },
-  "404": {
-    "title": "404",
-    "not_found": "Page not found.",
-    "back_to_shopping": "Back to shopping"
+    "cart_count": "{{ count }} items in cart",
+    "back": "Back"
   },
   "blog": {
     "article_comments": "Comments",
@@ -79,5 +80,13 @@
     "submit": "Search",
     "no_results_html": "No results found for {{ terms }}",
     "results_for_html": "{{ count }} results found for {{ terms }}"
+  },
+  "general": {
+    "view_all": "View all"
+  },
+  "localization": {
+    "country": "Country/region",
+    "language": "Language",
+    "update": "Update"
   }
 }

@@ -1,0 +1,59 @@
+{% doc %}
+  Country/currency and language selector (Shopify Markets). Renders nothing when the store sells
+  to a single country in a single language. Submits on change (@ui/autosubmit); without JS the
+  submit button stays visible.
+
+  @param {string} id - Unique form id (header and mobile menu render separate forms)
+{% enddoc %}
+{%- liquid
+  assign show_countries = false
+  assign show_languages = false
+  if localization.available_countries.size > 1
+    assign show_countries = true
+  endif
+  if localization.available_languages.size > 1
+    assign show_languages = true
+  endif
+-%}
+{%- if show_countries or show_languages -%}
+  {%- form 'localization', id: id, class: 'localization', data-autosubmit: '' -%}
+    {%- if show_countries -%}
+      <label class="localization__field">
+        <span class="visually-hidden">{{ 'localization.country' | t }}</span>
+        <select name="country_code" class="localization__select">
+          {%- for country in localization.available_countries -%}
+            <option
+              value="{{ country.iso_code }}"
+              {% if country.iso_code == localization.country.iso_code %}
+                selected
+              {% endif %}
+            >
+              {{- country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol -}})
+            </option>
+          {%- endfor -%}
+        </select>
+      </label>
+    {%- endif -%}
+    {%- if show_languages -%}
+      <label class="localization__field">
+        <span class="visually-hidden">{{ 'localization.language' | t }}</span>
+        <select name="language_code" class="localization__select">
+          {%- for language in localization.available_languages -%}
+            <option
+              value="{{ language.iso_code }}"
+              lang="{{ language.iso_code }}"
+              {% if language.iso_code == localization.language.iso_code %}
+                selected
+              {% endif %}
+            >
+              {{- language.endonym_name | capitalize -}}
+            </option>
+          {%- endfor -%}
+        </select>
+      </label>
+    {%- endif -%}
+    <noscript>
+      <button type="submit" class="btn btn--sm btn--outline">{{ 'localization.update' | t }}</button>
+    </noscript>
+  {%- endform -%}
+{%- endif -%}

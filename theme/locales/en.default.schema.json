@@ -164,7 +164,24 @@
     },
     "header": {
       "show_account": "Show account icon",
-      "sticky": "Sticky header"
+      "sticky": "Sticky header",
+      "layout": "Layout",
+      "layout_logo_left": "Logo left, menu inline",
+      "layout_logo_center_below": "Logo center, menu below",
+      "layout_logo_center_left": "Logo center, menu left",
+      "menu_info": "Links with sub-links open a dropdown. A third level, or a menu block targeting the link, turns it into a mega menu.",
+      "behavior": "Behavior",
+      "sticky_none": "Off",
+      "sticky_always": "Always",
+      "sticky_scroll_up": "Show when scrolling up",
+      "transparent": "Transparent on home page",
+      "transparent_info": "Overlays the first section of the home page and turns solid on scroll.",
+      "transparent_text_color": "Text and icons on transparent header",
+      "logo_transparent": "Logo on transparent header",
+      "logo_transparent_info": "Optional light version of the logo.",
+      "icons": "Icons",
+      "show_localization": "Show country/language selector",
+      "show_localization_info": "Appears when the store sells to several countries or in several languages (Shopify Markets)."
     },
     "footer": {
       "show_powered_by": "Show \"Powered by Shopify\""
@@ -180,6 +197,23 @@
       "required": "Required",
       "options": "Options",
       "options_info": "Separate options with |"
+    },
+    "menu_item": {
+      "label": "Menu link",
+      "info": "Title of the top-level menu link this content belongs to, e.g. \"Shop\"."
+    },
+    "menu_promo": {
+      "name": "Menu promo",
+      "image": "Image",
+      "heading": "Heading",
+      "text": "Text",
+      "link_label": "Link label",
+      "link": "Link"
+    },
+    "menu_products": {
+      "name": "Menu products",
+      "heading": "Heading",
+      "products": "Products"
     }
   }
 }

@@ -1,0 +1,107 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "color_schemes": {
+      "scheme-1": {
+        "settings": {
+          "background": "#ffffff",
+          "background_gradient": "",
+          "foreground": "#4D4D4D",
+          "heading": "#212121",
+          "link_hover": "#500515",
+          "accent": "#500515",
+          "accent_2": "#C29A10",
+          "surface": "#e9e9e9",
+          "border": "#d3d3d3",
+          "button": "#500515",
+          "button_label": "#fafbfb",
+          "button_hover": "#9C0929",
+          "button_label_hover": "#fafbfb",
+          "button_secondary": "#212121",
+          "button_secondary_label": "#fafbfb",
+          "input_background": "#f8f8f8",
+          "input_text": "#212121"
+        }
+      },
+      "scheme-2": {
+        "settings": {
+          "background": "#f4f4f4",
+          "background_gradient": "",
+          "foreground": "#4D4D4D",
+          "heading": "#212121",
+          "link_hover": "#500515",
+          "accent": "#500515",
+          "accent_2": "#C29A10",
+          "surface": "#ffffff",
+          "border": "#d3d3d3",
+          "button": "#500515",
+          "button_label": "#fafbfb",
+          "button_hover": "#9C0929",
+          "button_label_hover": "#fafbfb",
+          "button_secondary": "#212121",
+          "button_secondary_label": "#fafbfb",
+          "input_background": "#f8f8f8",
+          "input_text": "#212121"
+        }
+      },
+      "scheme-3": {
+        "settings": {
+          "background": "#212121",
+          "background_gradient": "",
+          "foreground": "#e9e9e9",
+          "heading": "#ffffff",
+          "link_hover": "#CEAE40",
+          "accent": "#CEAE40",
+          "accent_2": "#C29A10",
+          "surface": "#333333",
+          "border": "#4d4d4d",
+          "button": "#fafbfb",
+          "button_label": "#212121",
+          "button_hover": "#CEAE40",
+          "button_label_hover": "#212121",
+          "button_secondary": "#500515",
+          "button_secondary_label": "#fafbfb",
+          "input_background": "#2b2b2b",
+          "input_text": "#fafbfb"
+        }
+      },
+      "scheme-4": {
+        "settings": {
+          "background": "#500515",
+          "background_gradient": "",
+          "foreground": "#f3dfe3",
+          "heading": "#ffffff",
+          "link_hover": "#CEAE40",
+          "accent": "#CEAE40",
+          "accent_2": "#C29A10",
+          "surface": "#36030E",
+          "border": "#9C0929",
+          "button": "#fafbfb",
+          "button_label": "#500515",
+          "button_hover": "#CEAE40",
+          "button_label_hover": "#212121",
+          "button_secondary": "#212121",
+          "button_secondary_label": "#fafbfb",
+          "input_background": "#36030E",
+          "input_text": "#fafbfb"
+        }
+      }
+    },
+    "cart_type": "drawer",
+    "free_shipping_threshold": 100,
+    "upsell_products": [
+      "the-out-of-stock-snowboard",
+      "the-multi-managed-snowboard",
+      "the-multi-location-snowboard",
+      "the-inventory-not-tracked-snowboard"
+    ]
+  }
+}

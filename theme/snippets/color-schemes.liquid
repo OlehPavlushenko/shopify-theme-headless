@@ -1,0 +1,31 @@
+{% doc %}
+  One `.color-<scheme-id>` class per color scheme (Theme settings > Colors). The first scheme also
+  applies to :root, so it is the store default. A section or block opts in with
+  `class="color-{{ section.settings.color_scheme }}"`.
+  Custom property names match packages/tokens (color.*), so CSS is shared with headless.
+{% enddoc %}
+{%- style -%}
+  {%- for scheme in settings.color_schemes -%}
+    {%- assign s = scheme.settings %}
+    {% if forloop.first %}:root,{% endif %}
+    .color-{{ scheme.id }} {
+      --color-background: {{ s.background }};
+      --color-background-gradient: {{ s.background_gradient | default: 'none' }};
+      --color-foreground: {{ s.foreground }};
+      --color-heading: {{ s.heading }};
+      --color-link-hover: {{ s.link_hover }};
+      --color-accent: {{ s.accent }};
+      --color-accent-2: {{ s.accent_2 }};
+      --color-surface: {{ s.surface }};
+      --color-border: {{ s.border }};
+      --color-button: {{ s.button }};
+      --color-button-label: {{ s.button_label }};
+      --color-button-hover: {{ s.button_hover }};
+      --color-button-label-hover: {{ s.button_label_hover }};
+      --color-button-secondary: {{ s.button_secondary }};
+      --color-button-secondary-label: {{ s.button_secondary_label }};
+      --color-input-background: {{ s.input_background }};
+      --color-input-text: {{ s.input_text }};
+    }
+  {%- endfor %}
+{%- endstyle -%}

@@ -1,0 +1,75 @@
+{% doc %}
+    One cart attribute field (order details) from a cart-drawer / main-cart block.
+    Saved with Liquid Ajax Cart via data-ajax-cart-property-input, so it persists on change.
+
+    @param {object} block - Block of type text | select | radio | checkbox (settings.label, settings.options)
+{% enddoc %}
+{%- liquid
+    assign label = block.settings.label | strip
+    assign name = 'attributes[' | append: label | append: ']'
+    assign current = cart.attributes[label]
+    assign options = block.settings.options | split: '|'
+    assign field_id = 'CartAttribute-' | append: block.id
+-%}
+{%- if label != blank -%}
+<div class="field" {{ block.shopify_attributes }}>
+    {%- case block.type -%}
+        {%- when 'text' -%}
+            <label class="field__label" for="{{ field_id }}">{{ label | escape }}</label>
+            <input
+                id="{{ field_id }}"
+                class="input"
+                type="text"
+                name="{{ name | escape }}"
+                value="{{ current | escape }}"
+                {% if block.settings.required %}
+                    required
+                {% endif %}
+                data-ajax-cart-property-input
+            >
+        {%- when 'select' -%}
+            <label class="field__label" for="{{ field_id }}">{{ label | escape }}</label>
+            <select id="{{ field_id }}" class="input" name="{{ name | escape }}" data-ajax-cart-property-input>
+                <option value="">—</option>
+                {%- for option in options -%}
+                    {%- assign option = option | strip -%}
+                    <option value="{{ option | escape }}" {% if option == current %}selected{% endif %}>{{ option | escape }}</option>
+                {%- endfor -%}
+            </select>
+        {%- when 'radio' -%}
+            <fieldset class="cart-attribute__fieldset cluster">
+                <legend class="field__label">{{ label | escape }}</legend>
+                {%- for option in options -%}
+                    {%- assign option = option | strip -%}
+                    <label class="cluster" style="--cluster-gap: var(--space-2xs);">
+                        <input
+                            type="radio"
+                            name="{{ name | escape }}"
+                            value="{{ option | escape }}"
+                            {% if option == current %}
+                                checked
+                            {% endif %}
+                            data-ajax-cart-property-input
+                        >
+                        {{ option | escape }}
+                    </label>
+                {%- endfor -%}
+            </fieldset>
+        {%- when 'checkbox' -%}
+            <label class="cluster" style="--cluster-gap: var(--space-xs);">
+                <input type="hidden" name="{{ name | escape }}" value="" data-ajax-cart-property-input>
+                <input
+                    type="checkbox"
+                    name="{{ name | escape }}"
+                    value="Yes"
+                    {% if current == 'Yes' %}
+                        checked
+                    {% endif %}
+                    data-ajax-cart-property-input
+                >
+                {{ label | escape }}
+            </label>
+    {%- endcase -%}
+</div>
+{%- endif -%}
+

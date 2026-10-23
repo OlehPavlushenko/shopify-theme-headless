@@ -1,0 +1,38 @@
+/* Generated from packages/ui/css/footer.css by scripts/sync-ui.mjs. Do not edit here. */
+/*
+ * Site footer. Markup contract: theme/sections/footer.liquid.
+ */
+@layer components {
+    .site-footer {
+        margin-top: auto;
+        padding-block: var(--space-2xl);
+        border-top: 0.1rem solid var(--color-border);
+    }
+
+    .site-footer__inner {
+        display: grid;
+        gap: var(--space-l);
+    }
+
+    .site-footer__links {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .site-footer__links a {
+        text-decoration: none;
+    }
+
+    .site-footer__payment {
+        --cluster-gap: var(--space-xs);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .site-footer__payment-icon {
+        width: auto;
+        height: 2.4rem;
+    }
+}

@@ -1,0 +1,182 @@
+{% comment %}
+    Cart page. Same building blocks as the cart drawer (cart-line-item, cart-free-shipping,
+    cart-attribute, cart-upsell-item); Liquid Ajax Cart re-renders [data-ajax-cart-section] after
+    every change. Without JS the quantity links and the update button still work.
+{% endcomment %}
+{%- liquid
+    assign upsell_products = settings.upsell_products
+    assign cart_product_ids = cart.items | map: 'product_id'
+-%}
+<div
+    class="main-cart color-{{ section.settings.color_scheme }} section-spacing"
+    style="--section-padding-top: {{ section.settings.padding_top }}px; --section-padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+    <div class="page-width" data-ajax-cart-section>
+        <h1 class="main-cart__title h2">{{ 'cart.view_cart' | t }}</h1>
+
+        {%- if cart.item_count == 0 -%}
+            <div class="cart-empty stack">
+                <p class="h4">{{ 'cart.empty' | t }}</p>
+                <a href="{{ routes.all_products_collection_url }}" class="btn">{{ 'cart.continue_shopping' | t }}</a>
+                {%- if shop.customer_accounts_enabled and customer == null -%}
+                    <p class="small">{{ 'cart.login_html' | t: link: routes.account_login_url }}</p>
+                {%- endif -%}
+            </div>
+        {%- else -%}
+            <form action="{{ routes.cart_url }}" method="post" id="CartPage-form" class="main-cart__layout">
+                <div class="main-cart__lines">
+                    <ul class="cart-lines" role="list">
+                        {%- for item in cart.items -%}
+                            {%- liquid
+                                assign eager = false
+                                if forloop.index <= 3
+                                    assign eager = true
+                                endif
+                            -%}
+                            {%- render 'cart-line-item', item: item, line: forloop.index, eager: eager -%}
+                        {%- endfor -%}
+                    </ul>
+                    <noscript>
+                        <button type="submit" name="update" class="btn btn--outline">{{ 'cart.update' | t }}</button>
+                    </noscript>
+                </div>
+
+                <aside class="main-cart__summary stack" aria-label="{{ 'cart.summary' | t }}">
+                    {%- render 'cart-free-shipping' -%}
+
+                    {%- if settings.show_cart_note -%}
+                        <label class="field">
+                            <span class="field__label">{{ 'cart.note' | t }}</span>
+                            <textarea class="input" name="note" data-ajax-cart-property-input>{{ cart.note }}</textarea>
+                        </label>
+                    {%- endif -%}
+                    {%- for block in section.blocks -%}
+                        {%- render 'cart-attribute', block: block -%}
+                    {%- endfor -%}
+
+                    <div class="cart-summary">
+                        {%- for discount in cart.cart_level_discount_applications -%}
+                            <div class="cart-summary__row small">
+                                <span>{{ discount.title }}</span>
+                                <span>−{{ discount.total_allocated_amount | money }}</span>
+                            </div>
+                        {%- endfor -%}
+                        <div class="cart-summary__row h5">
+                            <span>{{ 'cart.total' | t }}</span>
+                            <span>
+                                {{ cart.total_price | money }}
+                            </span>
+                        </div>
+                        <p class="small muted">{{ 'cart.taxes_note' | t }}</p>
+                    </div>
+
+                    <button type="submit" name="checkout" class="btn btn--full">{{ 'cart.checkout' | t }}</button>
+                    {%- if additional_checkout_buttons and section.settings.show_dynamic_checkout -%}
+                        <div class="main-cart__dynamic-checkout" data-ajax-cart-static-element>{{ content_for_additional_checkout_buttons }}</div>
+                    {%- endif -%}
+                </aside>
+            </form>
+        {%- endif -%}
+
+        {%- if settings.show_upsell and upsell_products.count > 0 -%}
+            {%- capture upsell_items -%}
+                {%- for product in upsell_products -%}
+                    {%- if cart_product_ids contains product.id or product.available == false -%}
+                        {%- continue -%}
+                    {%- endif -%}
+                    {%- render 'cart-upsell-item', product: product -%}
+                {%- endfor -%}
+            {%- endcapture -%}
+            {%- if upsell_items != blank -%}
+                <div class="cart-upsell main-cart__upsell stack">
+                    <h2 class="h5">{{ 'cart.upsell_title' | t }}</h2>
+                    <ul class="cart-upsell__list" role="list">{{ upsell_items }}</ul>
+                </div>
+            {%- endif -%}
+        {%- endif -%}
+    </div>
+</div>
+
+<script type="application/json" data-ajax-cart-initial-state>
+    {{ cart | json }}
+</script>
+
+{% schema %}
+{
+    "name": "t:sections.main_cart.name",
+    "class": "main-cart-section",
+    "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "t:labels.color_scheme",
+            "default": "scheme-1"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_dynamic_checkout",
+            "label": "t:sections.main_cart.show_dynamic_checkout",
+            "info": "t:sections.main_cart.show_dynamic_checkout_info",
+            "default": true
+        },
+        { "type": "paragraph", "content": "t:sections.cart_drawer.info" },
+        {
+            "type": "header",
+            "content": "t:labels.spacing"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "label": "t:labels.padding_top",
+            "min": 0,
+            "max": 120,
+            "step": 4,
+            "unit": "px",
+            "default": 40
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "label": "t:labels.padding_bottom",
+            "min": 0,
+            "max": 120,
+            "step": 4,
+            "unit": "px",
+            "default": 40
+        }
+    ],
+    "blocks": [
+        {
+            "type": "text",
+            "name": "t:blocks.cart_attribute.text",
+            "settings": [
+                { "type": "text", "id": "label", "label": "t:blocks.cart_attribute.label", "default": "Gift message" },
+                { "type": "checkbox", "id": "required", "label": "t:blocks.cart_attribute.required", "default": false }
+            ]
+        },
+        {
+            "type": "select",
+            "name": "t:blocks.cart_attribute.select",
+            "settings": [
+                { "type": "text", "id": "label", "label": "t:blocks.cart_attribute.label", "default": "Delivery day" },
+                { "type": "text", "id": "options", "label": "t:blocks.cart_attribute.options", "info": "t:blocks.cart_attribute.options_info", "default": "Monday|Wednesday|Friday" }
+            ]
+        },
+        {
+            "type": "radio",
+            "name": "t:blocks.cart_attribute.radio",
+            "settings": [
+                { "type": "text", "id": "label", "label": "t:blocks.cart_attribute.label", "default": "Delivery time" },
+                { "type": "text", "id": "options", "label": "t:blocks.cart_attribute.options", "info": "t:blocks.cart_attribute.options_info", "default": "Morning|Afternoon|Evening" }
+            ]
+        },
+        {
+            "type": "checkbox",
+            "name": "t:blocks.cart_attribute.checkbox",
+            "settings": [
+                { "type": "text", "id": "label", "label": "t:blocks.cart_attribute.label", "default": "Leave at the door" }
+            ]
+        }
+    ]
+}
+{% endschema %}

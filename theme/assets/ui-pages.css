@@ -1,0 +1,43 @@
+/* Generated from packages/ui/css/pages.css by scripts/sync-ui.mjs. Do not edit here. */
+/*
+ * Page-level layouts: collection grid, collections list, search results (Skeleton v1 baseline, rebuilt per page).
+ */
+@layer components {
+    /* sections/main-collection.liquid */
+
+    .collection-products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    }
+
+    /* sections/main-list-collections.liquid */
+
+    .collections {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(var(--collection-card-size), 100%), 1fr));
+      gap: var(--grid-gap);
+    }
+    .collections--compact {
+      --collection-card-size: 160px;
+    }
+    .collections--full {
+      --collection-card-size: 280px;
+    }
+    .collection-card {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    /* sections/main-search.liquid */
+
+    .search-results {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    .search-results .prev,
+    .search-results .page,
+    .search-results .next {
+      grid-column: 1 / -1;
+    }
+}

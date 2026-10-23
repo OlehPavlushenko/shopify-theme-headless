@@ -1,0 +1,88 @@
+/* Generated from packages/ui/css/blocks.css by scripts/sync-ui.mjs. Do not edit here. */
+/*
+ * Theme blocks and the generic custom section (Skeleton v1 baseline, reworked in the blocks phase).
+ */
+@layer components {
+    /* blocks/group.liquid */
+
+    .group {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .group--horizontal {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 var(--padding);
+    }
+
+    .group--vertical {
+      flex-direction: column;
+      align-items: var(--alignment);
+      padding: var(--padding) 0;
+    }
+
+    /* blocks/text.liquid */
+
+    .text {
+      text-align: var(--text-align);
+    }
+    .text--title {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .text--subtitle {
+      font-size: 1.5rem;
+    }
+
+    /* snippets/image.liquid */
+
+    .image {
+      display: block;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      height: auto;
+    }
+
+    .image > img {
+      width: 100%;
+      height: auto;
+    }
+
+    /* sections/custom-section.liquid */
+
+    .custom-section {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+    }
+    .custom-section__background {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .custom-section__background img {
+      position: absolute;
+      width: 100%;
+      height: auto;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .custom-section__content {
+      display: grid;
+      width: 100%;
+        max-width: calc(var(--page-width) + var(--gutter) * 2);
+        margin-inline: auto;
+        padding-inline: var(--gutter);
+    }
+    .custom-section__content > * {
+      grid-column: 2;
+    }
+}

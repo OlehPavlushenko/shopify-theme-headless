@@ -1,0 +1,66 @@
+{% comment %}
+  Site footer: menu, payment icons and copyright. Styles: packages/ui/css/footer.css.
+{% endcomment %}
+<footer class="site-footer color-{{ section.settings.color_scheme }}">
+  <div class="site-footer__inner page-width">
+    {%- if section.settings.menu.links.size > 0 -%}
+      <nav aria-label="{{ section.settings.menu.title | escape }}">
+        <ul class="site-footer__links cluster" role="list">
+          {%- for link in section.settings.menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+      <ul class="site-footer__payment cluster" role="list">
+        {%- for type in shop.enabled_payment_types -%}
+          <li>{{ type | payment_type_svg_tag: class: 'site-footer__payment-icon' }}</li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <p class="site-footer__copyright small">
+      &copy; {{ 'now' | date: '%Y' }}
+      {{ shop.name | link_to: routes.root_url }}
+      {%- if section.settings.show_powered_by %} · {{ powered_by_link }}{% endif %}
+    </p>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "t:general.footer",
+  "class": "site-footer-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:labels.menu",
+      "default": "footer"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "t:labels.show_payment_icons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_powered_by",
+      "label": "t:sections.footer.show_powered_by",
+      "default": false
+    }
+  ],
+  "enabled_on": {
+    "groups": ["footer"]
+  }
+}
+{% endschema %}

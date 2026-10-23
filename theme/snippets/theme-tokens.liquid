@@ -1,0 +1,45 @@
+{% doc %}
+  Overrides the default design tokens (packages/tokens -> assets/ui-tokens.css) with Theme settings:
+  fonts, page width, radii, status colors. Output is unlayered, so it wins over the layered defaults.
+  Color schemes: snippets/color-schemes.liquid.
+{% enddoc %}
+{%- liquid
+  assign heading_font = settings.type_heading_font
+  assign body_font = settings.type_body_font
+  assign body_font_bold = body_font | font_modify: 'weight', 'bold'
+  assign body_font_italic = body_font | font_modify: 'style', 'italic'
+  assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+-%}
+{%- style -%}
+  {{ body_font | font_face: font_display: 'swap' }}
+  {{ body_font_bold | font_face: font_display: 'swap' }}
+  {{ body_font_italic | font_face: font_display: 'swap' }}
+  {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+  {{ heading_font | font_face: font_display: 'swap' }}
+
+  :root {
+    --font-body-family: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --font-body-style: {{ body_font.style }};
+    --font-body-weight: {{ body_font.weight }};
+    --font-body-weight-bold: {{ body_font.weight | plus: 300 | at_most: 1000 }};
+    --font-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --font-heading-style: {{ heading_font.style }};
+    --font-heading-weight: {{ heading_font.weight }};
+    --font-body-scale: {{ settings.body_scale | divided_by: 100.0 }};
+    --font-heading-scale: {{ settings.heading_scale | divided_by: 100.0 }};
+
+    --page-width: {{ settings.page_width | divided_by: 10.0 }}rem;
+
+    --radius-button: {{ settings.radius_button }}px;
+    --radius-input: {{ settings.radius_input }}px;
+    --radius-card: {{ settings.radius_card }}px;
+    --radius-media: {{ settings.radius_media }}px;
+    --radius-badge: {{ settings.radius_badge }}px;
+
+    --color-success: {{ settings.color_success }};
+    --color-info: {{ settings.color_info }};
+    --color-warning: {{ settings.color_warning }};
+    --color-danger: {{ settings.color_danger }};
+    --color-focus: {{ settings.color_focus }};
+  }
+{%- endstyle -%}

@@ -1,0 +1,83 @@
+{
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "close": "Close",
+    "menu": "Menu",
+    "account": "Account",
+    "cart_count": "{{ count }} items in cart"
+  },
+  "404": {
+    "title": "404",
+    "not_found": "Page not found.",
+    "back_to_shopping": "Back to shopping"
+  },
+  "blog": {
+    "article_comments": "Comments",
+    "article_metadata_html": "{{ date }} by {{ author }}",
+    "comment_form_body": "Comment",
+    "comment_form_email": "Email",
+    "comment_form_name": "Name",
+    "comment_form_submit": "Post",
+    "comment_form_title": "Add a comment"
+  },
+  "cart": {
+    "title": "Cart",
+    "view_cart": "View cart",
+    "checkout": "Checkout",
+    "update": "Update cart",
+    "remove": "Remove",
+    "close": "Close cart",
+    "empty": "Your cart is empty",
+    "continue_shopping": "Continue shopping",
+    "login_html": "<a href=\"{{ link }}\">Log in</a> to check out faster.",
+    "total": "Total",
+    "taxes_note": "Taxes and shipping calculated at checkout",
+    "note": "Order note",
+    "order_details": "Order details",
+    "upsell_title": "You may also like",
+    "quantity": "Quantity",
+    "decrease": "Decrease quantity for {{ product }}",
+    "increase": "Increase quantity for {{ product }}",
+    "added": "Added to your cart",
+    "summary": "Order summary",
+    "free_shipping": {
+      "remaining_html": "You are <strong>{{ amount }}</strong> away from free shipping",
+      "unlocked": "You unlocked free shipping!",
+      "label": "Free shipping progress"
+    }
+  },
+  "products": {
+    "add_to_cart": "Add to cart",
+    "sold_out": "Sold out"
+  },
+  "customers": {
+    "login": {
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "title": "Login"
+    }
+  },
+  "collections": {
+    "title": "Collections"
+  },
+  "gift_card": {
+    "add_to_apple_wallet": "Add to Apple Wallet",
+    "card": "Gift card",
+    "expired": "This gift card has expired",
+    "expires_on": "Expires on {{ expires_on }}",
+    "use_at_checkout": "Use this gift card at checkout"
+  },
+  "password": {
+    "title": "This shop is private",
+    "password": "Password",
+    "enter": "Enter"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search articles, pages, or products",
+    "submit": "Search",
+    "no_results_html": "No results found for {{ terms }}",
+    "results_for_html": "{{ count }} results found for {{ terms }}"
+  }
+}

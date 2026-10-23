@@ -1,0 +1,209 @@
+{% comment %}
+  Site header: logo, desktop navigation (two levels, <details> dropdowns), mobile menu drawer
+  (native <dialog>, @ui/dialog), search, account and cart links.
+  The cart link opens #CartDrawer; on /cart there is no drawer, so it simply navigates.
+  Styles: packages/ui/css/header.css.
+{% endcomment %}
+{%- liquid
+  assign menu = section.settings.menu
+  assign on_cart_page = false
+  if template.name == 'cart'
+    assign on_cart_page = true
+  endif
+-%}
+<header
+  class="site-header color-{{ section.settings.color_scheme }}{% if section.settings.sticky %} site-header--sticky{% endif %}"
+>
+  <div class="site-header__inner page-width">
+    {%- if menu.links.size > 0 -%}
+      <button
+        type="button"
+        class="btn btn--icon site-header__menu-toggle"
+        data-dialog-open="MenuDrawer"
+        aria-haspopup="dialog"
+        aria-label="{{ 'accessibility.menu' | t }}"
+      >
+        {%- render 'icon', name: 'menu' -%}
+      </button>
+    {%- endif -%}
+
+    <a href="{{ routes.root_url }}" class="site-header__logo">
+      {%- if settings.logo != blank -%}
+        {%- liquid
+          assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio | round
+          assign logo_sizes = settings.logo_width | append: 'px'
+        -%}
+        {{
+          settings.logo
+          | image_url: width: 600
+          | image_tag:
+            width: settings.logo_width,
+            height: logo_height,
+            alt: shop.name,
+            loading: 'eager',
+            fetchpriority: 'high',
+            sizes: logo_sizes
+        }}
+      {%- else -%}
+        <span class="site-header__shop-name h4">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+
+    {%- if menu.links.size > 0 -%}
+      <nav class="site-nav" aria-label="{{ menu.title | escape }}">
+        <ul class="site-nav__list" role="list">
+          {%- for link in menu.links -%}
+            <li class="site-nav__item">
+              {%- if link.links.size > 0 -%}
+                <details class="site-nav__dropdown">
+                  <summary class="site-nav__link{% if link.child_active or link.active %} is-active{% endif %}">
+                    {{- link.title | escape -}}
+                    {%- render 'icon', name: 'chevron-down' -%}
+                  </summary>
+                  <ul class="site-nav__submenu" role="list">
+                    {%- for child in link.links -%}
+                      <li>
+                        <a
+                          href="{{ child.url }}"
+                          class="site-nav__sublink"
+                          {% if child.current %}
+                            aria-current="page"
+                          {% endif %}
+                        >
+                          {{- child.title | escape -}}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </details>
+              {%- else -%}
+                <a
+                  href="{{ link.url }}"
+                  class="site-nav__link{% if link.active %} is-active{% endif %}"
+                  {% if link.current %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {{- link.title | escape -}}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    <div class="site-header__icons">
+      <a href="{{ routes.search_url }}" class="btn btn--icon" aria-label="{{ 'search.title' | t }}">
+        {%- render 'icon', name: 'search' -%}
+      </a>
+      {%- if section.settings.show_account and shop.customer_accounts_enabled -%}
+        <a href="{{ routes.account_url }}" class="btn btn--icon" aria-label="{{ 'accessibility.account' | t }}">
+          {%- render 'icon', name: 'account' -%}
+        </a>
+      {%- endif -%}
+      <a
+        href="{{ routes.cart_url }}"
+        class="btn btn--icon site-header__cart"
+        {% unless on_cart_page %}
+          data-dialog-open="CartDrawer"
+          aria-haspopup="dialog"
+        {% endunless %}
+        aria-label="{{ 'cart.title' | t }}"
+      >
+        {%- render 'icon', name: 'bag' -%}
+        <span
+          class="cart-count"
+          data-cart-count-bubble
+          {% if cart.item_count == 0 %}
+            data-empty
+          {% endif %}
+          aria-hidden="true"
+        >
+          <span data-ajax-cart-bind="item_count">{{ cart.item_count }}</span>
+        </span>
+      </a>
+    </div>
+  </div>
+</header>
+
+{%- if menu.links.size > 0 -%}
+  <dialog
+    id="MenuDrawer"
+    class="drawer drawer--left color-{{ section.settings.color_scheme }}"
+    aria-label="{{ 'accessibility.menu' | t }}"
+  >
+    <div class="drawer__inner">
+      <div class="drawer__header">
+        <span class="h5">{{ shop.name }}</span>
+        <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">
+          {%- render 'icon', name: 'close' -%}
+        </button>
+      </div>
+      <nav class="drawer__body mobile-nav" aria-label="{{ menu.title | escape }}">
+        <ul class="mobile-nav__list" role="list">
+          {%- for link in menu.links -%}
+            <li>
+              {%- if link.links.size > 0 -%}
+                <details class="mobile-nav__group">
+                  <summary class="mobile-nav__link">
+                    {{- link.title | escape -}}
+                    {%- render 'icon', name: 'chevron-down' -%}
+                  </summary>
+                  <ul class="mobile-nav__sublist" role="list">
+                    <li>
+                      <a href="{{ link.url }}" class="mobile-nav__sublink">{{ link.title | escape }}</a>
+                    </li>
+                    {%- for child in link.links -%}
+                      <li>
+                        <a href="{{ child.url }}" class="mobile-nav__sublink">{{ child.title | escape }}</a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </details>
+              {%- else -%}
+                <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title | escape }}</a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    </div>
+  </dialog>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:general.header",
+  "class": "site-header-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:labels.menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky",
+      "label": "t:sections.header.sticky",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "t:sections.header.show_account",
+      "default": true
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}

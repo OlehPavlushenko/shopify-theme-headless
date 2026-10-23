@@ -1,0 +1,195 @@
+/*
+ * Site header: logo, desktop nav with <details> dropdowns, icons, cart count bubble,
+ * mobile menu drawer. Markup contract: theme/sections/header.liquid.
+ */
+@layer components {
+    .site-header {
+        position: relative;
+        z-index: 10;
+        border-bottom: 0.1rem solid var(--color-border);
+    }
+
+    .site-header--sticky {
+        position: sticky;
+        top: 0;
+    }
+
+    .site-header__inner {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: var(--space-m);
+        min-height: 6.4rem;
+    }
+
+    .site-header__logo {
+        display: inline-flex;
+        align-items: center;
+        color: var(--color-heading);
+        text-decoration: none;
+    }
+
+    .site-header__logo img {
+        height: auto;
+    }
+
+    .site-header__icons {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: var(--space-2xs);
+    }
+
+    .site-header__cart {
+        position: relative;
+    }
+
+    .cart-count {
+        position: absolute;
+        top: 0.4rem;
+        right: 0.2rem;
+        display: grid;
+        place-items: center;
+        min-width: 1.8rem;
+        height: 1.8rem;
+        padding-inline: 0.4rem;
+        border-radius: 99rem;
+        background: var(--color-accent);
+        color: var(--color-button-label);
+        font-size: 1.1rem;
+        font-weight: 600;
+        line-height: 1;
+    }
+
+    /* Hidden when empty: before Liquid Ajax Cart init (data-empty from Liquid) and after it */
+    html:not(.js-ajax-cart-init) [data-cart-count-bubble][data-empty],
+    .js-ajax-cart-empty [data-cart-count-bubble] {
+        display: none;
+    }
+
+    /* Desktop navigation */
+    .site-nav {
+        display: none;
+    }
+
+    .site-nav__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-xs) var(--space-l);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .site-nav__item {
+        position: relative;
+    }
+
+    .site-nav__link {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2xs);
+        padding-block: var(--space-xs);
+        color: var(--color-heading);
+        text-decoration: none;
+        cursor: pointer;
+        list-style: none;
+    }
+
+    .site-nav__link::-webkit-details-marker {
+        display: none;
+    }
+
+    .site-nav__link.is-active,
+    .site-nav__link:hover {
+        color: var(--color-link-hover);
+    }
+
+    .site-nav__link .svg-icon {
+        --icon-size: 1.4rem;
+        transition: rotate var(--duration-default) var(--ease);
+    }
+
+    .site-nav__dropdown[open] .svg-icon {
+        rotate: 180deg;
+    }
+
+    .site-nav__submenu {
+        position: absolute;
+        top: 100%;
+        left: calc(var(--space-m) * -1);
+        min-width: 22rem;
+        margin: 0;
+        padding: var(--space-xs) 0;
+        list-style: none;
+        border: 0.1rem solid var(--color-border);
+        border-radius: var(--radius-card);
+        background: var(--color-background);
+        box-shadow: var(--shadow-overlay);
+    }
+
+    .site-nav__sublink {
+        display: block;
+        padding: var(--space-xs) var(--space-m);
+        text-decoration: none;
+    }
+
+    @media (min-width: 990px) {
+        .site-header__menu-toggle {
+            display: none;
+        }
+
+        .site-header__inner {
+            grid-template-columns: auto 1fr auto;
+        }
+
+        .site-nav {
+            display: block;
+        }
+    }
+
+    @media (max-width: 989px) {
+        .site-header__inner {
+            grid-template-columns: 1fr auto 1fr;
+        }
+
+        .site-header__logo {
+            justify-self: center;
+        }
+    }
+
+    /* Mobile menu drawer */
+    .mobile-nav__list,
+    .mobile-nav__sublist {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .mobile-nav__link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-block: var(--space-s);
+        border-bottom: 0.1rem solid var(--color-border);
+        color: var(--color-heading);
+        font-size: 1.8rem;
+        text-decoration: none;
+        cursor: pointer;
+        list-style: none;
+    }
+
+    .mobile-nav__link::-webkit-details-marker {
+        display: none;
+    }
+
+    .mobile-nav__group[open] > .mobile-nav__link .svg-icon {
+        rotate: 180deg;
+    }
+
+    .mobile-nav__sublink {
+        display: block;
+        padding: var(--space-xs) var(--space-m);
+        text-decoration: none;
+    }
+}

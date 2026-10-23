@@ -1,0 +1,185 @@
+{
+  "general": {
+    "404": "Not found",
+    "article": "Article",
+    "block": "Block",
+    "blog": "Blog",
+    "cart": "Cart",
+    "collection": "Collection",
+    "collections": "Collections",
+    "collection_card": "Collection card",
+    "collections_grid": "Collections grid",
+    "colors": "Colors",
+    "column": "Column",
+    "content": "Content",
+    "custom_section": "Custom section",
+    "fonts": "Fonts",
+    "footer": "Footer",
+    "group": "Group",
+    "header": "Header",
+    "layout": "Layout",
+    "main": "Main",
+    "page": "Page",
+    "password": "Password",
+    "primary": "Primary",
+    "product": "Product",
+    "row": "Row",
+    "search": "Search",
+    "secondary": "Secondary",
+    "section": "Section",
+    "settings": "Settings",
+    "sidebar": "Sidebar",
+    "text": "Text",
+    "theme": "Theme",
+    "typography": "Typography"
+  },
+  "labels": {
+    "alignment": "Alignment",
+    "background": "Background",
+    "color_scheme": "Color scheme",
+    "foreground": "Foreground",
+    "grid_gap": "Grid spacing",
+    "grid_item_width": "Grid item width",
+    "layout_direction": "Layout direction",
+    "menu": "Menu",
+    "padding": "Padding",
+    "padding_top": "Top padding",
+    "padding_bottom": "Bottom padding",
+    "show_payment_icons": "Show payment icons",
+    "spacing": "Spacing",
+    "text_style": "Text style",
+    "text": "Text"
+  },
+  "options": {
+    "alignment": {
+      "left": "Left",
+      "center": "Center",
+      "right": "Right"
+    },
+    "direction": {
+      "horizontal": "Horizontal",
+      "vertical": "Vertical"
+    },
+    "size": {
+      "large": "Large",
+      "small": "Small"
+    },
+    "text_style": {
+      "title": "Title",
+      "subtitle": "Subtitle",
+      "normal": "Normal text"
+    }
+  },
+  "settings": {
+    "brand": {
+      "name": "Brand",
+      "logo": "Logo",
+      "logo_width": "Logo width",
+      "favicon": "Favicon",
+      "favicon_info": "Square image, at least 32 × 32 px."
+    },
+    "colors": {
+      "name": "Colors",
+      "background_text": "Background & text",
+      "background": "Background",
+      "background_gradient": "Background gradient",
+      "background_gradient_info": "Overrides the background color when set.",
+      "foreground": "Text",
+      "heading": "Headings & links",
+      "link_hover": "Link hover",
+      "accents": "Accents",
+      "accent": "Accent",
+      "accent_2": "Secondary accent",
+      "surface": "Surface",
+      "surface_info": "Cards, subtle backgrounds, disabled buttons.",
+      "border": "Borders",
+      "buttons": "Buttons",
+      "button": "Primary button",
+      "button_label": "Primary button label",
+      "button_hover": "Button hover",
+      "button_label_hover": "Button label hover",
+      "button_secondary": "Secondary button",
+      "button_secondary_label": "Secondary button label",
+      "inputs": "Inputs",
+      "input_background": "Input background",
+      "input_text": "Input text",
+      "status": "Status colors",
+      "success": "Success",
+      "info": "Info",
+      "warning": "Warning",
+      "danger": "Error",
+      "focus": "Focus outline"
+    },
+    "typography": {
+      "name": "Typography",
+      "heading_font": "Heading font",
+      "heading_scale": "Heading size",
+      "body_font": "Body font",
+      "body_scale": "Body size"
+    },
+    "layout": {
+      "name": "Layout",
+      "page_width": "Page width",
+      "radius": "Corner radius",
+      "radius_button": "Buttons",
+      "radius_input": "Inputs",
+      "radius_card": "Cards & panels",
+      "radius_media": "Images & video",
+      "radius_badge": "Badges"
+    },
+    "cart": {
+      "name": "Cart",
+      "cart_type": "After adding to cart",
+      "cart_type_drawer": "Open cart drawer",
+      "cart_type_notification": "Show notification",
+      "cart_type_page": "Go to cart page",
+      "free_shipping": "Free shipping bar",
+      "show_free_shipping": "Show free shipping progress",
+      "free_shipping_threshold": "Free shipping threshold",
+      "free_shipping_threshold_info": "Store currency, whole units (e.g. 100). A shop metafield custom.free_shipping_threshold overrides this value, so headless storefronts can share it.",
+      "upsell": "Upsell",
+      "show_upsell": "Show upsell products",
+      "upsell_products": "Upsell products",
+      "upsell_products_info": "Shown in the cart drawer and on the cart page, skipping products already in the cart.",
+      "order_details": "Order details",
+      "show_cart_note": "Show order note"
+    },
+    "behavior": {
+      "name": "Behavior",
+      "view_transitions": "Smooth page transitions",
+      "view_transitions_info": "Cross-fades between pages in supporting browsers (View Transitions API).",
+      "prefetch_links": "Prefetch links on hover",
+      "prefetch_links_info": "Starts loading the next page when a shopper hovers a link, so it opens faster (Speculation Rules API)."
+    }
+  },
+  "sections": {
+    "cart_drawer": {
+      "name": "Cart drawer",
+      "info": "Upsell products, order note and the free shipping bar are set in Theme settings > Cart. Add blocks to collect order details."
+    },
+    "main_cart": {
+      "name": "Cart",
+      "show_dynamic_checkout": "Show dynamic checkout buttons",
+      "show_dynamic_checkout_info": "Shop Pay, Apple Pay, PayPal and other accelerated checkouts enabled in your store."
+    },
+    "header": {
+      "show_account": "Show account icon",
+      "sticky": "Sticky header"
+    },
+    "footer": {
+      "show_powered_by": "Show \"Powered by Shopify\""
+    }
+  },
+  "blocks": {
+    "cart_attribute": {
+      "text": "Text field",
+      "select": "Dropdown",
+      "radio": "Radio buttons",
+      "checkbox": "Checkbox",
+      "label": "Label",
+      "required": "Required",
+      "options": "Options",
+      "options_info": "Separate options with |"
+    }
+  }
+}

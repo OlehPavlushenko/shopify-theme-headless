@@ -32,65 +32,65 @@
         "search_term_1": {
           "type": "search_term",
           "settings": {
-            "term": "Колаген"
+            "term": "Collagen"
           }
         },
         "search_term_2": {
           "type": "search_term",
           "settings": {
-            "term": "Омега"
+            "term": "Omega"
           }
         },
         "search_term_3": {
           "type": "search_term",
           "settings": {
-            "term": "Детокс"
+            "term": "Detox"
           }
         },
         "search_term_4": {
           "type": "search_term",
           "settings": {
-            "term": "Шампунь"
+            "term": "Shampoo"
           }
         },
         "search_term_5": {
           "type": "search_term",
           "settings": {
-            "term": "Зубна паста"
+            "term": "Toothpaste"
           }
         },
         "search_link_1": {
           "type": "search_link",
           "settings": {
-            "title": "Краса",
+            "title": "Beauty",
             "link": "/collections/types?q=%D0%9A%D1%80%D0%B0%D1%81%D0%B0"
           }
         },
         "search_link_2": {
           "type": "search_link",
           "settings": {
-            "title": "Здоров’я",
+            "title": "Health",
             "link": "/collections/types?q=%D0%97%D0%B4%D0%BE%D1%80%D0%BE%D0%B2%E2%80%99%D1%8F"
           }
         },
         "search_link_3": {
           "type": "search_link",
           "settings": {
-            "title": "Для дому",
+            "title": "Home care",
             "link": "/collections/types?q=%D0%94%D0%BB%D1%8F%20%D0%B4%D0%BE%D0%BC%D1%83"
           }
         },
         "search_link_4": {
           "type": "search_link",
           "settings": {
-            "title": "Суперфуди",
+            "title": "Superfoods",
             "link": "/collections/types?q=%D0%A1%D1%83%D0%BF%D0%B5%D1%80%D1%84%D1%83%D0%B4%D0%B8"
           }
         },
         "search_products_1": {
           "type": "search_products",
           "settings": {
-            "heading": "Хіти продажів",
+            "heading": "Best sellers",
             "products": [
               "omega-complex",
               "collagen-active-kolagen",

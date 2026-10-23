@@ -206,11 +206,12 @@
   }
 
   .search-results__heading {
-    font-family: var(--font-heading-family);
-    font-size: calc(var(--font-heading-scale) * var(--text-lg));
-    font-weight: var(--font-heading-weight);
-    letter-spacing: var(--tracking-heading);
-    color: var(--color-heading);
+    font-family: var(--font-body-family);
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
   }
 
   .search-results__products {

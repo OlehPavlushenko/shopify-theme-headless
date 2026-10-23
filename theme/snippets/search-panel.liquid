@@ -1,0 +1,92 @@
+{% doc %}
+  Search panel: a <dialog> sliding down from the top (@ui/dialog) with predictive search
+  (@ui/predictive-search, results from sections/predictive-search.liquid).
+  While the query is empty it shows popular searches (header "Search term" blocks) and
+  featured products (header setting).
+
+  @param {string} id - Dialog id, opened by [data-dialog-open="<id>"]
+  @param {string} color_scheme - Color scheme id
+  @param {object[]} blocks - Header blocks; type search_term is used here
+  @param {object[]} [products] - Featured products for the empty state
+{% enddoc %}
+{%- capture predictive_params -%}
+  section_id=predictive-search&resources%5Btype%5D=product,collection,page,article,query&resources%5Blimit%5D=8&resources%5Blimit_scope%5D=each&resources%5Boptions%5D%5Bunavailable_products%5D=last
+{%- endcapture -%}
+<dialog id="{{ id }}" class="search-panel color-{{ color_scheme }}" aria-label="{{ 'search.title' | t }}">
+  <predictive-search
+    class="search-panel__inner page-width"
+    data-endpoint="{{ routes.predictive_search_url }}"
+    data-params="{{ predictive_params | strip }}"
+  >
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-panel__form">
+      <label class="visually-hidden" for="{{ id }}-input">{{ 'search.title' | t }}</label>
+      {%- render 'icon', name: 'search', class: 'search-panel__icon' -%}
+      <input
+        id="{{ id }}-input"
+        class="search-panel__input"
+        type="search"
+        name="q"
+        placeholder="{{ 'search.placeholder' | t }}"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        enterkeyhint="search"
+        aria-controls="{{ id }}-results"
+        autofocus
+      >
+      <input type="hidden" name="options[prefix]" value="last">
+      <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">
+        {%- render 'icon', name: 'close' -%}
+      </button>
+    </form>
+
+    <div id="{{ id }}-results" class="search-panel__results" data-results aria-live="polite"></div>
+
+    <div class="search-panel__empty" data-empty-state>
+      {%- liquid
+        assign has_terms = false
+        for block in blocks
+          if block.type == 'search_term' and block.settings.term != blank
+            assign has_terms = true
+            break
+          endif
+        endfor
+      -%}
+      {%- if has_terms -%}
+        <section class="search-results__group" aria-labelledby="{{ id }}-popular">
+          <h2 id="{{ id }}-popular" class="search-results__heading">{{ 'search.popular' | t }}</h2>
+          <ul class="cluster" role="list" style="--cluster-gap: var(--space-xs);">
+            {%- for block in blocks -%}
+              {%- if block.type == 'search_term' and block.settings.term != blank -%}
+                <li {{ block.shopify_attributes }}>
+                  <a href="{{ routes.search_url }}?q={{ block.settings.term | url_encode }}" class="chip">
+                    {{- block.settings.term | escape -}}
+                  </a>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </section>
+      {%- endif -%}
+
+      {%- if products.count > 0 -%}
+        <section class="search-results__group" aria-labelledby="{{ id }}-featured">
+          <h2 id="{{ id }}-featured" class="search-results__heading">{{ 'search.featured' | t }}</h2>
+          <ul class="search-results__products" role="list">
+            {%- for product in products -%}
+              <li>
+                {%- render 'product-card',
+                  product: product,
+                  show_secondary_image: false,
+                  sizes: '(min-width: 990px) 200px, 45vw',
+                  heading_tag: 'p'
+                -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </section>
+      {%- endif -%}
+    </div>
+  </predictive-search>
+</dialog>

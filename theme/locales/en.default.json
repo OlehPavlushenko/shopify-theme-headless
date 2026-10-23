@@ -50,7 +50,10 @@
   },
   "products": {
     "add_to_cart": "Add to cart",
-    "sold_out": "Sold out"
+    "sold_out": "Sold out",
+    "sale": "Sale",
+    "regular_price": "Regular price",
+    "from_price_html": "From {{ price }}"
   },
   "customers": {
     "login": {
@@ -80,13 +83,28 @@
   },
   "search": {
     "title": "Search",
-    "placeholder": "Search articles, pages, or products",
+    "placeholder": "Search products, collections and pages",
     "submit": "Search",
-    "no_results_html": "No results found for {{ terms }}",
-    "results_for_html": "{{ count }} results found for {{ terms }}"
+    "no_results_html": "No results for “{{ terms }}”. Check the spelling or try a different word.",
+    "results_for_html": "{{ count }} results for “{{ terms }}”",
+    "products": "Products",
+    "collections": "Collections",
+    "pages": "Pages & articles",
+    "suggestions": "Suggestions",
+    "popular": "Popular searches",
+    "featured": "Featured products",
+    "view_all_html": "View all results for “{{ terms }}”",
+    "article": "Article",
+    "page": "Page"
   },
   "general": {
-    "view_all": "View all"
+    "view_all": "View all",
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page {{ number }}"
+    }
   },
   "localization": {
     "currency": "Currency",

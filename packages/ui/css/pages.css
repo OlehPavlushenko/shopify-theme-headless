@@ -1,6 +1,6 @@
 /*
  * Page-level layouts for template sections that are still on the Skeleton baseline
- * (product, collection, collections list, search, blog, article, page, 404, password).
+ * (product, collection, collections list, blog, article, page, 404, password).
  * Each of those sections gets class="page-section page-section--<name>" from its schema.
  * This file shrinks as the pages are rebuilt on blocks.
  */
@@ -86,34 +86,29 @@
     }
   }
 
-  /* ---------------------------------------- collection & search grids */
-  .collection-products,
-  .search-results {
+  /* ------------------------------------------------- collection grid */
+  .collection-products {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(22rem, 100%), 1fr));
     gap: var(--space-xl) var(--space-l);
   }
 
-  .collection-product,
-  .search-result {
+  .collection-product {
     display: grid;
     gap: var(--space-s);
     align-content: start;
   }
 
-  .collection-product__content p,
-  .search-result__content p {
+  .collection-product__content p {
     margin: 0;
   }
 
-  .collection-product__content a,
-  .search-result__content a {
+  .collection-product__content a {
     font-weight: var(--font-body-weight-bold);
     text-decoration: none;
   }
 
-  .collection-products .pagination,
-  .search-results :is(.prev, .page, .next) {
+  .collection-products .pagination {
     grid-column: 1 / -1;
   }
 

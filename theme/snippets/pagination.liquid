@@ -1,0 +1,43 @@
+{% doc %}
+  Pagination for any paginated list (collection, search, blog). Styles: .pagination in components.css.
+
+  @param {object} paginate - The paginate object from {% paginate %}
+  @param {string} [anchor] - Fragment appended to page links, e.g. '#ProductGrid'
+{% enddoc %}
+{%- if paginate.pages > 1 -%}
+  <nav class="pagination" aria-label="{{ 'general.pagination.label' | t }}">
+    <ul class="pagination__list" role="list">
+      <li>
+        {%- if paginate.previous -%}
+          <a href="{{ paginate.previous.url }}{{ anchor }}" class="pagination__item" aria-label="{{ 'general.pagination.previous' | t }}">
+            {%- render 'icon', name: 'arrow-left' -%}
+          </a>
+        {%- else -%}
+          <span class="pagination__item" aria-disabled="true">{%- render 'icon', name: 'arrow-left' -%}</span>
+        {%- endif -%}
+      </li>
+      {%- for part in paginate.parts -%}
+        <li>
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}{{ anchor }}" class="pagination__item" aria-label="{{ 'general.pagination.page' | t: number: part.title }}">
+              {{- part.title -}}
+            </a>
+          {%- elsif part.title == paginate.current_page -%}
+            <span class="pagination__item" aria-current="page">{{ part.title }}</span>
+          {%- else -%}
+            <span class="pagination__item pagination__item--gap">{{ part.title }}</span>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+      <li>
+        {%- if paginate.next -%}
+          <a href="{{ paginate.next.url }}{{ anchor }}" class="pagination__item" aria-label="{{ 'general.pagination.next' | t }}">
+            {%- render 'icon', name: 'arrow-right' -%}
+          </a>
+        {%- else -%}
+          <span class="pagination__item" aria-disabled="true">{%- render 'icon', name: 'arrow-right' -%}</span>
+        {%- endif -%}
+      </li>
+    </ul>
+  </nav>
+{%- endif -%}

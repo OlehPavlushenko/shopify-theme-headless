@@ -1,6 +1,6 @@
 /*
  * Core components: button, chip, field/input, quantity stepper, price, pill, frame (media box),
- * icon, form error, drawer and popup (native <dialog>, see @ui/dialog).
+ * icon, form error, pagination, drawer and popup (native <dialog>, see @ui/dialog).
  * Used by every section; markup contracts are documented in the theme snippets that render them.
  */
 @layer components {
@@ -317,6 +317,45 @@
     flex-shrink: 0;
     width: var(--icon-size, 2.2rem);
     height: var(--icon-size, 2.2rem);
+  }
+
+  /* -------------------------------------------------------- pagination */
+  .pagination__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2xs);
+  }
+
+  .pagination__item {
+    display: grid;
+    place-items: center;
+    min-width: 4.4rem;
+    height: 4.4rem;
+    padding-inline: var(--space-xs);
+    font-weight: var(--font-body-weight-bold);
+    font-variant-numeric: tabular-nums;
+    text-decoration: none;
+    color: var(--color-heading);
+    border-radius: var(--radius-button);
+  }
+
+  a.pagination__item:hover {
+    color: var(--color-heading);
+    background: var(--color-surface);
+  }
+
+  .pagination__item[aria-current='page'] {
+    color: var(--color-button-label);
+    background: var(--color-button);
+  }
+
+  .pagination__item[aria-disabled='true'] {
+    opacity: 0.35;
+  }
+
+  .pagination__item .svg-icon {
+    --icon-size: 1.8rem;
   }
 
   /* ---------------------------------------- drawer & popup (<dialog>) */

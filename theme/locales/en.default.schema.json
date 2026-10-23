@@ -188,10 +188,17 @@
       "show_currency_info": "Lists the currencies of your Shopify Markets countries.",
       "show_language": "Language switcher",
       "utility_menu": "Extra links",
-      "utility_menu_info": "Optional menu shown in the panel, e.g. shipping, returns, contacts."
+      "utility_menu_info": "Optional menu shown in the panel, e.g. shipping, returns, contacts.",
+      "search": "Search",
+      "search_products": "Featured products in search",
+      "search_products_info": "Shown in the search panel before the shopper types. Add \"Search term\" blocks for popular searches."
     },
     "footer": {
       "show_powered_by": "Show \"Powered by Shopify\""
+    },
+    "main_search": {
+      "results_per_page": "Results per page",
+      "show_vendor": "Show vendor"
     }
   },
   "blocks": {
@@ -221,6 +228,11 @@
       "name": "Menu products",
       "heading": "Heading",
       "products": "Products"
+    },
+    "search_term": {
+      "name": "Search term",
+      "term": "Term",
+      "info": "Shown as a popular search in the search panel."
     }
   }
 }

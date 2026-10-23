@@ -7,6 +7,8 @@
   - Desktop menu with dropdowns and mega menus (snippets/site-nav), mobile drill-down drawer
     (snippets/mobile-menu), country/language selector (snippets/localization-form).
   - Blocks "Menu promo" / "Menu products" attach content to a mega menu by top-level link title.
+  - Search panel (snippets/search-panel): predictive search; "Search term" blocks and featured
+    products fill it while the query is empty.
 {% endcomment %}
 {%- liquid
   assign menu = section.settings.menu
@@ -85,7 +87,13 @@
     {%- endif -%}
 
     <div class="site-header__icons">
-      <a href="{{ routes.search_url }}" class="btn btn--icon" aria-label="{{ 'search.title' | t }}">
+      <a
+        href="{{ routes.search_url }}"
+        class="btn btn--icon"
+        data-dialog-open="SearchPanel"
+        aria-haspopup="dialog"
+        aria-label="{{ 'search.title' | t }}"
+      >
         {%- render 'icon', name: 'search' -%}
       </a>
       {%- if section.settings.show_utility_panel -%}
@@ -123,6 +131,13 @@
     </div>
   </div>
 </site-header>
+
+{%- render 'search-panel',
+  id: 'SearchPanel',
+  color_scheme: section.settings.color_scheme,
+  blocks: section.blocks,
+  products: section.settings.search_products
+-%}
 
 {%- if menu.links.size > 0 -%}
   <dialog
@@ -211,6 +226,17 @@
     },
     {
       "type": "header",
+      "content": "t:sections.header.search"
+    },
+    {
+      "type": "product_list",
+      "id": "search_products",
+      "label": "t:sections.header.search_products",
+      "info": "t:sections.header.search_products_info",
+      "limit": 4
+    },
+    {
+      "type": "header",
       "content": "t:sections.header.utility_panel"
     },
     {
@@ -265,6 +291,13 @@
     }
   ],
   "blocks": [
+    {
+      "type": "search_term",
+      "name": "t:blocks.search_term.name",
+      "settings": [
+        { "type": "text", "id": "term", "label": "t:blocks.search_term.term", "info": "t:blocks.search_term.info" }
+      ]
+    },
     {
       "type": "menu_promo",
       "name": "t:blocks.menu_promo.name",

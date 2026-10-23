@@ -1,0 +1,102 @@
+/*
+ * Product card. Markup contract: theme/snippets/product-card.liquid.
+ * The whole card is clickable through the title link's ::after; the image link is a duplicate
+ * for pointer users and is hidden from assistive tech.
+ */
+@layer components {
+  .product-card {
+    position: relative;
+    display: grid;
+    gap: var(--space-s);
+    align-content: start;
+    min-width: 0;
+  }
+
+  .product-card__media {
+    display: block;
+  }
+
+  .product-card__image {
+    transition:
+      opacity var(--duration-long) var(--ease),
+      scale var(--duration-long) var(--ease-out);
+  }
+
+  .product-card__image--secondary {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+
+  .product-card__placeholder {
+    width: 100%;
+    height: 100%;
+    fill: color-mix(in srgb, var(--color-foreground) 30%, transparent);
+  }
+
+  .product-card__badge {
+    position: absolute;
+    z-index: 1;
+    top: var(--space-s);
+    left: var(--space-s);
+  }
+
+  .product-card__info {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .product-card__vendor {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-label);
+    color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
+  }
+
+  .product-card__title {
+    font-family: var(--font-body-family);
+    font-size: var(--text-md);
+    font-weight: var(--font-body-weight-bold);
+    line-height: var(--leading-snug);
+    letter-spacing: 0;
+  }
+
+  .product-card__link {
+    text-decoration: none;
+    color: var(--color-heading);
+  }
+
+  .product-card__link::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+  }
+
+  .product-card:hover .product-card__link {
+    color: var(--color-link-hover);
+  }
+
+  @media (hover: hover) {
+    .product-card--hover:hover .product-card__image--secondary {
+      opacity: 1;
+    }
+
+    .product-card:not(.product-card--hover):hover .product-card__image {
+      scale: 1.03;
+    }
+  }
+
+  /* Compact variant: horizontal row (search suggestions, mini lists) */
+  .product-card--row {
+    grid-template-columns: 7.2rem minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .product-card--row .product-card__media {
+    border-radius: calc(var(--radius-media) * 0.6);
+  }
+
+  .product-card--row .product-card__badge {
+    display: none;
+  }
+}

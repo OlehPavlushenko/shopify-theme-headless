@@ -1,0 +1,47 @@
+{% doc %}
+  Product price: current price, compare-at price when on sale, "From" when variants differ,
+  unit price when set. Uses .price-tag (packages/ui/css/components.css).
+
+  @param {object} product - Product
+  @param {object} [variant] - Variant to price; defaults to the selected or first available one
+  @param {string} [class] - Extra classes
+{% enddoc %}
+{%- liquid
+  assign target = variant | default: product.selected_or_first_available_variant
+  assign current = target.price
+  assign compare = target.compare_at_price
+  assign on_sale = false
+  if compare > current
+    assign on_sale = true
+  endif
+  assign show_from = false
+  if variant == blank and product.price_varies
+    assign show_from = true
+    assign current = product.price_min
+  endif
+-%}
+<span class="price-tag{% if on_sale %} price-tag--sale{% endif %} {{ class }}">
+  <span class="price-tag__current">
+    {%- if show_from -%}
+      {%- assign current_money = current | money -%}
+      {{ 'products.from_price_html' | t: price: current_money }}
+    {%- else -%}
+      {{ current | money }}
+    {%- endif -%}
+  </span>
+  {%- if on_sale and show_from == false -%}
+    <s class="price-tag__compare">
+      <span class="visually-hidden">{{ 'products.regular_price' | t }}</span>
+      {{ compare | money }}
+    </s>
+  {%- endif -%}
+  {%- if target.unit_price_measurement -%}
+    <span class="price-tag__unit small">
+      {{- target.unit_price | money }}/
+      {%- if target.unit_price_measurement.reference_value != 1 -%}
+        {{- target.unit_price_measurement.reference_value -}}
+      {%- endif -%}
+      {{ target.unit_price_measurement.reference_unit }}
+    </span>
+  {%- endif -%}
+</span>

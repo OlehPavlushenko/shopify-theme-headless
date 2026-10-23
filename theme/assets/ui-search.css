@@ -140,63 +140,50 @@
     gap: var(--space-xl);
   }
 
-  .search-panel__terms {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-xs);
+
+  /* Popular searches: a list of terms with a search icon */
+  .search-terms {
+    display: grid;
+    gap: var(--space-2xs);
   }
 
-  .search-panel__tiles {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-xs);
-  }
-
-  /* Quick link / collection: pill with an optional thumbnail and a trailing arrow */
-  .search-tile {
+  .search-term {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-xs);
-    min-height: var(--control-height);
-    padding: var(--space-2xs) var(--space-m) var(--space-2xs) var(--space-2xs);
-    font-size: var(--text-sm);
-    font-weight: var(--font-body-weight-bold);
+    gap: var(--space-s);
+    padding-block: var(--space-2xs);
+    font-size: var(--text-md);
     text-decoration: none;
     color: var(--color-heading);
-    background: var(--color-surface);
-    border-radius: var(--radius-button);
-    transition: background-color var(--duration-default) var(--ease);
   }
 
-  .search-tile:hover {
-    color: var(--color-heading);
-    background: color-mix(in srgb, var(--color-surface) 85%, var(--color-heading));
+  .search-term:hover {
+    color: var(--color-link-hover);
   }
 
-  .search-tile--text {
-    padding-left: var(--space-m);
-  }
-
-  .search-tile__media {
-    flex: 0 0 4rem;
-    width: 4rem;
-    border-radius: 50%;
-  }
-
-  .search-tile__arrow {
+  .search-term__icon {
     --icon-size: 1.6rem;
 
-    transition: translate var(--duration-default) var(--ease);
-  }
-
-  .search-tile:hover .search-tile__arrow {
-    translate: 0.3rem 0;
+    color: color-mix(in srgb, var(--color-foreground) 55%, transparent);
   }
 
   /* ------------------------------------- predictive results (shared) */
   .search-results__layout {
     display: grid;
     gap: var(--space-xl);
+  }
+
+  .search-results__aside,
+  .search-results__main {
+    display: grid;
+    gap: var(--space-xl);
+    align-content: start;
+  }
+
+  /* Liquid leaves whitespace, so :empty is not enough: hide columns without element children */
+  .search-results__aside:not(:has(*)),
+  .search-results__main:not(:has(*)) {
+    display: none;
   }
 
   .search-results__group {
@@ -262,29 +249,22 @@
 
   @media (min-width: 750px) {
     .search-panel--top .search-results__products {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
 
   @media (min-width: 990px) {
     .search-panel--top .search-results__layout {
-      grid-template-columns: 24rem minmax(0, 1fr);
+      grid-template-columns: 28rem minmax(0, 1fr);
       gap: var(--space-2xl);
     }
 
-    .search-results__aside {
-      display: grid;
-      gap: var(--space-xl);
-      align-content: start;
-    }
-
-  }
-
-  @media (min-width: 1280px) {
-    .search-panel--top .search-results__products {
-      grid-template-columns: repeat(6, minmax(0, 1fr));
+    .search-panel--top .search-results__layout:has(> .search-results__aside:not(:has(*))),
+    .search-panel--top .search-results__layout:has(> .search-results__main:not(:has(*))) {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
+
 
   /* ---------------------------------------------- /search page */
   .main-search__form {

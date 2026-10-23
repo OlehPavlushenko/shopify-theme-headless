@@ -3,10 +3,10 @@
 
   Style: 'top' slides down full width, 'drawer' slides in from the right.
   While the query is empty the panel shows the header's search blocks, in editor order:
-  - search_term: popular search (consecutive terms form one row of chips)
-  - search_link: quick link tile with image (consecutive links form one grid)
-  - search_products: heading + products from a collection or a hand-picked list
-  - search_collections: heading + collection tiles
+  - search_term: popular search (consecutive terms form one list)
+  - search_link: quick link row with thumbnail (consecutive links form one list)
+  - search_collections: heading + collection rows
+  - search_products: heading + products from a collection or a hand-picked list (right column)
 
   @param {string} id - Dialog id, opened by [data-dialog-open="<id>"]
   @param {string} style - 'top' | 'drawer'
@@ -14,14 +14,14 @@
   @param {object[]} blocks - Header blocks
 {% enddoc %}
 {%- capture predictive_params -%}
-  section_id=predictive-search&resources%5Btype%5D=product,collection,page,article,query&resources%5Blimit%5D=6&resources%5Blimit_scope%5D=each&resources%5Boptions%5D%5Bunavailable_products%5D=last
+  section_id=predictive-search&resources%5Btype%5D=product,collection,page,article,query&resources%5Blimit%5D=4&resources%5Blimit_scope%5D=each&resources%5Boptions%5D%5Bunavailable_products%5D=last
 {%- endcapture -%}
 {%- liquid
   assign panel_style = style | default: 'top'
   if panel_style == 'drawer'
     assign card_sizes = '(min-width: 750px) 180px, 45vw'
   else
-    assign card_sizes = '(min-width: 990px) 180px, 45vw'
+    assign card_sizes = '(min-width: 1280px) 260px, (min-width: 750px) 30vw, 45vw'
   endif
 -%}
 
@@ -57,62 +57,84 @@
     <div id="{{ id }}-results" class="search-panel__results" data-results aria-live="polite"></div>
 
     <div class="search-panel__empty" data-empty-state>
-      {%- for block in blocks -%}
-        {%- liquid
-          assign prev_index = forloop.index0 | minus: 1
-          assign prev = blocks[prev_index]
-          if forloop.first
-            assign prev = nil
-          endif
-          assign next = blocks[forloop.index]
-        -%}
-        {%- case block.type -%}
-          {%- when 'search_term' -%}
-            {%- if prev.type != 'search_term' -%}
-              <section class="search-results__group">
-                <h2 class="search-results__heading">{{ 'search.popular' | t }}</h2>
-                <ul class="search-panel__terms" role="list">
-            {%- endif -%}
-            {%- if block.settings.term != blank -%}
-              <li {{ block.shopify_attributes }}>
-                <a href="{{ routes.search_url }}?q={{ block.settings.term | url_encode }}" class="chip">
-                  {{- block.settings.term | escape -}}
-                </a>
-              </li>
-            {%- endif -%}
-            {%- if next.type != 'search_term' -%}
-                </ul>
-              </section>
-            {%- endif -%}
+      {%- comment -%}
+        Same two-column layout as the typed results: terms, quick links and collections on the
+        left, products on the right. Each column keeps the editor order of its blocks.
+      {%- endcomment -%}
+      <div class="search-results__layout">
+        <div class="search-results__aside">
+          {%- for block in blocks -%}
+            {%- liquid
+              assign prev_index = forloop.index0 | minus: 1
+              assign prev = blocks[prev_index]
+              if forloop.first
+                assign prev = nil
+              endif
+              assign next = blocks[forloop.index]
+            -%}
+            {%- case block.type -%}
+              {%- when 'search_term' -%}
+                {%- if prev.type != 'search_term' -%}
+                  <section class="search-results__group">
+                    <h2 class="search-results__heading">{{ 'search.popular' | t }}</h2>
+                    <ul class="search-terms" role="list">
+                {%- endif -%}
+                {%- if block.settings.term != blank -%}
+                  <li {{ block.shopify_attributes }}>
+                    <a href="{{ routes.search_url }}?q={{ block.settings.term | url_encode }}" class="search-term">
+                      {%- render 'icon', name: 'search', class: 'search-term__icon' -%}
+                      {{- block.settings.term | escape -}}
+                    </a>
+                  </li>
+                {%- endif -%}
+                {%- if next.type != 'search_term' -%}
+                    </ul>
+                  </section>
+                {%- endif -%}
 
-          {%- when 'search_link' -%}
-            {%- if prev.type != 'search_link' -%}
-              <section class="search-results__group">
-                <h2 class="search-results__heading">{{ 'search.quick_links' | t }}</h2>
-                <ul class="search-panel__tiles" role="list">
-            {%- endif -%}
-            {%- if block.settings.title != blank -%}
-              <li {{ block.shopify_attributes }}>
-                <a
-                  href="{{ block.settings.link | default: routes.root_url }}"
-                  class="search-tile{% if block.settings.image == blank %} search-tile--text{% endif %}"
-                >
-                  {%- if block.settings.image -%}
-                    <span class="search-tile__media frame" style="--frame-ratio: 1;">
-                      {{ block.settings.image | image_url: width: 160 | image_tag: loading: 'lazy', sizes: '40px', alt: '' }}
-                    </span>
-                  {%- endif -%}
-                  {{ block.settings.title | escape }}
-                  {%- render 'icon', name: 'arrow-right', class: 'search-tile__arrow' -%}
-                </a>
-              </li>
-            {%- endif -%}
-            {%- if next.type != 'search_link' -%}
-                </ul>
-              </section>
-            {%- endif -%}
+              {%- when 'search_link' -%}
+                {%- if prev.type != 'search_link' -%}
+                  <section class="search-results__group">
+                    <h2 class="search-results__heading">{{ 'search.quick_links' | t }}</h2>
+                    <ul class="link-tiles" role="list">
+                {%- endif -%}
+                {%- if block.settings.title != blank -%}
+                  <li {{ block.shopify_attributes }}>
+                    {%- render 'link-tile',
+                      title: block.settings.title,
+                      url: block.settings.link,
+                      image: block.settings.image
+                    -%}
+                  </li>
+                {%- endif -%}
+                {%- if next.type != 'search_link' -%}
+                    </ul>
+                  </section>
+                {%- endif -%}
 
-          {%- when 'search_products' -%}
+              {%- when 'search_collections' -%}
+                {%- if block.settings.collections.count > 0 -%}
+                  <section class="search-results__group" {{ block.shopify_attributes }}>
+                    {%- if block.settings.heading != blank -%}
+                      <h2 class="search-results__heading">{{ block.settings.heading | escape }}</h2>
+                    {%- endif -%}
+                    <ul class="link-tiles" role="list">
+                      {%- for collection in block.settings.collections -%}
+                        {%- assign collection_image = collection.featured_image | default: collection.products.first.featured_image -%}
+                        <li>
+                          {%- render 'link-tile', title: collection.title, url: collection.url, image: collection_image -%}
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </section>
+                {%- endif -%}
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+
+        <div class="search-results__main">
+          {%- for block in blocks -%}
+            {%- if block.type != 'search_products' -%}{%- continue -%}{%- endif -%}
             {%- liquid
               if block.settings.products.count > 0
                 assign block_products = block.settings.products
@@ -139,36 +161,9 @@
                 </ul>
               </section>
             {%- endif -%}
-
-          {%- when 'search_collections' -%}
-            {%- if block.settings.collections.count > 0 -%}
-              <section class="search-results__group" {{ block.shopify_attributes }}>
-                {%- if block.settings.heading != blank -%}
-                  <h2 class="search-results__heading">{{ block.settings.heading | escape }}</h2>
-                {%- endif -%}
-                <ul class="search-panel__tiles" role="list">
-                  {%- for collection in block.settings.collections -%}
-                    {%- assign collection_image = collection.featured_image | default: collection.products.first.featured_image -%}
-                    <li>
-                      <a
-                        href="{{ collection.url }}"
-                        class="search-tile{% if collection_image == blank %} search-tile--text{% endif %}"
-                      >
-                        {%- if collection_image -%}
-                          <span class="search-tile__media frame" style="--frame-ratio: 1;">
-                            {{ collection_image | image_url: width: 160 | image_tag: loading: 'lazy', sizes: '40px', alt: '' }}
-                          </span>
-                        {%- endif -%}
-                        {{ collection.title | escape }}
-                        {%- render 'icon', name: 'arrow-right', class: 'search-tile__arrow' -%}
-                      </a>
-                    </li>
-                  {%- endfor -%}
-                </ul>
-              </section>
-            {%- endif -%}
-        {%- endcase -%}
-      {%- endfor -%}
+          {%- endfor -%}
+        </div>
+      </div>
     </div>
   </predictive-search>
 </dialog>

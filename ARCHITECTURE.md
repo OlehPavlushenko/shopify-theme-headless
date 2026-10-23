@@ -45,11 +45,21 @@ scripts/
 - Cascade layers, declared once in `tokens.css` (loaded first):
   `reset, base, layout, components, utilities`. Every rule lives in a layer; Liquid-generated
   overrides (`theme-tokens`, `color-schemes`) are unlayered on purpose so they win.
-- `base.css`: reset, typography, layout primitives (`.page-width`, `.stack`, `.cluster`, `.grid`,
-  `.section-spacing`) and core components (`.btn`, `.input`, `.qty`, `.price-tag`, `.pill`,
-  `.frame`, `.svg-icon`, `.drawer`, `.popup`).
-- One file per component area (`header.css`, `cart.css`, `footer.css`, …), wrapped in
-  `@layer components`.
+- Style direction: **Studio** (Bricolage Grotesque headings, DM Sans body, pill buttons, 20px cards,
+  green accent). Defaults live in `tokens.json` and in the theme's settings schema/data.
+- Token scales: `--text-xs … --text-4xl` (fluid from `xl` up), `--leading-*`, `--space-2xs … --space-4xl`,
+  `--radius-*`, `--shadow-sm|md|overlay`, `--duration-*`, `--ease`, `--ease-out`, `--control-height*`.
+  No raw sizes or colors in components when a token exists.
+- Files:
+  - `base.css`: reset, element defaults, typography, `.rte`, layout primitives (`.page-width`, `.stack`,
+    `.cluster`, `.grid`, `.section-spacing`) and utilities.
+  - `components.css`: `.btn` (+ `--secondary|outline|link|icon|sm|full`), `.field`/`.input`, `.qty`,
+    `.price-tag`, `.pill`, `.frame`, `.svg-icon`, `.form-error`, `.drawer`, `.popup`.
+  - One file per area: `header.css`, `footer.css`, `cart.css`, `blocks.css`, `pages.css`
+    (baseline template sections; shrinks as pages are rebuilt).
+- Formatting: 2-space indent; rule order base → elements → modifiers → states → responsive;
+  property order layout/position → box model → typography → visual → motion; mobile first
+  (breakpoints 750px, 990px).
 - No `{% stylesheet %}` / `{% javascript %}` and no inline `<style>` with static CSS in the theme.
   Per-instance values go through custom properties in a `style=""` attribute.
 - Color schemes: a container opts in with `class="color-<scheme-id>"`; `base.css` applies its

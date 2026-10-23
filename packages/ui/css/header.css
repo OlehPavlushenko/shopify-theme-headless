@@ -1,195 +1,193 @@
 /*
- * Site header: logo, desktop nav with <details> dropdowns, icons, cart count bubble,
+ * Site header: logo, desktop navigation with <details> dropdowns, icon buttons, cart count,
  * mobile menu drawer. Markup contract: theme/sections/header.liquid.
  */
 @layer components {
-    .site-header {
-        position: relative;
-        z-index: 10;
-        border-bottom: 0.1rem solid var(--color-border);
-    }
+  .site-header {
+    position: relative;
+    z-index: 20;
+    border-bottom: 0.1rem solid var(--color-border);
+  }
 
-    .site-header--sticky {
-        position: sticky;
-        top: 0;
-    }
+  .site-header--sticky {
+    position: sticky;
+    top: 0;
+  }
 
+  .site-header__inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: var(--space-m);
+    min-height: 6.8rem;
+  }
+
+  .site-header__logo {
+    display: inline-flex;
+    align-items: center;
+    justify-self: center;
+    text-decoration: none;
+    color: var(--color-heading);
+  }
+
+  .site-header__logo img {
+    height: auto;
+  }
+
+  .site-header__shop-name {
+    margin: 0;
+  }
+
+  .site-header__menu-toggle {
+    justify-self: start;
+  }
+
+  .site-header__icons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-2xs);
+  }
+
+  .site-header__cart {
+    position: relative;
+  }
+
+  .cart-count {
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    display: grid;
+    place-items: center;
+    min-width: 1.9rem;
+    height: 1.9rem;
+    padding-inline: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: var(--font-body-weight-bold);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: var(--color-button-label);
+    background: var(--color-accent);
+    border-radius: 99rem;
+  }
+
+  /* Empty cart: hidden before Liquid Ajax Cart init (data-empty from Liquid) and after it */
+  html:not(.js-ajax-cart-init) [data-cart-count-bubble][data-empty],
+  .js-ajax-cart-empty [data-cart-count-bubble] {
+    display: none;
+  }
+
+  /* ------------------------------------------------- desktop navigation */
+  .site-nav {
+    display: none;
+  }
+
+  .site-nav__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-l);
+  }
+
+  .site-nav__item {
+    position: relative;
+  }
+
+  .site-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    padding-block: var(--space-xs);
+    font-weight: var(--font-body-weight-bold);
+    text-decoration: none;
+    color: var(--color-heading);
+  }
+
+  .site-nav__link:hover,
+  .site-nav__link.is-active {
+    color: var(--color-link-hover);
+  }
+
+  .site-nav__link .svg-icon {
+    --icon-size: 1.4rem;
+
+    transition: rotate var(--duration-default) var(--ease);
+  }
+
+  .site-nav__dropdown[open] > .site-nav__link .svg-icon {
+    rotate: 180deg;
+  }
+
+  .site-nav__submenu {
+    position: absolute;
+    top: calc(100% + var(--space-xs));
+    left: calc(var(--space-m) * -1);
+    min-width: 22rem;
+    padding: var(--space-xs);
+    background: var(--color-background);
+    border: 0.1rem solid var(--color-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+  }
+
+  .site-nav__sublink {
+    display: block;
+    padding: var(--space-xs) var(--space-s);
+    text-decoration: none;
+    border-radius: var(--radius-input);
+  }
+
+  .site-nav__sublink:hover {
+    background: var(--color-surface);
+  }
+
+  @media (min-width: 990px) {
     .site-header__inner {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        align-items: center;
-        gap: var(--space-m);
-        min-height: 6.4rem;
+      grid-template-columns: auto 1fr auto;
+      gap: var(--space-xl);
     }
 
     .site-header__logo {
-        display: inline-flex;
-        align-items: center;
-        color: var(--color-heading);
-        text-decoration: none;
+      justify-self: start;
     }
 
-    .site-header__logo img {
-        height: auto;
+    .site-header__menu-toggle {
+      display: none;
     }
 
-    .site-header__icons {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: var(--space-2xs);
-    }
-
-    .site-header__cart {
-        position: relative;
-    }
-
-    .cart-count {
-        position: absolute;
-        top: 0.4rem;
-        right: 0.2rem;
-        display: grid;
-        place-items: center;
-        min-width: 1.8rem;
-        height: 1.8rem;
-        padding-inline: 0.4rem;
-        border-radius: 99rem;
-        background: var(--color-accent);
-        color: var(--color-button-label);
-        font-size: 1.1rem;
-        font-weight: 600;
-        line-height: 1;
-    }
-
-    /* Hidden when empty: before Liquid Ajax Cart init (data-empty from Liquid) and after it */
-    html:not(.js-ajax-cart-init) [data-cart-count-bubble][data-empty],
-    .js-ajax-cart-empty [data-cart-count-bubble] {
-        display: none;
-    }
-
-    /* Desktop navigation */
     .site-nav {
-        display: none;
+      display: block;
     }
+  }
 
-    .site-nav__list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--space-xs) var(--space-l);
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
+  /* ------------------------------------------------ mobile menu drawer */
+  .mobile-nav__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: var(--space-s);
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    font-size: var(--text-lg);
+    text-decoration: none;
+    color: var(--color-heading);
+    border-bottom: 0.1rem solid var(--color-border);
+  }
 
-    .site-nav__item {
-        position: relative;
-    }
+  .mobile-nav__link .svg-icon {
+    transition: rotate var(--duration-default) var(--ease);
+  }
 
-    .site-nav__link {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--space-2xs);
-        padding-block: var(--space-xs);
-        color: var(--color-heading);
-        text-decoration: none;
-        cursor: pointer;
-        list-style: none;
-    }
+  .mobile-nav__group[open] > .mobile-nav__link .svg-icon {
+    rotate: 180deg;
+  }
 
-    .site-nav__link::-webkit-details-marker {
-        display: none;
-    }
+  .mobile-nav__sublist {
+    padding-block: var(--space-xs);
+  }
 
-    .site-nav__link.is-active,
-    .site-nav__link:hover {
-        color: var(--color-link-hover);
-    }
-
-    .site-nav__link .svg-icon {
-        --icon-size: 1.4rem;
-        transition: rotate var(--duration-default) var(--ease);
-    }
-
-    .site-nav__dropdown[open] .svg-icon {
-        rotate: 180deg;
-    }
-
-    .site-nav__submenu {
-        position: absolute;
-        top: 100%;
-        left: calc(var(--space-m) * -1);
-        min-width: 22rem;
-        margin: 0;
-        padding: var(--space-xs) 0;
-        list-style: none;
-        border: 0.1rem solid var(--color-border);
-        border-radius: var(--radius-card);
-        background: var(--color-background);
-        box-shadow: var(--shadow-overlay);
-    }
-
-    .site-nav__sublink {
-        display: block;
-        padding: var(--space-xs) var(--space-m);
-        text-decoration: none;
-    }
-
-    @media (min-width: 990px) {
-        .site-header__menu-toggle {
-            display: none;
-        }
-
-        .site-header__inner {
-            grid-template-columns: auto 1fr auto;
-        }
-
-        .site-nav {
-            display: block;
-        }
-    }
-
-    @media (max-width: 989px) {
-        .site-header__inner {
-            grid-template-columns: 1fr auto 1fr;
-        }
-
-        .site-header__logo {
-            justify-self: center;
-        }
-    }
-
-    /* Mobile menu drawer */
-    .mobile-nav__list,
-    .mobile-nav__sublist {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
-
-    .mobile-nav__link {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding-block: var(--space-s);
-        border-bottom: 0.1rem solid var(--color-border);
-        color: var(--color-heading);
-        font-size: 1.8rem;
-        text-decoration: none;
-        cursor: pointer;
-        list-style: none;
-    }
-
-    .mobile-nav__link::-webkit-details-marker {
-        display: none;
-    }
-
-    .mobile-nav__group[open] > .mobile-nav__link .svg-icon {
-        rotate: 180deg;
-    }
-
-    .mobile-nav__sublink {
-        display: block;
-        padding: var(--space-xs) var(--space-m);
-        text-decoration: none;
-    }
+  .mobile-nav__sublink {
+    display: block;
+    padding: var(--space-xs) var(--space-m);
+    text-decoration: none;
+  }
 }

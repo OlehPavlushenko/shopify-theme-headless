@@ -1,42 +1,153 @@
 /*
- * Page-level layouts: collection grid, collections list, search results (Skeleton v1 baseline, rebuilt per page).
+ * Page-level layouts for template sections that are still on the Skeleton baseline
+ * (product, collection, collections list, search, blog, article, page, 404, password).
+ * Each of those sections gets class="page-section page-section--<name>" from its schema.
+ * This file shrinks as the pages are rebuilt on blocks.
  */
 @layer components {
-    /* sections/main-collection.liquid */
+  /* ---------------------------------------------------- page wrapper */
+  .page-section {
+    display: grid;
+    gap: var(--space-l);
+    width: 100%;
+    max-width: calc(var(--page-width) + var(--gutter) * 2);
+    margin-inline: auto;
+    padding: var(--space-2xl) var(--gutter);
+  }
 
-    .collection-products {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  /* Bare form controls in baseline sections look like the core .input / .btn */
+  .page-section :where(input:not([type='checkbox'], [type='radio'], [type='hidden'], [type='submit']), select, textarea) {
+    min-height: var(--control-height);
+    padding: var(--space-s) var(--space-m);
+    color: var(--color-input-text);
+    background: var(--color-input-background);
+    border: 0.1rem solid var(--color-border);
+    border-radius: var(--radius-input);
+  }
+
+  .page-section :where(button, input[type='submit']) {
+    min-height: var(--control-height);
+    padding: 0 var(--space-l);
+    font-weight: var(--font-body-weight-bold);
+    color: var(--color-button-label);
+    background: var(--color-button);
+    border: 0.1rem solid var(--color-button);
+    border-radius: var(--radius-button);
+    cursor: pointer;
+    transition: background-color var(--duration-default) var(--ease);
+  }
+
+  .page-section :where(button, input[type='submit']):hover {
+    background: var(--color-button-hover);
+    border-color: var(--color-button-hover);
+  }
+
+  .page-section :where(form) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+  }
+
+  /* Shared media wrapper from snippets/image.liquid */
+  .page-section .image {
+    border-radius: var(--radius-media);
+    background: var(--color-surface);
+  }
+
+  /* --------------------------------------------------------- product */
+  .page-section--product {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-xl);
+  }
+
+  .product-images {
+    display: grid;
+    gap: var(--space-s);
+  }
+
+  .product-info {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .product-info .rte,
+  .product-info p {
+    max-width: 64ch;
+  }
+
+  @media (min-width: 990px) {
+    .page-section--product {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      align-items: start;
     }
 
-    /* sections/main-list-collections.liquid */
+    .product-images {
+      grid-row: span 2;
+    }
+  }
 
-    .collections {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(min(var(--collection-card-size), 100%), 1fr));
-      gap: var(--grid-gap);
-    }
-    .collections--compact {
-      --collection-card-size: 160px;
-    }
-    .collections--full {
-      --collection-card-size: 280px;
-    }
-    .collection-card {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-    }
+  /* ---------------------------------------- collection & search grids */
+  .collection-products,
+  .search-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(22rem, 100%), 1fr));
+    gap: var(--space-xl) var(--space-l);
+  }
 
-    /* sections/main-search.liquid */
+  .collection-product,
+  .search-result {
+    display: grid;
+    gap: var(--space-s);
+    align-content: start;
+  }
 
-    .search-results {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-    .search-results .prev,
-    .search-results .page,
-    .search-results .next {
-      grid-column: 1 / -1;
-    }
+  .collection-product__content p,
+  .search-result__content p {
+    margin: 0;
+  }
+
+  .collection-product__content a,
+  .search-result__content a {
+    font-weight: var(--font-body-weight-bold);
+    text-decoration: none;
+  }
+
+  .collection-products .pagination,
+  .search-results :is(.prev, .page, .next) {
+    grid-column: 1 / -1;
+  }
+
+  /* ------------------------------------------------ collections list */
+  .collections {
+    --collection-card-size: 28rem;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(var(--collection-card-size), 100%), 1fr));
+    gap: var(--grid-gap, var(--space-l));
+  }
+
+  .collections--compact {
+    --collection-card-size: 16rem;
+  }
+
+  .collections--full {
+    --collection-card-size: 28rem;
+  }
+
+  .collection-card {
+    display: grid;
+    gap: var(--space-s);
+    text-decoration: none;
+  }
+
+  .collection-card__content p {
+    margin: 0;
+  }
+
+  .collection-card__content p:first-child {
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    font-size: var(--text-lg);
+    color: var(--color-heading);
+  }
 }

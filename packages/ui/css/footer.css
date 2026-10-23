@@ -1,37 +1,36 @@
 /*
- * Site footer. Markup contract: theme/sections/footer.liquid.
+ * Site footer: menu, payment icons, copyright. Markup contract: theme/sections/footer.liquid.
  */
 @layer components {
-    .site-footer {
-        margin-top: auto;
-        padding-block: var(--space-2xl);
-        border-top: 0.1rem solid var(--color-border);
-    }
+  .site-footer {
+    margin-top: auto;
+    padding-block: var(--space-2xl);
+    border-top: 0.1rem solid var(--color-border);
+  }
 
-    .site-footer__inner {
-        display: grid;
-        gap: var(--space-l);
-    }
+  .site-footer__inner {
+    display: grid;
+    gap: var(--space-l);
+  }
 
-    .site-footer__links {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
+  .site-footer__links {
+    --cluster-gap: var(--space-xs) var(--space-l);
+  }
 
-    .site-footer__links a {
-        text-decoration: none;
-    }
+  .site-footer__links a {
+    text-decoration: none;
+  }
 
-    .site-footer__payment {
-        --cluster-gap: var(--space-xs);
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
+  .site-footer__payment {
+    --cluster-gap: var(--space-xs);
+  }
 
-    .site-footer__payment-icon {
-        width: auto;
-        height: 2.4rem;
-    }
+  .site-footer__payment-icon {
+    width: auto;
+    height: 2.4rem;
+  }
+
+  .site-footer__copyright {
+    color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
+  }
 }

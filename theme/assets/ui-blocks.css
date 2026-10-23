@@ -1,88 +1,93 @@
 /* Generated from packages/ui/css/blocks.css by scripts/sync-ui.mjs. Do not edit here. */
 /*
- * Theme blocks and the generic custom section (Skeleton v1 baseline, reworked in the blocks phase).
+ * Theme blocks and the generic custom section: group, text, image, custom-section.
+ * Markup contract: theme/blocks/*.liquid, theme/sections/custom-section.liquid, theme/snippets/image.liquid.
  */
 @layer components {
-    /* blocks/group.liquid */
+  /* ------------------------------------------------- custom section */
+  .custom-section {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
 
-    .group {
-      display: flex;
-      flex-wrap: nowrap;
-      overflow: hidden;
-      width: 100%;
-    }
+  .custom-section__background {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+  }
 
-    .group--horizontal {
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 var(--padding);
-    }
+  .custom-section__background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
-    .group--vertical {
-      flex-direction: column;
-      align-items: var(--alignment);
-      padding: var(--padding) 0;
-    }
+  .custom-section__content {
+    display: grid;
+    gap: var(--space-l);
+    width: 100%;
+    max-width: calc(var(--page-width) + var(--gutter) * 2);
+    margin-inline: auto;
+    padding: var(--space-3xl) var(--gutter);
+  }
 
-    /* blocks/text.liquid */
+  /* ----------------------------------------------------------- group */
+  .group {
+    display: flex;
+    width: 100%;
+    gap: var(--space-m);
+  }
 
-    .text {
-      text-align: var(--text-align);
-    }
-    .text--title {
-      font-size: 2rem;
-      font-weight: 700;
-    }
-    .text--subtitle {
-      font-size: 1.5rem;
-    }
+  .group--horizontal {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: var(--padding, 0);
+  }
 
-    /* snippets/image.liquid */
+  .group--vertical {
+    flex-direction: column;
+    align-items: var(--alignment, flex-start);
+    padding-block: var(--padding, 0);
+  }
 
-    .image {
-      display: block;
-      position: relative;
-      overflow: hidden;
-      width: 100%;
-      height: auto;
-    }
+  /* ------------------------------------------------------------ text */
+  .text {
+    max-width: 72ch;
+    text-align: var(--text-align, start);
+  }
 
-    .image > img {
-      width: 100%;
-      height: auto;
-    }
+  .text > * + * {
+    margin-top: 0.8em;
+  }
 
-    /* sections/custom-section.liquid */
+  .text--title {
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    font-size: calc(var(--font-heading-scale) * var(--text-3xl));
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-heading);
+    text-wrap: balance;
+  }
 
-    .custom-section {
-      position: relative;
-      overflow: hidden;
-      width: 100%;
-    }
-    .custom-section__background {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      overflow: hidden;
-    }
-    .custom-section__background img {
-      position: absolute;
-      width: 100%;
-      height: auto;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    .custom-section__content {
-      display: grid;
-      width: 100%;
-        max-width: calc(var(--page-width) + var(--gutter) * 2);
-        margin-inline: auto;
-        padding-inline: var(--gutter);
-    }
-    .custom-section__content > * {
-      grid-column: 2;
-    }
+  .text--subtitle {
+    font-size: var(--text-lg);
+    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+  }
+
+  /* ----------------------------------------------------------- image */
+  .image {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    width: 100%;
+    border-radius: var(--radius-media);
+  }
+
+  .image > img {
+    width: 100%;
+    height: auto;
+  }
 }

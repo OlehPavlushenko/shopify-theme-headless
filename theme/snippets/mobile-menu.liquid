@@ -1,11 +1,9 @@
 {% doc %}
   Mobile menu drawer content with drill-down panels (behavior: @ui/drill-menu).
   Root panel lists top-level links; every link with children opens its own panel, and so on
-  for the 3rd level. Account link and the country/language selector sit at the bottom.
+  for the 3rd level. Account, currency and language live in the header utility panel.
 
   @param {object} menu - link_list
-  @param {boolean} show_account - Show the account link
-  @param {boolean} show_localization - Show the country/language selector
 {% enddoc %}
 <drill-menu class="mobile-nav">
   <div class="mobile-nav__panel" data-panel="root">
@@ -27,17 +25,6 @@
       {%- endfor -%}
     </ul>
 
-    <div class="mobile-nav__footer">
-      {%- if show_account and shop.customer_accounts_enabled -%}
-        <a href="{{ routes.account_url }}" class="mobile-nav__utility">
-          {%- render 'icon', name: 'account' -%}
-          {%- if customer -%}{{ 'accessibility.account' | t }}{%- else -%}{{ 'customers.login.title' | t }}{%- endif -%}
-        </a>
-      {%- endif -%}
-      {%- if show_localization -%}
-        {%- render 'localization-form', id: 'MobileLocalization' -%}
-      {%- endif -%}
-    </div>
   </div>
 
   {%- for link in menu.links -%}

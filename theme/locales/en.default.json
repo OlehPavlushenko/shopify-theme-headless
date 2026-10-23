@@ -10,7 +10,8 @@
     "menu": "Menu",
     "account": "Account",
     "cart_count": "{{ count }} items in cart",
-    "back": "Back"
+    "back": "Back",
+    "utility_panel": "Settings"
   },
   "blog": {
     "article_comments": "Comments",
@@ -57,6 +58,9 @@
       "password": "Password",
       "submit": "Sign in",
       "title": "Login"
+    },
+    "account": {
+      "title": "My account"
     }
   },
   "collections": {
@@ -85,8 +89,13 @@
     "view_all": "View all"
   },
   "localization": {
-    "country": "Country/region",
-    "language": "Language",
-    "update": "Update"
+    "currency": "Currency",
+    "language": "Language"
+  },
+  "wishlist": {
+    "title": "Wishlist"
+  },
+  "compare": {
+    "title": "Compare"
   }
 }

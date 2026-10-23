@@ -1,0 +1,91 @@
+{% doc %}
+  Utility panel: an icon in the header that opens a panel with account, wishlist and compare links,
+  an optional utility menu, and the currency/language switchers.
+  Native Popover API: light dismiss (outside click, Esc) and top layer come from the browser.
+  Renders nothing, icon included, when the panel would be empty.
+
+  @param {string} id - Popover element id
+  @param {object} [menu] - link_list with extra links (shipping, contacts, help…)
+  @param {boolean} show_account - Show the account link
+  @param {boolean} show_wishlist - Show the wishlist link
+  @param {boolean} show_compare - Show the compare link
+  @param {boolean} show_currency - Show the currency switcher
+  @param {boolean} show_language - Show the language switcher
+{% enddoc %}
+{%- capture links -%}
+  {%- if show_account and shop.customer_accounts_enabled -%}
+    <li>
+      <a href="{{ routes.account_url }}" class="utility-panel__link">
+        {%- render 'icon', name: 'account' -%}
+        {%- if customer -%}
+          {{ 'customers.account.title' | t }}
+        {%- else -%}
+          {{ 'customers.login.title' | t }}
+        {%- endif -%}
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if show_wishlist -%}
+    <li>
+      <a href="{{ pages['wishlist'].url | default: routes.root_url }}" class="utility-panel__link">
+        {%- render 'icon', name: 'heart' -%}
+        {{ 'wishlist.title' | t }}
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if show_compare -%}
+    <li>
+      <a href="{{ pages['compare'].url | default: routes.root_url }}" class="utility-panel__link">
+        {%- render 'icon', name: 'compare' -%}
+        {{ 'compare.title' | t }}
+      </a>
+    </li>
+  {%- endif -%}
+  {%- for link in menu.links -%}
+    <li>
+      <a href="{{ link.url }}" class="utility-panel__link">
+        {%- render 'icon', name: 'arrow-right' -%}
+        {{ link.title | escape }}
+      </a>
+    </li>
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- capture switchers -%}
+  {%- if show_currency -%}
+    {%- render 'localization-form', type: 'currency' -%}
+  {%- endif -%}
+  {%- if show_language -%}
+    {%- render 'localization-form', type: 'language' -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- if links != blank or switchers != blank -%}
+  <button
+    type="button"
+    class="btn btn--icon utility-panel__trigger"
+    popovertarget="{{ id }}"
+    aria-label="{{ 'accessibility.utility_panel' | t }}"
+  >
+    {%- render 'icon', name: 'sliders' -%}
+  </button>
+
+  <div id="{{ id }}" class="utility-panel" popover>
+    <div class="utility-panel__head">
+      <p class="utility-panel__title">{{ 'accessibility.utility_panel' | t }}</p>
+      <button
+        type="button"
+        class="btn btn--icon"
+        popovertarget="{{ id }}"
+        popovertargetaction="hide"
+        aria-label="{{ 'accessibility.close' | t }}"
+      >
+        {%- render 'icon', name: 'close' -%}
+      </button>
+    </div>
+    {%- if links != blank -%}
+      <ul class="utility-panel__links" role="list">{{ links }}</ul>
+    {%- endif -%}
+    {{ switchers }}
+  </div>
+{%- endif -%}

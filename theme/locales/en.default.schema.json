@@ -163,7 +163,7 @@
       "show_dynamic_checkout_info": "Shop Pay, Apple Pay, PayPal and other accelerated checkouts enabled in your store."
     },
     "header": {
-      "show_account": "Show account icon",
+      "show_account": "Account link",
       "sticky": "Sticky header",
       "layout": "Layout",
       "layout_logo_left": "Logo left, menu inline",
@@ -179,9 +179,16 @@
       "transparent_text_color": "Text and icons on transparent header",
       "logo_transparent": "Logo on transparent header",
       "logo_transparent_info": "Optional light version of the logo.",
-      "icons": "Icons",
-      "show_localization": "Show country/language selector",
-      "show_localization_info": "Appears when the store sells to several countries or in several languages (Shopify Markets)."
+      "utility_panel": "Utility panel",
+      "show_utility_panel": "Show utility panel",
+      "show_utility_panel_info": "An icon in the header that opens a panel with account and quick links plus currency and language switchers.",
+      "show_wishlist": "Wishlist link",
+      "show_compare": "Compare link",
+      "show_currency": "Currency switcher",
+      "show_currency_info": "Lists the currencies of your Shopify Markets countries.",
+      "show_language": "Language switcher",
+      "utility_menu": "Extra links",
+      "utility_menu_info": "Optional menu shown in the panel, e.g. shipping, returns, contacts."
     },
     "footer": {
       "show_powered_by": "Show \"Powered by Shopify\""

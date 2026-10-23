@@ -85,18 +85,19 @@
     {%- endif -%}
 
     <div class="site-header__icons">
-      {%- if section.settings.show_localization -%}
-        <div class="site-header__localization">
-          {%- render 'localization-form', id: 'HeaderLocalization' -%}
-        </div>
-      {%- endif -%}
       <a href="{{ routes.search_url }}" class="btn btn--icon" aria-label="{{ 'search.title' | t }}">
         {%- render 'icon', name: 'search' -%}
       </a>
-      {%- if section.settings.show_account and shop.customer_accounts_enabled -%}
-        <a href="{{ routes.account_url }}" class="btn btn--icon site-header__account" aria-label="{{ 'accessibility.account' | t }}">
-          {%- render 'icon', name: 'account' -%}
-        </a>
+      {%- if section.settings.show_utility_panel -%}
+        {%- render 'utility-panel',
+          id: 'UtilityPanel',
+          menu: section.settings.utility_menu,
+          show_account: section.settings.show_account,
+          show_wishlist: section.settings.show_wishlist,
+          show_compare: section.settings.show_compare,
+          show_currency: section.settings.show_currency,
+          show_language: section.settings.show_language
+        -%}
       {%- endif -%}
       <a
         href="{{ routes.cart_url }}"
@@ -137,11 +138,7 @@
         </button>
       </div>
       <div class="drawer__body">
-        {%- render 'mobile-menu',
-          menu: menu,
-          show_account: section.settings.show_account,
-          show_localization: section.settings.show_localization
-        -%}
+        {%- render 'mobile-menu', menu: menu -%}
       </div>
     </div>
   </dialog>
@@ -214,20 +211,57 @@
     },
     {
       "type": "header",
-      "content": "t:sections.header.icons"
+      "content": "t:sections.header.utility_panel"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_utility_panel",
+      "label": "t:sections.header.show_utility_panel",
+      "info": "t:sections.header.show_utility_panel_info",
+      "default": true
     },
     {
       "type": "checkbox",
       "id": "show_account",
       "label": "t:sections.header.show_account",
-      "default": true
+      "default": true,
+      "visible_if": "{{ section.settings.show_utility_panel }}"
     },
     {
       "type": "checkbox",
-      "id": "show_localization",
-      "label": "t:sections.header.show_localization",
-      "info": "t:sections.header.show_localization_info",
-      "default": true
+      "id": "show_wishlist",
+      "label": "t:sections.header.show_wishlist",
+      "default": false,
+      "visible_if": "{{ section.settings.show_utility_panel }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare",
+      "label": "t:sections.header.show_compare",
+      "default": false,
+      "visible_if": "{{ section.settings.show_utility_panel }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_currency",
+      "label": "t:sections.header.show_currency",
+      "info": "t:sections.header.show_currency_info",
+      "default": true,
+      "visible_if": "{{ section.settings.show_utility_panel }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_language",
+      "label": "t:sections.header.show_language",
+      "default": true,
+      "visible_if": "{{ section.settings.show_utility_panel }}"
+    },
+    {
+      "type": "link_list",
+      "id": "utility_menu",
+      "label": "t:sections.header.utility_menu",
+      "info": "t:sections.header.utility_menu_info",
+      "visible_if": "{{ section.settings.show_utility_panel }}"
     }
   ],
   "blocks": [

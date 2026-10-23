@@ -1,59 +1,72 @@
 {% doc %}
-  Country/currency and language selector (Shopify Markets). Renders nothing when the store sells
-  to a single country in a single language. Submits on change (@ui/autosubmit); without JS the
-  submit button stays visible.
+  Currency or language switcher (Shopify Markets) as a list of buttons; each button submits the
+  localization form on its own, no JS needed. Renders nothing when there is only one option.
 
-  @param {string} id - Unique form id (header and mobile menu render separate forms)
+  Currency: Markets ties currency to the country, so the list shows each currency once and
+  submits a country that uses it (the current country when it already uses that currency).
+
+  @param {string} type - 'currency' or 'language'
 {% enddoc %}
 {%- liquid
-  assign show_countries = false
-  assign show_languages = false
-  if localization.available_countries.size > 1
-    assign show_countries = true
-  endif
-  if localization.available_languages.size > 1
-    assign show_languages = true
-  endif
+  assign current_country = localization.country
+  assign currency_codes = localization.available_countries | map: 'currency' | map: 'iso_code' | uniq
 -%}
-{%- if show_countries or show_languages -%}
-  {%- form 'localization', id: id, class: 'localization', data-autosubmit: '' -%}
-    {%- if show_countries -%}
-      <label class="localization__field">
-        <span class="visually-hidden">{{ 'localization.country' | t }}</span>
-        <select name="country_code" class="localization__select">
-          {%- for country in localization.available_countries -%}
-            <option
-              value="{{ country.iso_code }}"
-              {% if country.iso_code == localization.country.iso_code %}
-                selected
-              {% endif %}
+{%- case type -%}
+  {%- when 'currency' -%}
+    {%- if currency_codes.size > 1 -%}
+      {%- form 'localization', class: 'localization' -%}
+        <p class="localization__label">{{ 'localization.currency' | t }}</p>
+        <div class="localization__options">
+          {%- for code in currency_codes -%}
+            {%- liquid
+              assign target = null
+              if current_country.currency.iso_code == code
+                assign target = current_country
+              else
+                for country in localization.available_countries
+                  if country.currency.iso_code == code
+                    assign target = country
+                    break
+                  endif
+                endfor
+              endif
+              assign is_current = false
+              if current_country.currency.iso_code == code
+                assign is_current = true
+              endif
+            -%}
+            <button
+              type="submit"
+              name="country_code"
+              value="{{ target.iso_code }}"
+              class="chip"
+              aria-pressed="{{ is_current }}"
             >
-              {{- country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol -}})
-            </option>
+              {{- code }} {{ target.currency.symbol -}}
+            </button>
           {%- endfor -%}
-        </select>
-      </label>
+        </div>
+      {%- endform -%}
     {%- endif -%}
-    {%- if show_languages -%}
-      <label class="localization__field">
-        <span class="visually-hidden">{{ 'localization.language' | t }}</span>
-        <select name="language_code" class="localization__select">
+
+  {%- when 'language' -%}
+    {%- if localization.available_languages.size > 1 -%}
+      {%- form 'localization', class: 'localization' -%}
+        <p class="localization__label">{{ 'localization.language' | t }}</p>
+        <div class="localization__options">
           {%- for language in localization.available_languages -%}
-            <option
+            <button
+              type="submit"
+              name="language_code"
               value="{{ language.iso_code }}"
               lang="{{ language.iso_code }}"
-              {% if language.iso_code == localization.language.iso_code %}
-                selected
-              {% endif %}
+              class="chip"
+              aria-pressed="{% if language.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}"
             >
               {{- language.endonym_name | capitalize -}}
-            </option>
+            </button>
           {%- endfor -%}
-        </select>
-      </label>
+        </div>
+      {%- endform -%}
     {%- endif -%}
-    <noscript>
-      <button type="submit" class="btn btn--sm btn--outline">{{ 'localization.update' | t }}</button>
-    </noscript>
-  {%- endform -%}
-{%- endif -%}
+{%- endcase -%}

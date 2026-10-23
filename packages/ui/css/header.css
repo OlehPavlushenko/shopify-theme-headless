@@ -2,7 +2,7 @@
  * Site header: layouts, sticky and transparent modes, desktop menu with dropdowns and mega menus,
  * mobile drill-down menu, localization selector, cart count.
  * Markup contract: theme/sections/header.liquid + snippets site-nav, mega-menu-block, mobile-menu,
- * localization-form. Behavior: @ui/header (<site-header>), @ui/nav-menu, @ui/drill-menu.
+ * utility-panel, localization-form. Behavior: @ui/header (<site-header>), @ui/nav-menu, @ui/drill-menu.
  */
 @layer components {
   /* --------------------------------------------- section wrapper modes */
@@ -88,11 +88,6 @@
     gap: var(--space-2xs);
   }
 
-  .site-header__localization,
-  .site-header__account {
-    display: none;
-  }
-
   .site-header__cart {
     position: relative;
   }
@@ -145,9 +140,7 @@
       display: none;
     }
 
-    .site-header__nav,
-    .site-header__localization,
-    .site-header__account {
+    .site-header__nav {
       display: block;
     }
 
@@ -439,37 +432,109 @@
     --icon-size: 1.8rem;
   }
 
-  .mobile-nav__footer {
+
+  /* ------------------------------------------------- utility panel */
+  .utility-panel {
+    position: fixed;
+    inset: calc(var(--header-height, 6.8rem) + var(--space-xs)) var(--gutter) auto auto;
+    width: min(36rem, calc(100vw - var(--gutter) * 2));
+    max-height: calc(100dvh - var(--header-height, 6.8rem) - var(--space-xl));
+    margin: 0;
+    padding: var(--space-l);
+    overflow-y: auto;
+    color: var(--color-foreground);
+    background: var(--color-background);
+    border: 0.1rem solid var(--color-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-overlay);
+    opacity: 0;
+    translate: 0 -0.8rem;
+    transition:
+      opacity var(--duration-default) var(--ease),
+      translate var(--duration-default) var(--ease-out),
+      overlay var(--duration-default) allow-discrete,
+      display var(--duration-default) allow-discrete;
+  }
+
+  .utility-panel:popover-open {
     display: grid;
-    gap: var(--space-m);
-    margin-top: var(--space-l);
+    gap: var(--space-l);
+    opacity: 1;
+    translate: 0 0;
   }
 
-  .mobile-nav__utility {
-    display: inline-flex;
+  @starting-style {
+    .utility-panel:popover-open {
+      opacity: 0;
+      translate: 0 -0.8rem;
+    }
+  }
+
+  .utility-panel__head {
+    display: flex;
     align-items: center;
-    gap: var(--space-xs);
-    text-decoration: none;
+    justify-content: space-between;
+    margin: calc(var(--space-s) * -1) calc(var(--space-s) * -1) 0 0;
   }
 
-  /* -------------------------------------------- localization form */
+  .utility-panel__title {
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    font-size: var(--text-lg);
+    color: var(--color-heading);
+  }
+
+  .utility-panel__links {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .utility-panel__links:empty {
+    display: none;
+  }
+
+  .utility-panel__link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    padding: var(--space-xs) var(--space-s);
+    margin-inline: calc(var(--space-s) * -1);
+    font-weight: var(--font-body-weight-bold);
+    text-decoration: none;
+    color: var(--color-heading);
+    border-radius: var(--radius-input);
+  }
+
+  .utility-panel__link:hover {
+    color: var(--color-heading);
+    background: var(--color-surface);
+  }
+
+  .utility-panel__link .svg-icon {
+    --icon-size: 2rem;
+
+    color: var(--color-accent);
+  }
+
+  /* ------------------------------------------- currency & language */
   .localization {
+    display: grid;
+    gap: var(--space-xs);
+    padding-top: var(--space-m);
+    border-top: 0.1rem solid var(--color-border);
+  }
+
+  .localization__label {
+    font-size: var(--text-xs);
+    font-weight: var(--font-body-weight-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
+  }
+
+  .localization__options {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-xs);
-  }
-
-  .localization__select {
-    min-height: var(--control-height-sm);
-    padding: 0 var(--space-xl) 0 var(--space-s);
-    font-size: var(--text-sm);
-    color: var(--color-heading);
-    background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")
-        right var(--space-s) center / 1.2rem no-repeat,
-      transparent;
-    border: 0.1rem solid var(--color-border);
-    border-radius: var(--radius-button);
-    appearance: none;
   }
 }

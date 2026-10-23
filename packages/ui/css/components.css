@@ -315,6 +315,13 @@
     color: var(--color-link-hover);
   }
 
+  /* Highlighted match inside a link (e.g. the typed part of a search suggestion) */
+  .link-list__link mark {
+    font-weight: var(--font-body-weight-bold);
+    color: inherit;
+    background: none;
+  }
+
   .link-list__link .svg-icon {
     --icon-size: 1.6rem;
 

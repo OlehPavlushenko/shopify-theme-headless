@@ -105,13 +105,13 @@
     color: var(--color-heading);
   }
 
+  /* Typed text and placeholder share one style; the placeholder is only muted */
   .search-panel__input {
     width: 100%;
     padding: var(--space-xs) 0;
-    font-family: var(--font-heading-family);
-    font-weight: var(--font-heading-weight);
+    font-family: var(--font-body-family);
+    font-weight: var(--font-body-weight);
     font-size: var(--text-xl);
-    letter-spacing: var(--tracking-heading);
     color: var(--color-heading);
     background: none;
     border: 0;
@@ -119,11 +119,7 @@
   }
 
   .search-panel__input::placeholder {
-    font-family: var(--font-body-family);
-    font-weight: var(--font-body-weight);
-    font-size: var(--text-lg);
-    letter-spacing: 0;
-    color: color-mix(in srgb, var(--color-foreground) 55%, transparent);
+    color: color-mix(in srgb, var(--color-foreground) 50%, transparent);
   }
 
   .search-panel__input::-webkit-search-cancel-button {

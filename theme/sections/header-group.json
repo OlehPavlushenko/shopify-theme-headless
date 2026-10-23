@@ -108,7 +108,7 @@
         "sticky": "scroll-up",
         "transparent": false,
         "transparent_text_color": "#ffffff",
-        "search_style": "drawer",
+        "search_style": "top",
         "search_color_scheme": "",
         "show_utility_panel": true,
         "show_account": true,

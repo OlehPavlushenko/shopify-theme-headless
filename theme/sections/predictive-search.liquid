@@ -23,7 +23,7 @@
                   <li>
                     <a href="{{ query.url }}" class="link-list__link">
                       {%- render 'icon', name: 'search' -%}
-                      {{- query.text | escape -}}
+                      {{- query.styled_text -}}
                     </a>
                   </li>
                 {%- endfor -%}

@@ -92,10 +92,10 @@
     "pages": "Pages & articles",
     "suggestions": "Suggestions",
     "popular": "Popular searches",
-    "featured": "Featured products",
     "view_all_html": "View all results for “{{ terms }}”",
     "article": "Article",
-    "page": "Page"
+    "page": "Page",
+    "quick_links": "Quick links"
   },
   "general": {
     "view_all": "View all",

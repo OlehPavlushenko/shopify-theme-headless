@@ -76,7 +76,9 @@
       "logo": "Logo",
       "logo_width": "Logo width",
       "favicon": "Favicon",
-      "favicon_info": "Square image, at least 32 × 32 px."
+      "favicon_info": "Square image, at least 32 × 32 px.",
+      "share_image": "Social sharing image",
+      "share_image_info": "Shown when a page without its own image is shared on social media. 1200 × 628 px recommended."
     },
     "colors": {
       "name": "Colors",
@@ -190,8 +192,10 @@
       "utility_menu": "Extra links",
       "utility_menu_info": "Optional menu shown in the panel, e.g. shipping, returns, contacts.",
       "search": "Search",
-      "search_products": "Featured products in search",
-      "search_products_info": "Shown in the search panel before the shopper types. Add \"Search term\" blocks for popular searches."
+      "search_style": "Search panel style",
+      "search_style_top": "Slide down from the top",
+      "search_style_drawer": "Side drawer",
+      "search_blocks_info": "Add Search term, Quick link, Products and Collections blocks to fill the panel before the shopper types."
     },
     "footer": {
       "show_powered_by": "Show \"Powered by Shopify\""
@@ -230,9 +234,28 @@
       "products": "Products"
     },
     "search_term": {
-      "name": "Search term",
+      "name": "Search: popular term",
       "term": "Term",
-      "info": "Shown as a popular search in the search panel."
+      "info": "Shown as a popular search chip."
+    },
+    "search_link": {
+      "name": "Search: quick link",
+      "title": "Title",
+      "link": "Link",
+      "image": "Image"
+    },
+    "search_products": {
+      "name": "Search: products",
+      "heading": "Heading",
+      "collection": "Collection",
+      "products": "Products",
+      "products_info": "Hand-picked products take priority over the collection.",
+      "limit": "Number of products"
+    },
+    "search_collections": {
+      "name": "Search: collections",
+      "heading": "Heading",
+      "collections": "Collections"
     }
   }
 }

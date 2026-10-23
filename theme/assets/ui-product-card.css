@@ -87,7 +87,25 @@
     }
   }
 
-  /* Compact variant: horizontal row (search suggestions, mini lists) */
+  /* Compact: smaller type and spacing (search panel, mini lists) */
+  .product-card--compact {
+    gap: var(--space-xs);
+  }
+
+  .product-card--compact .product-card__title {
+    font-size: var(--text-sm);
+  }
+
+  .product-card--compact .price-tag {
+    font-size: var(--text-sm);
+  }
+
+  .product-card--compact .product-card__badge {
+    top: var(--space-xs);
+    left: var(--space-xs);
+  }
+
+  /* Row: horizontal layout (mini lists) */
   .product-card--row {
     grid-template-columns: 7.2rem minmax(0, 1fr);
     align-items: center;

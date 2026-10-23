@@ -7,8 +7,8 @@
   - Desktop menu with dropdowns and mega menus (snippets/site-nav), mobile drill-down drawer
     (snippets/mobile-menu), country/language selector (snippets/localization-form).
   - Blocks "Menu promo" / "Menu products" attach content to a mega menu by top-level link title.
-  - Search panel (snippets/search-panel): predictive search; "Search term" blocks and featured
-    products fill it while the query is empty.
+  - Search panel (snippets/search-panel): predictive search, top sheet or side drawer; while the
+    query is empty it shows the search_* blocks (terms, quick links, products, collections).
 {% endcomment %}
 {%- liquid
   assign menu = section.settings.menu
@@ -44,6 +44,8 @@
       </button>
     {%- endif -%}
 
+    {%- comment -%} Home page h1: the logo carries the shop name (SEO: one h1 per page). {%- endcomment -%}
+    {%- if template.name == 'index' -%}<h1 class="site-header__heading">{%- endif -%}
     <a href="{{ routes.root_url }}" class="site-header__logo">
       {%- if settings.logo != blank -%}
         {%- liquid
@@ -79,6 +81,7 @@
         <span class="site-header__shop-name">{{ shop.name }}</span>
       {%- endif -%}
     </a>
+    {%- if template.name == 'index' -%}</h1>{%- endif -%}
 
     {%- if menu.links.size > 0 -%}
       <div class="site-header__nav">
@@ -134,9 +137,9 @@
 
 {%- render 'search-panel',
   id: 'SearchPanel',
-  color_scheme: section.settings.color_scheme,
-  blocks: section.blocks,
-  products: section.settings.search_products
+  style: section.settings.search_style,
+  color_scheme: section.settings.search_color_scheme,
+  blocks: section.blocks
 -%}
 
 {%- if menu.links.size > 0 -%}
@@ -175,9 +178,18 @@
       "id": "layout",
       "label": "t:sections.header.layout",
       "options": [
-        { "value": "logo-left", "label": "t:sections.header.layout_logo_left" },
-        { "value": "logo-center-below", "label": "t:sections.header.layout_logo_center_below" },
-        { "value": "logo-center-left", "label": "t:sections.header.layout_logo_center_left" }
+        {
+          "value": "logo-left",
+          "label": "t:sections.header.layout_logo_left"
+        },
+        {
+          "value": "logo-center-below",
+          "label": "t:sections.header.layout_logo_center_below"
+        },
+        {
+          "value": "logo-center-left",
+          "label": "t:sections.header.layout_logo_center_left"
+        }
       ],
       "default": "logo-left"
     },
@@ -197,9 +209,18 @@
       "id": "sticky",
       "label": "t:sections.header.sticky",
       "options": [
-        { "value": "none", "label": "t:sections.header.sticky_none" },
-        { "value": "always", "label": "t:sections.header.sticky_always" },
-        { "value": "scroll-up", "label": "t:sections.header.sticky_scroll_up" }
+        {
+          "value": "none",
+          "label": "t:sections.header.sticky_none"
+        },
+        {
+          "value": "always",
+          "label": "t:sections.header.sticky_always"
+        },
+        {
+          "value": "scroll-up",
+          "label": "t:sections.header.sticky_scroll_up"
+        }
       ],
       "default": "scroll-up"
     },
@@ -229,11 +250,30 @@
       "content": "t:sections.header.search"
     },
     {
-      "type": "product_list",
-      "id": "search_products",
-      "label": "t:sections.header.search_products",
-      "info": "t:sections.header.search_products_info",
-      "limit": 4
+      "type": "select",
+      "id": "search_style",
+      "label": "t:sections.header.search_style",
+      "options": [
+        {
+          "value": "top",
+          "label": "t:sections.header.search_style_top"
+        },
+        {
+          "value": "drawer",
+          "label": "t:sections.header.search_style_drawer"
+        }
+      ],
+      "default": "top"
+    },
+    {
+      "type": "color_scheme",
+      "id": "search_color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:sections.header.search_blocks_info"
     },
     {
       "type": "header",
@@ -295,7 +335,84 @@
       "type": "search_term",
       "name": "t:blocks.search_term.name",
       "settings": [
-        { "type": "text", "id": "term", "label": "t:blocks.search_term.term", "info": "t:blocks.search_term.info" }
+        {
+          "type": "text",
+          "id": "term",
+          "label": "t:blocks.search_term.term",
+          "info": "t:blocks.search_term.info"
+        }
+      ]
+    },
+    {
+      "type": "search_link",
+      "name": "t:blocks.search_link.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:blocks.search_link.title"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:blocks.search_link.link"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:blocks.search_link.image"
+        }
+      ]
+    },
+    {
+      "type": "search_products",
+      "name": "t:blocks.search_products.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:blocks.search_products.heading",
+          "default": "Trending now"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "t:blocks.search_products.collection"
+        },
+        {
+          "type": "product_list",
+          "id": "products",
+          "label": "t:blocks.search_products.products",
+          "info": "t:blocks.search_products.products_info",
+          "limit": 8
+        },
+        {
+          "type": "range",
+          "id": "limit",
+          "label": "t:blocks.search_products.limit",
+          "min": 2,
+          "max": 8,
+          "step": 1,
+          "default": 4
+        }
+      ]
+    },
+    {
+      "type": "search_collections",
+      "name": "t:blocks.search_collections.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:blocks.search_collections.heading",
+          "default": "Shop by category"
+        },
+        {
+          "type": "collection_list",
+          "id": "collections",
+          "label": "t:blocks.search_collections.collections",
+          "limit": 8
+        }
       ]
     },
     {
@@ -308,11 +425,31 @@
           "label": "t:blocks.menu_item.label",
           "info": "t:blocks.menu_item.info"
         },
-        { "type": "image_picker", "id": "image", "label": "t:blocks.menu_promo.image" },
-        { "type": "text", "id": "heading", "label": "t:blocks.menu_promo.heading" },
-        { "type": "text", "id": "text", "label": "t:blocks.menu_promo.text" },
-        { "type": "text", "id": "link_label", "label": "t:blocks.menu_promo.link_label" },
-        { "type": "url", "id": "link", "label": "t:blocks.menu_promo.link" }
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:blocks.menu_promo.image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:blocks.menu_promo.heading"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:blocks.menu_promo.text"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "t:blocks.menu_promo.link_label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:blocks.menu_promo.link"
+        }
       ]
     },
     {
@@ -325,7 +462,11 @@
           "label": "t:blocks.menu_item.label",
           "info": "t:blocks.menu_item.info"
         },
-        { "type": "text", "id": "heading", "label": "t:blocks.menu_products.heading" },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:blocks.menu_products.heading"
+        },
         {
           "type": "product_list",
           "id": "products",
@@ -336,7 +477,9 @@
     }
   ],
   "enabled_on": {
-    "groups": ["header"]
+    "groups": [
+      "header"
+    ]
   }
 }
 {% endschema %}

@@ -79,6 +79,33 @@ scripts/
 - Images via `image_url` + `image_tag` with explicit `sizes`; above-the-fold images load eagerly
   with `fetchpriority: 'high'`, everything else lazily.
 
+## SEO
+
+Every new section and snippet follows these rules:
+
+- **One `<h1>` per page**, owned by the template's main section (product title, collection title,
+  page title, search heading). Section headings inside pages are `h2`; cards use `h3` (or a `p`
+  inside overlays such as the search panel). Never skip levels for styling — use the `.h1`–`.h6`
+  classes to change the look.
+- **Semantic markup**: `header`, `nav` (with `aria-label`), `main`, `footer`, `section` with a
+  labelled heading, lists (`ul[role=list]`) for grids of cards, real `<a href>` for navigation and
+  `<button>` for actions.
+- **Structured data** lives in `snippets/structured-data.liquid` (Organization everywhere,
+  WebSite + SearchAction on the home page, Product and Article via Shopify's `structured_data`
+  filter) and in `snippets/breadcrumbs.liquid` (BreadcrumbList). Don't add JSON-LD elsewhere.
+- **Meta**: `snippets/meta-tags.liquid` handles title, description, canonical, Open Graph and
+  Twitter cards; the share image falls back to Theme settings → Brand → Social sharing image.
+  Search results get `noindex, follow` (they duplicate catalogue content).
+- **Images**: every content image has meaningful `alt` (from the media's alt text), decorative
+  ones get `alt=""`; explicit `width`/`height` (via `image_tag`) to avoid layout shift; the LCP
+  image loads eagerly with `fetchpriority: 'high'`, all others lazily.
+- **Content stays server-rendered**: JS only enhances (drawers, predictive search). Anything a
+  crawler should see (menus, product lists, prices) is in the initial HTML.
+- **URLs** come from `routes.*` and Liquid objects (`product.url`, `collection.url`), which keep
+  Markets subfolders (`/en-mx`) and language prefixes correct.
+- **Performance is SEO**: no render-blocking JS, CSS split per area, fonts with `font-display: swap`
+  and preloaded, Speculation Rules prefetch and View Transitions behind theme settings.
+
 ## JS
 
 - Native `<dialog>` for every drawer and modal (`@ui/dialog`):

@@ -30,6 +30,12 @@
         "id": "favicon",
         "label": "t:settings.brand.favicon",
         "info": "t:settings.brand.favicon_info"
+      },
+      {
+        "type": "image_picker",
+        "id": "share_image",
+        "label": "t:settings.brand.share_image",
+        "info": "t:settings.brand.share_image_info"
       }
     ]
   },

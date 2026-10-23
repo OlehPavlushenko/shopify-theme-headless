@@ -1,20 +1,33 @@
 {% doc %}
-  Search panel: a <dialog> sliding down from the top (@ui/dialog) with predictive search
-  (@ui/predictive-search, results from sections/predictive-search.liquid).
-  While the query is empty it shows popular searches (header "Search term" blocks) and
-  featured products (header setting).
+  Search panel (@ui/dialog + @ui/predictive-search; results from sections/predictive-search.liquid).
+
+  Style: 'top' slides down full width, 'drawer' slides in from the right.
+  While the query is empty the panel shows the header's search blocks, in editor order:
+  - search_term: popular search (consecutive terms form one row of chips)
+  - search_link: quick link tile with image (consecutive links form one grid)
+  - search_products: heading + products from a collection or a hand-picked list
+  - search_collections: heading + collection tiles
 
   @param {string} id - Dialog id, opened by [data-dialog-open="<id>"]
+  @param {string} style - 'top' | 'drawer'
   @param {string} color_scheme - Color scheme id
-  @param {object[]} blocks - Header blocks; type search_term is used here
-  @param {object[]} [products] - Featured products for the empty state
+  @param {object[]} blocks - Header blocks
 {% enddoc %}
 {%- capture predictive_params -%}
-  section_id=predictive-search&resources%5Btype%5D=product,collection,page,article,query&resources%5Blimit%5D=8&resources%5Blimit_scope%5D=each&resources%5Boptions%5D%5Bunavailable_products%5D=last
+  section_id=predictive-search&resources%5Btype%5D=product,collection,page,article,query&resources%5Blimit%5D=6&resources%5Blimit_scope%5D=each&resources%5Boptions%5D%5Bunavailable_products%5D=last
 {%- endcapture -%}
-<dialog id="{{ id }}" class="search-panel color-{{ color_scheme }}" aria-label="{{ 'search.title' | t }}">
+{%- liquid
+  assign panel_style = style | default: 'top'
+  if panel_style == 'drawer'
+    assign card_sizes = '(min-width: 750px) 180px, 45vw'
+  else
+    assign card_sizes = '(min-width: 990px) 180px, 45vw'
+  endif
+-%}
+
+<dialog id="{{ id }}" class="search-panel search-panel--{{ panel_style }} color-{{ color_scheme }}" aria-label="{{ 'search.title' | t }}">
   <predictive-search
-    class="search-panel__inner page-width"
+    class="search-panel__inner{% if panel_style == 'top' %} page-width{% endif %}"
     data-endpoint="{{ routes.predictive_search_url }}"
     data-params="{{ predictive_params | strip }}"
   >
@@ -44,49 +57,115 @@
     <div id="{{ id }}-results" class="search-panel__results" data-results aria-live="polite"></div>
 
     <div class="search-panel__empty" data-empty-state>
-      {%- liquid
-        assign has_terms = false
-        for block in blocks
-          if block.type == 'search_term' and block.settings.term != blank
-            assign has_terms = true
-            break
+      {%- for block in blocks -%}
+        {%- liquid
+          assign prev_index = forloop.index0 | minus: 1
+          assign prev = blocks[prev_index]
+          if forloop.first
+            assign prev = nil
           endif
-        endfor
-      -%}
-      {%- if has_terms -%}
-        <section class="search-results__group" aria-labelledby="{{ id }}-popular">
-          <h2 id="{{ id }}-popular" class="search-results__heading">{{ 'search.popular' | t }}</h2>
-          <ul class="cluster" role="list" style="--cluster-gap: var(--space-xs);">
-            {%- for block in blocks -%}
-              {%- if block.type == 'search_term' and block.settings.term != blank -%}
-                <li {{ block.shopify_attributes }}>
-                  <a href="{{ routes.search_url }}?q={{ block.settings.term | url_encode }}" class="chip">
-                    {{- block.settings.term | escape -}}
-                  </a>
-                </li>
-              {%- endif -%}
-            {%- endfor -%}
-          </ul>
-        </section>
-      {%- endif -%}
-
-      {%- if products.count > 0 -%}
-        <section class="search-results__group" aria-labelledby="{{ id }}-featured">
-          <h2 id="{{ id }}-featured" class="search-results__heading">{{ 'search.featured' | t }}</h2>
-          <ul class="search-results__products" role="list">
-            {%- for product in products -%}
-              <li>
-                {%- render 'product-card',
-                  product: product,
-                  show_secondary_image: false,
-                  sizes: '(min-width: 990px) 200px, 45vw',
-                  heading_tag: 'p'
-                -%}
+          assign next = blocks[forloop.index]
+        -%}
+        {%- case block.type -%}
+          {%- when 'search_term' -%}
+            {%- if prev.type != 'search_term' -%}
+              <section class="search-results__group">
+                <h2 class="search-results__heading">{{ 'search.popular' | t }}</h2>
+                <ul class="search-panel__terms" role="list">
+            {%- endif -%}
+            {%- if block.settings.term != blank -%}
+              <li {{ block.shopify_attributes }}>
+                <a href="{{ routes.search_url }}?q={{ block.settings.term | url_encode }}" class="chip">
+                  {{- block.settings.term | escape -}}
+                </a>
               </li>
-            {%- endfor -%}
-          </ul>
-        </section>
-      {%- endif -%}
+            {%- endif -%}
+            {%- if next.type != 'search_term' -%}
+                </ul>
+              </section>
+            {%- endif -%}
+
+          {%- when 'search_link' -%}
+            {%- if prev.type != 'search_link' -%}
+              <section class="search-results__group">
+                <h2 class="search-results__heading">{{ 'search.quick_links' | t }}</h2>
+                <ul class="search-panel__tiles" role="list">
+            {%- endif -%}
+            {%- if block.settings.title != blank -%}
+              <li {{ block.shopify_attributes }}>
+                <a href="{{ block.settings.link | default: routes.root_url }}" class="search-tile">
+                  <span class="search-tile__media frame" style="--frame-ratio: 1;">
+                    {%- if block.settings.image -%}
+                      {{ block.settings.image | image_url: width: 320 | image_tag: loading: 'lazy', sizes: '96px', alt: '' }}
+                    {%- else -%}
+                      {%- render 'icon', name: 'arrow-right' -%}
+                    {%- endif -%}
+                  </span>
+                  <span class="search-tile__title">{{ block.settings.title | escape }}</span>
+                </a>
+              </li>
+            {%- endif -%}
+            {%- if next.type != 'search_link' -%}
+                </ul>
+              </section>
+            {%- endif -%}
+
+          {%- when 'search_products' -%}
+            {%- liquid
+              if block.settings.products.count > 0
+                assign block_products = block.settings.products
+              else
+                assign block_products = block.settings.collection.products
+              endif
+            -%}
+            {%- if block_products.size > 0 or block_products.count > 0 -%}
+              <section class="search-results__group" {{ block.shopify_attributes }}>
+                {%- if block.settings.heading != blank -%}
+                  <h2 class="search-results__heading">{{ block.settings.heading | escape }}</h2>
+                {%- endif -%}
+                <ul class="search-results__products" role="list">
+                  {%- for product in block_products limit: block.settings.limit -%}
+                    <li>
+                      {%- render 'product-card',
+                        product: product,
+                        show_secondary_image: false,
+                        compact: true,
+                        sizes: card_sizes,
+                        heading_tag: 'p'
+                      -%}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </section>
+            {%- endif -%}
+
+          {%- when 'search_collections' -%}
+            {%- if block.settings.collections.count > 0 -%}
+              <section class="search-results__group" {{ block.shopify_attributes }}>
+                {%- if block.settings.heading != blank -%}
+                  <h2 class="search-results__heading">{{ block.settings.heading | escape }}</h2>
+                {%- endif -%}
+                <ul class="search-panel__tiles" role="list">
+                  {%- for collection in block.settings.collections -%}
+                    {%- assign collection_image = collection.featured_image | default: collection.products.first.featured_image -%}
+                    <li>
+                      <a href="{{ collection.url }}" class="search-tile">
+                        <span class="search-tile__media frame" style="--frame-ratio: 1;">
+                          {%- if collection_image -%}
+                            {{ collection_image | image_url: width: 320 | image_tag: loading: 'lazy', sizes: '96px', alt: '' }}
+                          {%- else -%}
+                            {{ 'collection-1' | placeholder_svg_tag }}
+                          {%- endif -%}
+                        </span>
+                        <span class="search-tile__title">{{ collection.title | escape }}</span>
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </section>
+            {%- endif -%}
+        {%- endcase -%}
+      {%- endfor -%}
     </div>
   </predictive-search>
 </dialog>

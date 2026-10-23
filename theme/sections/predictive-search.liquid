@@ -14,24 +14,6 @@
       <p class="search-results__empty">{{ 'search.no_results_html' | t: terms: terms }}</p>
     {%- else -%}
       <div class="search-results__layout">
-        {%- if resources.products.size > 0 -%}
-          <section class="search-results__group search-results__group--products" aria-labelledby="PredictiveProducts">
-            <h2 id="PredictiveProducts" class="search-results__heading">{{ 'search.products' | t }}</h2>
-            <ul class="search-results__products" role="list">
-              {%- for product in resources.products -%}
-                <li>
-                  {%- render 'product-card',
-                    product: product,
-                    show_secondary_image: false,
-                    sizes: '(min-width: 990px) 200px, 45vw',
-                    heading_tag: 'p'
-                  -%}
-                </li>
-              {%- endfor -%}
-            </ul>
-          </section>
-        {%- endif -%}
-
         <div class="search-results__aside">
           {%- if resources.queries.size > 0 -%}
             <section class="search-results__group" aria-labelledby="PredictiveQueries">
@@ -71,6 +53,25 @@
             </section>
           {%- endif -%}
         </div>
+        {%- if resources.products.size > 0 -%}
+          <section class="search-results__group search-results__group--products" aria-labelledby="PredictiveProducts">
+            <h2 id="PredictiveProducts" class="search-results__heading">{{ 'search.products' | t }}</h2>
+            <ul class="search-results__products" role="list">
+              {%- for product in resources.products limit: 6 -%}
+                <li>
+                  {%- render 'product-card',
+                    product: product,
+                    show_secondary_image: false,
+                    compact: true,
+                    sizes: '(min-width: 990px) 180px, 45vw',
+                    heading_tag: 'p'
+                  -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </section>
+        {%- endif -%}
+
       </div>
     {%- endif -%}
 

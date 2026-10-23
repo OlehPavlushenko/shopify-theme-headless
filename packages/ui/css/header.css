@@ -50,6 +50,12 @@
     justify-self: start;
   }
 
+  /* On the home page the logo sits in an <h1>; the heading only provides semantics */
+  .site-header__heading {
+    display: contents;
+    font: inherit;
+  }
+
   .site-header__logo {
     grid-area: logo;
     display: inline-flex;

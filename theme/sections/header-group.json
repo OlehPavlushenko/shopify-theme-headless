@@ -26,7 +26,7 @@
         "show_compare": true,
         "show_currency": true,
         "show_language": true,
-        "utility_menu": "footer"
+        "utility_menu": "customer-account-main-menu"
       }
     }
   },

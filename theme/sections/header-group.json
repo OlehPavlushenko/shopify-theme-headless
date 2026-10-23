@@ -13,10 +13,24 @@
   "sections": {
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "color_scheme": "",
+        "layout": "logo-left",
+        "menu": "main-menu",
+        "sticky": "scroll-up",
+        "transparent": false,
+        "transparent_text_color": "#ffffff",
+        "show_utility_panel": true,
+        "show_account": true,
+        "show_wishlist": true,
+        "show_compare": true,
+        "show_currency": true,
+        "show_language": true,
+        "utility_menu": "footer"
+      }
     }
   },
   "order": [
     "header"
-  ],
+  ]
 }

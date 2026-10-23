@@ -141,32 +141,6 @@
   }
 
 
-  /* Popular searches: a list of terms with a search icon */
-  .search-terms {
-    display: grid;
-    gap: var(--space-2xs);
-  }
-
-  .search-term {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-s);
-    padding-block: var(--space-2xs);
-    font-size: var(--text-md);
-    text-decoration: none;
-    color: var(--color-heading);
-  }
-
-  .search-term:hover {
-    color: var(--color-link-hover);
-  }
-
-  .search-term__icon {
-    --icon-size: 1.6rem;
-
-    color: color-mix(in srgb, var(--color-foreground) 55%, transparent);
-  }
-
   /* ------------------------------------- predictive results (shared) */
   .search-results__layout {
     display: grid;
@@ -207,45 +181,37 @@
     gap: var(--space-l) var(--space-m);
   }
 
-  .search-results__links {
-    display: grid;
-    gap: var(--space-2xs);
+  /* Group heading row: heading + "View all" link on the right */
+  .search-results__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-xs) var(--space-m);
   }
 
-  .search-results__link {
-    display: block;
-    padding-block: var(--space-2xs);
+  .search-results__all-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-bold);
     text-decoration: none;
     color: var(--color-heading);
   }
 
-  .search-results__link:hover {
+  .search-results__all-link:hover {
     color: var(--color-link-hover);
   }
 
-  /* query.styled_text wraps the typed part in <mark> */
-  .search-results__query mark {
-    font-weight: var(--font-body-weight);
-    color: color-mix(in srgb, var(--color-heading) 60%, transparent);
-    background: none;
-  }
-
-  .search-results__query {
-    font-weight: var(--font-body-weight-bold);
+  .search-results__all-link .svg-icon {
+    --icon-size: 1.4rem;
   }
 
   .search-results__empty {
     font-size: var(--text-lg);
   }
 
-  .search-results__all {
-    justify-self: start;
-    margin-top: var(--space-l);
-  }
-
-  .search-results__all .svg-icon {
-    --icon-size: 1.6rem;
-  }
 
   @media (min-width: 750px) {
     .search-panel--top .search-results__products {

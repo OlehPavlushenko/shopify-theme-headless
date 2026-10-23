@@ -4,8 +4,8 @@
   Style: 'top' slides down full width, 'drawer' slides in from the right.
   While the query is empty the panel shows the header's search blocks, in editor order:
   - search_term: popular search (consecutive terms form one list)
-  - search_link: quick link row with thumbnail (consecutive links form one list)
-  - search_collections: heading + collection rows
+  - search_link: quick link (consecutive links form one list)
+  - search_collections: heading + collection links
   - search_products: heading + products from a collection or a hand-picked list (right column)
 
   @param {string} id - Dialog id, opened by [data-dialog-open="<id>"]
@@ -77,12 +77,12 @@
                 {%- if prev.type != 'search_term' -%}
                   <section class="search-results__group">
                     <h2 class="search-results__heading">{{ 'search.popular' | t }}</h2>
-                    <ul class="search-terms" role="list">
+                    <ul class="link-list" role="list">
                 {%- endif -%}
                 {%- if block.settings.term != blank -%}
                   <li {{ block.shopify_attributes }}>
-                    <a href="{{ routes.search_url }}?q={{ block.settings.term | url_encode }}" class="search-term">
-                      {%- render 'icon', name: 'search', class: 'search-term__icon' -%}
+                    <a href="{{ routes.search_url }}?q={{ block.settings.term | url_encode }}" class="link-list__link">
+                      {%- render 'icon', name: 'search' -%}
                       {{- block.settings.term | escape -}}
                     </a>
                   </li>
@@ -96,15 +96,13 @@
                 {%- if prev.type != 'search_link' -%}
                   <section class="search-results__group">
                     <h2 class="search-results__heading">{{ 'search.quick_links' | t }}</h2>
-                    <ul class="link-tiles" role="list">
+                    <ul class="link-list" role="list">
                 {%- endif -%}
                 {%- if block.settings.title != blank -%}
                   <li {{ block.shopify_attributes }}>
-                    {%- render 'link-tile',
-                      title: block.settings.title,
-                      url: block.settings.link,
-                      image: block.settings.image
-                    -%}
+                    <a href="{{ block.settings.link | default: routes.root_url }}" class="link-list__link">
+                      {{- block.settings.title | escape -}}
+                    </a>
                   </li>
                 {%- endif -%}
                 {%- if next.type != 'search_link' -%}
@@ -118,11 +116,10 @@
                     {%- if block.settings.heading != blank -%}
                       <h2 class="search-results__heading">{{ block.settings.heading | escape }}</h2>
                     {%- endif -%}
-                    <ul class="link-tiles" role="list">
+                    <ul class="link-list" role="list">
                       {%- for collection in block.settings.collections -%}
-                        {%- assign collection_image = collection.featured_image | default: collection.products.first.featured_image -%}
                         <li>
-                          {%- render 'link-tile', title: collection.title, url: collection.url, image: collection_image -%}
+                          <a href="{{ collection.url }}" class="link-list__link">{{ collection.title | escape }}</a>
                         </li>
                       {%- endfor -%}
                     </ul>

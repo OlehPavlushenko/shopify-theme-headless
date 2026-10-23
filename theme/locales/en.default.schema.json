@@ -247,8 +247,7 @@
     "search_link": {
       "name": "Search: quick link",
       "title": "Title",
-      "link": "Link",
-      "image": "Image"
+      "link": "Link"
     },
     "search_products": {
       "name": "Search: products",

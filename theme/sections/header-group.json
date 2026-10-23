@@ -13,21 +13,6 @@
   "sections": {
     "header": {
       "type": "header",
-      "settings": {
-        "color_scheme": "",
-        "layout": "logo-center-left",
-        "menu": "main-menu",
-        "sticky": "scroll-up",
-        "transparent": false,
-        "transparent_text_color": "#ffffff",
-        "show_utility_panel": true,
-        "show_account": true,
-        "show_wishlist": true,
-        "show_compare": true,
-        "show_currency": true,
-        "show_language": true,
-        "utility_menu": ""
-      },
       "blocks": {
         "search_term_1": {
           "type": "search_term",
@@ -91,6 +76,7 @@
           "type": "search_products",
           "settings": {
             "heading": "Best sellers",
+            "collection": "",
             "products": [
               "omega-complex",
               "collagen-active-kolagen",
@@ -99,7 +85,7 @@
               "macrosorb",
               "imunna-formula"
             ],
-            "limit": 4
+            "limit": 6
           }
         }
       },
@@ -114,7 +100,24 @@
         "search_link_3",
         "search_link_4",
         "search_products_1"
-      ]
+      ],
+      "settings": {
+        "color_scheme": "",
+        "layout": "logo-center-left",
+        "menu": "main-menu",
+        "sticky": "scroll-up",
+        "transparent": false,
+        "transparent_text_color": "#ffffff",
+        "search_style": "drawer",
+        "search_color_scheme": "",
+        "show_utility_panel": true,
+        "show_account": true,
+        "show_wishlist": true,
+        "show_compare": true,
+        "show_currency": true,
+        "show_language": true,
+        "utility_menu": ""
+      }
     }
   },
   "order": [

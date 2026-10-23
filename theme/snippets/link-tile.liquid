@@ -10,7 +10,7 @@
 <a href="{{ url | default: routes.root_url }}" class="link-tile">
   <span class="link-tile__media">
     {%- if image -%}
-      {{ image | image_url: width: 160 | image_tag: loading: 'lazy', sizes: '48px', alt: '' }}
+      {{ image | image_url: width: 96 | image_tag: loading: 'lazy', sizes: '32px', alt: '' }}
     {%- else -%}
       {%- render 'icon', name: 'arrow-right' -%}
     {%- endif -%}

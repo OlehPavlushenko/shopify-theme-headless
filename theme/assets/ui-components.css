@@ -301,20 +301,21 @@
   /* Row link: round thumbnail, title, arrow. Lists: ul.link-tiles */
   .link-tiles {
     display: grid;
-    gap: var(--space-2xs);
+    gap: 0;
   }
 
   .link-tile {
     display: grid;
-    grid-template-columns: 4.8rem minmax(0, 1fr) auto;
+    grid-template-columns: 3.2rem minmax(0, 1fr) auto;
     align-items: center;
     gap: var(--space-s);
-    padding: var(--space-xs);
+    padding: 0.6rem var(--space-xs);
     margin-inline: calc(var(--space-xs) * -1);
+    font-size: var(--text-sm);
     font-weight: var(--font-body-weight-bold);
     text-decoration: none;
     color: var(--color-heading);
-    border-radius: var(--radius-card);
+    border-radius: var(--radius-input);
     transition: background-color var(--duration-default) var(--ease);
   }
 
@@ -327,7 +328,7 @@
     display: grid;
     place-items: center;
     overflow: hidden;
-    width: 4.8rem;
+    width: 3.2rem;
     aspect-ratio: 1;
     background: var(--color-surface);
     border-radius: 50%;
@@ -344,13 +345,13 @@
   }
 
   .link-tile__media .svg-icon {
-    --icon-size: 1.8rem;
+    --icon-size: 1.4rem;
 
     color: var(--color-accent);
   }
 
   .link-tile__arrow {
-    --icon-size: 1.6rem;
+    --icon-size: 1.4rem;
 
     opacity: 0;
     translate: -0.4rem 0;

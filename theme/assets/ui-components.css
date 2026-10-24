@@ -425,7 +425,7 @@
     --icon-size: 1.8rem;
   }
 
-  /* ---------------------------------------- drawer & popup (<dialog>) */
+  /* ------------------------- drawer (<dialog> or popover) & popup (<dialog>) */
   .drawer,
   .popup {
     color: var(--color-foreground);
@@ -450,22 +450,13 @@
       display var(--duration-long) allow-discrete;
   }
 
-  .drawer--left {
-    inset: 0 auto 0 0;
-    translate: -100% 0;
-  }
-
-  .drawer[open] {
+  .drawer:is([open], :popover-open) {
     translate: 0 0;
   }
 
   @starting-style {
-    .drawer[open] {
+    .drawer:is([open], :popover-open) {
       translate: 100% 0;
-    }
-
-    .drawer--left[open] {
-      translate: -100% 0;
     }
   }
 
@@ -524,7 +515,7 @@
 
   .drawer::backdrop,
   .popup::backdrop {
-    background: rgb(15 23 19 / 0);
+    background: transparent;
     backdrop-filter: blur(0);
     transition:
       background-color var(--duration-long) var(--ease),
@@ -533,16 +524,16 @@
       display var(--duration-long) allow-discrete;
   }
 
-  .drawer[open]::backdrop,
+  .drawer:is([open], :popover-open)::backdrop,
   .popup[open]::backdrop {
-    background: rgb(15 23 19 / 0.4);
+    background: var(--backdrop-color);
     backdrop-filter: blur(2px);
   }
 
   @starting-style {
-    .drawer[open]::backdrop,
+    .drawer:is([open], :popover-open)::backdrop,
     .popup[open]::backdrop {
-      background: rgb(15 23 19 / 0);
+      background: transparent;
       backdrop-filter: blur(0);
     }
   }
@@ -551,13 +542,13 @@
    * Scroll lock while a modal dialog or a side popover is open. The scrollbar disappears, so the
    * page gets padding of the same width (--scrollbar-width, measured by @ui/dialog) and doesn't jump.
    */
-  html:has(dialog[open]:modal, [popover].utility-panel:popover-open, [popover].menu-panel:popover-open) {
+  html:has(dialog[open]:modal, [popover].drawer:popover-open, [popover].menu-panel:popover-open) {
     overflow: hidden;
     padding-inline-end: var(--scrollbar-width, 0px);
   }
 
   /* Overlays that scroll inside (search panel, drawers, menus): thin, quiet scrollbar */
-  :is(.drawer, .search-panel, .menu-panel, .utility-panel) {
+  :is(.drawer, .search-panel, .menu-panel) {
     scrollbar-width: thin;
     scrollbar-color: color-mix(in srgb, var(--color-foreground) 22%, transparent) transparent;
   }

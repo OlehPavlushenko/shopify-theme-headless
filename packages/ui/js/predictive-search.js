@@ -57,13 +57,13 @@ class PredictiveSearch extends HTMLElement {
       return;
     }
 
-    this.#controller = new AbortController();
+    const controller = (this.#controller = new AbortController());
     this.setAttribute('aria-busy', 'true');
     try {
       const url = new URL(this.dataset.endpoint, location.origin);
       url.search = this.dataset.params ?? '';
       url.searchParams.set('q', query);
-      const response = await fetch(url, { signal: this.#controller.signal });
+      const response = await fetch(url, { signal: controller.signal });
       if (!response.ok) throw new Error(`Predictive search failed: ${response.status}`);
       const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
       const html = doc.querySelector('[data-predictive-results]')?.innerHTML.trim() ?? '';
@@ -72,7 +72,7 @@ class PredictiveSearch extends HTMLElement {
     } catch (error) {
       if (error.name !== 'AbortError') console.error(error);
     } finally {
-      this.removeAttribute('aria-busy');
+      if (this.#controller === controller) this.removeAttribute('aria-busy');
     }
   }
 

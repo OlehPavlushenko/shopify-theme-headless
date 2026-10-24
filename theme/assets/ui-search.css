@@ -44,7 +44,7 @@
   }
 
   .search-panel::backdrop {
-    background: rgb(15 23 19 / 0);
+    background: transparent;
     transition:
       background-color var(--duration-long) var(--ease),
       overlay var(--duration-long) allow-discrete,
@@ -52,12 +52,12 @@
   }
 
   .search-panel[open]::backdrop {
-    background: rgb(15 23 19 / 0.4);
+    background: var(--backdrop-color);
   }
 
   @starting-style {
     .search-panel[open]::backdrop {
-      background: rgb(15 23 19 / 0);
+      background: transparent;
     }
   }
 
@@ -83,10 +83,6 @@
 
   .search-panel--drawer .search-panel__input {
     font-size: var(--text-xl);
-  }
-
-  .search-panel--drawer .search-results__products {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .search-panel__inner {
@@ -194,12 +190,6 @@
   }
 
 
-  .search-results__products {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-l) var(--space-m);
-  }
-
   /* Group headings in the left column get the slider head height, so both columns line up */
   .search-results__aside .search-results__heading {
     display: flex;
@@ -241,12 +231,6 @@
     font-size: var(--text-lg);
   }
 
-
-  @media (min-width: 750px) {
-    .search-panel--top .search-results__products {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
 
   @media (min-width: 990px) {
     /* Two columns only when the left column exists and has content; otherwise one column */

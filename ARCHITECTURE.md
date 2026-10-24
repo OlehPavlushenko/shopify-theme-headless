@@ -48,13 +48,16 @@ scripts/
 - Style direction: **Studio** (Bricolage Grotesque headings, DM Sans body, pill buttons, 20px cards,
   green accent). Defaults live in `tokens.json` and in the theme's settings schema/data.
 - Token scales: `--text-xs … --text-4xl` (fluid from `xl` up), `--leading-*`, `--space-2xs … --space-4xl`,
-  `--radius-*`, `--shadow-sm|md|overlay`, `--duration-*`, `--ease`, `--ease-out`, `--control-height*`.
+  `--radius-*`, `--shadow-sm|md|overlay`, `--backdrop-color`, `--drawer-width`, `--duration-*`, `--ease`,
+  `--ease-out`, `--control-height*`.
   No raw sizes or colors in components when a token exists.
 - Files:
   - `base.css`: reset, element defaults, typography, `.rte`, layout primitives (`.page-width`, `.stack`,
     `.cluster`, `.grid`, `.section-spacing`) and utilities.
   - `components.css`: `.btn` (+ `--secondary|outline|link|icon|sm|full`), `.field`/`.input`, `.qty`,
     `.price-tag`, `.pill`, `.frame`, `.svg-icon`, `.form-error`, `.drawer`, `.popup`.
+  - Side panels are one component: `.drawer` > `.drawer__inner` > `__header` / `__body` / `__footer`,
+    on a `<dialog>` (cart, search drawer) or a `[popover]` (utility panel); same width, motion and backdrop.
   - One file per area: `header.css`, `footer.css`, `cart.css`, `blocks.css`, `pages.css`
     (baseline template sections; shrinks as pages are rebuilt).
 - Formatting: 2-space indent; rule order base → elements → modifiers → states → responsive;
@@ -132,6 +135,7 @@ Every new section and snippet follows these rules:
 
 - Native `<dialog>` for every drawer and modal (`@ui/dialog`):
   `[data-dialog-open="<id>"]` opens, `[data-dialog-close]` closes, backdrop click and Esc close.
+  Non-modal panels use the Popover API (`popovertarget`): utility panel, mobile menu under the header.
 - Cart: Liquid Ajax Cart v2 re-renders `[data-ajax-cart-section]` after every cart request, so cart
   markup and totals stay in Liquid. `theme/assets/cart.js` only handles "after adding to cart".
 - No third-party runtime dependencies other than Liquid Ajax Cart.
@@ -143,6 +147,8 @@ npm run dev        # tokens + sync, then shopify theme dev on theme/ (with theme
 npm run watch      # re-sync packages/ui into theme/assets on every change (second terminal)
 npm run check      # shopify theme check on theme/
 npm run dev:reference   # run the previous theme for comparison
+npm run shoot <scenario> [arg] <outDir>   # Playwright screenshots (desktop + mobile) of the dev store:
+                   # home | menu <n> | mobile-menu [n] | utility | cart-drawer | search-empty | search <q> | cart | collection
 ```
 
 Never edit `theme/assets/ui-*` directly: they are generated from `packages/ui`.

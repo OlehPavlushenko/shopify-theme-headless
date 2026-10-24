@@ -1,7 +1,7 @@
 {% doc %}
   Utility panel: an icon in the header that opens a panel with account, wishlist and compare links,
   an optional utility menu, and the currency/language switchers.
-  Native Popover API: light dismiss (outside click, Esc) and top layer come from the browser.
+  A .drawer on the native Popover API: light dismiss (outside click, Esc) and top layer come from the browser.
   Renders nothing, icon included, when the panel would be empty.
 
   @param {string} id - Popover element id
@@ -70,22 +70,26 @@
     {%- render 'icon', name: 'sliders' -%}
   </button>
 
-  <div id="{{ id }}" class="utility-panel" popover>
-    <div class="utility-panel__head">
-      <p class="utility-panel__title">{{ 'accessibility.utility_panel' | t }}</p>
-      <button
-        type="button"
-        class="btn btn--icon"
-        popovertarget="{{ id }}"
-        popovertargetaction="hide"
-        aria-label="{{ 'accessibility.close' | t }}"
-      >
-        {%- render 'icon', name: 'close' -%}
-      </button>
+  <div id="{{ id }}" class="drawer utility-panel" popover aria-labelledby="{{ id }}-title">
+    <div class="drawer__inner">
+      <div class="drawer__header">
+        <p id="{{ id }}-title" class="h5">{{ 'accessibility.utility_panel' | t }}</p>
+        <button
+          type="button"
+          class="btn btn--icon"
+          popovertarget="{{ id }}"
+          popovertargetaction="hide"
+          aria-label="{{ 'accessibility.close' | t }}"
+        >
+          {%- render 'icon', name: 'close' -%}
+        </button>
+      </div>
+      <div class="drawer__body utility-panel__body">
+        {%- if links != blank -%}
+          <ul class="utility-panel__links" role="list">{{ links }}</ul>
+        {%- endif -%}
+        {{ switchers }}
+      </div>
     </div>
-    {%- if links != blank -%}
-      <ul class="utility-panel__links" role="list">{{ links }}</ul>
-    {%- endif -%}
-    {{ switchers }}
   </div>
 {%- endif -%}

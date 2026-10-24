@@ -15,7 +15,7 @@
   {%- when 'currency' -%}
     {%- if currency_codes.size > 1 -%}
       {%- form 'localization', class: 'localization' -%}
-        <p class="localization__label">{{ 'localization.currency' | t }}</p>
+        <p class="eyebrow">{{ 'localization.currency' | t }}</p>
         <div class="localization__options">
           {%- for code in currency_codes -%}
             {%- liquid
@@ -79,7 +79,7 @@
   {%- when 'language' -%}
     {%- if localization.available_languages.size > 1 -%}
       {%- form 'localization', class: 'localization' -%}
-        <p class="localization__label">{{ 'localization.language' | t }}</p>
+        <p class="eyebrow">{{ 'localization.language' | t }}</p>
         <div class="localization__options">
           {%- for language in localization.available_languages -%}
             <button

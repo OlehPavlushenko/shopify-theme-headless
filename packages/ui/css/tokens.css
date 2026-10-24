@@ -93,5 +93,6 @@
     --weight-semibold: 600;
     --weight-bold: 700;
     --drawer-width: min(42rem, 100vw);
+    --backdrop-color: rgb(15 23 19 / 0.4);
   }
 }

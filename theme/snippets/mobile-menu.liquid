@@ -2,7 +2,7 @@
   Mobile menu content with drill-down panels (behavior: @ui/drill-menu). Rendered inside the
   header's menu panel, which slides in under the header.
   Root panel lists top-level links; a link with children opens its own panel (and so on for the
-  3rd level). Each sub-panel starts with a back row showing the section title ("‹ Shop"), then
+  3rd level). Each sub-panel starts with a "‹ Back" row, then
   "All <section>" as the first row, then the items. All rows share one style.
 
   @param {object} menu - link_list
@@ -34,7 +34,7 @@
     <div class="mobile-nav__panel" data-panel="{{ panel_id }}" hidden>
       <button type="button" class="mobile-nav__back" data-panel-back aria-label="{{ 'accessibility.back' | t }}: {{ link.title | escape }}">
         {%- render 'icon', name: 'chevron-left' -%}
-        {{ link.title | escape }}
+        {{ 'accessibility.back' | t }}
       </button>
       <ul class="mobile-nav__list" role="list">
         <li>
@@ -64,7 +64,7 @@
       <div class="mobile-nav__panel" data-panel="{{ child_panel_id }}" hidden>
         <button type="button" class="mobile-nav__back" data-panel-back aria-label="{{ 'accessibility.back' | t }}: {{ child.title | escape }}">
           {%- render 'icon', name: 'chevron-left' -%}
-          {{ child.title | escape }}
+          {{ 'accessibility.back' | t }}
         </button>
         <ul class="mobile-nav__list" role="list">
           <li>

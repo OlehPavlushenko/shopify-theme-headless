@@ -2,8 +2,8 @@
   Cart drawer: a native <dialog> (@ui/dialog) whose content Liquid Ajax Cart re-renders after
   every cart request ([data-ajax-cart-section]). The dialog element itself is never re-rendered,
   so it stays open while the cart updates.
-  Body: lines and upsell (scrolls). Footer: free-shipping progress, promo code, order details,
-  totals, checkout.
+  Header: title and the free-shipping progress under it. Body: lines and upsell (scrolls).
+  Footer: promo code, order details, totals, checkout.
   Also holds #CartNotification, used when Theme settings > Cart > "After adding to cart" is "Notification".
   Rendered from layout/theme.liquid on every page except /cart.
 {% endcomment %}
@@ -18,7 +18,7 @@
   aria-labelledby="CartDrawer-title"
 >
   <div class="drawer__inner" data-ajax-cart-section>
-    <div class="drawer__header">
+    <div class="drawer__header cart-drawer__header">
       <h2 id="CartDrawer-title" class="h5">
         {{ 'cart.title' | t }}
         {%- if cart.item_count > 0 %} <span class="muted">({{ cart.item_count }})</span>{% endif -%}
@@ -26,6 +26,7 @@
       <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'cart.close' | t }}">
         {%- render 'icon', name: 'close' -%}
       </button>
+      {%- render 'cart-free-shipping' -%}
     </div>
 
     <div class="drawer__body cart-drawer__body" data-ajax-cart-section-scroll>
@@ -67,7 +68,6 @@
 
     {%- if cart.item_count > 0 -%}
       <form action="{{ routes.cart_url }}" method="post" class="drawer__footer cart-drawer__footer" id="CartDrawer-form">
-        {%- render 'cart-free-shipping' -%}
         {%- render 'cart-discount' -%}
 
         {%- if settings.show_cart_note or section.blocks.size > 0 -%}

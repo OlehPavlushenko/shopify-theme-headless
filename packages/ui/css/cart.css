@@ -442,6 +442,15 @@
     gap: var(--space-xl);
   }
 
+  /* Header wraps: title and close on the first row, free-shipping progress under them */
+  .cart-drawer__header {
+    flex-wrap: wrap;
+  }
+
+  .cart-drawer__header .free-shipping {
+    flex-basis: 100%;
+  }
+
   .cart-drawer__footer {
     display: grid;
     gap: var(--space-m);

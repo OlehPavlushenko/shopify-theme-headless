@@ -19,7 +19,6 @@
     color: var(--color-foreground);
     background: var(--color-background);
     border: 0;
-    border-radius: 0 0 var(--radius-card) var(--radius-card);
     box-shadow: var(--shadow-overlay);
     translate: 0 -100%;
     transition:

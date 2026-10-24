@@ -276,7 +276,6 @@
     background: var(--color-background);
     border: 0.1rem solid var(--color-border);
     border-top: 0;
-    border-radius: 0 0 var(--radius-card) var(--radius-card);
     box-shadow: var(--shadow-md);
     animation: menu-in var(--duration-default) var(--ease-out);
   }

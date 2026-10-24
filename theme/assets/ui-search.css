@@ -145,6 +145,23 @@
     gap: var(--space-xl);
   }
 
+  /* Nothing typed yet: the empty results box takes no grid gap */
+  .search-panel__results:empty {
+    display: none;
+  }
+
+  /* Empty state link groups side by side on phones and in the drawer */
+  .search-panel__empty .search-results__aside {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-xl) var(--space-m);
+  }
+
+  @media (min-width: 750px) {
+    .search-panel--top .search-panel__empty .search-results__aside {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
 
   /* ------------------------------------- predictive results (shared) */
   .search-results__layout {

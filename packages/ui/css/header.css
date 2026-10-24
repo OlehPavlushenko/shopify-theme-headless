@@ -251,6 +251,7 @@
   }
 
   /* ------------------------------------------------------ mega menu */
+  /* Same patterns as the search panel: .eyebrow headings, .link-list, .slider + product-card */
   .mega-menu {
     position: absolute;
     top: 100%;
@@ -266,51 +267,53 @@
 
   .mega-menu__inner {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-2xl);
     padding-block: var(--space-xl) var(--space-2xl);
   }
 
+  /* Links on the left, promo/products on the right when there are extras */
+  .mega-menu__inner:has(> .mega-menu__extras) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  }
+
   .mega-menu__columns {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
     gap: var(--space-xl) var(--space-l);
     align-content: start;
   }
 
-  .mega-menu__heading {
-    display: block;
-    margin-bottom: var(--space-s);
-    font-family: var(--font-heading-family);
-    font-weight: var(--font-heading-weight);
-    font-size: var(--text-md);
-    text-decoration: none;
-    color: var(--color-heading);
-  }
-
-  .mega-menu__links {
+  .mega-menu__column {
     display: grid;
     gap: var(--space-xs);
+    align-content: start;
   }
 
-  .mega-menu__link {
+  .mega-menu__heading {
+    display: flex;
+    align-items: center;
+    min-height: var(--control-height-sm);
     text-decoration: none;
-    color: var(--color-foreground);
   }
 
-  .mega-menu__link:hover {
-    color: var(--color-link-hover);
+  .mega-menu__heading:hover {
+    color: var(--color-heading);
   }
 
   .mega-menu__extras {
     display: flex;
-    gap: var(--space-l);
+    gap: var(--space-xl);
+    align-items: flex-start;
+    min-width: 0;
   }
 
+  /* Promo card: image, then heading / text / link, top-aligned */
   .mega-promo {
     display: grid;
+    flex: 0 0 26rem;
     gap: var(--space-2xs);
-    width: 28rem;
+    align-content: start;
     text-decoration: none;
     color: var(--color-foreground);
   }
@@ -324,20 +327,16 @@
   }
 
   .mega-promo:hover .mega-promo__media img {
-    scale: 1.04;
-  }
-
-  .mega-promo__heading {
-    font-family: var(--font-heading-family);
-    font-weight: var(--font-heading-weight);
-    color: var(--color-heading);
+    scale: 1.03;
   }
 
   .mega-promo__cta {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2xs);
-    font-weight: var(--font-body-weight-semibold);
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-medium);
     color: var(--color-heading);
   }
 
@@ -345,31 +344,11 @@
     --icon-size: 1.4rem;
   }
 
-  .mega-products {
-    width: 30rem;
-  }
+  /* Product slider fills the remaining width */
+  .mega-slider {
+    --slider-columns: 3;
 
-  .mega-products__list {
-    display: grid;
-    gap: var(--space-s);
-  }
-
-  .mega-products__item {
-    display: grid;
-    grid-template-columns: 7.2rem minmax(0, 1fr);
-    align-items: center;
-    gap: var(--space-s);
-    text-decoration: none;
-  }
-
-  .mega-products__info {
-    display: grid;
-    gap: var(--space-2xs);
-  }
-
-  .mega-products__title {
-    font-weight: var(--font-body-weight-semibold);
-    color: var(--color-heading);
+    flex: 1 1 0;
   }
 
   /* ---------------------------------------- mobile drill-down menu */

@@ -47,16 +47,16 @@
                     <ul class="mega-menu__columns" role="list">
                       {%- for child in link.links -%}
                         <li class="mega-menu__column">
-                          <a href="{{ child.url }}" class="mega-menu__heading{% if child.active %} is-active{% endif %}">
+                          <a href="{{ child.url }}" class="eyebrow mega-menu__heading{% if child.active %} is-active{% endif %}">
                             {{- child.title | escape -}}
                           </a>
                           {%- if child.links.size > 0 -%}
-                            <ul class="mega-menu__links" role="list">
+                            <ul class="link-list" role="list">
                               {%- for grandchild in child.links -%}
                                 <li>
                                   <a
                                     href="{{ grandchild.url }}"
-                                    class="mega-menu__link"
+                                    class="link-list__link"
                                     {% if grandchild.current %}
                                       aria-current="page"
                                     {% endif %}

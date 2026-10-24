@@ -40,7 +40,8 @@ for (const [name, viewport] of Object.entries(viewports)) {
     const item = page.locator('.site-nav details[data-menu-item] > summary').first();
     if (await item.count()) {
       await item.hover();
-      await page.waitForTimeout(500);
+      // lazy images inside the menu start loading only once it is open
+      await page.waitForTimeout(2500);
     }
   }
   if (scenario === 'mobile-menu' && name === 'mobile') {

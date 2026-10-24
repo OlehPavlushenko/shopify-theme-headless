@@ -14,6 +14,30 @@
     "header": {
       "type": "header",
       "blocks": {
+        "menu_promo_7XeQPV": {
+          "type": "menu_promo",
+          "settings": {
+            "menu_item": "Shop",
+            "image": "shopify://shop_images/about-image-1.png",
+            "heading": "Heading",
+            "text": "Text",
+            "link_label": "Link label",
+            "link": "shopify://collections/hydrogen"
+          }
+        },
+        "menu_products_zr8Rpi": {
+          "type": "menu_products",
+          "settings": {
+            "menu_item": "Shop",
+            "heading": "Sale",
+            "products": [
+              "collagen-active-kolagen",
+              "anti-age-code-spovilnennia-protsesiv-starinnia",
+              "macrosorb",
+              "melanin"
+            ]
+          }
+        },
         "search_term_1": {
           "type": "search_term",
           "settings": {
@@ -103,6 +127,8 @@
         }
       },
       "block_order": [
+        "menu_promo_7XeQPV",
+        "menu_products_zr8Rpi",
         "search_term_1",
         "search_term_2",
         "search_term_3",

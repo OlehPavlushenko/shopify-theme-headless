@@ -177,6 +177,10 @@
     .site-header--logo-center-below .site-nav__list {
       justify-content: center;
     }
+
+    .site-header--logo-center-below .site-nav__link {
+      min-height: 4.8rem;
+    }
   }
 
   /* -------------------------------------------- desktop navigation */
@@ -194,11 +198,12 @@
     position: static;
   }
 
+  /* Links fill the header row height, so dropdowns open exactly at the header bottom edge */
   .site-nav__link {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2xs);
-    padding-block: var(--space-m);
+    min-height: 6.8rem;
     font-weight: var(--font-body-weight-semibold);
     text-decoration: none;
     color: var(--color-heading);
@@ -222,25 +227,15 @@
   .site-nav__dropdown {
     position: absolute;
     top: 100%;
-    left: calc(var(--space-s) * -1);
+    left: calc(var(--space-l) * -1);
     min-width: 22rem;
-    padding: var(--space-xs);
+    padding: var(--space-s) var(--space-l) var(--space-m);
     background: var(--color-background);
     border: 0.1rem solid var(--color-border);
-    border-radius: var(--radius-card);
+    border-top: 0;
+    border-radius: 0 0 var(--radius-card) var(--radius-card);
     box-shadow: var(--shadow-md);
     animation: menu-in var(--duration-default) var(--ease-out);
-  }
-
-  .site-nav__sublink {
-    display: block;
-    padding: var(--space-xs) var(--space-s);
-    text-decoration: none;
-    border-radius: var(--radius-input);
-  }
-
-  .site-nav__sublink:hover {
-    background: var(--color-surface);
   }
 
   @keyframes menu-in {

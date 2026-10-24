@@ -84,12 +84,12 @@
                   </div>
                 </div>
               {%- else -%}
-                <ul class="site-nav__dropdown" role="list">
+                <ul class="link-list site-nav__dropdown" role="list">
                   {%- for child in link.links -%}
                     <li>
                       <a
                         href="{{ child.url }}"
-                        class="site-nav__sublink"
+                        class="link-list__link"
                         {% if child.current %}
                           aria-current="page"
                         {% endif %}

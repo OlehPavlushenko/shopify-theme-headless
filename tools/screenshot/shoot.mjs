@@ -37,7 +37,8 @@ for (const [name, viewport] of Object.entries(viewports)) {
     await page.waitForTimeout(500);
   }
   if (scenario === 'menu' && name === 'desktop') {
-    const item = page.locator('.site-nav details[data-menu-item] > summary').first();
+    const index = Math.max(Number(query) || 1, 1) - 1;
+    const item = page.locator('.site-nav details[data-menu-item] > summary').nth(index);
     if (await item.count()) {
       await item.hover();
       // lazy images inside the menu start loading only once it is open

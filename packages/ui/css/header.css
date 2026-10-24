@@ -342,6 +342,20 @@
 
   .mega-promo__cta .svg-icon {
     --icon-size: 1.4rem;
+
+    transition: translate var(--duration-default) var(--ease-out);
+  }
+
+  .mega-promo__cta {
+    transition: color var(--duration-short) var(--ease);
+  }
+
+  .mega-promo:hover .mega-promo__cta {
+    color: var(--color-link-hover);
+  }
+
+  .mega-promo:hover .mega-promo__cta .svg-icon {
+    translate: 0.4rem 0;
   }
 
   /* Product slider fills the remaining width */

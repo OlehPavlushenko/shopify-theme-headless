@@ -14,7 +14,7 @@
   @param {object[]} blocks - Header blocks
 {% enddoc %}
 {%- capture predictive_params -%}
-  section_id=predictive-search&resources%5Btype%5D=product,collection,page,article,query&resources%5Blimit%5D=4&resources%5Blimit_scope%5D=each&resources%5Boptions%5D%5Bunavailable_products%5D=last
+  section_id=predictive-search&resources%5Btype%5D=product,collection,page,article,query&resources%5Blimit%5D=10&resources%5Blimit_scope%5D=each&resources%5Boptions%5D%5Bunavailable_products%5D=last
 {%- endcapture -%}
 {%- liquid
   assign panel_style = style | default: 'top'
@@ -140,11 +140,14 @@
               endif
             -%}
             {%- if block_products.size > 0 or block_products.count > 0 -%}
-              <section class="search-results__group" {{ block.shopify_attributes }}>
-                {%- if block.settings.heading != blank -%}
+              <ui-slider class="slider search-slider" {{ block.shopify_attributes }}>
+                <div class="slider__head">
                   <h2 class="eyebrow search-results__heading">{{ block.settings.heading | escape }}</h2>
-                {%- endif -%}
-                <ul class="search-results__products" role="list">
+                  <div class="slider__head-end">
+                    {%- render 'slider-nav', label: block.settings.heading -%}
+                  </div>
+                </div>
+                <ul class="slider__track" data-slider-track role="list">
                   {%- for product in block_products limit: block.settings.limit -%}
                     <li>
                       {%- render 'product-card',
@@ -156,7 +159,7 @@
                     </li>
                   {%- endfor -%}
                 </ul>
-              </section>
+              </ui-slider>
             {%- endif -%}
           {%- endfor -%}
         </div>

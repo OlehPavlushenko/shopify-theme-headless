@@ -1,0 +1,23 @@
+{% doc %}
+  Prev/next arrows for <ui-slider>. Place inside .slider__head; hidden until the track overflows.
+
+  @param {string} [label] - What the slider shows, for screen readers (e.g. the heading text)
+{% enddoc %}
+<div class="slider__nav">
+  <button
+    type="button"
+    class="btn btn--icon slider__button"
+    data-slider-prev
+    aria-label="{{ 'general.slider.previous' | t }}{% if label != blank %}: {{ label | escape }}{% endif %}"
+  >
+    {%- render 'icon', name: 'arrow-left' -%}
+  </button>
+  <button
+    type="button"
+    class="btn btn--icon slider__button"
+    data-slider-next
+    aria-label="{{ 'general.slider.next' | t }}{% if label != blank %}: {{ label | escape }}{% endif %}"
+  >
+    {%- render 'icon', name: 'arrow-right' -%}
+  </button>
+</div>

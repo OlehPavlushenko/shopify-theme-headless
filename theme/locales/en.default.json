@@ -109,6 +109,10 @@
       "previous": "Previous page",
       "next": "Next page",
       "page": "Page {{ number }}"
+    },
+    "slider": {
+      "previous": "Previous",
+      "next": "Next"
     }
   },
   "localization": {

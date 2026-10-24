@@ -168,6 +168,17 @@
     gap: var(--space-l) var(--space-m);
   }
 
+  /* Product sliders in the panel: 4 columns (top), 2 (drawer), 2.2 on phones */
+  .search-slider {
+    --slider-columns: 4;
+    --slider-columns-mobile: 2.2;
+  }
+
+  .search-panel--drawer .search-slider {
+    --slider-columns: 2;
+    --slider-columns-mobile: 1.6;
+  }
+
   /* Group heading row: heading + "View all" link on the right */
   .search-results__head {
     display: flex;

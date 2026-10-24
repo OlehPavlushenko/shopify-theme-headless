@@ -80,10 +80,14 @@
             "products": [
               "omega-complex",
               "collagen-active-kolagen",
+              "active-set",
               "zelena-formula",
-              "imunna-formula"
+              "macrosorb",
+              "imunna-formula",
+              "chlorophyll",
+              "solod-zhitnij"
             ],
-            "limit": 6
+            "limit": 8
           }
         },
         "search_products_XDhR3N": {
@@ -92,7 +96,7 @@
             "heading": "Sale",
             "collection": "automated-collection",
             "products": [],
-            "limit": 4
+            "limit": 6
           }
         },
         "search_collections_i3f4ma": {

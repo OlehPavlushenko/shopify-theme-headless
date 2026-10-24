@@ -19,7 +19,7 @@
             <section class="search-results__group" aria-labelledby="PredictiveQueries">
               <h2 id="PredictiveQueries" class="eyebrow search-results__heading">{{ 'search.suggestions' | t }}</h2>
               <ul class="link-list" role="list">
-                {%- for query in resources.queries -%}
+                {%- for query in resources.queries limit: 5 -%}
                   <li>
                     <a href="{{ query.url }}" class="link-list__link">
                       {%- render 'icon', name: 'search' -%}
@@ -35,7 +35,7 @@
             <section class="search-results__group" aria-labelledby="PredictiveCollections">
               <h2 id="PredictiveCollections" class="eyebrow search-results__heading">{{ 'search.collections' | t }}</h2>
               <ul class="link-list" role="list">
-                {%- for collection in resources.collections -%}
+                {%- for collection in resources.collections limit: 5 -%}
                   <li><a href="{{ collection.url }}" class="link-list__link">{{ collection.title | escape }}</a></li>
                 {%- endfor -%}
               </ul>
@@ -46,10 +46,10 @@
             <section class="search-results__group" aria-labelledby="PredictivePages">
               <h2 id="PredictivePages" class="eyebrow search-results__heading">{{ 'search.pages' | t }}</h2>
               <ul class="link-list" role="list">
-                {%- for page in resources.pages -%}
+                {%- for page in resources.pages limit: 3 -%}
                   <li><a href="{{ page.url }}" class="link-list__link">{{ page.title | escape }}</a></li>
                 {%- endfor -%}
-                {%- for article in resources.articles -%}
+                {%- for article in resources.articles limit: 3 -%}
                   <li><a href="{{ article.url }}" class="link-list__link">{{ article.title | escape }}</a></li>
                 {%- endfor -%}
               </ul>
@@ -57,16 +57,20 @@
           {%- endif -%}
         </div>
         {%- if resources.products.size > 0 -%}
-          <section class="search-results__group search-results__main" aria-labelledby="PredictiveProducts">
-            <div class="search-results__head">
+          <ui-slider class="slider search-slider search-results__main" aria-labelledby="PredictiveProducts">
+            <div class="slider__head">
               <h2 id="PredictiveProducts" class="eyebrow search-results__heading">{{ 'search.products' | t }}</h2>
+              <div class="slider__head-end">
               <a href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}&options%5Bprefix%5D=last" class="search-results__all-link">
                 {{- 'search.view_all_html' | t: terms: terms -}}
                 {%- render 'icon', name: 'arrow-right' -%}
               </a>
+                {%- assign products_label = 'search.products' | t -%}
+                {%- render 'slider-nav', label: products_label -%}
+              </div>
             </div>
-            <ul class="search-results__products" role="list">
-              {%- for product in resources.products limit: 4 -%}
+            <ul class="slider__track" data-slider-track role="list">
+              {%- for product in resources.products limit: 10 -%}
                 <li>
                   {%- render 'product-card',
                     product: product,
@@ -77,7 +81,7 @@
                 </li>
               {%- endfor -%}
             </ul>
-          </section>
+          </ui-slider>
         {%- endif -%}
 
       </div>

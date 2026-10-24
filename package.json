@@ -9,7 +9,9 @@
     "watch": "node scripts/sync-ui.mjs --watch",
     "dev": "npm run sync && shopify theme dev --path theme --store education-checkout-extensibility --theme-editor-sync",
     "check": "shopify theme check --path theme",
-    "dev:reference": "shopify theme dev --path reference/loyalty-theme --store education-checkout-extensibility"
+    "dev:reference": "shopify theme dev --path reference/loyalty-theme --store education-checkout-extensibility",
+    "shoot": "node tools/screenshot/shoot.mjs",
+    "shoot:install": "cd tools/screenshot && npm install && npx playwright install chromium"
   },
   "engines": {
     "node": ">=22.12"

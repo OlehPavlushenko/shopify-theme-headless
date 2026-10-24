@@ -139,6 +139,7 @@
   /* ------------------------------------- predictive results (shared) */
   .search-results__layout {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-xl);
   }
 
@@ -166,6 +167,13 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-l) var(--space-m);
+  }
+
+  /* Group headings in the left column get the slider head height, so both columns line up */
+  .search-results__aside .search-results__heading {
+    display: flex;
+    align-items: center;
+    min-height: var(--control-height-sm);
   }
 
   /* Product sliders in the panel: 4 columns (top), 2 (drawer), 2.2 on phones */

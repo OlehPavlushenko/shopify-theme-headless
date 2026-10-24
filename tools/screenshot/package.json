@@ -1,0 +1,9 @@
+{
+  "name": "screenshot-tool",
+  "private": true,
+  "type": "module",
+  "description": "Local visual checks of the theme (theme dev on 127.0.0.1:9292) with Playwright.",
+  "dependencies": {
+    "playwright": "1.48.2"
+  }
+}

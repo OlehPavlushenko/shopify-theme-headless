@@ -1,0 +1,56 @@
+// Visual checks against `shopify theme dev` (http://127.0.0.1:9292).
+// Usage: node shoot.mjs <scenario> [query] [outDir]
+// Scenarios: home | search-empty | search <query> | menu | mobile-menu | cart | collection
+import { chromium } from 'playwright';
+import { mkdirSync } from 'node:fs';
+import { join } from 'node:path';
+
+const BASE = process.env.BASE_URL || 'http://127.0.0.1:9292';
+const [scenario = 'home', query = '', outDir = 'shots'] = process.argv.slice(2);
+mkdirSync(outDir, { recursive: true });
+
+const viewports = {
+  desktop: { width: 1440, height: 900 },
+  mobile: { width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 2 },
+};
+
+const browser = await chromium.launch();
+for (const [name, viewport] of Object.entries(viewports)) {
+  const page = await browser.newPage({ viewport, isMobile: viewport.isMobile, hasTouch: viewport.hasTouch, deviceScaleFactor: viewport.deviceScaleFactor || 1 });
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+
+  const path = scenario === 'collection' ? '/collections/all' : scenario === 'cart' ? '/cart' : '/';
+  // theme dev keeps a live-reload connection open, so 'networkidle' never fires
+  await page.goto(BASE + path, { waitUntil: 'load', timeout: 60000 });
+  await page.waitForTimeout(800);
+
+  if (scenario.startsWith('search')) {
+    await page.click('[data-dialog-open="SearchPanel"]');
+    await page.waitForSelector('#SearchPanel[open]');
+    if (query) {
+      await page.fill('#SearchPanel-input', query);
+      await page.waitForFunction(() => document.querySelector('#SearchPanel predictive-search[data-has-results]') || document.querySelector('#SearchPanel-results')?.textContent.trim(), null, { timeout: 15000 }).catch(() => {});
+      await page.waitForTimeout(600);
+    }
+    await page.waitForTimeout(500);
+  }
+  if (scenario === 'menu' && name === 'desktop') {
+    const item = page.locator('.site-nav details[data-menu-item] > summary').first();
+    if (await item.count()) {
+      await item.hover();
+      await page.waitForTimeout(500);
+    }
+  }
+  if (scenario === 'mobile-menu' && name === 'mobile') {
+    await page.click('[data-dialog-open="MenuDrawer"]');
+    await page.waitForTimeout(600);
+  }
+
+  const file = join(outDir, `${scenario}${query ? '-' + query : ''}-${name}.png`);
+  await page.screenshot({ path: file });
+  console.log(file, errors.length ? 'ERRORS: ' + errors.join(' | ') : 'no console errors');
+  await page.close();
+}
+await browser.close();

@@ -506,9 +506,31 @@
     font-weight: var(--font-body-weight);
   }
 
+  /* Sub-panel head: Back (left) and All <section> (right, accent) in one row */
+  .mobile-nav__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    border-bottom: 0.1rem solid var(--color-border);
+  }
+
+  .mobile-nav__head .mobile-nav__back {
+    width: auto;
+    border-bottom: 0;
+  }
+
   .mobile-nav__back {
     gap: var(--space-xs);
     font-weight: var(--font-body-weight-semibold);
+  }
+
+  .mobile-nav__all {
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-medium);
+    text-align: end;
+    text-decoration: none;
+    color: var(--color-accent);
   }
 
   .mobile-nav__link .svg-icon,

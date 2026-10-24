@@ -149,15 +149,18 @@
     display: none;
   }
 
-  /* Link groups (empty state and typed results) side by side on phones and in the drawer */
+  /*
+   * Link groups (empty state and typed results) side by side, so the panel stays short:
+   * 2 columns on phones, in the drawer and in the desktop left column; 3 on tablets (full width).
+   */
   .search-panel .search-results__aside {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-xl) var(--space-m);
   }
 
-  @media (min-width: 750px) {
+  @media (min-width: 750px) and (max-width: 989px) {
     .search-panel--top .search-results__aside {
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
@@ -247,7 +250,7 @@
   @media (min-width: 990px) {
     /* Two columns only when the left column exists and has content; otherwise one column */
     .search-panel--top .search-results__layout:has(> .search-results__aside > *):has(> .search-results__main > *) {
-      grid-template-columns: 28rem minmax(0, 1fr);
+      grid-template-columns: 36rem minmax(0, 1fr);
       gap: var(--space-2xl);
     }
   }

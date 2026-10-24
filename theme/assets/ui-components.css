@@ -555,4 +555,10 @@
     overflow: hidden;
     padding-inline-end: var(--scrollbar-width, 0px);
   }
+
+  /* Overlays that scroll inside (search panel, drawers, menus): thin, quiet scrollbar */
+  :is(.drawer, .search-panel, .menu-panel, .utility-panel) {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--color-foreground) 22%, transparent) transparent;
+  }
 }

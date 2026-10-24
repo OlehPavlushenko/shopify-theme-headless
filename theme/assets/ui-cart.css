@@ -497,18 +497,15 @@
     overflow: visible;
   }
 
-  /* Phones and tablets: a sheet over the bottom of the drawer; rows scroll inside */
+  /* Phones and tablets: a sheet over the bottom of the drawer */
   .cart-recs {
     position: absolute;
     inset: auto 0 0;
     z-index: 2;
     display: grid;
-    align-content: start;
-    gap: var(--space-s);
+    grid-template-rows: minmax(0, 1fr);
     max-height: 55%;
     padding: var(--space-m) var(--space-l) var(--space-l);
-    overflow-y: auto;
-    overscroll-behavior: contain;
     background: var(--color-background);
     border-radius: var(--radius-card) var(--radius-card) 0 0;
     box-shadow: var(--shadow-overlay);
@@ -530,10 +527,19 @@
       opacity var(--duration-default) var(--ease);
   }
 
-  .cart-recs__head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  /* Head row on top, the rows' track takes the rest of the height and pages up/down */
+  .cart-recs__slider {
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: var(--space-m);
+    min-height: 0;
+  }
+
+  .cart-recs__list {
+    gap: var(--space-s);
+  }
+
+  .cart-recs .slider__head-end {
+    gap: var(--space-2xs);
     margin-right: calc(var(--space-s) * -1);
   }
 
@@ -542,7 +548,7 @@
     min-height: 3.6rem;
   }
 
-  /* Desktop: a full-height column that slides out from behind the drawer; rows scroll inside */
+  /* Desktop: a full-height column that slides out from behind the drawer */
   @media (min-width: 990px) {
     .cart-drawer .drawer__inner {
       position: relative;
@@ -555,7 +561,7 @@
       z-index: 0;
       width: 36rem;
       max-height: none;
-      background: var(--color-surface);
+      padding-block: var(--space-m) var(--space-l);
       border-radius: 0;
       translate: 100% 0;
     }

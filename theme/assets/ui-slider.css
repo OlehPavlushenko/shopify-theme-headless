@@ -1,6 +1,7 @@
 /* Generated from packages/ui/css/slider.css by scripts/sync-ui.mjs. Do not edit here. */
 /*
  * Slider: native CSS scroll-snap track + optional arrows in the heading row (behavior: @ui/slider).
+ * Vertical variant: .slider--vertical + data-axis="y".
  * Columns: --slider-columns (from 750px), --slider-columns-mobile (fractional values let the next
  * item peek, e.g. 2.2). Markup contract: packages/ui/js/slider.js, theme/snippets/slider-nav.liquid.
  */
@@ -82,6 +83,20 @@
   .slider__track > * {
     min-width: 0;
     scroll-snap-align: start;
+  }
+
+  /* Vertical (data-axis="y"): items stack, the track scrolls up/down inside a bounded height */
+  .slider--vertical .slider__track {
+    grid-auto-columns: auto;
+    grid-auto-flow: row;
+    overflow: hidden auto;
+    overscroll-behavior: contain;
+    scroll-snap-type: y mandatory;
+  }
+
+  /* Same arrow icons, turned: left = up, right = down */
+  .slider--vertical .slider__button .svg-icon {
+    rotate: 90deg;
   }
 
   @media (min-width: 750px) {

@@ -90,19 +90,25 @@
   {%- comment -%}
     Recommended products (Shopify related products for the items in the cart), filled by
     <cart-recommendations> in assets/cart.js once the drawer is open. Outside the re-rendered
-    [data-ajax-cart-section], so it stays put while the cart updates. Compact rows, up to 10.
-    Desktop: a full-height column that slides out from behind the drawer and scrolls; phones: a sheet
-    over the bottom of the drawer.
+    [data-ajax-cart-section], so it stays put while the cart updates. Compact rows, up to 10, in one
+    column, paged with up/down arrows (<ui-slider data-axis="y">). Desktop: a full-height column that
+    slides out from behind the drawer; phones: a sheet over the bottom of the drawer.
   {%- endcomment -%}
   {%- if settings.show_cart_recommendations -%}
+    {%- assign recs_title = 'cart.recommendations.title' | t -%}
     <cart-recommendations class="cart-recs" aria-labelledby="CartRecs-title" inert>
-      <div class="cart-recs__head">
-        <p id="CartRecs-title" class="eyebrow">{{ 'cart.recommendations.title' | t }}</p>
-        <button type="button" class="btn btn--icon cart-recs__close" data-recs-close aria-label="{{ 'cart.recommendations.close' | t }}">
-          {%- render 'icon', name: 'close' -%}
-        </button>
-      </div>
-      <ul class="cart-upsell__list cart-recs__list" role="list" data-recs-list></ul>
+      <ui-slider class="slider slider--vertical cart-recs__slider" data-axis="y">
+        <div class="slider__head">
+          <p id="CartRecs-title" class="eyebrow">{{ recs_title }}</p>
+          <div class="slider__head-end">
+            {%- render 'slider-nav', label: recs_title -%}
+            <button type="button" class="btn btn--icon cart-recs__close" data-recs-close aria-label="{{ 'cart.recommendations.close' | t }}">
+              {%- render 'icon', name: 'close' -%}
+            </button>
+          </div>
+        </div>
+        <ul class="slider__track cart-upsell__list cart-recs__list" role="list" data-slider-track data-recs-list></ul>
+      </ui-slider>
     </cart-recommendations>
   {%- endif -%}
 </dialog>

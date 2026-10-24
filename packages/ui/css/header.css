@@ -415,8 +415,7 @@
     overscroll-behavior: contain;
     color: var(--color-foreground);
     background: var(--color-background);
-    border: 0;
-    border-top: 0.1rem solid var(--color-border);
+    border: 0; /* the header border above is the only line */
     opacity: 0;
     translate: 0 -0.8rem;
     transition:

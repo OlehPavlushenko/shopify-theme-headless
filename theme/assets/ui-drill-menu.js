@@ -6,14 +6,18 @@
  * - panels: elements with [data-panel="<id>"]; the root panel has data-panel="root"
  * - [data-panel-open="<id>"] shows that panel, [data-panel-back] returns to the parent panel
  * Panels other than the active one are `hidden` and `inert`; focus moves to the first focusable
- * element of the panel that opens. Resets to the root panel when the surrounding <dialog> closes.
+ * element of the panel that opens. Resets to the root panel when the surrounding <dialog> or popover closes.
  */
 class DrillMenu extends HTMLElement {
   #stack = ['root'];
 
   connectedCallback() {
     this.addEventListener('click', this.#onClick);
+    // Back to the root panel whenever the surrounding dialog or popover closes
     this.closest('dialog')?.addEventListener('close', () => this.#show('root', true));
+    this.closest('[popover]')?.addEventListener('toggle', (event) => {
+      if (event.newState === 'closed') this.#show('root', true);
+    });
   }
 
   #onClick = (event) => {

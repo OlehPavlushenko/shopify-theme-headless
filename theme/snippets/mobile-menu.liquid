@@ -1,7 +1,8 @@
 {% doc %}
-  Mobile menu drawer content with drill-down panels (behavior: @ui/drill-menu).
-  Root panel lists top-level links; every link with children opens its own panel, and so on
-  for the 3rd level. Account, currency and language live in the header utility panel.
+  Mobile menu content with drill-down panels (behavior: @ui/drill-menu). Rendered inside the
+  header's menu panel, which slides in under the header.
+  Root panel lists top-level links; a link with children opens its own panel (and so on for the
+  3rd level). Each sub-panel: "Back", the section title, an "All <section>" link, then the items.
 
   @param {object} menu - link_list
 {% enddoc %}
@@ -24,7 +25,6 @@
         </li>
       {%- endfor -%}
     </ul>
-
   </div>
 
   {%- for link in menu.links -%}
@@ -33,12 +33,14 @@
     <div class="mobile-nav__panel" data-panel="{{ panel_id }}" hidden>
       <button type="button" class="mobile-nav__back" data-panel-back>
         {%- render 'icon', name: 'arrow-left' -%}
-        {{ link.title | escape }}
+        {{ 'accessibility.back' | t }}
       </button>
+      <p class="h4 mobile-nav__title">{{ link.title | escape }}</p>
+      <a href="{{ link.url }}" class="mobile-nav__all">
+        {{- 'general.all_title' | t: title: link.title -}}
+        {%- render 'icon', name: 'arrow-right' -%}
+      </a>
       <ul class="mobile-nav__list" role="list">
-        <li>
-          <a href="{{ link.url }}" class="mobile-nav__link mobile-nav__link--all">{{ 'general.all_title' | t: title: link.title }}</a>
-        </li>
         {%- for child in link.links -%}
           {%- assign child_panel_id = panel_id | append: '-' | append: forloop.index -%}
           <li>
@@ -63,12 +65,14 @@
       <div class="mobile-nav__panel" data-panel="{{ child_panel_id }}" hidden>
         <button type="button" class="mobile-nav__back" data-panel-back>
           {%- render 'icon', name: 'arrow-left' -%}
-          {{ child.title | escape }}
+          {{ link.title | escape }}
         </button>
+        <p class="h4 mobile-nav__title">{{ child.title | escape }}</p>
+        <a href="{{ child.url }}" class="mobile-nav__all">
+          {{- 'general.all_title' | t: title: child.title -}}
+          {%- render 'icon', name: 'arrow-right' -%}
+        </a>
         <ul class="mobile-nav__list" role="list">
-          <li>
-            <a href="{{ child.url }}" class="mobile-nav__link mobile-nav__link--all">{{ 'general.all_title' | t: title: child.title }}</a>
-          </li>
           {%- for grandchild in child.links -%}
             <li>
               <a href="{{ grandchild.url }}" class="mobile-nav__link"{% if grandchild.current %} aria-current="page"{% endif %}>

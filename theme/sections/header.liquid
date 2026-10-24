@@ -4,8 +4,8 @@
     One markup, grid areas switch per layout (packages/ui/css/header.css).
   - Sticky: none / always / reveal on scroll up (@ui/header, CSS sticky on the section wrapper).
   - Transparent: overlays the first section on the home page until the page scrolls.
-  - Desktop menu with dropdowns and mega menus (snippets/site-nav), mobile drill-down drawer
-    (snippets/mobile-menu), country/language selector (snippets/localization-form).
+  - Desktop menu with dropdowns and mega menus (snippets/site-nav), mobile drill-down menu panel
+    under the header (snippets/mobile-menu), country/language selector (snippets/localization-form).
   - Blocks "Menu promo" / "Menu products" attach content to a mega menu by top-level link title.
   - Search panel (snippets/search-panel): predictive search, top sheet or side drawer; while the
     query is empty it shows the search_* blocks (terms, quick links, products, collections).
@@ -33,14 +33,15 @@
 >
   <div class="site-header__inner page-width">
     {%- if menu.links.size > 0 -%}
+      {%- comment -%} Opens/closes the menu panel under the header; the icon turns into a cross while open {%- endcomment -%}
       <button
         type="button"
         class="btn btn--icon site-header__toggle"
-        data-dialog-open="MenuDrawer"
-        aria-haspopup="dialog"
+        popovertarget="MenuPanel"
         aria-label="{{ 'accessibility.menu' | t }}"
       >
         {%- render 'icon', name: 'menu' -%}
+        {%- render 'icon', name: 'close' -%}
       </button>
     {%- endif -%}
 
@@ -143,23 +144,21 @@
 -%}
 
 {%- if menu.links.size > 0 -%}
-  <dialog
-    id="MenuDrawer"
-    class="drawer drawer--left color-{{ section.settings.color_scheme }}"
+  {%- comment -%}
+    Mobile menu: a popover (not a modal dialog), so the header stays usable and its toggle closes
+    the menu. It sits under the header (--header-bottom from @ui/header). Light dismiss and Esc
+    come from the Popover API.
+  {%- endcomment -%}
+  <div
+    id="MenuPanel"
+    class="menu-panel color-{{ section.settings.color_scheme }}"
+    popover
     aria-label="{{ 'accessibility.menu' | t }}"
   >
-    <div class="drawer__inner">
-      <div class="drawer__header">
-        <span class="site-header__shop-name">{{ shop.name }}</span>
-        <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">
-          {%- render 'icon', name: 'close' -%}
-        </button>
-      </div>
-      <div class="drawer__body">
-        {%- render 'mobile-menu', menu: menu -%}
-      </div>
+    <div class="menu-panel__inner page-width">
+      {%- render 'mobile-menu', menu: menu -%}
     </div>
-  </dialog>
+  </div>
 {%- endif -%}
 
 {% schema %}

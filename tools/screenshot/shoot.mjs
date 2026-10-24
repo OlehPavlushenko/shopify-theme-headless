@@ -46,7 +46,7 @@ for (const [name, viewport] of Object.entries(viewports)) {
     }
   }
   if (scenario === 'mobile-menu' && name === 'mobile') {
-    await page.click('[data-dialog-open="MenuDrawer"]');
+    await page.click('[popovertarget="MenuPanel"]');
     await page.waitForTimeout(600);
   }
 

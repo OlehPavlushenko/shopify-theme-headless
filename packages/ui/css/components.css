@@ -36,10 +36,13 @@
       transform var(--duration-short) var(--ease);
   }
 
-  .btn:hover {
-    color: var(--btn-fg-hover);
-    background: var(--btn-bg-hover);
-    border-color: var(--btn-border-hover);
+  /* Hover only for real pointers: on touch screens a tapped button would keep the hover look */
+  @media (hover: hover) {
+    .btn:hover {
+      color: var(--btn-fg-hover);
+      background: var(--btn-bg-hover);
+      border-color: var(--btn-border-hover);
+    }
   }
 
   .btn:active {
@@ -414,8 +417,6 @@
   }
 
   .drawer {
-    --drawer-width: min(46rem, 100vw);
-
     position: fixed;
     inset: 0 0 0 auto;
     width: var(--drawer-width);
@@ -532,7 +533,7 @@
    * Scroll lock while a modal dialog or a side popover is open. The scrollbar disappears, so the
    * page gets padding of the same width (--scrollbar-width, measured by @ui/dialog) and doesn't jump.
    */
-  html:has(dialog[open]:modal, [popover].utility-panel:popover-open) {
+  html:has(dialog[open]:modal, [popover].utility-panel:popover-open, [popover].menu-panel:popover-open) {
     overflow: hidden;
     padding-inline-end: var(--scrollbar-width, 0px);
   }

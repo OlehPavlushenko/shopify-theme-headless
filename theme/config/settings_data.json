@@ -11,6 +11,7 @@
   "current": {
     "logo": "shopify://shop_images/logo-new2.png",
     "favicon": "shopify://shop_images/logo-small-new-finish.png",
+    "share_image": "shopify://shop_images/socail-sharing-new.png",
     "type_heading_font": "bricolage_grotesque_n7",
     "type_body_font": "dm_sans_n4",
     "radius_button": 40,

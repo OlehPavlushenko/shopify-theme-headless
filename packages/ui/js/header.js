@@ -7,7 +7,8 @@
  * State attributes it sets:
  * - data-scrolled  page is scrolled past the top (transparent header turns solid)
  * - data-hidden    scroll-up mode, header slid out of view
- * It also keeps --header-height on <html> in sync, for overlays and sticky offsets.
+ * It also keeps --header-height and --header-bottom (current bottom edge on screen) on <html> in sync,
+ * for overlays, sticky offsets and panels that open under the header.
  * Stickiness itself is CSS (position: sticky on the section wrapper, see header.css).
  */
 class SiteHeader extends HTMLElement {
@@ -30,8 +31,14 @@ class SiteHeader extends HTMLElement {
   }
 
   #syncHeight() {
-    const bottom = Math.round(this.getBoundingClientRect().height);
-    document.documentElement.style.setProperty('--header-height', `${bottom}px`);
+    const rect = this.getBoundingClientRect();
+    document.documentElement.style.setProperty('--header-height', `${Math.round(rect.height)}px`);
+    this.#syncBottom(rect);
+  }
+
+  // Where the header ends on screen right now (panels that open under it, e.g. the mobile menu)
+  #syncBottom(rect = this.getBoundingClientRect()) {
+    document.documentElement.style.setProperty('--header-bottom', `${Math.max(0, Math.round(rect.bottom))}px`);
   }
 
   #onScroll = () => {
@@ -54,6 +61,7 @@ class SiteHeader extends HTMLElement {
       this.toggleAttribute('data-hidden', goingDown && pastHeader && !menuOpen);
     }
     this.#lastY = y;
+    this.#syncBottom();
   }
 }
 

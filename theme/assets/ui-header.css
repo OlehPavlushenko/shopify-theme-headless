@@ -51,6 +51,15 @@
     justify-self: start;
   }
 
+  .site-header__toggle .svg-icon--close,
+  html:has(#MenuPanel:popover-open) .site-header__toggle .svg-icon--menu {
+    display: none;
+  }
+
+  html:has(#MenuPanel:popover-open) .site-header__toggle .svg-icon--close {
+    display: block;
+  }
+
   /* On the home page the logo sits in an <h1>; the heading only provides semantics */
   .site-header__heading {
     display: contents;
@@ -394,7 +403,59 @@
     flex: 1 1 0;
   }
 
-  /* ---------------------------------------- mobile drill-down menu */
+  /* ------------------------------------- mobile menu (under header) */
+  .menu-panel {
+    position: fixed;
+    inset: var(--header-bottom, 6.8rem) 0 0;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    color: var(--color-foreground);
+    background: var(--color-background);
+    border: 0;
+    border-top: 0.1rem solid var(--color-border);
+    opacity: 0;
+    translate: 0 -0.8rem;
+    transition:
+      opacity var(--duration-default) var(--ease),
+      translate var(--duration-default) var(--ease-out),
+      overlay var(--duration-default) allow-discrete,
+      display var(--duration-default) allow-discrete;
+  }
+
+  .menu-panel:popover-open {
+    display: block;
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  @starting-style {
+    .menu-panel:popover-open {
+      opacity: 0;
+      translate: 0 -0.8rem;
+    }
+  }
+
+  .menu-panel::backdrop {
+    background: transparent;
+  }
+
+  @media (min-width: 990px) {
+    .menu-panel {
+      display: none !important;
+    }
+  }
+
+  .menu-panel__inner {
+    padding-block: var(--space-s) var(--space-2xl);
+  }
+
+  /* Drill-down levels */
   .mobile-nav {
     display: block;
     overflow-x: hidden;
@@ -403,7 +464,6 @@
   .mobile-nav__panel {
     display: flex;
     flex-direction: column;
-    gap: var(--space-m);
   }
 
   .mobile-nav__panel[data-entering] {
@@ -417,15 +477,20 @@
     }
   }
 
+  .mobile-nav__list {
+    display: grid;
+  }
+
   .mobile-nav__link {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: var(--space-s) 0;
-    font-family: var(--font-heading-family);
-    font-weight: var(--font-heading-weight);
-    font-size: var(--text-lg);
+    min-height: 5.2rem;
+    padding: 0;
+    font-size: var(--text-md);
+    font-weight: var(--font-body-weight-medium);
+    line-height: var(--leading-md);
     text-align: left;
     text-decoration: none;
     color: var(--color-heading);
@@ -435,38 +500,56 @@
   }
 
   .mobile-nav__link .svg-icon {
-    --icon-size: 1.8rem;
+    --icon-size: 1.6rem;
+
+    color: color-mix(in srgb, var(--color-foreground) 55%, transparent);
   }
 
-  .mobile-nav__link--all {
-    font-family: var(--font-body-family);
-    font-weight: var(--font-body-weight-semibold);
-    font-size: var(--text-md);
-    color: var(--color-accent);
-  }
-
+  /* Sub-panel head: Back (small, muted) → section title → All <section> (accent) */
   .mobile-nav__back {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-xs);
-    padding: var(--space-xs) 0;
-    font-weight: var(--font-body-weight-semibold);
-    color: var(--color-heading);
+    align-self: flex-start;
+    gap: var(--space-2xs);
+    min-height: var(--control-height-sm);
+    padding: 0;
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-medium);
+    color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
     background: none;
     border: 0;
   }
 
   .mobile-nav__back .svg-icon {
-    --icon-size: 1.8rem;
+    --icon-size: 1.6rem;
   }
 
+  .mobile-nav__title {
+    margin-top: var(--space-xs);
+  }
+
+  .mobile-nav__all {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: var(--space-2xs);
+    margin-block: var(--space-xs) var(--space-s);
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-medium);
+    text-decoration: none;
+    color: var(--color-accent);
+  }
+
+  .mobile-nav__all .svg-icon {
+    --icon-size: 1.4rem;
+  }
 
   /* ------------------------------------------------- utility panel */
   /* Side panel from the right edge, same motion as the cart drawer (.drawer) */
   .utility-panel {
     position: fixed;
     inset: 0 0 0 auto;
-    width: min(38rem, 100vw);
+    width: var(--drawer-width);
     height: 100dvh;
     max-height: 100dvh;
     margin: 0;

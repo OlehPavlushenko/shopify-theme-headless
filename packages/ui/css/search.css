@@ -58,7 +58,7 @@
   /* Side drawer style: from the right edge, single column */
   .search-panel--drawer {
     inset: 0 0 0 auto;
-    width: min(52rem, 100vw);
+    width: var(--drawer-width);
     height: 100dvh;
     max-height: 100dvh;
     border-radius: 0;

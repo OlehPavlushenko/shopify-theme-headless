@@ -12,8 +12,19 @@
  */
 const openers = new WeakMap();
 
+// Scrollbar width for the scroll lock (components.css pads <html> by it while a dialog is open)
+function measureScrollbar() {
+    const width = window.innerWidth - document.documentElement.clientWidth;
+    if (width >= 0 && !document.documentElement.matches(':has(dialog[open]:modal)')) {
+        document.documentElement.style.setProperty('--scrollbar-width', `${width}px`);
+    }
+}
+measureScrollbar();
+window.addEventListener('resize', measureScrollbar, { passive: true });
+
 export function openDialog(dialog, opener = document.activeElement) {
     if (!(dialog instanceof HTMLDialogElement) || dialog.open) return;
+    measureScrollbar();
     openers.set(dialog, opener);
     dialog.showModal();
     dialog.dispatchEvent(new CustomEvent('dialog:open', { bubbles: true }));

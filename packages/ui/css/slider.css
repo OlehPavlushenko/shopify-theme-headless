@@ -51,8 +51,11 @@
 
   .slider__button:disabled {
     --btn-bg: transparent;
+    --btn-fg: var(--color-heading);
+    --btn-border: var(--color-border);
 
     opacity: 0.35;
+    cursor: default;
   }
 
   .slider__track {

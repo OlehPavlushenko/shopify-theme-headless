@@ -35,7 +35,7 @@
     "login_html": "<a href=\"{{ link }}\">Log in</a> to check out faster.",
     "total": "Total",
     "taxes_note": "Taxes and shipping calculated at checkout",
-    "note": "Order note",
+    "note": "Cart note",
     "order_details": "Order details",
     "upsell_title": "You may also like",
     "quantity": "Quantity",
@@ -56,7 +56,8 @@
       "apply": "Apply",
       "remove": "Remove promo code {{ code }}",
       "invalid": "Code {{ code }} can’t be applied to this cart"
-    }
+    },
+    "checkout_total": "Checkout — {{ total }}"
   },
   "products": {
     "add_to_cart": "Add to cart",

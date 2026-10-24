@@ -32,7 +32,42 @@
         "type": "cart-drawer",
         "settings": {
           "color_scheme": ""
-        }
+        },
+        "blocks": {
+          "package_text": {
+            "type": "text",
+            "settings": {
+              "label": "Package text",
+              "required": false
+            }
+          },
+          "delivery_day": {
+            "type": "select",
+            "settings": {
+              "label": "Delivery day",
+              "options": "Any day|Monday|Wednesday|Friday"
+            }
+          },
+          "delivery_time": {
+            "type": "radio",
+            "settings": {
+              "label": "Delivery time",
+              "options": "Any time|Day time|Evening"
+            }
+          },
+          "leave_at_door": {
+            "type": "checkbox",
+            "settings": {
+              "label": "Leave at the door"
+            }
+          }
+        },
+        "block_order": [
+          "package_text",
+          "delivery_day",
+          "delivery_time",
+          "leave_at_door"
+        ]
       }
     },
     "content_for_index": [],

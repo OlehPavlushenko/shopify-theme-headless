@@ -1,6 +1,8 @@
 {% doc %}
   Cart totals for the cart drawer and the cart page: order-level discounts, total, savings,
   taxes note.
+
+  @param {boolean} [hide_total] - Skip the total row (the drawer shows the total in its checkout button)
 {% enddoc %}
 <div class="cart-summary">
   {%- for discount in cart.cart_level_discount_applications -%}
@@ -9,10 +11,12 @@
       <span>−{{ discount.total_allocated_amount | money }}</span>
     </div>
   {%- endfor -%}
-  <div class="cart-summary__row cart-summary__total">
-    <span>{{ 'cart.total' | t }}</span>
-    <span>{{ cart.total_price | money }}</span>
-  </div>
+  {%- unless hide_total -%}
+    <div class="cart-summary__row cart-summary__total">
+      <span>{{ 'cart.total' | t }}</span>
+      <span>{{ cart.total_price | money }}</span>
+    </div>
+  {%- endunless -%}
   {%- if cart.total_discount > 0 -%}
     <p class="cart-summary__savings">{{ 'cart.savings' | t }} {{ cart.total_discount | money }}</p>
   {%- endif -%}

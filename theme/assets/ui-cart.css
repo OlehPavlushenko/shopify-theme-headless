@@ -378,9 +378,62 @@
     padding-top: var(--space-s);
   }
 
-  .cart-attribute__fieldset {
-    padding: 0;
-    border: 0;
+  /* Two lines tall by default (textarea.input is taller) */
+  textarea.cart-extras__note {
+    min-height: 6.4rem;
+    padding-block: var(--space-xs);
+    font-size: var(--text-sm);
+  }
+
+  .cart-extras__note-field {
+    display: grid;
+    gap: var(--space-2xs);
+    font-size: var(--text-sm);
+  }
+
+  /* Order details fields: label left, control right, all compact */
+  .cart-attribute {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    align-items: center;
+    gap: var(--space-xs) var(--space-s);
+    font-size: var(--text-sm);
+    line-height: var(--leading-sm);
+  }
+
+  .cart-attribute__label {
+    color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
+  }
+
+  .cart-attribute .input {
+    min-height: var(--control-height-sm);
+    padding-block: 0;
+    font-size: var(--text-sm);
+  }
+
+  .cart-attribute__options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-m);
+  }
+
+  .cart-attribute--checkbox {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cart-attribute__choice {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--color-heading);
+    cursor: pointer;
+  }
+
+  .cart-attribute__choice input {
+    width: 1.6rem;
+    height: 1.6rem;
+    margin: 0;
+    accent-color: var(--color-button);
   }
 
   /* ----------------------------------------------------- cart drawer */
@@ -395,8 +448,20 @@
     gap: var(--space-m);
   }
 
+  /* Checkout (with the total) and the View cart link in one row */
+  .cart-drawer__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+  }
+
+  .cart-drawer__actions .btn {
+    flex: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
   .cart-drawer__view-cart {
-    justify-self: center;
+    flex: none;
     font-size: var(--text-sm);
     color: var(--color-heading);
     text-underline-offset: 0.3rem;

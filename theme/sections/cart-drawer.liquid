@@ -78,9 +78,9 @@
             </summary>
             <div class="cart-extras__content stack">
               {%- if settings.show_cart_note -%}
-                <label class="field">
-                  <span class="field__label">{{ 'cart.note' | t }}</span>
-                  <textarea class="input" name="note" data-ajax-cart-property-input>
+                <label class="cart-extras__note-field">
+                  <span class="cart-attribute__label">{{ 'cart.note' | t }}</span>
+                  <textarea class="input cart-extras__note" name="note" rows="2" data-ajax-cart-property-input>
                     {{- cart.note -}}
                   </textarea>
                 </label>
@@ -92,12 +92,16 @@
           </details>
         {%- endif -%}
 
-        {%- render 'cart-summary' -%}
+        {%- render 'cart-summary', hide_total: true -%}
 
-        <button type="submit" name="checkout" class="btn btn--full">
-          {{- 'cart.checkout' | t -}}
-        </button>
-        <a href="{{ routes.cart_url }}" class="cart-drawer__view-cart">{{ 'cart.view_cart' | t }}</a>
+        {%- comment -%} Total sits in the checkout button; "View cart" is a link next to it {%- endcomment -%}
+        {%- assign total_money = cart.total_price | money -%}
+        <div class="cart-drawer__actions">
+          <button type="submit" name="checkout" class="btn">
+            {{- 'cart.checkout_total' | t: total: total_money -}}
+          </button>
+          <a href="{{ routes.cart_url }}" class="cart-drawer__view-cart">{{ 'cart.view_cart' | t }}</a>
+        </div>
       </form>
     {%- endif -%}
   </div>

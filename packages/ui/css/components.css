@@ -43,6 +43,14 @@
       background: var(--btn-bg-hover);
       border-color: var(--btn-border-hover);
     }
+
+    .btn:hover .svg-icon--arrow-right {
+      translate: 0.3rem 0;
+    }
+  }
+
+  .btn .svg-icon--arrow-right {
+    transition: translate var(--duration-default) var(--ease-out);
   }
 
   .btn:active {
@@ -59,7 +67,7 @@
     --btn-bg: transparent;
     --btn-fg: var(--color-heading);
     --btn-border: var(--color-border);
-    --btn-bg-hover: transparent;
+    --btn-bg-hover: color-mix(in srgb, var(--color-heading) 6%, transparent);
     --btn-fg-hover: var(--color-heading);
     --btn-border-hover: var(--color-heading);
   }

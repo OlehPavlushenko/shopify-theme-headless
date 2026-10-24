@@ -1,12 +1,8 @@
 {% comment %}
     Cart page. Same building blocks as the cart drawer (cart-line-item, cart-free-shipping,
-    cart-attribute, cart-upsell-item); Liquid Ajax Cart re-renders [data-ajax-cart-section] after
+    cart-attribute, cart-upsell); Liquid Ajax Cart re-renders [data-ajax-cart-section] after
     every change. Without JS the quantity links and the update button still work.
 {% endcomment %}
-{%- liquid
-    assign upsell_products = settings.upsell_products
-    assign cart_product_ids = cart.items | map: 'product_id'
--%}
 <div
     class="main-cart color-{{ section.settings.color_scheme }} section-spacing"
     style="--section-padding-top: {{ section.settings.padding_top }}px; --section-padding-bottom: {{ section.settings.padding_bottom }}px;"
@@ -65,22 +61,9 @@
             </form>
         {%- endif -%}
 
-        {%- if settings.show_upsell and upsell_products.count > 0 -%}
-            {%- capture upsell_items -%}
-                {%- for product in upsell_products -%}
-                    {%- if cart_product_ids contains product.id or product.available == false -%}
-                        {%- continue -%}
-                    {%- endif -%}
-                    {%- render 'cart-upsell-item', product: product -%}
-                {%- endfor -%}
-            {%- endcapture -%}
-            {%- if upsell_items != blank -%}
-                <div class="cart-upsell main-cart__upsell stack">
-                    <h2 class="h5">{{ 'cart.upsell_title' | t }}</h2>
-                    <ul class="cart-upsell__list" role="list">{{ upsell_items }}</ul>
-                </div>
-            {%- endif -%}
-        {%- endif -%}
+        <div class="main-cart__upsell">
+            {%- render 'cart-upsell', modifier: 'page' -%}
+        </div>
     </div>
 </div>
 

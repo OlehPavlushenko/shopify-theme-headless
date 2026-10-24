@@ -117,10 +117,10 @@ document.addEventListener('liquid-ajax-cart:request-end', (event) => {
  *   Recommendations API (intent=related, rendered by sections/cart-recommendations) and is cached
  *   per product for the session, so quantity changes and re-opening cost no requests.
  * - Lists are mixed round-robin (1st of A, 1st of B, 1st of C, 2nd of A…), without products that
- *   are in the cart or already in the drawer's own "You may also like" list; 4 at most.
+ *   are in the cart or already in the drawer's own "You may also like" list; 10 at most.
  * - Slides in a moment after the drawer; the close button hides it until the cart's products change.
  */
-const RECS_LIMIT = 4;
+const RECS_LIMIT = 10;
 const RECS_DELAY = 700;
 
 class CartRecommendations extends HTMLElement {
@@ -178,7 +178,7 @@ class CartRecommendations extends HTMLElement {
 
     async #load(productId) {
         // Bump the version when the markup of sections/cart-recommendations changes
-        const storageKey = `cart-recs:v2:${productId}`;
+        const storageKey = `cart-recs:v3:${productId}`;
         if (!this.#cache.has(productId)) {
             let stored = null;
             try {
@@ -192,7 +192,7 @@ class CartRecommendations extends HTMLElement {
     async #fetch(productId, storageKey) {
         try {
             const url = new URL(settings.recommendationsUrl, location.origin);
-            url.search = new URLSearchParams({ product_id: productId, limit: 6, intent: 'related', section_id: 'cart-recommendations' });
+            url.search = new URLSearchParams({ product_id: productId, limit: 10, intent: 'related', section_id: 'cart-recommendations' });
             const response = await fetch(url);
             if (!response.ok) return [];
             const doc = new DOMParser().parseFromString(await response.text(), 'text/html');

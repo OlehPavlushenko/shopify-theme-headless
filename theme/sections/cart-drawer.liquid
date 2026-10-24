@@ -8,11 +8,6 @@
   Also holds #CartNotification, used when Theme settings > Cart > "After adding to cart" is "Notification".
   Rendered from layout/theme.liquid on every page except /cart.
 {% endcomment %}
-{%- liquid
-  assign upsell_products = settings.upsell_products
-  assign cart_product_ids = cart.items | map: 'product_id'
--%}
-
 <dialog
   id="CartDrawer"
   class="drawer cart-drawer color-{{ section.settings.color_scheme }}"
@@ -49,22 +44,7 @@
         </ul>
       {%- endif -%}
 
-      {%- if settings.show_upsell and upsell_products.count > 0 -%}
-        {%- capture upsell_items -%}
-          {%- for product in upsell_products -%}
-            {%- if cart_product_ids contains product.id or product.available == false -%}
-              {%- continue -%}
-            {%- endif -%}
-            {%- render 'cart-upsell-item', product: product -%}
-          {%- endfor -%}
-        {%- endcapture -%}
-        {%- if upsell_items != blank -%}
-          <div class="cart-upsell stack">
-            <h3 class="eyebrow">{{ 'cart.upsell_title' | t }}</h3>
-            <ul class="cart-upsell__list" role="list">{{ upsell_items }}</ul>
-          </div>
-        {%- endif -%}
-      {%- endif -%}
+      {%- render 'cart-upsell' -%}
     </div>
 
     {%- if cart.item_count > 0 -%}
@@ -110,9 +90,9 @@
   {%- comment -%}
     Recommended products (Shopify related products for the items in the cart), filled by
     <cart-recommendations> in assets/cart.js once the drawer is open. Outside the re-rendered
-    [data-ajax-cart-section], so it stays put while the cart updates. Desktop: a full-height column
-    that slides out from behind the drawer, cards in 2 columns; phones: a low sheet over the bottom
-    of the drawer with a swipeable row of cards.
+    [data-ajax-cart-section], so it stays put while the cart updates. Compact rows, up to 10.
+    Desktop: a full-height column that slides out from behind the drawer and scrolls; phones: a sheet
+    over the bottom of the drawer.
   {%- endcomment -%}
   {%- if settings.show_cart_recommendations -%}
     <cart-recommendations class="cart-recs" aria-labelledby="CartRecs-title" inert>
@@ -122,7 +102,7 @@
           {%- render 'icon', name: 'close' -%}
         </button>
       </div>
-      <ul class="cart-recs__list" role="list" data-recs-list></ul>
+      <ul class="cart-upsell__list cart-recs__list" role="list" data-recs-list></ul>
     </cart-recommendations>
   {%- endif -%}
 </dialog>

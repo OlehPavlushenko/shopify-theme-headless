@@ -1,0 +1,42 @@
+{% doc %}
+  "You may also like" for the cart drawer and the cart page: the products from
+  Theme settings > Cart > "Upsell products", minus those already in the cart or sold out,
+  as product cards with quick add in a <ui-slider> (arrows show up only when the cards overflow).
+  Columns: 2 in the drawer, 4 on the cart page (class modifier cart-upsell--page).
+
+  @param {string} [modifier] - 'page' on the cart page
+{% enddoc %}
+{%- liquid
+  assign upsell_products = settings.upsell_products
+  assign cart_product_ids = cart.items | map: 'product_id'
+-%}
+{%- if settings.show_upsell and upsell_products.count > 0 -%}
+  {%- capture upsell_items -%}
+    {%- for product in upsell_products -%}
+      {%- if cart_product_ids contains product.id or product.available == false -%}
+        {%- continue -%}
+      {%- endif -%}
+      <li data-product-id="{{ product.id }}">
+        {%- render 'product-card',
+          product: product,
+          quick_add: true,
+          show_secondary_image: false,
+          heading_tag: 'p',
+          sizes: '(min-width: 990px) 200px, 45vw'
+        -%}
+      </li>
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if upsell_items != blank -%}
+    {%- assign upsell_title = 'cart.upsell_title' | t -%}
+    <ui-slider class="slider cart-upsell{% if modifier != blank %} cart-upsell--{{ modifier }}{% endif %}" aria-label="{{ upsell_title | escape }}">
+      <div class="slider__head">
+        <h2 class="eyebrow">{{ upsell_title }}</h2>
+        <div class="slider__head-end">
+          {%- render 'slider-nav', label: upsell_title -%}
+        </div>
+      </div>
+      <ul class="slider__track" data-slider-track role="list">{{ upsell_items }}</ul>
+    </ui-slider>
+  {%- endif -%}
+{%- endif -%}

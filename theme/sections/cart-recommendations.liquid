@@ -2,15 +2,13 @@
   Markup source for the recommendations panel next to the cart drawer. Never placed on a page:
   <cart-recommendations> (assets/cart.js) requests it through the Product Recommendations API,
   /recommendations/products?product_id=…&intent=related&section_id=cart-recommendations,
-  and takes the [data-product-id] items: product cards with quick add.
+  and takes the [data-product-id] rows (compact item: image, title, price, add).
 {% endcomment %}
 {%- if recommendations.performed and recommendations.products_count > 0 -%}
   <ul role="list">
     {%- for product in recommendations.products -%}
       {%- if product.available -%}
-        <li class="cart-recs__item" data-product-id="{{ product.id }}">
-          {%- render 'product-card', product: product, quick_add: true, show_secondary_image: false, heading_tag: 'p', sizes: '(min-width: 990px) 200px, 40vw' -%}
-        </li>
+        {%- render 'cart-upsell-item', product: product -%}
       {%- endif -%}
     {%- endfor -%}
   </ul>

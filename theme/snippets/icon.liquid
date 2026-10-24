@@ -2,7 +2,7 @@
     Inline SVG icon, 24×24 grid, stroke uses currentColor. Size via the --icon-size custom property.
     (Legacy sections still use snippets/icons-svg.liquid; new code uses this snippet.)
 
-    @param {string} name - close | plus | minus | cart | bag | check | arrow-right | arrow-left | chevron-down | search | account | menu | trash | sliders | heart | compare | globe
+    @param {string} name - close | plus | minus | cart | bag | check | arrow-right | arrow-left | chevron-down | chevron-right | chevron-left | search | account | menu | trash | sliders | heart | compare | globe
     @param {string} [class] - Extra classes
 {% enddoc %}
 <svg
@@ -35,6 +35,10 @@
             <path d="M19 12H5M11 6l-6 6 6 6"/>
         {%- when 'chevron-down' -%}
             <path d="M6 9l6 6 6-6"/>
+        {%- when 'chevron-right' -%}
+            <path d="M9 6l6 6-6 6"/>
+        {%- when 'chevron-left' -%}
+            <path d="M15 6l-6 6 6 6"/>
         {%- when 'search' -%}
             <circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>
         {%- when 'account' -%}

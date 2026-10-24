@@ -2,7 +2,8 @@
   Mobile menu content with drill-down panels (behavior: @ui/drill-menu). Rendered inside the
   header's menu panel, which slides in under the header.
   Root panel lists top-level links; a link with children opens its own panel (and so on for the
-  3rd level). Each sub-panel: "Back", the section title, an "All <section>" link, then the items.
+  3rd level). Each sub-panel starts with a back row showing the section title ("‹ Shop"), then
+  "All <section>" as the first row, then the items. All rows share one style.
 
   @param {object} menu - link_list
 {% enddoc %}
@@ -15,7 +16,7 @@
           {%- if link.links.size > 0 -%}
             <button type="button" class="mobile-nav__link" data-panel-open="{{ panel_id }}">
               {{- link.title | escape -}}
-              {%- render 'icon', name: 'arrow-right' -%}
+              {%- render 'icon', name: 'chevron-right' -%}
             </button>
           {%- else -%}
             <a href="{{ link.url }}" class="mobile-nav__link"{% if link.current %} aria-current="page"{% endif %}>
@@ -31,23 +32,21 @@
     {%- if link.links.size == 0 -%}{%- continue -%}{%- endif -%}
     {%- assign panel_id = 'menu-' | append: forloop.index -%}
     <div class="mobile-nav__panel" data-panel="{{ panel_id }}" hidden>
-      <button type="button" class="mobile-nav__back" data-panel-back>
-        {%- render 'icon', name: 'arrow-left' -%}
-        {{ 'accessibility.back' | t }}
+      <button type="button" class="mobile-nav__back" data-panel-back aria-label="{{ 'accessibility.back' | t }}: {{ link.title | escape }}">
+        {%- render 'icon', name: 'chevron-left' -%}
+        {{ link.title | escape }}
       </button>
-      <p class="h4 mobile-nav__title">{{ link.title | escape }}</p>
-      <a href="{{ link.url }}" class="mobile-nav__all">
-        {{- 'general.all_title' | t: title: link.title -}}
-        {%- render 'icon', name: 'arrow-right' -%}
-      </a>
       <ul class="mobile-nav__list" role="list">
+        <li>
+          <a href="{{ link.url }}" class="mobile-nav__link">{{ 'general.all_title' | t: title: link.title }}</a>
+        </li>
         {%- for child in link.links -%}
           {%- assign child_panel_id = panel_id | append: '-' | append: forloop.index -%}
           <li>
             {%- if child.links.size > 0 -%}
               <button type="button" class="mobile-nav__link" data-panel-open="{{ child_panel_id }}">
                 {{- child.title | escape -}}
-                {%- render 'icon', name: 'arrow-right' -%}
+                {%- render 'icon', name: 'chevron-right' -%}
               </button>
             {%- else -%}
               <a href="{{ child.url }}" class="mobile-nav__link"{% if child.current %} aria-current="page"{% endif %}>
@@ -63,16 +62,14 @@
       {%- if child.links.size == 0 -%}{%- continue -%}{%- endif -%}
       {%- assign child_panel_id = panel_id | append: '-' | append: forloop.index -%}
       <div class="mobile-nav__panel" data-panel="{{ child_panel_id }}" hidden>
-        <button type="button" class="mobile-nav__back" data-panel-back>
-          {%- render 'icon', name: 'arrow-left' -%}
-          {{ link.title | escape }}
+        <button type="button" class="mobile-nav__back" data-panel-back aria-label="{{ 'accessibility.back' | t }}: {{ child.title | escape }}">
+          {%- render 'icon', name: 'chevron-left' -%}
+          {{ child.title | escape }}
         </button>
-        <p class="h4 mobile-nav__title">{{ child.title | escape }}</p>
-        <a href="{{ child.url }}" class="mobile-nav__all">
-          {{- 'general.all_title' | t: title: child.title -}}
-          {%- render 'icon', name: 'arrow-right' -%}
-        </a>
         <ul class="mobile-nav__list" role="list">
+          <li>
+            <a href="{{ child.url }}" class="mobile-nav__link">{{ 'general.all_title' | t: title: child.title }}</a>
+          </li>
           {%- for grandchild in child.links -%}
             <li>
               <a href="{{ grandchild.url }}" class="mobile-nav__link"{% if grandchild.current %} aria-current="page"{% endif %}>

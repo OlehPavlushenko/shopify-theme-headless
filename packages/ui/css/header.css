@@ -479,15 +479,15 @@
     display: grid;
   }
 
-  .mobile-nav__link {
+  /* One row style for every item; the back row adds a chevron and the section title */
+  .mobile-nav__link,
+  .mobile-nav__back {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     width: 100%;
     min-height: 5.2rem;
     padding: 0;
     font-size: var(--text-md);
-    font-weight: var(--font-body-weight-medium);
     line-height: var(--leading-md);
     text-align: left;
     text-decoration: none;
@@ -497,49 +497,21 @@
     border-bottom: 0.1rem solid var(--color-border);
   }
 
-  .mobile-nav__link .svg-icon {
-    --icon-size: 1.6rem;
+  .mobile-nav__link {
+    justify-content: space-between;
+    font-weight: var(--font-body-weight);
+  }
+
+  .mobile-nav__back {
+    gap: var(--space-xs);
+    font-weight: var(--font-body-weight-semibold);
+  }
+
+  .mobile-nav__link .svg-icon,
+  .mobile-nav__back .svg-icon {
+    --icon-size: 1.8rem;
 
     color: color-mix(in srgb, var(--color-foreground) 55%, transparent);
-  }
-
-  /* Sub-panel head: Back (small, muted) → section title → All <section> (accent) */
-  .mobile-nav__back {
-    display: inline-flex;
-    align-items: center;
-    align-self: flex-start;
-    gap: var(--space-2xs);
-    min-height: var(--control-height-sm);
-    padding: 0;
-    font-size: var(--text-sm);
-    font-weight: var(--font-body-weight-medium);
-    color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
-    background: none;
-    border: 0;
-  }
-
-  .mobile-nav__back .svg-icon {
-    --icon-size: 1.6rem;
-  }
-
-  .mobile-nav__title {
-    margin-top: var(--space-xs);
-  }
-
-  .mobile-nav__all {
-    display: inline-flex;
-    align-items: center;
-    align-self: flex-start;
-    gap: var(--space-2xs);
-    margin-block: var(--space-xs) var(--space-s);
-    font-size: var(--text-sm);
-    font-weight: var(--font-body-weight-medium);
-    text-decoration: none;
-    color: var(--color-accent);
-  }
-
-  .mobile-nav__all .svg-icon {
-    --icon-size: 1.4rem;
   }
 
   /* ------------------------------------------------- utility panel */

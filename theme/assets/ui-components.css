@@ -444,14 +444,17 @@
     margin: 0;
     padding: 0;
     translate: 100% 0;
+    /* Leaving: short and accelerating; entering (open state below): long and decelerating */
     transition:
-      translate var(--duration-long) var(--ease-out),
-      overlay var(--duration-long) allow-discrete,
-      display var(--duration-long) allow-discrete;
+      translate var(--duration-default) var(--ease-in),
+      overlay var(--duration-default) allow-discrete,
+      display var(--duration-default) allow-discrete;
   }
 
   .drawer:is([open], :popover-open) {
     translate: 0 0;
+    transition-duration: var(--duration-long);
+    transition-timing-function: var(--ease-out);
   }
 
   @starting-style {
@@ -518,10 +521,10 @@
     background: transparent;
     backdrop-filter: blur(0);
     transition:
-      background-color var(--duration-long) var(--ease),
-      backdrop-filter var(--duration-long) var(--ease),
-      overlay var(--duration-long) allow-discrete,
-      display var(--duration-long) allow-discrete;
+      background-color var(--duration-default) var(--ease),
+      backdrop-filter var(--duration-default) var(--ease),
+      overlay var(--duration-default) allow-discrete,
+      display var(--duration-default) allow-discrete;
   }
 
   .drawer:is([open], :popover-open)::backdrop,

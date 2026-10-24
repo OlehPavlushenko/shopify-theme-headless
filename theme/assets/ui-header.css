@@ -279,14 +279,28 @@
     border: 0.1rem solid var(--color-border);
     border-top: 0;
     box-shadow: var(--shadow-md);
-    animation: menu-in var(--duration-default) var(--ease-out);
+    animation: menu-fade var(--duration-default) var(--ease);
   }
 
-  @keyframes menu-in {
+  /*
+   * Opening: the panel only fades (moving it would slide it over the header line and make the
+   * line flicker); its content slides down a little.
+   */
+  @keyframes menu-fade {
     from {
       opacity: 0;
+    }
+  }
+
+  @keyframes menu-content-in {
+    from {
       translate: 0 -0.6rem;
     }
+  }
+
+  .site-nav__dropdown > *,
+  .mega-menu__inner {
+    animation: menu-content-in var(--duration-default) var(--ease-out);
   }
 
   /* ------------------------------------------------------ mega menu */
@@ -301,7 +315,7 @@
     border-top: 0.1rem solid var(--color-border);
     border-bottom: 0.1rem solid var(--color-border);
     box-shadow: var(--shadow-md);
-    animation: menu-in var(--duration-default) var(--ease-out);
+    animation: menu-fade var(--duration-default) var(--ease);
   }
 
   .mega-menu__inner {

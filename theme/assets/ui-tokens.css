@@ -89,6 +89,7 @@
     --duration-long: 420ms;
     --ease: cubic-bezier(0.2, 0, 0, 1);
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in: cubic-bezier(0.3, 0, 0.8, 0.15);
     --weight-regular: 400;
     --weight-medium: 500;
     --weight-semibold: 600;

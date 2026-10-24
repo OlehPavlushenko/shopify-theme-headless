@@ -1,0 +1,52 @@
+{% doc %}
+  Promo code field for the cart drawer and the cart page: "Have a promo code?" opens an input with
+  an Apply button; applied codes show as chips that remove the code on click.
+  Applied codes come from cart.discount_applications (type discount_code, title = the code).
+  Behavior: <cart-discount> in assets/cart.js sends the codes with Liquid Ajax Cart
+  (POST /cart/update.js { discount }), then the cart sections re-render. A code that doesn't apply
+  to this cart is removed again and reported in [data-discount-error].
+  No form element, so it can sit inside the cart form; Enter in the input applies the code.
+  Theme settings > Cart > "Show promo code field".
+{% enddoc %}
+{%- if settings.show_cart_discount -%}
+  {%- assign applied = cart.discount_applications | where: 'type', 'discount_code' -%}
+  <cart-discount class="cart-discount">
+    <details class="cart-discount__details"{% if applied.size > 0 %} open{% endif %}>
+      <summary class="cart-discount__toggle">{{ 'cart.discount.toggle' | t }}</summary>
+      <div class="cart-discount__form">
+        <input
+          class="input"
+          type="text"
+          autocomplete="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          placeholder="{{ 'cart.discount.placeholder' | t }}"
+          aria-label="{{ 'cart.discount.placeholder' | t }}"
+          data-discount-input
+        >
+        <button type="button" class="btn btn--outline" data-discount-apply>{{ 'cart.discount.apply' | t }}</button>
+      </div>
+    </details>
+
+    <p class="form-error" data-discount-error data-message="{{ 'cart.discount.invalid' | t: code: '__code__' | escape }}" role="alert"></p>
+
+    {%- if applied.size > 0 -%}
+      <ul class="cart-discount__codes" role="list">
+        {%- for discount in applied -%}
+          <li>
+            <button
+              type="button"
+              class="chip cart-discount__code"
+              data-discount-remove="{{ discount.title | escape }}"
+              aria-label="{{ 'cart.discount.remove' | t: code: discount.title | escape }}"
+            >
+              {%- render 'icon', name: 'tag' -%}
+              {{- discount.title | escape -}}
+              {%- render 'icon', name: 'close' -%}
+            </button>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </cart-discount>
+{%- endif -%}

@@ -1,219 +1,208 @@
 {% comment %}
-    Cart drawer: a native <dialog> (assets/dialog.js) whose content Liquid Ajax Cart re-renders after
-    every cart request ([data-ajax-cart-section]). The dialog element itself is never re-rendered,
-    so it stays open while the cart updates.
-    Also holds #CartNotification, used when Theme settings > Cart > "After adding to cart" is "Notification".
-    Rendered from layout/theme.liquid on every page except /cart.
+  Cart drawer: a native <dialog> (@ui/dialog) whose content Liquid Ajax Cart re-renders after
+  every cart request ([data-ajax-cart-section]). The dialog element itself is never re-rendered,
+  so it stays open while the cart updates.
+  Body: lines and upsell (scrolls). Footer: free-shipping progress, promo code, order details,
+  totals, checkout.
+  Also holds #CartNotification, used when Theme settings > Cart > "After adding to cart" is "Notification".
+  Rendered from layout/theme.liquid on every page except /cart.
 {% endcomment %}
 {%- liquid
-    assign upsell_products = settings.upsell_products
-    assign cart_product_ids = cart.items | map: 'product_id'
+  assign upsell_products = settings.upsell_products
+  assign cart_product_ids = cart.items | map: 'product_id'
 -%}
 
 <dialog
-    id="CartDrawer"
-    class="drawer color-{{ section.settings.color_scheme }}"
-    aria-labelledby="CartDrawer-title"
+  id="CartDrawer"
+  class="drawer color-{{ section.settings.color_scheme }}"
+  aria-labelledby="CartDrawer-title"
 >
-    <div class="drawer__inner" data-ajax-cart-section>
-        <div class="drawer__header">
-            <h2 id="CartDrawer-title" class="h5">
-                {{ 'cart.title' | t }}
-                {%- if cart.item_count > 0 %} <span class="muted">({{ cart.item_count }})</span>{% endif -%}
-            </h2>
-            <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'cart.close' | t }}">
-                {%- render 'icon', name: 'close' -%}
-            </button>
-        </div>
-
-        <div class="drawer__body cart-drawer__body" data-ajax-cart-section-scroll>
-            {%- render 'cart-free-shipping' -%}
-
-            {%- if cart.item_count == 0 -%}
-                <div class="cart-empty stack">
-                    <p class="h4">{{ 'cart.empty' | t }}</p>
-                    <a href="{{ routes.all_products_collection_url }}" class="btn">
-                        {{- 'cart.continue_shopping' | t -}}
-                    </a>
-                    {%- if shop.customer_accounts_enabled and customer == null -%}
-                        <p class="small">{{ 'cart.login_html' | t: link: routes.account_login_url }}</p>
-                    {%- endif -%}
-                </div>
-            {%- else -%}
-                <ul class="cart-lines" role="list">
-                    {%- for item in cart.items -%}
-                        {%- render 'cart-line-item', item: item, line: forloop.index -%}
-                    {%- endfor -%}
-                </ul>
-            {%- endif -%}
-
-            {%- if settings.show_upsell and upsell_products.count > 0 -%}
-                {%- capture upsell_items -%}
-                    {%- for product in upsell_products -%}
-                        {%- if cart_product_ids contains product.id or product.available == false -%}
-                            {%- continue -%}
-                        {%- endif -%}
-                        {%- render 'cart-upsell-item', product: product -%}
-                    {%- endfor -%}
-                {%- endcapture -%}
-                {%- if upsell_items != blank -%}
-                    <div class="cart-upsell stack">
-                        <h3 class="h6">{{ 'cart.upsell_title' | t }}</h3>
-                        <ul class="cart-upsell__list" role="list">{{ upsell_items }}</ul>
-                    </div>
-                {%- endif -%}
-            {%- endif -%}
-        </div>
-
-        {%- if cart.item_count > 0 -%}
-            <form action="{{ routes.cart_url }}" method="post" class="drawer__footer stack" id="CartDrawer-form">
-                {%- if settings.show_cart_note or section.blocks.size > 0 -%}
-                    <details class="cart-extras">
-                        <summary class="cart-extras__summary small">
-                            {{- 'cart.order_details' | t -}}
-                            {%- render 'icon', name: 'chevron-down' -%}
-                        </summary>
-                        <div class="cart-extras__content stack">
-                            {%- if settings.show_cart_note -%}
-                                <label class="field">
-                                    <span class="field__label">{{ 'cart.note' | t }}</span>
-                                    <textarea class="input" name="note" data-ajax-cart-property-input>
-                                        {{- cart.note -}}
-                                    </textarea>
-                                </label>
-                            {%- endif -%}
-                            {%- for block in section.blocks -%}
-                                {%- render 'cart-attribute', block: block -%}
-                            {%- endfor -%}
-                        </div>
-                    </details>
-                {%- endif -%}
-
-                <div class="cart-summary">
-                    <div class="cart-summary__row">
-                        <span>{{ 'cart.total' | t }}</span>
-                        <strong>
-                            {{ cart.total_price | money }}
-                        </strong>
-                    </div>
-                    {%- for discount in cart.cart_level_discount_applications -%}
-                        <div class="cart-summary__row small">
-                            <span>{{ discount.title }}</span>
-                            <span>−{{ discount.total_allocated_amount | money }}</span>
-                        </div>
-                    {%- endfor -%}
-                    <p class="small muted">{{ 'cart.taxes_note' | t }}</p>
-                </div>
-
-                <button type="submit" name="checkout" class="btn btn--full">
-                    {{- 'cart.checkout' | t -}}
-                </button>
-                <a href="{{ routes.cart_url }}" class="btn btn--outline btn--full">{{ 'cart.view_cart' | t }}</a>
-            </form>
-        {%- endif -%}
+  <div class="drawer__inner" data-ajax-cart-section>
+    <div class="drawer__header">
+      <h2 id="CartDrawer-title" class="h5">
+        {{ 'cart.title' | t }}
+        {%- if cart.item_count > 0 %} <span class="muted">({{ cart.item_count }})</span>{% endif -%}
+      </h2>
+      <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'cart.close' | t }}">
+        {%- render 'icon', name: 'close' -%}
+      </button>
     </div>
+
+    <div class="drawer__body cart-drawer__body" data-ajax-cart-section-scroll>
+      {%- if cart.item_count == 0 -%}
+        <div class="cart-empty stack">
+          <p class="h4">{{ 'cart.empty' | t }}</p>
+          <a href="{{ routes.all_products_collection_url }}" class="btn">
+            {{- 'cart.continue_shopping' | t -}}
+          </a>
+          {%- if shop.customer_accounts_enabled and customer == null -%}
+            <p class="small">{{ 'cart.login_html' | t: link: routes.account_login_url }}</p>
+          {%- endif -%}
+        </div>
+      {%- else -%}
+        <ul class="cart-lines" role="list">
+          {%- for item in cart.items -%}
+            {%- render 'cart-line-item', item: item, line: forloop.index -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if settings.show_upsell and upsell_products.count > 0 -%}
+        {%- capture upsell_items -%}
+          {%- for product in upsell_products -%}
+            {%- if cart_product_ids contains product.id or product.available == false -%}
+              {%- continue -%}
+            {%- endif -%}
+            {%- render 'cart-upsell-item', product: product -%}
+          {%- endfor -%}
+        {%- endcapture -%}
+        {%- if upsell_items != blank -%}
+          <div class="cart-upsell stack">
+            <h3 class="eyebrow">{{ 'cart.upsell_title' | t }}</h3>
+            <ul class="cart-upsell__list" role="list">{{ upsell_items }}</ul>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post" class="drawer__footer cart-drawer__footer" id="CartDrawer-form">
+        {%- render 'cart-free-shipping' -%}
+        {%- render 'cart-discount' -%}
+
+        {%- if settings.show_cart_note or section.blocks.size > 0 -%}
+          <details class="cart-extras">
+            <summary class="cart-extras__summary">
+              {{- 'cart.order_details' | t -}}
+              {%- render 'icon', name: 'chevron-down' -%}
+            </summary>
+            <div class="cart-extras__content stack">
+              {%- if settings.show_cart_note -%}
+                <label class="field">
+                  <span class="field__label">{{ 'cart.note' | t }}</span>
+                  <textarea class="input" name="note" data-ajax-cart-property-input>
+                    {{- cart.note -}}
+                  </textarea>
+                </label>
+              {%- endif -%}
+              {%- for block in section.blocks -%}
+                {%- render 'cart-attribute', block: block -%}
+              {%- endfor -%}
+            </div>
+          </details>
+        {%- endif -%}
+
+        {%- render 'cart-summary' -%}
+
+        <button type="submit" name="checkout" class="btn btn--full">
+          {{- 'cart.checkout' | t -}}
+        </button>
+        <a href="{{ routes.cart_url }}" class="cart-drawer__view-cart">{{ 'cart.view_cart' | t }}</a>
+      </form>
+    {%- endif -%}
+  </div>
 </dialog>
 
 <dialog
-    id="CartNotification"
-    class="popup cart-added color-{{ section.settings.color_scheme }}"
-    aria-labelledby="CartNotification-title"
+  id="CartNotification"
+  class="popup cart-added color-{{ section.settings.color_scheme }}"
+  aria-labelledby="CartNotification-title"
 >
-    <div class="cart-added__inner stack">
-        <div class="cart-added__head">
-            <p id="CartNotification-title" class="cluster">
-                {%- render 'icon', name: 'check' -%}
-                {{ 'cart.added' | t }}
-            </p>
-            <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'cart.close' | t }}">
-                {%- render 'icon', name: 'close' -%}
-            </button>
-        </div>
-        <div class="cart-added__item">
-            <img data-notification="image" class="cart-added__image" width="80" height="80" alt="" hidden>
-            <div class="stack" style="--stack-gap: var(--space-2xs);">
-                <p class="cart-line__title" data-notification="title"></p>
-                <p class="small muted" data-notification="variant"></p>
-                <p class="price-tag" data-notification="price"></p>
-                <p class="small muted" data-notification="quantity"></p>
-            </div>
-        </div>
-        <div class="cluster cart-added__actions">
-            <a href="{{ routes.cart_url }}" class="btn btn--outline">
-                {{- 'cart.view_cart' | t }}
-                (<span data-ajax-cart-bind="item_count">{{ cart.item_count }}</span>)
-            </a>
-            <form action="{{ routes.cart_url }}" method="post">
-                <button type="submit" name="checkout" class="btn">{{ 'cart.checkout' | t }}</button>
-            </form>
-        </div>
-        <button type="button" class="btn btn--link small" data-dialog-close>
-            {{- 'cart.continue_shopping' | t -}}
-        </button>
+  <div class="cart-added__inner stack">
+    <div class="cart-added__head">
+      <p id="CartNotification-title" class="cluster">
+        {%- render 'icon', name: 'check' -%}
+        {{ 'cart.added' | t }}
+      </p>
+      <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'cart.close' | t }}">
+        {%- render 'icon', name: 'close' -%}
+      </button>
     </div>
+    <div class="cart-added__item">
+      <img data-notification="image" class="cart-added__image" width="80" height="80" alt="" hidden>
+      <div class="stack" style="--stack-gap: var(--space-2xs);">
+        <p class="cart-line__title" data-notification="title"></p>
+        <p class="small muted" data-notification="variant"></p>
+        <p class="price-tag" data-notification="price"></p>
+        <p class="small muted" data-notification="quantity"></p>
+      </div>
+    </div>
+    <div class="cluster cart-added__actions">
+      <a href="{{ routes.cart_url }}" class="btn btn--outline">
+        {{- 'cart.view_cart' | t }}
+        (<span data-ajax-cart-bind="item_count">{{ cart.item_count }}</span>)
+      </a>
+      <form action="{{ routes.cart_url }}" method="post">
+        <button type="submit" name="checkout" class="btn">{{ 'cart.checkout' | t }}</button>
+      </form>
+    </div>
+    <button type="button" class="btn btn--link small" data-dialog-close>
+      {{- 'cart.continue_shopping' | t -}}
+    </button>
+  </div>
 </dialog>
 
 <script type="application/json" data-ajax-cart-initial-state>
-    {{ cart | json }}
+  {{ cart | json }}
 </script>
 
 {% schema %}
 {
-    "name": "t:sections.cart_drawer.name",
-    "class": "cart-drawer-section",
-    "settings": [
+  "name": "t:sections.cart_drawer.name",
+  "class": "cart-drawer-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    { "type": "paragraph", "content": "t:sections.cart_drawer.info" }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "t:blocks.cart_attribute.text",
+      "settings": [
+        { "type": "text", "id": "label", "label": "t:blocks.cart_attribute.label", "default": "Gift message" },
+        { "type": "checkbox", "id": "required", "label": "t:blocks.cart_attribute.required", "default": false }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "t:blocks.cart_attribute.select",
+      "settings": [
+        { "type": "text", "id": "label", "label": "t:blocks.cart_attribute.label", "default": "Delivery day" },
         {
-            "type": "color_scheme",
-            "id": "color_scheme",
-            "label": "t:labels.color_scheme",
-            "default": "scheme-1"
-        },
-        { "type": "paragraph", "content": "t:sections.cart_drawer.info" }
-    ],
-    "blocks": [
-        {
-            "type": "text",
-            "name": "t:blocks.cart_attribute.text",
-            "settings": [
-                { "type": "text", "id": "label", "label": "t:blocks.cart_attribute.label", "default": "Gift message" },
-                { "type": "checkbox", "id": "required", "label": "t:blocks.cart_attribute.required", "default": false }
-            ]
-        },
-        {
-            "type": "select",
-            "name": "t:blocks.cart_attribute.select",
-            "settings": [
-                { "type": "text", "id": "label", "label": "t:blocks.cart_attribute.label", "default": "Delivery day" },
-                {
-                    "type": "text",
-                    "id": "options",
-                    "label": "t:blocks.cart_attribute.options",
-                    "info": "t:blocks.cart_attribute.options_info",
-                    "default": "Monday|Wednesday|Friday"
-                }
-            ]
-        },
-        {
-            "type": "radio",
-            "name": "t:blocks.cart_attribute.radio",
-            "settings": [
-                { "type": "text", "id": "label", "label": "t:blocks.cart_attribute.label", "default": "Delivery time" },
-                {
-                    "type": "text",
-                    "id": "options",
-                    "label": "t:blocks.cart_attribute.options",
-                    "info": "t:blocks.cart_attribute.options_info",
-                    "default": "Morning|Afternoon|Evening"
-                }
-            ]
-        },
-        {
-            "type": "checkbox",
-            "name": "t:blocks.cart_attribute.checkbox",
-            "settings": [
-                { "type": "text", "id": "label", "label": "t:blocks.cart_attribute.label", "default": "Leave at the door" }
-            ]
+          "type": "text",
+          "id": "options",
+          "label": "t:blocks.cart_attribute.options",
+          "info": "t:blocks.cart_attribute.options_info",
+          "default": "Monday|Wednesday|Friday"
         }
-    ]
+      ]
+    },
+    {
+      "type": "radio",
+      "name": "t:blocks.cart_attribute.radio",
+      "settings": [
+        { "type": "text", "id": "label", "label": "t:blocks.cart_attribute.label", "default": "Delivery time" },
+        {
+          "type": "text",
+          "id": "options",
+          "label": "t:blocks.cart_attribute.options",
+          "info": "t:blocks.cart_attribute.options_info",
+          "default": "Morning|Afternoon|Evening"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "name": "t:blocks.cart_attribute.checkbox",
+      "settings": [
+        { "type": "text", "id": "label", "label": "t:blocks.cart_attribute.label", "default": "Leave at the door" }
+      ]
+    }
+  ]
 }
 {% endschema %}

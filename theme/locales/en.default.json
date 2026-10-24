@@ -44,9 +44,18 @@
     "added": "Added to your cart",
     "summary": "Order summary",
     "free_shipping": {
-      "remaining_html": "You are <strong>{{ amount }}</strong> away from free shipping",
-      "unlocked": "You unlocked free shipping!",
+      "remaining_html": "Add <strong>{{ amount }}</strong> more for free shipping",
+      "unlocked_html": "You’ve got <strong>free shipping</strong>!",
       "label": "Free shipping progress"
+    },
+    "remove_item": "Remove {{ product }}",
+    "savings": "You save",
+    "discount": {
+      "toggle": "Have a promo code?",
+      "placeholder": "Enter promo code",
+      "apply": "Apply",
+      "remove": "Remove promo code {{ code }}",
+      "invalid": "Code {{ code }} can’t be applied to this cart"
     }
   },
   "products": {

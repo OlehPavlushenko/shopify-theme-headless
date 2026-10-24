@@ -2,7 +2,7 @@
     Inline SVG icon, 24×24 grid, stroke uses currentColor. Size via the --icon-size custom property.
     (Legacy sections still use snippets/icons-svg.liquid; new code uses this snippet.)
 
-    @param {string} name - close | plus | minus | cart | bag | check | arrow-right | arrow-left | chevron-down | chevron-right | chevron-left | search | account | menu | trash | sliders | heart | compare | globe
+    @param {string} name - close | plus | minus | cart | bag | check | arrow-right | arrow-left | chevron-down | chevron-right | chevron-left | search | account | menu | trash | sliders | heart | compare | globe | truck | tag
     @param {string} [class] - Extra classes
 {% enddoc %}
 <svg
@@ -55,5 +55,9 @@
             <path d="M7 4v16M17 4v16M3 8l4-4 4 4M13 16l4 4 4-4"/>
         {%- when 'globe' -%}
             <circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 2.5 14.4 0 17M12 3.5c-2.5 2.6-2.5 14.4 0 17"/>
+        {%- when 'truck' -%}
+            <path d="M2.5 6.5h11v9h-11zM13.5 9.5h4l3 3v3h-7"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/>
+        {%- when 'tag' -%}
+            <path d="M3.5 12.3V4.5a1 1 0 0 1 1-1h7.8l8.2 8.2a1 1 0 0 1 0 1.4l-6.6 6.6a1 1 0 0 1-1.4 0z"/><circle cx="8" cy="8" r="1.3"/>
     {%- endcase -%}
 </svg>

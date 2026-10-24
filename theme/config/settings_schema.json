@@ -390,6 +390,19 @@
         "id": "show_cart_note",
         "label": "t:settings.cart.show_cart_note",
         "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_cart_discount",
+        "label": "t:settings.cart.show_cart_discount",
+        "info": "t:settings.cart.show_cart_discount_info",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_cart_sku",
+        "label": "t:settings.cart.show_cart_sku",
+        "default": false
       }
     ]
   },

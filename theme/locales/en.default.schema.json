@@ -144,7 +144,10 @@
       "upsell_products": "Upsell products",
       "upsell_products_info": "Shown in the cart drawer and on the cart page, skipping products already in the cart.",
       "order_details": "Order details",
-      "show_cart_note": "Show order note"
+      "show_cart_note": "Show order note",
+      "show_cart_discount": "Show promo code field",
+      "show_cart_discount_info": "Shoppers can apply and remove discount codes in the cart drawer and on the cart page.",
+      "show_cart_sku": "Show SKU under the product image"
     },
     "behavior": {
       "name": "Behavior",

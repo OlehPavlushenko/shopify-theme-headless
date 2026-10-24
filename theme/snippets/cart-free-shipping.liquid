@@ -1,36 +1,39 @@
 {% doc %}
-    Free-shipping progress bar. Rendered inside a [data-ajax-cart-section], so Liquid Ajax Cart
-    re-renders it after every cart change: no JavaScript needed.
-    Threshold: shop metafield custom.free_shipping_threshold (shared with a headless storefront) or
-    Theme settings > Cart > "Free shipping threshold". Store currency, whole units.
+  Free-shipping progress: a truck icon with the message, and a thin bar under it.
+  Rendered inside a [data-ajax-cart-section], so Liquid Ajax Cart re-renders it after every cart
+  change: no JavaScript needed.
+  Threshold: shop metafield custom.free_shipping_threshold (shared with a headless storefront) or
+  Theme settings > Cart > "Free shipping threshold". Store currency, whole units.
 {% enddoc %}
 {%- liquid
-    assign threshold = shop.metafields.custom.free_shipping_threshold.value | default: settings.free_shipping_threshold | times: 100
-    assign show = false
-    if settings.show_free_shipping and threshold > 0 and cart.item_count > 0
-        assign show = true
-        assign remaining = threshold | minus: cart.total_price
-        assign remaining_money = remaining | money
-        assign progress = cart.total_price | times: 100 | divided_by: threshold | at_most: 100
-    endif
+  assign threshold = shop.metafields.custom.free_shipping_threshold.value | default: settings.free_shipping_threshold | times: 100
+  assign show = false
+  if settings.show_free_shipping and threshold > 0 and cart.item_count > 0
+    assign show = true
+    assign remaining = threshold | minus: cart.total_price
+    assign remaining_money = remaining | money
+    assign progress = cart.total_price | times: 100 | divided_by: threshold | at_most: 100
+  endif
 -%}
 {%- if show -%}
-    <div class="free-shipping" style="--progress: {{ progress }}%;">
-        <p class="free-shipping__text small">
-            {%- if remaining > 0 -%}
-                {{ 'cart.free_shipping.remaining_html' | t: amount: remaining_money }}
-            {%- else -%}
-                {{ 'cart.free_shipping.unlocked' | t }}
-            {%- endif -%}
-        </p>
-        <div
-            class="free-shipping__bar"
-            role="progressbar"
-            aria-valuemin="0"
-            aria-valuemax="100"
-            aria-valuenow="{{ progress }}"
-            aria-label="{{ 'cart.free_shipping.label' | t }}"
-        ></div>
-    </div>
+  <div class="free-shipping{% if remaining <= 0 %} free-shipping--done{% endif %}" style="--progress: {{ progress }}%;">
+    <p class="free-shipping__text">
+      {%- render 'icon', name: 'truck' -%}
+      <span>
+        {%- if remaining > 0 -%}
+          {{ 'cart.free_shipping.remaining_html' | t: amount: remaining_money }}
+        {%- else -%}
+          {{ 'cart.free_shipping.unlocked_html' | t }}
+        {%- endif -%}
+      </span>
+    </p>
+    <div
+      class="free-shipping__bar"
+      role="progressbar"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="{{ progress }}"
+      aria-label="{{ 'cart.free_shipping.label' | t }}"
+    ></div>
+  </div>
 {%- endif -%}
-

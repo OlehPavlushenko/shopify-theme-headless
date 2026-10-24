@@ -1,25 +1,32 @@
 /* Generated from packages/ui/js/nav-menu.js by scripts/sync-ui.mjs. Do not edit here. */
 /**
- * <nav-menu> — desktop navigation with <details> dropdowns and mega menus.
+ * <nav-menu> — desktop navigation, disclosure pattern.
  *
- * Markup contract: <nav-menu> containing <details data-menu-item> elements, each with a <summary>.
- * Works without JS (click to toggle). With JS it adds:
- * - hover intent on mouse pointers (open after a short delay, close when the pointer leaves)
- * - only one dropdown open at a time
- * - close on outside click and on Escape (focus returns to the summary)
+ * Markup contract: <nav-menu> with items [data-menu-item], each holding a link (the title, always
+ * navigates), a toggle button (aria-expanded, aria-controls) and the panel it controls.
+ * Behavior:
+ * - mouse: hover opens the item's panel after a short delay, leaving closes it
+ * - toggle click (keyboard, touch): opens / closes
+ * - one panel open at a time; outside click, Esc (focus back to the toggle) and focus leaving
+ *   the item close it
+ * State: [data-open] on the item + aria-expanded on its toggle. CSS shows the panel from that.
  */
 const OPEN_DELAY = 90;
-const CLOSE_DELAY = 180;
+const CLOSE_DELAY = 200;
 
 class NavMenu extends HTMLElement {
   #timers = new WeakMap();
 
   connectedCallback() {
-    this.items = [...this.querySelectorAll('details[data-menu-item]')];
+    this.items = [...this.querySelectorAll('[data-menu-item]')];
     for (const item of this.items) {
-      item.addEventListener('toggle', () => item.open && this.#closeOthers(item));
-      item.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && this.#schedule(item, true));
-      item.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && this.#schedule(item, false));
+      const toggle = item.querySelector('[aria-controls]');
+      toggle?.addEventListener('click', () => this.#set(item, !item.hasAttribute('data-open')));
+      item.addEventListener('pointerenter', (event) => event.pointerType === 'mouse' && this.#schedule(item, true));
+      item.addEventListener('pointerleave', (event) => event.pointerType === 'mouse' && this.#schedule(item, false));
+      item.addEventListener('focusout', (event) => {
+        if (!item.contains(event.relatedTarget)) this.#set(item, false);
+      });
     }
     document.addEventListener('click', this.#onDocumentClick);
     this.addEventListener('keydown', this.#onKeydown);
@@ -33,24 +40,30 @@ class NavMenu extends HTMLElement {
     clearTimeout(this.#timers.get(item));
     this.#timers.set(
       item,
-      setTimeout(() => (item.open = open), open ? OPEN_DELAY : CLOSE_DELAY)
+      setTimeout(() => this.#set(item, open), open ? OPEN_DELAY : CLOSE_DELAY)
     );
   }
 
-  #closeOthers(current) {
-    for (const item of this.items) if (item !== current) item.open = false;
+  #set(item, open) {
+    clearTimeout(this.#timers.get(item));
+    if (open) {
+      for (const other of this.items) if (other !== item) this.#set(other, false);
+    }
+    item.toggleAttribute('data-open', open);
+    item.querySelector('[aria-controls]')?.setAttribute('aria-expanded', String(open));
   }
 
   #onDocumentClick = (event) => {
-    if (!this.contains(event.target)) this.#closeOthers(null);
+    if (this.contains(event.target)) return;
+    for (const item of this.items) this.#set(item, false);
   };
 
   #onKeydown = (event) => {
     if (event.key !== 'Escape') return;
-    const open = this.items.find((item) => item.open);
+    const open = this.items.find((item) => item.hasAttribute('data-open'));
     if (!open) return;
-    open.open = false;
-    open.querySelector('summary')?.focus();
+    this.#set(open, false);
+    open.querySelector('[aria-controls]')?.focus();
   };
 }
 

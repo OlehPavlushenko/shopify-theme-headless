@@ -37,7 +37,7 @@
       </button>
       <ul class="mobile-nav__list" role="list">
         <li>
-          <a href="{{ link.url }}" class="mobile-nav__link mobile-nav__link--all">{{ 'general.view_all' | t }}</a>
+          <a href="{{ link.url }}" class="mobile-nav__link mobile-nav__link--all">{{ 'general.all_title' | t: title: link.title }}</a>
         </li>
         {%- for child in link.links -%}
           {%- assign child_panel_id = panel_id | append: '-' | append: forloop.index -%}
@@ -67,7 +67,7 @@
         </button>
         <ul class="mobile-nav__list" role="list">
           <li>
-            <a href="{{ child.url }}" class="mobile-nav__link mobile-nav__link--all">{{ 'general.view_all' | t }}</a>
+            <a href="{{ child.url }}" class="mobile-nav__link mobile-nav__link--all">{{ 'general.all_title' | t: title: child.title }}</a>
           </li>
           {%- for grandchild in child.links -%}
             <li>

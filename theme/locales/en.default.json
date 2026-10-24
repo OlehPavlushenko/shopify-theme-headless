@@ -11,7 +11,8 @@
     "account": "Account",
     "cart_count": "{{ count }} items in cart",
     "back": "Back",
-    "utility_panel": "Settings"
+    "utility_panel": "Settings",
+    "submenu": "Show {{ title }} menu"
   },
   "blog": {
     "article_comments": "Comments",
@@ -113,7 +114,8 @@
     "slider": {
       "previous": "Previous",
       "next": "Next"
-    }
+    },
+    "all_title": "All {{ title }}"
   },
   "localization": {
     "currency": "Currency",

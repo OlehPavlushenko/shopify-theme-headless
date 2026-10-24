@@ -124,7 +124,7 @@
   }
 
   /* Transparent at the top of the page; solid once scrolled or while a menu is open */
-  .site-header[data-transparent]:not([data-scrolled], :has(details[open])) {
+  .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open])) {
     --color-heading: var(--header-transparent-fg);
     --color-foreground: var(--header-transparent-fg);
     --color-link-hover: var(--header-transparent-fg);
@@ -133,11 +133,11 @@
     border-color: transparent;
   }
 
-  .site-header[data-transparent]:not([data-scrolled], :has(details[open])) :is(.site-header__logo-image:has(+ .site-header__logo-image--transparent)) {
+  .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open])) :is(.site-header__logo-image:has(+ .site-header__logo-image--transparent)) {
     display: none;
   }
 
-  .site-header[data-transparent]:not([data-scrolled], :has(details[open])) .site-header__logo-image--transparent {
+  .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open])) .site-header__logo-image--transparent {
     display: block;
   }
 
@@ -215,14 +215,47 @@
     color: var(--color-link-hover);
   }
 
-  .site-nav__link .svg-icon {
+  .site-nav__item--has-menu {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Chevron toggle next to the title: opens the submenu for keyboard and touch */
+  .site-nav__toggle {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    margin-inline-start: 0.2rem;
+    padding: 0;
+    color: var(--color-heading);
+    background: none;
+    border: 0;
+    border-radius: 50%;
+  }
+
+  .site-nav__toggle:hover {
+    background: var(--color-surface);
+  }
+
+  .site-nav__toggle .svg-icon {
     --icon-size: 1.4rem;
 
     transition: rotate var(--duration-default) var(--ease);
   }
 
-  .site-nav__details[open] > .site-nav__link .svg-icon {
+  [data-menu-item][data-open] > .site-nav__toggle .svg-icon {
     rotate: 180deg;
+  }
+
+  /* Panels: shown from [data-open] (set by @ui/nav-menu); without JS on hover and focus */
+  .site-nav__panel {
+    display: none;
+  }
+
+  [data-menu-item][data-open] > .site-nav__panel,
+  html.no-js [data-menu-item]:is(:hover, :focus-within) > .site-nav__panel {
+    display: block;
   }
 
   .site-nav__dropdown {

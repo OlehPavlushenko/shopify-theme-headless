@@ -49,7 +49,7 @@ class SiteHeader extends HTMLElement {
     this.toggleAttribute('data-scrolled', y > 4);
 
     if (this.dataset.sticky === 'scroll-up') {
-      const menuOpen = this.querySelector('details[open]');
+      const menuOpen = this.querySelector('[data-menu-item][data-open], [popover]:popover-open');
       const goingDown = y > this.#lastY;
       const pastHeader = y > this.offsetHeight * 2;
       this.toggleAttribute('data-hidden', goingDown && pastHeader && !menuOpen);

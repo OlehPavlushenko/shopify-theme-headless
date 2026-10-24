@@ -1,6 +1,12 @@
 {% doc %}
-  Desktop navigation (behavior: @ui/nav-menu). Two kinds of dropdown:
-  - regular dropdown: a top-level link with children only
+  Desktop navigation (behavior: @ui/nav-menu, disclosure navigation pattern).
+  Every top-level item is a real link. Items with a submenu also get a chevron toggle button:
+  - mouse: hover opens the submenu (with intent delay), clicking the title navigates
+  - keyboard / touch: the toggle opens and closes it; Esc closes and returns focus to the toggle
+  Without JS submenus open on hover and focus (CSS fallback).
+
+  Two kinds of submenu:
+  - dropdown: a top-level link with children only
   - mega menu: a top-level link whose children have their own links (3rd level), or one that a
     "Menu promo" / "Menu products" block targets by title. Children become columns.
 
@@ -28,89 +34,102 @@
               break
             endif
           endfor
+          assign has_menu = false
+          if link.links.size > 0 or has_blocks
+            assign has_menu = true
+          endif
           assign is_mega = false
           if has_grandchildren or has_blocks
             assign is_mega = true
           endif
+          assign panel_id = 'SiteNavPanel-' | append: forloop.index
         -%}
-        <li class="site-nav__item{% if is_mega %} site-nav__item--mega{% endif %}">
-          {%- if link.links.size > 0 or has_blocks -%}
-            <details class="site-nav__details" data-menu-item>
-              <summary class="site-nav__link{% if link.active or link.child_active %} is-active{% endif %}">
-                {{- link.title | escape -}}
-                {%- render 'icon', name: 'chevron-down' -%}
-              </summary>
+        <li
+          class="site-nav__item{% if has_menu %} site-nav__item--has-menu{% endif %}{% if is_mega %} site-nav__item--mega{% endif %}"
+          {% if has_menu %}
+            data-menu-item
+          {% endif %}
+        >
+          <a
+            href="{{ link.url }}"
+            class="site-nav__link{% if link.active or link.child_active %} is-active{% endif %}"
+            {% if link.current %}
+              aria-current="page"
+            {% endif %}
+          >
+            {{- link.title | escape -}}
+          </a>
 
-              {%- if is_mega -%}
-                <div class="mega-menu">
-                  <div class="mega-menu__inner page-width">
-                    <ul class="mega-menu__columns" role="list">
-                      {%- for child in link.links -%}
-                        <li class="mega-menu__column">
-                          <a href="{{ child.url }}" class="eyebrow mega-menu__heading{% if child.active %} is-active{% endif %}">
-                            {{- child.title | escape -}}
-                          </a>
-                          {%- if child.links.size > 0 -%}
-                            <ul class="link-list" role="list">
-                              {%- for grandchild in child.links -%}
-                                <li>
-                                  <a
-                                    href="{{ grandchild.url }}"
-                                    class="link-list__link"
-                                    {% if grandchild.current %}
-                                      aria-current="page"
-                                    {% endif %}
-                                  >
-                                    {{- grandchild.title | escape -}}
-                                  </a>
-                                </li>
-                              {%- endfor -%}
-                            </ul>
-                          {%- endif -%}
-                        </li>
-                      {%- endfor -%}
-                    </ul>
-
-                    {%- if has_blocks -%}
-                      <div class="mega-menu__extras">
-                        {%- for block in blocks -%}
-                          {%- assign target = block.settings.menu_item | handleize -%}
-                          {%- if target == link_handle -%}
-                            {%- render 'mega-menu-block', block: block -%}
-                          {%- endif -%}
-                        {%- endfor -%}
-                      </div>
-                    {%- endif -%}
-                  </div>
-                </div>
-              {%- else -%}
-                <ul class="link-list site-nav__dropdown" role="list">
-                  {%- for child in link.links -%}
-                    <li>
-                      <a
-                        href="{{ child.url }}"
-                        class="link-list__link"
-                        {% if child.current %}
-                          aria-current="page"
-                        {% endif %}
-                      >
-                        {{- child.title | escape -}}
-                      </a>
-                    </li>
-                  {%- endfor -%}
-                </ul>
-              {%- endif -%}
-            </details>
-          {%- else -%}
-            <a
-              href="{{ link.url }}"
-              class="site-nav__link{% if link.active %} is-active{% endif %}"
-              {% if link.current %}
-                aria-current="page"
-              {% endif %}
+          {%- if has_menu -%}
+            <button
+              type="button"
+              class="site-nav__toggle"
+              aria-expanded="false"
+              aria-controls="{{ panel_id }}"
+              aria-label="{{ 'accessibility.submenu' | t: title: link.title }}"
             >
-              {{- link.title | escape -}}
-            </a>
+              {%- render 'icon', name: 'chevron-down' -%}
+            </button>
+
+            {%- if is_mega -%}
+              <div id="{{ panel_id }}" class="site-nav__panel mega-menu">
+                <div class="mega-menu__inner page-width">
+                  <ul class="mega-menu__columns" role="list">
+                    {%- for child in link.links -%}
+                      <li class="mega-menu__column">
+                        <a href="{{ child.url }}" class="eyebrow mega-menu__heading{% if child.active %} is-active{% endif %}">
+                          {{- child.title | escape -}}
+                        </a>
+                        {%- if child.links.size > 0 -%}
+                          <ul class="link-list" role="list">
+                            {%- for grandchild in child.links -%}
+                              <li>
+                                <a
+                                  href="{{ grandchild.url }}"
+                                  class="link-list__link"
+                                  {% if grandchild.current %}
+                                    aria-current="page"
+                                  {% endif %}
+                                >
+                                  {{- grandchild.title | escape -}}
+                                </a>
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+
+                  {%- if has_blocks -%}
+                    <div class="mega-menu__extras">
+                      {%- for block in blocks -%}
+                        {%- assign target = block.settings.menu_item | handleize -%}
+                        {%- if target == link_handle -%}
+                          {%- render 'mega-menu-block', block: block -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- else -%}
+              <ul id="{{ panel_id }}" class="site-nav__panel link-list site-nav__dropdown" role="list">
+                {%- for child in link.links -%}
+                  <li>
+                    <a
+                      href="{{ child.url }}"
+                      class="link-list__link"
+                      {% if child.current %}
+                        aria-current="page"
+                      {% endif %}
+                    >
+                      {{- child.title | escape -}}
+                    </a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
           {%- endif -%}
         </li>
       {%- endfor -%}

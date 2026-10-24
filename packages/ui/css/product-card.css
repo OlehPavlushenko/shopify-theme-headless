@@ -118,6 +118,17 @@
   }
 
   /* Row: horizontal layout (mini lists) */
+  /* Optional quick add (quick_add): above the stretched title link, at the bottom of equal-height cards */
+  .product-card:has(> .product-card__quick-add) {
+    grid-template-rows: auto 1fr auto;
+    align-content: stretch;
+  }
+
+  .product-card__quick-add {
+    position: relative;
+    z-index: 1;
+  }
+
   .product-card--row {
     grid-template-columns: 7.2rem minmax(0, 1fr);
     align-items: center;

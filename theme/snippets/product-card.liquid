@@ -9,6 +9,8 @@
   @param {string} [sizes] - sizes attribute for the image (default: grid of 2 / 4 columns)
   @param {boolean} [eager] - Load the image eagerly (first row above the fold)
   @param {string} [heading_tag] - Title element (default h3)
+  @param {boolean} [quick_add] - Add button under the price: one-click Ajax add for single-variant
+    products (Liquid Ajax Cart), a link to the product page for products with options
 {% enddoc %}
 {%- liquid
   assign media = product.featured_media
@@ -77,4 +79,22 @@
     </{{ tag }}>
     {%- render 'price', product: product -%}
   </div>
+
+  {%- if quick_add and product.available -%}
+    <div class="product-card__quick-add">
+      {%- if product.has_only_default_variant -%}
+        <ajax-cart-product-form>
+          {%- form 'product', product -%}
+            <input type="hidden" name="id" value="{{ variant.id }}">
+            <button type="submit" class="btn btn--outline btn--sm btn--full">
+              {%- render 'icon', name: 'plus' -%}
+              {{- 'products.add' | t -}}
+            </button>
+          {%- endform -%}
+        </ajax-cart-product-form>
+      {%- else -%}
+        <a href="{{ product.url }}" class="btn btn--outline btn--sm btn--full">{{ 'products.choose_options' | t }}</a>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
 </article>

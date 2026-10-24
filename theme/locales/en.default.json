@@ -68,7 +68,9 @@
     "sold_out": "Sold out",
     "sale": "Sale",
     "regular_price": "Regular price",
-    "from_price_html": "From {{ price }}"
+    "from_price_html": "From {{ price }}",
+    "add": "Add",
+    "choose_options": "Choose options"
   },
   "customers": {
     "login": {

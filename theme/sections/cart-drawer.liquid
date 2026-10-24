@@ -110,8 +110,9 @@
   {%- comment -%}
     Recommended products (Shopify related products for the items in the cart), filled by
     <cart-recommendations> in assets/cart.js once the drawer is open. Outside the re-rendered
-    [data-ajax-cart-section], so it stays put while the cart updates. Desktop: a panel left of the
-    drawer; phones: a sheet over the bottom of the drawer.
+    [data-ajax-cart-section], so it stays put while the cart updates. Desktop: a full-height column
+    that slides out from behind the drawer, cards in 2 columns; phones: a low sheet over the bottom
+    of the drawer with a swipeable row of cards.
   {%- endcomment -%}
   {%- if settings.show_cart_recommendations -%}
     <cart-recommendations class="cart-recs" aria-labelledby="CartRecs-title" inert>
@@ -121,7 +122,7 @@
           {%- render 'icon', name: 'close' -%}
         </button>
       </div>
-      <ul class="cart-upsell__list cart-recs__list" role="list" data-recs-list></ul>
+      <ul class="cart-recs__list" role="list" data-recs-list></ul>
     </cart-recommendations>
   {%- endif -%}
 </dialog>

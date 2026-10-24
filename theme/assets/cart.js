@@ -110,6 +110,110 @@ document.addEventListener('liquid-ajax-cart:request-end', (event) => {
     window.liquidAjaxCart.update({ discount: codes.filter((c) => c.applicable).map((c) => c.code).join(',') });
 });
 
+/**
+ * <cart-recommendations> — related products for what is in the cart, next to the cart drawer.
+ * - Loads only while the drawer is open: on open and after cart changes.
+ * - Seeds: the 3 newest products in the cart. Each seed's list comes from the Product
+ *   Recommendations API (intent=related, rendered by sections/cart-recommendations) and is cached
+ *   per product for the session, so quantity changes and re-opening cost no requests.
+ * - Lists are mixed round-robin (1st of A, 1st of B, 1st of C, 2nd of A…), without products that
+ *   are in the cart or already in the drawer's own "You may also like" list; 4 at most.
+ * - Slides in a moment after the drawer; the close button hides it until the cart's products change.
+ */
+const RECS_LIMIT = 4;
+const RECS_DELAY = 700;
+
+class CartRecommendations extends HTMLElement {
+    #cache = new Map();
+    #key = '';
+    #dismissed = false;
+    #timer;
+
+    connectedCallback() {
+        this.list = this.querySelector('[data-recs-list]');
+        this.dialog = this.closest('dialog');
+        if (!this.list || !this.dialog || !settings.recommendationsUrl) return;
+        this.dialog.addEventListener('dialog:open', () => this.#refresh(RECS_DELAY));
+        this.dialog.addEventListener('close', () => this.#toggle(false));
+        this.querySelector('[data-recs-close]')?.addEventListener('click', () => {
+            this.#dismissed = true;
+            this.#toggle(false);
+        });
+        document.addEventListener('liquid-ajax-cart:request-end', () => {
+            if (this.dialog.open) this.#refresh(0);
+        });
+    }
+
+    async #refresh(delay) {
+        const items = window.liquidAjaxCart?.cart?.items ?? [];
+        const inCart = new Set(items.map((item) => item.product_id));
+        const seeds = [...inCart].slice(0, 3);
+        const key = seeds.join(',');
+        if (key !== this.#key) {
+            this.#key = key;
+            this.#dismissed = false;
+        }
+        if (!seeds.length || this.#dismissed) return this.#toggle(false);
+
+        const lists = await Promise.all(seeds.map((id) => this.#load(id)));
+        const skip = new Set([
+            ...inCart,
+            ...[...this.dialog.querySelectorAll('.cart-upsell [data-product-id]')].map((el) => Number(el.dataset.productId)),
+        ]);
+        const picked = [];
+        for (let i = 0; picked.length < RECS_LIMIT && lists.some((list) => i < list.length); i++) {
+            for (const list of lists) {
+                const row = list[i];
+                if (!row || skip.has(row.id) || picked.length >= RECS_LIMIT) continue;
+                skip.add(row.id);
+                picked.push(row);
+            }
+        }
+        if (!picked.length) return this.#toggle(false);
+
+        this.list.innerHTML = picked.map((row) => row.html).join('');
+        clearTimeout(this.#timer);
+        this.#timer = setTimeout(() => this.dialog.open && this.#toggle(true), delay);
+    }
+
+    async #load(productId) {
+        const storageKey = `cart-recs:${productId}`;
+        if (!this.#cache.has(productId)) {
+            let stored = null;
+            try {
+                stored = JSON.parse(sessionStorage.getItem(storageKey));
+            } catch {}
+            this.#cache.set(productId, stored ? Promise.resolve(stored) : this.#fetch(productId, storageKey));
+        }
+        return this.#cache.get(productId);
+    }
+
+    async #fetch(productId, storageKey) {
+        try {
+            const url = new URL(settings.recommendationsUrl, location.origin);
+            url.search = new URLSearchParams({ product_id: productId, limit: 6, intent: 'related', section_id: 'cart-recommendations' });
+            const response = await fetch(url);
+            if (!response.ok) return [];
+            const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+            const rows = [...doc.querySelectorAll('[data-product-id]')].map((el) => ({ id: Number(el.dataset.productId), html: el.outerHTML }));
+            try {
+                sessionStorage.setItem(storageKey, JSON.stringify(rows));
+            } catch {}
+            return rows;
+        } catch {
+            return [];
+        }
+    }
+
+    #toggle(open) {
+        if (!open) clearTimeout(this.#timer);
+        this.toggleAttribute('data-open', open);
+        this.inert = !open;
+    }
+}
+
+if (!customElements.get('cart-recommendations')) customElements.define('cart-recommendations', CartRecommendations);
+
 document.addEventListener('liquid-ajax-cart:request-end', (event) => {
     const { requestState } = event.detail;
     if (requestState.requestType !== 'add' || !requestState.responseData?.ok) return;

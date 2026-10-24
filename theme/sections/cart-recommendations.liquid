@@ -1,0 +1,23 @@
+{% comment %}
+  Markup source for the recommendations panel next to the cart drawer. Never placed on a page:
+  <cart-recommendations> (assets/cart.js) requests it through the Product Recommendations API,
+  /recommendations/products?product_id=…&intent=related&section_id=cart-recommendations,
+  and takes the [data-product-id] rows. Rows are the same compact item as the cart upsell list.
+{% endcomment %}
+{%- if recommendations.performed and recommendations.products_count > 0 -%}
+  <ul role="list">
+    {%- for product in recommendations.products -%}
+      {%- if product.available -%}
+        {%- render 'cart-upsell-item', product: product -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.cart_recommendations.name",
+  "class": "cart-recommendations-section",
+  "settings": []
+}
+{% endschema %}

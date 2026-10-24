@@ -57,7 +57,11 @@
       "remove": "Remove promo code {{ code }}",
       "invalid": "Code {{ code }} can’t be applied to this cart"
     },
-    "checkout_total": "Checkout — {{ total }}"
+    "checkout_total": "Checkout — {{ total }}",
+    "recommendations": {
+      "title": "Recommended for you",
+      "close": "Hide recommendations"
+    }
   },
   "products": {
     "add_to_cart": "Add to cart",

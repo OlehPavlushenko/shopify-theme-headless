@@ -383,6 +383,17 @@
       },
       {
         "type": "header",
+        "content": "t:settings.cart.recommendations"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_cart_recommendations",
+        "label": "t:settings.cart.show_cart_recommendations",
+        "info": "t:settings.cart.show_cart_recommendations_info",
+        "default": true
+      },
+      {
+        "type": "header",
         "content": "t:settings.cart.order_details"
       },
       {

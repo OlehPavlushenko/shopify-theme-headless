@@ -4,6 +4,7 @@
   so it stays open while the cart updates.
   Header: title and the free-shipping progress under it. Body: lines and upsell (scrolls).
   Footer: promo code, order details, totals, checkout.
+  Next to it: the recommendations panel (<cart-recommendations>).
   Also holds #CartNotification, used when Theme settings > Cart > "After adding to cart" is "Notification".
   Rendered from layout/theme.liquid on every page except /cart.
 {% endcomment %}
@@ -14,7 +15,7 @@
 
 <dialog
   id="CartDrawer"
-  class="drawer color-{{ section.settings.color_scheme }}"
+  class="drawer cart-drawer color-{{ section.settings.color_scheme }}"
   aria-labelledby="CartDrawer-title"
 >
   <div class="drawer__inner" data-ajax-cart-section>
@@ -105,6 +106,24 @@
       </form>
     {%- endif -%}
   </div>
+
+  {%- comment -%}
+    Recommended products (Shopify related products for the items in the cart), filled by
+    <cart-recommendations> in assets/cart.js once the drawer is open. Outside the re-rendered
+    [data-ajax-cart-section], so it stays put while the cart updates. Desktop: a panel left of the
+    drawer; phones: a sheet over the bottom of the drawer.
+  {%- endcomment -%}
+  {%- if settings.show_cart_recommendations -%}
+    <cart-recommendations class="cart-recs" aria-labelledby="CartRecs-title" inert>
+      <div class="cart-recs__head">
+        <p id="CartRecs-title" class="eyebrow">{{ 'cart.recommendations.title' | t }}</p>
+        <button type="button" class="btn btn--icon cart-recs__close" data-recs-close aria-label="{{ 'cart.recommendations.close' | t }}">
+          {%- render 'icon', name: 'close' -%}
+        </button>
+      </div>
+      <ul class="cart-upsell__list cart-recs__list" role="list" data-recs-list></ul>
+    </cart-recommendations>
+  {%- endif -%}
 </dialog>
 
 <dialog

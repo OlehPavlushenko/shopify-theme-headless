@@ -5,7 +5,7 @@
     @param {object} product - Product to suggest
 {% enddoc %}
 {%- assign variant = product.selected_or_first_available_variant -%}
-<li class="cart-upsell__item">
+<li class="cart-upsell__item" data-product-id="{{ product.id }}">
     <a href="{{ product.url }}" class="frame cart-upsell__media" style="--frame-ratio: 1;" tabindex="-1" aria-hidden="true">
         {%- if product.featured_image -%}
             {{ product.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', width: 120, height: 120, sizes: '60px' }}

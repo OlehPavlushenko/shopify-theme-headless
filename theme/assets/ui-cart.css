@@ -480,6 +480,67 @@
     color: var(--color-link-hover);
   }
 
+  /* --------------------------------------- recommendations panel */
+  /* Lives inside the drawer <dialog>, so the dialog must not clip it */
+  .cart-drawer {
+    overflow: visible;
+  }
+
+  /* Phones and tablets: a sheet over the bottom of the drawer */
+  .cart-recs {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 2;
+    display: grid;
+    gap: var(--space-s);
+    max-height: 65%;
+    padding: var(--space-m) var(--space-l) var(--space-l);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--color-background);
+    border-radius: var(--radius-card) var(--radius-card) 0 0;
+    box-shadow: var(--shadow-overlay);
+    visibility: hidden;
+    opacity: 0;
+    translate: 0 100%;
+    transition:
+      translate var(--duration-long) var(--ease-out),
+      opacity var(--duration-default) var(--ease),
+      visibility 0s linear var(--duration-long);
+  }
+
+  .cart-recs[data-open] {
+    visibility: visible;
+    opacity: 1;
+    translate: 0 0;
+    transition:
+      translate var(--duration-long) var(--ease-out),
+      opacity var(--duration-default) var(--ease);
+  }
+
+  .cart-recs__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-right: calc(var(--space-s) * -1);
+  }
+
+  .cart-recs__close {
+    width: 3.6rem;
+    min-height: 3.6rem;
+  }
+
+  /* Desktop: a card to the left of the drawer */
+  @media (min-width: 990px) {
+    .cart-recs {
+      inset: var(--space-m) calc(100% + var(--space-m)) auto auto;
+      width: 32rem;
+      max-height: calc(100% - var(--space-m) * 2);
+      border-radius: var(--radius-card);
+      translate: 2.4rem 0;
+    }
+  }
+
   /* -------------------------------------------------------- cart page */
   .main-cart__title {
     margin-bottom: var(--space-xl);

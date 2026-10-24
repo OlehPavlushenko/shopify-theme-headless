@@ -226,7 +226,7 @@
 
   .site-nav__dropdown {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 0.1rem); /* below the header border line, not over it */
     left: calc(var(--space-l) * -1);
     min-width: 22rem;
     padding: var(--space-s) var(--space-l) var(--space-m);

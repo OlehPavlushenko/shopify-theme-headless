@@ -145,14 +145,14 @@
 
 {%- if menu.links.size > 0 -%}
   {%- comment -%}
-    Mobile menu: a popover (not a modal dialog), so the header stays usable and its toggle closes
-    the menu. It sits under the header (--header-bottom from @ui/header). Light dismiss and Esc
-    come from the Popover API.
+    Mobile menu: a manual popover (not a modal dialog), so the header stays usable and its toggle
+    closes the menu. It sits under the header (--header-bottom from @ui/header). Toggle, outside
+    click and Esc are handled by @ui/dialog, which also plays the closing animation.
   {%- endcomment -%}
   <div
     id="MenuPanel"
     class="menu-panel color-{{ section.settings.color_scheme }}"
-    popover
+    popover="manual"
     aria-label="{{ 'accessibility.menu' | t }}"
   >
     <div class="menu-panel__inner page-width">

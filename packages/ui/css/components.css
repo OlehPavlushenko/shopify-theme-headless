@@ -450,7 +450,7 @@
       display var(--duration-long) allow-discrete;
   }
 
-  .drawer:is([open], :popover-open) {
+  .drawer:is([open], :popover-open):not([data-closing]) {
     translate: 0 0;
     transition-duration: var(--duration-long);
     transition-timing-function: var(--ease-out);
@@ -503,7 +503,7 @@
       display var(--duration-long) allow-discrete;
   }
 
-  .popup[open] {
+  .popup[open]:not([data-closing]) {
     opacity: 1;
     scale: 1;
   }
@@ -526,8 +526,8 @@
       display var(--duration-long) allow-discrete;
   }
 
-  .drawer:is([open], :popover-open)::backdrop,
-  .popup[open]::backdrop {
+  .drawer:is([open], :popover-open):not([data-closing])::backdrop,
+  .popup[open]:not([data-closing])::backdrop {
     background: var(--backdrop-color);
     backdrop-filter: blur(2px);
   }

@@ -135,7 +135,11 @@ Every new section and snippet follows these rules:
 
 - Native `<dialog>` for every drawer and modal (`@ui/dialog`):
   `[data-dialog-open="<id>"]` opens, `[data-dialog-close]` closes, backdrop click and Esc close.
-  Non-modal panels use the Popover API (`popovertarget`): utility panel, mobile menu under the header.
+  Non-modal panels are `popover="manual"` opened by `popovertarget` buttons: utility panel, mobile menu
+  under the header; `@ui/dialog` handles their buttons, outside click and Esc.
+  Closing is animated by JS for both: `[data-closing]` is set, the leaving transition runs, then
+  close()/hidePopover() — so open-state styles go on `[open]:not([data-closing])` /
+  `:popover-open:not([data-closing])`. Don't rely on `overlay`/`display` exit transitions (not in every browser).
 - Cart: Liquid Ajax Cart v2 re-renders `[data-ajax-cart-section]` after every cart request, so cart
   markup and totals stay in Liquid. `theme/assets/cart.js` only handles "after adding to cart".
 - No third-party runtime dependencies other than Liquid Ajax Cart.

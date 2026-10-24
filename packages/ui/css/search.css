@@ -27,7 +27,7 @@
       display var(--duration-long) allow-discrete;
   }
 
-  .search-panel[open] {
+  .search-panel[open]:not([data-closing]) {
     translate: 0 0;
     transition-duration: var(--duration-long);
     transition-timing-function: var(--ease-out);
@@ -53,7 +53,7 @@
       display var(--duration-long) allow-discrete;
   }
 
-  .search-panel[open]::backdrop {
+  .search-panel[open]:not([data-closing])::backdrop {
     background: var(--backdrop-color);
   }
 

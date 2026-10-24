@@ -438,7 +438,7 @@
       display var(--duration-default) allow-discrete;
   }
 
-  .menu-panel:popover-open {
+  .menu-panel:popover-open:not([data-closing]) {
     display: block;
     opacity: 1;
   }

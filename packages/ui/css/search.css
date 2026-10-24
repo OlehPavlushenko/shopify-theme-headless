@@ -149,14 +149,14 @@
     display: none;
   }
 
-  /* Empty state link groups side by side on phones and in the drawer */
-  .search-panel__empty .search-results__aside {
+  /* Link groups (empty state and typed results) side by side on phones and in the drawer */
+  .search-panel .search-results__aside {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-xl) var(--space-m);
   }
 
   @media (min-width: 750px) {
-    .search-panel--top .search-panel__empty .search-results__aside {
+    .search-panel--top .search-results__aside {
       grid-template-columns: minmax(0, 1fr);
     }
   }
@@ -184,6 +184,7 @@
 
   .search-results__group {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-s);
     align-content: start;
   }

@@ -314,6 +314,7 @@
   /* Plain list of links (search suggestions, quick links, collections, pages…), optional leading icon */
   .link-list {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .link-list__link {
@@ -329,6 +330,14 @@
 
   .link-list__link:hover {
     color: var(--color-link-hover);
+  }
+
+  /* Optional text wrapper: one line, cut with an ellipsis in narrow columns */
+  .link-list__text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   /* Highlighted match inside a link (e.g. the typed part of a search suggestion) */

@@ -83,7 +83,7 @@
                   <li {{ block.shopify_attributes }}>
                     <a href="{{ routes.search_url }}?q={{ block.settings.term | url_encode }}" class="link-list__link">
                       {%- render 'icon', name: 'search' -%}
-                      {{- block.settings.term | escape -}}
+                      <span class="link-list__text">{{- block.settings.term | escape -}}</span>
                     </a>
                   </li>
                 {%- endif -%}
@@ -101,7 +101,7 @@
                 {%- if block.settings.title != blank -%}
                   <li {{ block.shopify_attributes }}>
                     <a href="{{ block.settings.link | default: routes.root_url }}" class="link-list__link">
-                      {{- block.settings.title | escape -}}
+                      <span class="link-list__text">{{- block.settings.title | escape -}}</span>
                     </a>
                   </li>
                 {%- endif -%}
@@ -119,7 +119,7 @@
                     <ul class="link-list" role="list">
                       {%- for collection in block.settings.collections -%}
                         <li>
-                          <a href="{{ collection.url }}" class="link-list__link">{{ collection.title | escape }}</a>
+                          <a href="{{ collection.url }}" class="link-list__link"><span class="link-list__text">{{ collection.title | escape }}</span></a>
                         </li>
                       {%- endfor -%}
                     </ul>

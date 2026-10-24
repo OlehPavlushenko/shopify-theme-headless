@@ -17,7 +17,7 @@
         <div class="search-results__aside">
           {%- if resources.queries.size > 0 -%}
             <section class="search-results__group" aria-labelledby="PredictiveQueries">
-              <h2 id="PredictiveQueries" class="search-results__heading">{{ 'search.suggestions' | t }}</h2>
+              <h2 id="PredictiveQueries" class="eyebrow search-results__heading">{{ 'search.suggestions' | t }}</h2>
               <ul class="link-list" role="list">
                 {%- for query in resources.queries -%}
                   <li>
@@ -33,7 +33,7 @@
 
           {%- if resources.collections.size > 0 -%}
             <section class="search-results__group" aria-labelledby="PredictiveCollections">
-              <h2 id="PredictiveCollections" class="search-results__heading">{{ 'search.collections' | t }}</h2>
+              <h2 id="PredictiveCollections" class="eyebrow search-results__heading">{{ 'search.collections' | t }}</h2>
               <ul class="link-list" role="list">
                 {%- for collection in resources.collections -%}
                   <li><a href="{{ collection.url }}" class="link-list__link">{{ collection.title | escape }}</a></li>
@@ -44,7 +44,7 @@
 
           {%- if resources.pages.size > 0 or resources.articles.size > 0 -%}
             <section class="search-results__group" aria-labelledby="PredictivePages">
-              <h2 id="PredictivePages" class="search-results__heading">{{ 'search.pages' | t }}</h2>
+              <h2 id="PredictivePages" class="eyebrow search-results__heading">{{ 'search.pages' | t }}</h2>
               <ul class="link-list" role="list">
                 {%- for page in resources.pages -%}
                   <li><a href="{{ page.url }}" class="link-list__link">{{ page.title | escape }}</a></li>
@@ -59,7 +59,7 @@
         {%- if resources.products.size > 0 -%}
           <section class="search-results__group search-results__main" aria-labelledby="PredictiveProducts">
             <div class="search-results__head">
-              <h2 id="PredictiveProducts" class="search-results__heading">{{ 'search.products' | t }}</h2>
+              <h2 id="PredictiveProducts" class="eyebrow search-results__heading">{{ 'search.products' | t }}</h2>
               <a href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}&options%5Bprefix%5D=last" class="search-results__all-link">
                 {{- 'search.view_all_html' | t: terms: terms -}}
                 {%- render 'icon', name: 'arrow-right' -%}

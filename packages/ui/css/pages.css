@@ -28,7 +28,7 @@
   .page-section :where(button, input[type='submit']) {
     min-height: var(--control-height);
     padding: 0 var(--space-l);
-    font-weight: var(--font-body-weight-bold);
+    font-weight: var(--font-body-weight-semibold);
     color: var(--color-button-label);
     background: var(--color-button);
     border: 0.1rem solid var(--color-button);

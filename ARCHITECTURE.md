@@ -67,6 +67,28 @@ scripts/
   `--color-heading`, `--color-link-hover`, `--color-accent`, `--color-accent-2`, `--color-surface`,
   `--color-border`, `--color-button*`, `--color-input-*`.
 
+## Typography
+
+Proportions follow shadcn/ui (Tailwind scale); no third-party CSS is used, only the scale.
+
+| Token | Size / line height | Used for |
+|---|---|---|
+| `--text-xs` | 12 / 16 | badges, eyebrows, captions |
+| `--text-sm` | 14 / 20 | UI text: buttons, labels, links, card title and price |
+| `--text-md` | 16 / 24 | body, inputs (never smaller: iOS zooms on focus) |
+| `--text-lg` | 18 / 28 | lead text, h5 |
+| `--text-xl` | 20 / 28 | h4 |
+| `--text-2xl` | 24 / 32 | h3 |
+| `--text-3xl` → `--text-4xl` | 30 → 36 fluid | h2 |
+| `--text-4xl` → `--text-5xl` | 36 → 48 fluid | h1 |
+
+Weights: 400 body, 500 UI (buttons, labels, links), 600 emphasis (prices, badges, eyebrows, active
+nav), heading weight from the heading font. Tracking: `--tracking-tight` on headings,
+`--tracking-wide` on uppercase eyebrows only.
+
+Roles in `base.css`: `h1`–`h6` / `.h1`–`.h6`, `.text-lead`, `.text-sm`, `.text-xs`, `.label`, `.eyebrow`.
+Components never set raw font sizes or weights; they use these tokens or roles.
+
 ## Liquid
 
 - Template sections are named `main-<template>` (`main-product`, `main-cart`); reusable sections and

@@ -76,7 +76,7 @@
               {%- when 'search_term' -%}
                 {%- if prev.type != 'search_term' -%}
                   <section class="search-results__group">
-                    <h2 class="search-results__heading">{{ 'search.popular' | t }}</h2>
+                    <h2 class="eyebrow search-results__heading">{{ 'search.popular' | t }}</h2>
                     <ul class="link-list" role="list">
                 {%- endif -%}
                 {%- if block.settings.term != blank -%}
@@ -95,7 +95,7 @@
               {%- when 'search_link' -%}
                 {%- if prev.type != 'search_link' -%}
                   <section class="search-results__group">
-                    <h2 class="search-results__heading">{{ 'search.quick_links' | t }}</h2>
+                    <h2 class="eyebrow search-results__heading">{{ 'search.quick_links' | t }}</h2>
                     <ul class="link-list" role="list">
                 {%- endif -%}
                 {%- if block.settings.title != blank -%}
@@ -114,7 +114,7 @@
                 {%- if block.settings.collections.count > 0 -%}
                   <section class="search-results__group" {{ block.shopify_attributes }}>
                     {%- if block.settings.heading != blank -%}
-                      <h2 class="search-results__heading">{{ block.settings.heading | escape }}</h2>
+                      <h2 class="eyebrow search-results__heading">{{ block.settings.heading | escape }}</h2>
                     {%- endif -%}
                     <ul class="link-list" role="list">
                       {%- for collection in block.settings.collections -%}
@@ -142,7 +142,7 @@
             {%- if block_products.size > 0 or block_products.count > 0 -%}
               <section class="search-results__group" {{ block.shopify_attributes }}>
                 {%- if block.settings.heading != blank -%}
-                  <h2 class="search-results__heading">{{ block.settings.heading | escape }}</h2>
+                  <h2 class="eyebrow search-results__heading">{{ block.settings.heading | escape }}</h2>
                 {%- endif -%}
                 <ul class="search-results__products" role="list">
                   {%- for product in block_products limit: block.settings.limit -%}

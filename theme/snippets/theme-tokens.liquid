@@ -9,12 +9,17 @@
   assign body_font_bold = body_font | font_modify: 'weight', 'bold'
   assign body_font_italic = body_font | font_modify: 'style', 'italic'
   assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+  assign body_font_medium = body_font | font_modify: 'weight', '500'
+  assign body_font_semibold = body_font | font_modify: 'weight', '600'
 -%}
 {%- style -%}
   {{ body_font | font_face: font_display: 'swap' }}
   {{ body_font_bold | font_face: font_display: 'swap' }}
   {{ body_font_italic | font_face: font_display: 'swap' }}
   {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+  {%- comment -%} Medium/semibold weights used by labels, buttons, prices (skipped when the family lacks them) {%- endcomment -%}
+  {{ body_font_medium | font_face: font_display: 'swap' }}
+  {{ body_font_semibold | font_face: font_display: 'swap' }}
   {{ heading_font | font_face: font_display: 'swap' }}
 
   :root {
@@ -22,6 +27,8 @@
     --font-body-style: {{ body_font.style }};
     --font-body-weight: {{ body_font.weight }};
     --font-body-weight-bold: {{ body_font.weight | plus: 300 | at_most: 1000 }};
+    --font-body-weight-medium: {% if body_font_medium %}500{% else %}{{ body_font.weight }}{% endif %};
+    --font-body-weight-semibold: {% if body_font_semibold %}600{% else %}{{ body_font.weight | plus: 300 | at_most: 1000 }}{% endif %};
     --font-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
     --font-heading-style: {{ heading_font.style }};
     --font-heading-weight: {{ heading_font.weight }};

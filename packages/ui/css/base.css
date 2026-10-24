@@ -94,7 +94,7 @@
     font-style: var(--font-body-style);
     font-weight: var(--font-body-weight);
     font-size: var(--text-md);
-    line-height: var(--leading-normal);
+    line-height: var(--leading-md);
     color: var(--color-foreground);
     background: var(--color-background-gradient), var(--color-background);
     -webkit-font-smoothing: antialiased;
@@ -112,42 +112,88 @@
     background: var(--color-background-gradient), var(--color-background);
   }
 
-  /* Typography */
+  /*
+   * Typography (proportions follow shadcn/Tailwind). Components use these roles, never raw sizes:
+   *   h1–h6 / .h1–.h6   page and section headings (heading font, tight tracking)
+   *   .text-lead        large intro text
+   *   body              16/24
+   *   .text-sm .text-xs smaller copy
+   *   .label            field labels, small titles: 14/20 medium
+   *   .eyebrow          group labels above lists: 12/16 semibold, uppercase, wide tracking, muted
+   * Fluid headings scale from the mobile step to the desktop step.
+   */
   h1, h2, h3, h4, h5, h6,
   .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: var(--font-heading-family);
     font-style: var(--font-heading-style);
     font-weight: var(--font-heading-weight);
-    line-height: var(--leading-snug);
-    letter-spacing: var(--tracking-heading);
+    letter-spacing: var(--tracking-tight);
     color: var(--color-heading);
     text-wrap: balance;
   }
 
   h1, .h1 {
-    font-size: calc(var(--font-heading-scale) * var(--text-4xl));
+    font-size: calc(var(--font-heading-scale) * clamp(var(--text-4xl), 2.6rem + 2.4vw, var(--text-5xl)));
     line-height: var(--leading-tight);
   }
 
   h2, .h2 {
-    font-size: calc(var(--font-heading-scale) * var(--text-3xl));
+    font-size: calc(var(--font-heading-scale) * clamp(var(--text-3xl), 2.4rem + 1.4vw, var(--text-4xl)));
     line-height: var(--leading-tight);
   }
 
   h3, .h3 {
     font-size: calc(var(--font-heading-scale) * var(--text-2xl));
+    line-height: var(--leading-2xl);
   }
 
   h4, .h4 {
     font-size: calc(var(--font-heading-scale) * var(--text-xl));
+    line-height: var(--leading-xl);
   }
 
   h5, .h5 {
     font-size: calc(var(--font-heading-scale) * var(--text-lg));
+    line-height: var(--leading-lg);
   }
 
   h6, .h6 {
     font-size: calc(var(--font-heading-scale) * var(--text-md));
+    line-height: var(--leading-md);
+  }
+
+  .text-lead {
+    font-size: var(--text-lg);
+    line-height: var(--leading-lg);
+    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+  }
+
+  .text-sm,
+  .small {
+    font-size: var(--text-sm);
+    line-height: var(--leading-sm);
+  }
+
+  .text-xs {
+    font-size: var(--text-xs);
+    line-height: var(--leading-xs);
+  }
+
+  .label {
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-medium);
+    line-height: var(--leading-sm);
+    color: var(--color-heading);
+  }
+
+  .eyebrow {
+    font-family: var(--font-body-family);
+    font-size: var(--text-xs);
+    font-weight: var(--font-body-weight-semibold);
+    line-height: var(--leading-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-foreground) 70%, transparent);
   }
 
   p {
@@ -156,7 +202,7 @@
 
   strong,
   b {
-    font-weight: var(--font-body-weight-bold);
+    font-weight: var(--font-body-weight-semibold);
   }
 
   a {
@@ -315,9 +361,6 @@
   .text-center { text-align: center; }
   .text-end { text-align: end; }
 
-  .small {
-    font-size: var(--text-sm);
-  }
 
   .muted {
     color: color-mix(in srgb, var(--color-foreground) 72%, transparent);

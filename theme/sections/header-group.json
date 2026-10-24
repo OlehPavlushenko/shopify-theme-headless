@@ -76,16 +76,34 @@
           "type": "search_products",
           "settings": {
             "heading": "Best sellers",
-            "collection": "",
+            "collection": "hydrogen",
             "products": [
               "omega-complex",
               "collagen-active-kolagen",
-              "active-set",
               "zelena-formula",
-              "macrosorb",
               "imunna-formula"
             ],
             "limit": 6
+          }
+        },
+        "search_products_XDhR3N": {
+          "type": "search_products",
+          "settings": {
+            "heading": "Sale",
+            "collection": "automated-collection",
+            "products": [],
+            "limit": 4
+          }
+        },
+        "search_collections_i3f4ma": {
+          "type": "search_collections",
+          "settings": {
+            "heading": "Shop by category",
+            "collections": [
+              "hydrogen",
+              "frontpage",
+              "automated-collection"
+            ]
           }
         }
       },
@@ -99,7 +117,9 @@
         "search_link_2",
         "search_link_3",
         "search_link_4",
-        "search_products_1"
+        "search_products_1",
+        "search_products_XDhR3N",
+        "search_collections_i3f4ma"
       ],
       "settings": {
         "color_scheme": "",

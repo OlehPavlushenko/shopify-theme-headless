@@ -42,7 +42,7 @@
   }
 
   .cart-line__title {
-    font-weight: var(--font-body-weight-bold);
+    font-weight: var(--font-body-weight-semibold);
     text-decoration: none;
     color: var(--color-heading);
   }
@@ -149,7 +149,7 @@
     align-items: center;
     justify-content: space-between;
     font-size: var(--text-sm);
-    font-weight: var(--font-body-weight-bold);
+    font-weight: var(--font-body-weight-semibold);
     color: var(--color-heading);
   }
 
@@ -226,7 +226,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-weight: var(--font-body-weight-bold);
+    font-weight: var(--font-body-weight-semibold);
     color: var(--color-heading);
   }
 

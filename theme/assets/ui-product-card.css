@@ -49,7 +49,7 @@
 
   .product-card__vendor {
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-label);
+    line-height: var(--leading-xs);
     color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
   }
 
@@ -59,8 +59,8 @@
     overflow: hidden;
     font-family: var(--font-body-family);
     font-size: var(--text-sm);
-    font-weight: var(--font-body-weight-bold);
-    line-height: var(--leading-snug);
+    font-weight: var(--font-body-weight-medium);
+    line-height: var(--leading-sm);
     letter-spacing: 0;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;

@@ -20,11 +20,11 @@
     border: 0;
     box-shadow: var(--shadow-overlay);
     translate: 0 -100%;
-    /* Leaving: short and accelerating; entering ([open]): long and decelerating */
+    /* Leaving: an even slide out (ease-in-out); entering ([open]): decelerating (ease-out) */
     transition:
-      translate var(--duration-default) var(--ease-in),
-      overlay var(--duration-default) allow-discrete,
-      display var(--duration-default) allow-discrete;
+      translate var(--duration-long) var(--ease-in-out),
+      overlay var(--duration-long) allow-discrete,
+      display var(--duration-long) allow-discrete;
   }
 
   .search-panel[open] {
@@ -49,8 +49,8 @@
     background: transparent;
     transition:
       background-color var(--duration-default) var(--ease),
-      overlay var(--duration-default) allow-discrete,
-      display var(--duration-default) allow-discrete;
+      overlay var(--duration-long) allow-discrete,
+      display var(--duration-long) allow-discrete;
   }
 
   .search-panel[open]::backdrop {

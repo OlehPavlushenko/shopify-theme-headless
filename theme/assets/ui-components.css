@@ -444,11 +444,11 @@
     margin: 0;
     padding: 0;
     translate: 100% 0;
-    /* Leaving: short and accelerating; entering (open state below): long and decelerating */
+    /* Leaving: an even slide out (ease-in-out); entering (open state below): decelerating (ease-out) */
     transition:
-      translate var(--duration-default) var(--ease-in),
-      overlay var(--duration-default) allow-discrete,
-      display var(--duration-default) allow-discrete;
+      translate var(--duration-long) var(--ease-in-out),
+      overlay var(--duration-long) allow-discrete,
+      display var(--duration-long) allow-discrete;
   }
 
   .drawer:is([open], :popover-open) {
@@ -500,8 +500,8 @@
     transition:
       opacity var(--duration-default) var(--ease),
       scale var(--duration-default) var(--ease-out),
-      overlay var(--duration-default) allow-discrete,
-      display var(--duration-default) allow-discrete;
+      overlay var(--duration-long) allow-discrete,
+      display var(--duration-long) allow-discrete;
   }
 
   .popup[open] {
@@ -523,8 +523,8 @@
     transition:
       background-color var(--duration-default) var(--ease),
       backdrop-filter var(--duration-default) var(--ease),
-      overlay var(--duration-default) allow-discrete,
-      display var(--duration-default) allow-discrete;
+      overlay var(--duration-long) allow-discrete,
+      display var(--duration-long) allow-discrete;
   }
 
   .drawer:is([open], :popover-open)::backdrop,

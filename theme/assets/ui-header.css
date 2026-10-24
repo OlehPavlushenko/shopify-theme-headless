@@ -418,10 +418,9 @@
     background: var(--color-background);
     border: 0; /* the header border above is the only line */
     opacity: 0;
-    translate: 0 -0.8rem;
+    /* The panel itself never moves (moving it would cover the header line); only its content slides */
     transition:
       opacity var(--duration-default) var(--ease),
-      translate var(--duration-default) var(--ease-out),
       overlay var(--duration-default) allow-discrete,
       display var(--duration-default) allow-discrete;
   }
@@ -429,13 +428,11 @@
   .menu-panel:popover-open {
     display: block;
     opacity: 1;
-    translate: 0 0;
   }
 
   @starting-style {
     .menu-panel:popover-open {
       opacity: 0;
-      translate: 0 -0.8rem;
     }
   }
 
@@ -451,6 +448,13 @@
 
   .menu-panel__inner {
     padding-block: var(--space-s) var(--space-2xl);
+    transition: translate var(--duration-default) var(--ease-out);
+  }
+
+  @starting-style {
+    .menu-panel:popover-open .menu-panel__inner {
+      translate: 0 -0.8rem;
+    }
   }
 
   /* Drill-down levels */

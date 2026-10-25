@@ -3,7 +3,7 @@ import { createAdminApiClient } from '@shopify/admin-api-client';
 
 const client = createAdminApiClient({
   storeDomain: process.env.SHOPIFY_STORE_NAME, // xxx.myshopify.com
-  apiVersion: process.env.SHOPIFY_API_VERSION || '2025-07',
+  apiVersion: process.env.SHOPIFY_API_VERSION || '2026-10',
   accessToken: process.env.SHOPIFY_ADMIN_API_PASSWORD,
 });
 

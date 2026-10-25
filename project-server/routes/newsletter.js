@@ -35,17 +35,19 @@ router.post('/', async (req, res) => {
   }
 });
 
+// Exact lookup by email; the customers(query:) search uses an index that lags behind by a few
+// seconds, so a repeated sign-up would try to create the customer twice
 async function findCustomer(email) {
-  // The email is validated above (no quotes or spaces), so it is safe inside the search query
   const data = await admin(
-    `query ($query: String!) {
-      customers(first: 1, query: $query) {
-        nodes { id emailMarketingConsent { marketingState } }
+    `query ($email: String!) {
+      customerByIdentifier(identifier: { emailAddress: $email }) {
+        id
+        emailMarketingConsent { marketingState }
       }
     }`,
-    { query: `email:"${email}"` }
+    { email }
   );
-  return data.customers.nodes[0] ?? null;
+  return data.customerByIdentifier ?? null;
 }
 
 async function createSubscriber(email) {

@@ -27,9 +27,39 @@
         "success_text": "",
         "color_scheme": "scheme-4"
       }
+    },
+    "announcements": {
+      "type": "announcement-bar",
+      "blocks": {
+        "msg_rewards": {
+          "type": "message",
+          "settings": {
+            "text": "<strong>10% back</strong> in rewards on your first order",
+            "link": "shopify://pages/contact"
+          }
+        },
+        "msg_shipping": {
+          "type": "message",
+          "settings": {
+            "text": "Free shipping on orders over ₴1,200",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "msg_rewards",
+        "msg_shipping"
+      ],
+      "settings": {
+        "color_scheme": "scheme-4",
+        "autoplay": 5,
+        "show_from": "",
+        "show_until": ""
+      }
     }
   },
   "order": [
+    "announcements",
     "newsletter",
     "footer"
   ]

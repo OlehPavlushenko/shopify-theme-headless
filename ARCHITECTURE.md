@@ -112,7 +112,8 @@ its own sections:
 
 | Place | Sections | Schema |
 |---|---|---|
-| Header group | header, announcement bar, countdown bar, marquee | `"enabled_on": { "groups": ["header"] }` |
+| Header group | header, announcement bar, countdown bar, marquee |
+| Header or footer group | announcement bar | `"enabled_on": { "groups": ["header", "footer"] }` | `"enabled_on": { "groups": ["header"] }` |
 | Footer group | footer, newsletter | `"enabled_on": { "groups": ["footer"] }` |
 | Overlays group | promo popup | `"enabled_on": { "groups": ["custom.overlay"] }` |
 | Page templates | everything else (home sections, custom section, …) | `"disabled_on": { "groups": ["*"] }` |

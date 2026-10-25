@@ -336,11 +336,19 @@
       "position": "Text position",
       "position_left": "Left",
       "position_center": "Center",
-      "overlay": "Image shade",
-      "overlay_info": "Darkens the image under the text so it reads well.",
+      "overlay": "Image tint",
+      "overlay_info": "Shade in the color scheme background color, stronger at the bottom where the text is.",
       "button_label_2": "Second button label",
       "button_link_2": "Second button link",
-      "color_scheme_info": "Used when there is no image."
+      "color_scheme_info": "Colors the text and buttons and tints the image (shade in the scheme background color).",
+      "autoplay": "Change slides every",
+      "autoplay_info": "0 = only by swiping or with the arrows. Applies with two or more slides.",
+      "slide_name": "Slide",
+      "video": "Background video",
+      "video_info": "Muted, looping, no controls; plays over the image, which shows until the video loads. Upload in Content > Files. Short (10–20 s) and light (under 5 MB).",
+      "video_mobile": "Background video on phones",
+      "video_mobile_info": "Optional, a vertical crop works best.",
+      "position_bottom": "Bottom center"
     },
     "product_list": {
       "name": "Product list",

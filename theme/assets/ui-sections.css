@@ -53,7 +53,30 @@
   }
 
   /* ------------------------------------------------------------- hero */
+  /* <ui-slider>: one slide per page; each slide carries its own color scheme */
   .hero {
+    position: relative;
+    display: block;
+  }
+
+  .hero__track {
+    display: grid;
+    grid-auto-columns: 100%;
+    grid-auto-flow: column;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    list-style: none;
+  }
+
+  .hero__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hero__slide {
     position: relative;
     isolation: isolate;
     display: grid;
@@ -61,17 +84,18 @@
     overflow: hidden;
     color: var(--color-foreground);
     background: var(--color-background);
+    scroll-snap-align: start;
   }
 
-  .hero--medium {
+  .hero--medium .hero__slide {
     min-height: min(60svh, 56rem);
   }
 
-  .hero--large {
+  .hero--large .hero__slide {
     min-height: min(80svh, 76rem);
   }
 
-  .hero--full {
+  .hero--full .hero__slide {
     min-height: calc(100svh - var(--header-height, 0px));
   }
 
@@ -81,39 +105,40 @@
     z-index: -2;
   }
 
-  .hero__media :is(img, svg) {
+  .hero__media :is(img, svg, video) {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  /*
-   * With an image: light text over a shade that is darker at the bottom, where the text is.
-   * Set on the inner wrapper: the color scheme class on .hero is unlayered CSS and would win there.
-   */
-  .hero--media .hero__inner {
-    --color-heading: #fff;
-    --color-foreground: rgb(255 255 255 / 0.9);
-    --color-button: #fff;
-    --color-button-label: #1b2a23;
-    --color-button-hover: rgb(255 255 255 / 0.85);
-    --color-button-label-hover: #1b2a23;
+  /* Phone video only on phones, when there is one */
+  .hero__video-file--mobile {
+    display: none;
   }
 
-  .hero--media::after {
+  @media (max-width: 749px) {
+    .hero__video:has(.hero__video-file--mobile) .hero__video-file:not(.hero__video-file--mobile) {
+      display: none;
+    }
+
+    .hero__video-file--mobile {
+      display: block;
+    }
+  }
+
+  /* Tint in the scheme's background color, stronger at the bottom where the text sits */
+  .hero__slide--media::after {
     content: '';
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: linear-gradient(to top, rgb(0 0 0 / var(--hero-overlay)), rgb(0 0 0 / calc(var(--hero-overlay) * 0.3)));
-  }
-
-  .hero--media .hero__inner .btn--outline {
-    --btn-fg: #fff;
-    --btn-border: rgb(255 255 255 / 0.7);
-    --btn-fg-hover: #fff;
-    --btn-border-hover: #fff;
-    --btn-bg-hover: rgb(255 255 255 / 0.12);
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--color-background) var(--hero-overlay), transparent),
+      color-mix(in srgb, var(--color-background) calc(var(--hero-overlay) * 0.35), transparent)
+    );
   }
 
   .hero__inner {
@@ -127,14 +152,14 @@
     max-width: 60rem;
   }
 
-  .hero--center .hero__content {
+  .hero__slide--center {
+    align-items: center;
+  }
+
+  .hero__slide:is(.hero__slide--center, .hero__slide--bottom) .hero__content {
     justify-items: center;
     margin-inline: auto;
     text-align: center;
-  }
-
-  .hero--center {
-    align-items: center;
   }
 
   .hero__eyebrow {
@@ -146,6 +171,60 @@
     flex-wrap: wrap;
     gap: var(--space-s);
     margin-top: var(--space-xs);
+  }
+
+  /* Slider controls over the slides: dots on the left, arrows on the right; both on a light
+     backing so they read on any slide */
+  .hero__controls {
+    position: absolute;
+    inset: auto 0 var(--space-m);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+
+  .hero__controls > * {
+    pointer-events: auto;
+  }
+
+  .hero:has(.hero__controls) .hero__inner {
+    padding-bottom: calc(var(--space-3xl) + var(--space-l));
+  }
+
+  .slider__dots {
+    display: flex;
+    gap: var(--space-2xs);
+  }
+
+  .slider__dot {
+    width: 0.8rem;
+    height: 0.8rem;
+    padding: 0;
+    background: color-mix(in srgb, var(--color-heading) 35%, transparent);
+    border: 0;
+    border-radius: 99rem;
+    transition:
+      width var(--duration-default) var(--ease-out),
+      background-color var(--duration-default) var(--ease);
+  }
+
+  .slider__dot[aria-current] {
+    width: 2.4rem;
+    background: var(--color-heading);
+  }
+
+  .hero__dots {
+    padding: 0.6rem 0.8rem;
+    background: color-mix(in srgb, var(--color-background) 70%, transparent);
+    border-radius: 99rem;
+  }
+
+  .hero__controls .slider__button {
+    --btn-bg: color-mix(in srgb, var(--color-background) 70%, transparent);
+    --btn-bg-hover: var(--color-background);
+    --btn-border: transparent;
+    --btn-border-hover: transparent;
   }
 
   /* ----------------------------------------------------- product list */

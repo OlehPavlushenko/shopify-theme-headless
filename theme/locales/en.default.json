@@ -153,6 +153,10 @@
       "minutes": "m",
       "seconds": "s",
       "ends_in": "Ends in"
+    },
+    "hero": {
+      "label": "Featured",
+      "slide": "Slide %n"
     }
   },
   "newsletter": {

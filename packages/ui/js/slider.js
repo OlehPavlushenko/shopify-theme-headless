@@ -12,6 +12,8 @@
  * Items added later (e.g. fetched) are picked up too.
  * data-autoplay="<seconds>": moves one page on its own (back to the start after the last one);
  * pauses while hovered or focused, off with "reduce motion".
+ * [data-slider-dots] (optional, data-label="Slide %n"): one dot per item, the current one has
+ * aria-current; a click scrolls to its item.
  */
 class UiSlider extends HTMLElement {
   #ticking = false;
@@ -23,6 +25,7 @@ class UiSlider extends HTMLElement {
     this.track = this.querySelector('[data-slider-track]');
     this.prev = this.querySelector('[data-slider-prev]');
     this.next = this.querySelector('[data-slider-next]');
+    this.dots = this.querySelector('[data-slider-dots]');
     if (!this.track) return;
     this.vertical = this.dataset.axis === 'y';
 
@@ -33,8 +36,24 @@ class UiSlider extends HTMLElement {
     this.#resizeObserver.observe(this.track);
     this.#mutationObserver = new MutationObserver(() => this.#update());
     this.#mutationObserver.observe(this.track, { childList: true });
+    this.#buildDots();
     this.#update();
     this.#startAutoplay();
+  }
+
+  #buildDots() {
+    if (!this.dots) return;
+    const label = this.dots.dataset.label || '%n';
+    this.dots.replaceChildren(
+      ...[...this.track.children].map((item, index) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'slider__dot';
+        dot.setAttribute('aria-label', label.replace('%n', index + 1));
+        dot.addEventListener('click', () => this.track.scrollTo({ left: item.offsetLeft - this.track.offsetLeft, behavior: 'smooth' }));
+        return dot;
+      })
+    );
   }
 
   #startAutoplay() {
@@ -80,6 +99,11 @@ class UiSlider extends HTMLElement {
     this.toggleAttribute('data-overflow', max > 1);
     if (this.prev) this.prev.disabled = position <= 1;
     if (this.next) this.next.disabled = position >= max - 1;
+    if (this.dots) {
+      const offsets = [...track.children].map((item) => Math.abs(item.offsetLeft - track.offsetLeft - position));
+      const current = offsets.indexOf(Math.min(...offsets));
+      [...this.dots.children].forEach((dot, index) => dot.toggleAttribute('aria-current', index === current));
+    }
   }
 }
 

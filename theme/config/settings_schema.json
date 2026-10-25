@@ -418,6 +418,27 @@
     ]
   },
   {
+    "name": "t:settings.integrations.name",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "t:settings.integrations.info"
+      },
+      {
+        "type": "text",
+        "id": "api_url",
+        "label": "t:settings.integrations.api_url",
+        "info": "t:settings.integrations.api_url_info"
+      },
+      {
+        "type": "text",
+        "id": "recaptcha_site_key",
+        "label": "t:settings.integrations.recaptcha_site_key",
+        "info": "t:settings.integrations.recaptcha_site_key_info"
+      }
+    ]
+  },
+  {
     "name": "t:settings.behavior.name",
     "settings": [
       {

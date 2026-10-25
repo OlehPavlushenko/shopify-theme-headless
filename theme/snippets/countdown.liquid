@@ -1,0 +1,20 @@
+{% doc %}
+  Inline timer "Ends in 6d 19h 05m 01s" (<ui-countdown>, @ui/countdown). Styles: announcements.css.
+  When it reaches zero it hides its closest [data-countdown-section].
+
+  @param {string} end - End date and time as typed in the editor, e.g. "2026-12-24 23:59"
+  @param {boolean} [label] - Show "Ends in" before the timer (default true)
+{% enddoc %}
+{%- assign end_time = end | date: '%s' -%}
+<span class="countdown-line">
+  {%- unless label == false -%}
+    <span class="countdown-line__label">{{ 'sections.countdown.ends_in' | t }}</span>
+  {%- endunless -%}
+  <ui-countdown class="countdown" data-end="{{ end_time }}" role="timer" aria-label="{{ 'sections.countdown.label' | t }}">
+    <span class="countdown__part"><span class="countdown__value" data-unit="days">0</span>{{ 'sections.countdown.days' | t }}</span>
+    <span class="countdown__part"><span class="countdown__value" data-unit="hours">00</span>{{ 'sections.countdown.hours' | t }}</span>
+    <span class="countdown__part"><span class="countdown__value" data-unit="minutes">00</span>{{ 'sections.countdown.minutes' | t }}</span>
+    <span class="countdown__part"><span class="countdown__value" data-unit="seconds">00</span>{{ 'sections.countdown.seconds' | t }}</span>
+  </ui-countdown>
+</span>
+<script type="module">import '@ui/countdown';</script>

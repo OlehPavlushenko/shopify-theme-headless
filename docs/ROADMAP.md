@@ -33,6 +33,14 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
   **Announcement bar** (rotating messages), **Marquee** (running line), **Countdown bar**
   (promo with a timer). All have a schedule ("show from / until").
 
+### Promo
+- Promo card (one component, stacked or text over the image): mega menu now, banner grids later.
+- Section group "Overlays" with the Promo popup: content blocks (text, countdown, newsletter,
+  products, button), triggers (delay, scroll, exit intent), "don't show again for N days", pages,
+  schedule; a sheet from the bottom on phones. Christmas example.
+- Newsletter: form in the popup and a Newsletter section (footer), through project-server;
+  plain Shopify form without the API or JS.
+
 ### Cart
 - Cart drawer: compact lines, free-shipping progress under the title, promo codes, order details
   (note + attributes), total inside the checkout button.
@@ -51,6 +59,7 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
 3. **Collection page**: filters and sorting.
 4. **Content pages**: contact, FAQ (metaobjects), testimonials, newsletter, trust bar.
 5. **Wishlist and compare** (kept from the old theme's feature list).
+6. **Spin-to-win** popup (server picks the prize and can issue a personal code), popup teaser tab.
 
 ## Decisions
 

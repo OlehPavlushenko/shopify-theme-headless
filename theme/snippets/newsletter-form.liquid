@@ -1,0 +1,73 @@
+{% doc %}
+  Newsletter sign-up: an email field and a button.
+  - With Theme settings > Integrations > "API URL" set, <newsletter-form> (@ui/newsletter) sends the
+    email to project-server (POST /newsletter, reCAPTCHA v3 when a site key is set) and shows the
+    answer in place.
+  - Without it, or without JS, it is the plain Shopify customer form (tag "newsletter").
+  On success it fires newsletter:subscribed (popups use it to stop showing).
+  Styles: packages/ui/css/promo.css.
+
+  @param {string} id - Unique id for the form on the page
+  @param {string} [button_label] - Button text (default "Subscribe")
+  @param {string} [success_text] - Rich text shown after signing up (e.g. a discount code)
+  @param {string} [already_text] - Rich text for an email that is already subscribed
+{% enddoc %}
+{%- liquid
+  assign form_id = 'Newsletter-' | append: id
+  assign api = settings.api_url | strip
+  assign api_end = api | slice: -1
+  if api_end == '/'
+    assign api = api | remove_last: '/'
+  endif
+  assign success = success_text | default: ''
+  if success == blank
+    assign success = 'newsletter.success' | t
+  endif
+  assign label = button_label
+  if label == blank
+    assign label = 'newsletter.subscribe' | t
+  endif
+  assign already = already_text | default: ''
+  if already == blank
+    assign already = 'newsletter.already' | t
+  endif
+-%}
+<newsletter-form
+  class="newsletter-form"
+  {% if settings.api_url != blank %}
+    data-endpoint="{{ api }}/newsletter"
+  {% endif %}
+  {% if settings.recaptcha_site_key != blank %}
+    data-recaptcha="{{ settings.recaptcha_site_key | escape }}"
+  {% endif %}
+  data-message-invalid="{{ 'newsletter.invalid_email' | t | escape }}"
+  data-message-error="{{ 'newsletter.error' | t | escape }}"
+>
+  {%- form 'customer', id: form_id, class: 'newsletter-form__form', novalidate: 'novalidate' -%}
+    {%- if form.posted_successfully? -%}
+      <div class="newsletter-form__done" role="status">{{ success }}</div>
+    {%- else -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <div class="newsletter-form__row" data-newsletter-fields>
+        <input
+          class="input"
+          type="email"
+          name="contact[email]"
+          id="{{ form_id }}-email"
+          autocomplete="email"
+          required
+          placeholder="{{ 'newsletter.placeholder' | t }}"
+          aria-label="{{ 'newsletter.placeholder' | t }}"
+          aria-describedby="{{ form_id }}-message"
+        >
+        <button type="submit" class="btn">{{ label | escape }}</button>
+      </div>
+      <p class="form-error newsletter-form__message" id="{{ form_id }}-message" data-newsletter-message aria-live="polite">
+        {%- if form.errors -%}{{ form.errors | default_errors }}{%- endif -%}
+      </p>
+      <template data-newsletter-success>{{ success }}</template>
+      <template data-newsletter-already>{{ already }}</template>
+    {%- endif -%}
+  {%- endform -%}
+</newsletter-form>
+<script type="module">import '@ui/newsletter';</script>

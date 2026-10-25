@@ -305,7 +305,7 @@
   }
 
   /* ------------------------------------------------------ mega menu */
-  /* Same patterns as the search panel: .eyebrow headings, .link-list, .slider + product-card */
+  /* Same patterns as the search panel: .eyebrow headings, .link-list, .slider + product-card, promo-card */
   .mega-menu {
     position: absolute;
     top: 100%;
@@ -362,51 +362,9 @@
     min-width: 0;
   }
 
-  /* Promo card: image, then heading / text / link, top-aligned */
-  .mega-promo {
-    display: grid;
+  /* Promo card (snippets/promo-card) at a fixed width; the product slider takes the rest */
+  .mega-menu__extras > .promo-card {
     flex: 0 0 26rem;
-    gap: var(--space-2xs);
-    align-content: start;
-    text-decoration: none;
-    color: var(--color-foreground);
-  }
-
-  .mega-promo__media {
-    margin-bottom: var(--space-xs);
-  }
-
-  .mega-promo__media img {
-    transition: scale var(--duration-long) var(--ease-out);
-  }
-
-  .mega-promo:hover .mega-promo__media img {
-    scale: 1.03;
-  }
-
-  .mega-promo__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2xs);
-    margin-top: var(--space-2xs);
-    font-size: var(--text-sm);
-    font-weight: var(--font-body-weight-medium);
-    color: var(--color-heading);
-    transition: color var(--duration-short) var(--ease);
-  }
-
-  .mega-promo__cta .svg-icon {
-    --icon-size: 1.4rem;
-
-    transition: translate var(--duration-default) var(--ease-out);
-  }
-
-  .mega-promo:hover .mega-promo__cta {
-    color: var(--color-link-hover);
-  }
-
-  .mega-promo:hover .mega-promo__cta .svg-icon {
-    translate: 0.3rem 0;
   }
 
   /* Product slider fills the remaining width */

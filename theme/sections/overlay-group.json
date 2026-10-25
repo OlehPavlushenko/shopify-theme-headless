@@ -1,0 +1,73 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "custom.overlay",
+  "name": "t:general.overlays",
+  "sections": {
+    "christmas_popup": {
+      "type": "promo-popup",
+      "blocks": {
+        "text": {
+          "type": "text",
+          "settings": {
+            "eyebrow": "Christmas sale",
+            "heading": "Get 10% off your first order",
+            "text": "<p>Join our newsletter for gift ideas and early access to Christmas deals.</p>"
+          }
+        },
+        "countdown": {
+          "type": "countdown",
+          "settings": {
+            "end": "2026-12-24 23:59"
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "button_label": "Get my 10%",
+            "success_text": "<p>Thank you! Your code: <strong>XMAS10</strong> — enter it at checkout.</p>",
+            "already_text": "<p>You are already with us — use code <strong>XMAS10</strong> at checkout.</p>",
+            "note": "No spam. Unsubscribe any time."
+          }
+        },
+        "products": {
+          "type": "products",
+          "settings": {
+            "heading": "Gift ideas",
+            "products": [
+              "tonic-active",
+              "probnik-serum-active",
+              "probnik-cream-active"
+            ]
+          }
+        }
+      },
+      "block_order": [
+        "text",
+        "countdown",
+        "newsletter",
+        "products"
+      ],
+      "settings": {
+        "delay": 8,
+        "scroll": 40,
+        "exit_intent": true,
+        "days": 3,
+        "pages": "not_cart",
+        "show_from": "",
+        "show_until": "2026-12-25 00:00",
+        "color_scheme": "scheme-5"
+      }
+    }
+  },
+  "order": [
+    "christmas_popup"
+  ]
+}

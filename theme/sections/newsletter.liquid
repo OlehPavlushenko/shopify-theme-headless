@@ -1,0 +1,36 @@
+{% comment %}
+  Newsletter: heading, text and the sign-up form (snippets/newsletter-form). Footer group or any
+  template. Styles: packages/ui/css/promo.css.
+{% endcomment %}
+<div class="newsletter color-{{ section.settings.color_scheme }}">
+  <div class="newsletter__inner page-width">
+    <div class="newsletter__text">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="h4">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="newsletter__body">{{ section.settings.text }}</div>
+      {%- endif -%}
+    </div>
+    {%- render 'newsletter-form',
+      id: section.id,
+      button_label: section.settings.button_label,
+      success_text: section.settings.success_text
+    -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.newsletter.name",
+  "class": "newsletter-section",
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Stay in the loop" },
+    { "type": "richtext", "id": "text", "label": "t:labels.text", "default": "<p>Seasonal offers and new arrivals, twice a month.</p>" },
+    { "type": "text", "id": "button_label", "label": "t:labels.button_label" },
+    { "type": "richtext", "id": "success_text", "label": "t:sections.promo_popup.success_text" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-4" }
+  ],
+  "presets": [{ "name": "t:sections.newsletter.name" }]
+}
+{% endschema %}

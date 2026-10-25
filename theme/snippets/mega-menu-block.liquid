@@ -1,37 +1,24 @@
 {% doc %}
   Extra content inside a mega menu, from a header block. Same patterns as the search panel:
-  - menu_promo: image card with heading, text and a link
+  - menu_promo: the shared promo card (snippets/promo-card)
   - menu_products: product slider (.slider + product-card), eyebrow heading and arrows
 
   @param {object} block - Header block of type menu_promo or menu_products
 {% enddoc %}
 {%- case block.type -%}
   {%- when 'menu_promo' -%}
-    <a href="{{ block.settings.link | default: routes.root_url }}" class="mega-promo" {{ block.shopify_attributes }}>
-      <span class="mega-promo__media frame" style="--frame-ratio: 4 / 3;">
-        {%- if block.settings.image -%}
-          {{
-            block.settings.image
-            | image_url: width: 800
-            | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 280px, 100vw', alt: block.settings.heading
-          }}
-        {%- else -%}
-          {{ 'lifestyle-1' | placeholder_svg_tag }}
-        {%- endif -%}
-      </span>
-      {%- if block.settings.heading != blank -%}
-        <span class="label mega-promo__heading">{{ block.settings.heading | escape }}</span>
-      {%- endif -%}
-      {%- if block.settings.text != blank -%}
-        <span class="text-sm muted">{{ block.settings.text | escape }}</span>
-      {%- endif -%}
-      {%- if block.settings.link_label != blank -%}
-        <span class="mega-promo__cta">
-          {{- block.settings.link_label | escape -}}
-          {%- render 'icon', name: 'arrow-right' -%}
-        </span>
-      {%- endif -%}
-    </a>
+    {%- render 'promo-card',
+      url: block.settings.link,
+      image: block.settings.image,
+      eyebrow: block.settings.eyebrow,
+      heading: block.settings.heading,
+      text: block.settings.text,
+      link_label: block.settings.link_label,
+      layout: block.settings.layout,
+      ratio: '4 / 5',
+      sizes: '(min-width: 990px) 280px, 100vw',
+      attributes: block.shopify_attributes
+    -%}
 
   {%- when 'menu_products' -%}
     {%- if block.settings.products.count > 0 -%}

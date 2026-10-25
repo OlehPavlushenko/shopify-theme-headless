@@ -45,6 +45,7 @@
   .product-card__info {
     display: grid;
     gap: var(--space-2xs);
+    align-content: start;
   }
 
   .product-card__vendor {
@@ -123,11 +124,19 @@
   .product-card:has(> .product-card__quick-add) {
     grid-template-rows: auto 1fr auto;
     align-content: stretch;
+    height: 100%;
   }
 
   .product-card__quick-add {
     position: relative;
     z-index: 1;
+  }
+
+  /* One line even in narrow cards (popups, sliders) */
+  .product-card__quick-add .btn {
+    gap: var(--space-2xs);
+    padding-inline: var(--space-s);
+    white-space: nowrap;
   }
 
   .product-card--row {

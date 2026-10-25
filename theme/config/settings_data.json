@@ -177,6 +177,7 @@
           "input_text": "#2a1a17"
         }
       }
-    }
+    },
+    "api_url": "http://localhost:5000"
   }
 }

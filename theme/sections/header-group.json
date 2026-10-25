@@ -23,7 +23,6 @@
         },
         "msg_shipping": {
           "type": "message",
-          "disabled": true,
           "settings": {
             "text": "Free shipping on orders over ₴1,200",
             "link": ""
@@ -34,12 +33,66 @@
         "msg_rewards",
         "msg_shipping"
       ],
-      "disabled": true,
       "settings": {
-        "color_scheme": "scheme-3",
+        "color_scheme": "scheme-4",
         "autoplay": 5,
         "show_from": "",
         "show_until": ""
+      }
+    },
+    "holiday_countdown": {
+      "type": "countdown-bar",
+      "settings": {
+        "end": "2026-12-24 23:59",
+        "show_from": "",
+        "heading": "Christmas sale",
+        "offer": "Up to 25% off gifts",
+        "button_label": "Shop gifts",
+        "button_link": "/collections/all",
+        "color_scheme": "scheme-5",
+        "image": "shopify://shop_images/about-image-1.png"
+      }
+    },
+    "holiday_marquee": {
+      "type": "marquee",
+      "blocks": {
+        "p1": {
+          "type": "phrase",
+          "settings": {
+            "text": "Free gift wrapping on every order"
+          }
+        },
+        "p2": {
+          "type": "phrase",
+          "settings": {
+            "text": "Order by December 20 for delivery before Christmas"
+          }
+        },
+        "p3": {
+          "type": "phrase",
+          "settings": {
+            "text": "Free shipping over ₴1,200"
+          }
+        },
+        "p4": {
+          "type": "phrase",
+          "settings": {
+            "text": "Gift cards available"
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-5",
+        "duration": 50,
+        "separator": "star",
+        "show_from": "",
+        "show_until": "2026-12-27 00:00"
       }
     },
     "header": {
@@ -188,61 +241,6 @@
         "show_currency": true,
         "show_language": true,
         "utility_menu": ""
-      }
-    },
-    "holiday_countdown": {
-      "type": "countdown-bar",
-      "settings": {
-        "end": "2026-12-24 23:59",
-        "show_from": "",
-        "heading": "Christmas sale",
-        "offer": "Up to 25% off gifts",
-        "button_label": "Shop gifts",
-        "button_link": "/collections/all",
-        "color_scheme": "scheme-5",
-        "image": "shopify://shop_images/about-image-1.png"
-      }
-    },
-    "holiday_marquee": {
-      "type": "marquee",
-      "blocks": {
-        "p1": {
-          "type": "phrase",
-          "settings": {
-            "text": "Free gift wrapping on every order"
-          }
-        },
-        "p2": {
-          "type": "phrase",
-          "settings": {
-            "text": "Order by December 20 for delivery before Christmas"
-          }
-        },
-        "p3": {
-          "type": "phrase",
-          "settings": {
-            "text": "Free shipping over ₴1,200"
-          }
-        },
-        "p4": {
-          "type": "phrase",
-          "settings": {
-            "text": "Gift cards available"
-          }
-        }
-      },
-      "block_order": [
-        "p1",
-        "p2",
-        "p3",
-        "p4"
-      ],
-      "settings": {
-        "color_scheme": "scheme-5",
-        "duration": 50,
-        "separator": "star",
-        "show_from": "",
-        "show_until": "2026-12-27 00:00"
       }
     }
   },

@@ -8,7 +8,6 @@
   {%- render 'schedule-active', from: section.settings.show_from, until: section.settings.end -%}
 {%- endcapture -%}
 {%- if active contains 'true' and section.settings.end != blank -%}
-  {%- assign end = section.settings.end | date: '%s' -%}
   <div class="countdown-bar color-{{ section.settings.color_scheme }}" data-countdown-section>
     {%- if section.settings.image -%}
       {{
@@ -24,16 +23,7 @@
       {%- if section.settings.offer != blank -%}
         <span class="countdown-bar__offer">{{ section.settings.offer }}</span>
       {%- endif -%}
-      <span class="countdown-bar__timer">
-        <span class="countdown-bar__ends">{{ 'sections.countdown.ends_in' | t }}</span>
-        <ui-countdown class="countdown" data-end="{{ end }}" role="timer" aria-label="{{ 'sections.countdown.label' | t }}">
-          <span class="countdown__part"><span class="countdown__value" data-unit="days">00</span>{{ 'sections.countdown.days' | t }}</span>
-          <span class="countdown__part"><span class="countdown__value" data-unit="hours">00</span>{{ 'sections.countdown.hours' | t }}</span>
-          <span class="countdown__part"><span class="countdown__value" data-unit="minutes">00</span>{{ 'sections.countdown.minutes' | t }}</span>
-          <span class="countdown__part"><span class="countdown__value" data-unit="seconds">00</span>{{ 'sections.countdown.seconds' | t }}</span>
-        </ui-countdown>
-      </span>
-      <script type="module">import '@ui/countdown';</script>
+      {%- render 'countdown', end: section.settings.end -%}
       {%- if section.settings.button_label != blank -%}
         <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="countdown-bar__link">
           {{- section.settings.button_label | escape -}}

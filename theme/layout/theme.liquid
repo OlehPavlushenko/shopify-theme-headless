@@ -28,6 +28,7 @@
     {{ 'ui-blocks.css' | asset_url | stylesheet_tag }}
     {{ 'ui-pages.css' | asset_url | stylesheet_tag }}
     {{ 'ui-cart.css' | asset_url | stylesheet_tag }}
+    {{ 'ui-promo.css' | asset_url | stylesheet_tag }}
     {{ 'ui-footer.css' | asset_url | stylesheet_tag }}
     {%- render 'theme-tokens' -%}
     {%- render 'color-schemes' -%}
@@ -91,6 +92,8 @@
           "@ui/predictive-search": "{{ 'ui-predictive-search.js' | asset_url }}",
           "@ui/slider": "{{ 'ui-slider.js' | asset_url }}",
           "@ui/countdown": "{{ 'ui-countdown.js' | asset_url }}",
+          "@ui/newsletter": "{{ 'ui-newsletter.js' | asset_url }}",
+          "@ui/promo-popup": "{{ 'ui-promo-popup.js' | asset_url }}",
           "liquid-ajax-cart": "{{ 'liquid-ajax-cart-v2.2.0.js' | asset_url }}",
           "cart": "{{ 'cart.js' | asset_url }}"
         }
@@ -126,5 +129,8 @@
     {%- unless template.name == 'cart' -%}
       {% section 'cart-drawer' %}
     {%- endunless -%}
+
+    {%- comment -%} Popups and other overlays (theme editor: "Overlays") {%- endcomment -%}
+    {% sections 'overlay-group' %}
   </body>
 </html>

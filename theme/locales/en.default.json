@@ -154,5 +154,13 @@
       "seconds": "s",
       "ends_in": "Ends in"
     }
+  },
+  "newsletter": {
+    "placeholder": "Your email",
+    "subscribe": "Subscribe",
+    "success": "Thank you for subscribing!",
+    "already": "You are already subscribed — thank you!",
+    "invalid_email": "Please enter a valid email address.",
+    "error": "Something went wrong. Please try again in a moment."
   }
 }

@@ -56,6 +56,7 @@ scripts/
     `.cluster`, `.grid`, `.section-spacing`) and utilities.
   - `components.css`: `.btn` (+ `--secondary|outline|link|icon|sm|full`), `.field`/`.input`, `.qty`,
     `.price-tag`, `.pill`, `.frame`, `.svg-icon`, `.form-error`, `.drawer`, `.popup`.
+  - `promo.css`: promo card (`snippets/promo-card`, used everywhere promos are shown), newsletter form, promo popup.
   - Side panels are one component: `.drawer` > `.drawer__inner` > `__header` / `__body` / `__footer`,
     on a `<dialog>` (cart, search drawer) or a `[popover]` (utility panel); same width, motion and backdrop.
   - One file per area: `header.css`, `footer.css`, `cart.css`, `blocks.css`, `pages.css`

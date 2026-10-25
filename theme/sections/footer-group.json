@@ -17,9 +17,20 @@
         "menu": "",
         "show_payment_icons": true
       }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Stay in the loop",
+        "text": "<p>Seasonal offers, gift ideas and new arrivals — twice a month.</p>",
+        "button_label": "",
+        "success_text": "",
+        "color_scheme": "scheme-4"
+      }
     }
   },
   "order": [
+    "newsletter",
     "footer"
   ]
 }

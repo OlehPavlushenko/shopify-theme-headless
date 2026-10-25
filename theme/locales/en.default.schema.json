@@ -31,7 +31,8 @@
     "sidebar": "Sidebar",
     "text": "Text",
     "theme": "Theme",
-    "typography": "Typography"
+    "typography": "Typography",
+    "overlays": "Overlays"
   },
   "labels": {
     "alignment": "Alignment",
@@ -166,6 +167,14 @@
       "view_transitions_info": "Cross-fades between pages in supporting browsers (View Transitions API).",
       "prefetch_links": "Prefetch links on hover",
       "prefetch_links_info": "Starts loading the next page when a shopper hovers a link, so it opens faster (Speculation Rules API)."
+    },
+    "integrations": {
+      "name": "Integrations",
+      "info": "Connections to the theme’s own API (project-server).",
+      "api_url": "API URL",
+      "api_url_info": "Base URL of project-server, e.g. https://api.example.com. Empty: the newsletter uses the standard Shopify form.",
+      "recaptcha_site_key": "reCAPTCHA v3 site key",
+      "recaptcha_site_key_info": "Protects the newsletter from bots. Its secret key goes into the server settings."
     }
   },
   "sections": {
@@ -248,6 +257,36 @@
       "offer": "Offer",
       "image": "Background image",
       "image_info": "Shown softly behind the text, under the color scheme background."
+    },
+    "newsletter": {
+      "name": "Newsletter"
+    },
+    "promo_popup": {
+      "name": "Promo popup",
+      "when": "When it shows",
+      "delay": "After",
+      "delay_info": "Seconds after the page opens. 0 turns it off when another trigger is set.",
+      "scroll": "After scrolling",
+      "scroll_info": "Share of the page scrolled. 0 = off.",
+      "exit_intent": "When leaving the page",
+      "exit_intent_info": "Desktop only: the pointer moves out at the top of the window.",
+      "days": "Don’t show again for",
+      "days_info": "After it is closed. 0 = not again in this visit. After a newsletter sign-up it stays away for a year.",
+      "pages": "Pages",
+      "pages_all": "All pages",
+      "pages_home": "Home page only",
+      "pages_not_cart": "All except the cart",
+      "look": "Look",
+      "image": "Image",
+      "image_info": "Shown beside the content on larger screens.",
+      "eyebrow": "Label above the heading",
+      "newsletter": "Newsletter",
+      "success_text": "Text after signing up",
+      "success_text_info": "For example the discount code. Create the code in Discounts.",
+      "already_text": "Text for an email already subscribed",
+      "note": "Small print",
+      "products": "Products",
+      "button": "Button"
     }
   },
   "blocks": {
@@ -271,7 +310,11 @@
       "heading": "Heading",
       "text": "Text",
       "link_label": "Link label",
-      "link": "Link"
+      "link": "Link",
+      "layout": "Layout",
+      "layout_stacked": "Text under the image",
+      "layout_overlay": "Text over the image",
+      "eyebrow": "Label above the heading"
     },
     "menu_products": {
       "name": "Menu products",

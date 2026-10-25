@@ -28,38 +28,51 @@
         "color_scheme": "scheme-4"
       }
     },
-    "announcements": {
-      "type": "announcement-bar",
+    "holiday_marquee": {
+      "type": "marquee",
       "blocks": {
-        "msg_rewards": {
-          "type": "message",
+        "p1": {
+          "type": "phrase",
           "settings": {
-            "text": "<strong>10% back</strong> in rewards on your first order",
-            "link": "shopify://pages/contact"
+            "text": "Free gift wrapping on every order"
           }
         },
-        "msg_shipping": {
-          "type": "message",
+        "p2": {
+          "type": "phrase",
           "settings": {
-            "text": "Free shipping on orders over ₴1,200",
-            "link": ""
+            "text": "Order by December 20 for delivery before Christmas"
+          }
+        },
+        "p3": {
+          "type": "phrase",
+          "settings": {
+            "text": "Free shipping over ₴1,200"
+          }
+        },
+        "p4": {
+          "type": "phrase",
+          "settings": {
+            "text": "Gift cards available"
           }
         }
       },
       "block_order": [
-        "msg_rewards",
-        "msg_shipping"
+        "p1",
+        "p2",
+        "p3",
+        "p4"
       ],
       "settings": {
-        "color_scheme": "scheme-4",
-        "autoplay": 5,
+        "color_scheme": "scheme-5",
+        "duration": 50,
+        "separator": "star",
         "show_from": "",
-        "show_until": ""
+        "show_until": "2026-12-27 00:00"
       }
     }
   },
   "order": [
-    "announcements",
+    "holiday_marquee",
     "newsletter",
     "footer"
   ]

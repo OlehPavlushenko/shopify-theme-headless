@@ -24,48 +24,6 @@
         "image": "shopify://shop_images/about-image-1.png"
       }
     },
-    "holiday_marquee": {
-      "type": "marquee",
-      "blocks": {
-        "p1": {
-          "type": "phrase",
-          "settings": {
-            "text": "Free gift wrapping on every order"
-          }
-        },
-        "p2": {
-          "type": "phrase",
-          "settings": {
-            "text": "Order by December 20 for delivery before Christmas"
-          }
-        },
-        "p3": {
-          "type": "phrase",
-          "settings": {
-            "text": "Free shipping over ₴1,200"
-          }
-        },
-        "p4": {
-          "type": "phrase",
-          "settings": {
-            "text": "Gift cards available"
-          }
-        }
-      },
-      "block_order": [
-        "p1",
-        "p2",
-        "p3",
-        "p4"
-      ],
-      "settings": {
-        "color_scheme": "scheme-5",
-        "duration": 50,
-        "separator": "star",
-        "show_from": "",
-        "show_until": "2026-12-27 00:00"
-      }
-    },
     "header": {
       "type": "header",
       "blocks": {
@@ -213,11 +171,40 @@
         "show_language": true,
         "utility_menu": ""
       }
+    },
+    "announcements": {
+      "type": "announcement-bar",
+      "blocks": {
+        "msg_rewards": {
+          "type": "message",
+          "settings": {
+            "text": "<strong>10% back</strong> in rewards on your first order",
+            "link": "shopify://pages/contact"
+          }
+        },
+        "msg_shipping": {
+          "type": "message",
+          "settings": {
+            "text": "Free shipping on orders over ₴1,200",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "msg_rewards",
+        "msg_shipping"
+      ],
+      "settings": {
+        "color_scheme": "scheme-4",
+        "autoplay": 5,
+        "show_from": "",
+        "show_until": ""
+      }
     }
   },
   "order": [
+    "announcements",
     "holiday_countdown",
-    "holiday_marquee",
     "header"
   ]
 }

@@ -3,3 +3,8 @@ node_modules/
 Thumbs.db
 .shopify/
 *.log
+
+# Server secrets
+.env
+.env.*
+!.env.example

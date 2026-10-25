@@ -1,90 +1,78 @@
-import express from 'express';
-import fetch from 'node-fetch';
-import validator from 'validator';
-import {
-  getCustomerByEmail,
-  createCustomer,
-  updateEmailMarketingConsent,
-  updateTags
-} from '../services/customer.js';
+// POST /newsletter { email, token? } — subscribes the email to marketing in Shopify.
+// New email: creates a customer, subscribed, tagged "newsletter". Existing customer: sets the
+// consent and adds the tag. Answers { ok, status } or { ok: false, error } with a stable code the
+// theme maps to its own texts: subscribed | already_subscribed | invalid_email | captcha_failed | server_error.
+import { Router } from 'express';
+import { admin } from '../lib/shopify.js';
+import { verifyRecaptcha } from '../lib/recaptcha.js';
 
-const router = express.Router();
+const TAG = 'newsletter';
+const EMAIL = /^[^\s@"'\\]+@[^\s@"'\\]+\.[^\s@"'\\]+$/;
+const consent = { marketingState: 'SUBSCRIBED', marketingOptInLevel: 'SINGLE_OPT_IN' };
 
-const checkOrigin = (req, res, next) => {
-  const origin = req.get('origin') || '';
-  const referer = req.get('referer') || '';
+const router = Router();
 
-  // Разрешаем внутренние запросы (без origin/referer)
-  if (!origin && !referer) {
-    return next();
+router.post('/', async (req, res) => {
+  const email = String(req.body?.email ?? '').trim().toLowerCase();
+  if (email.length > 254 || !EMAIL.test(email)) {
+    return res.status(400).json({ ok: false, error: 'invalid_email' });
   }
-
-  const allowedHosts = [
-    'bioharmony.com.ua',
-    '4ba1cfb79ac8.ngrok-free.app'
-  ];
-
-  const allowed = allowedHosts.some((host) => origin.includes(host) || referer.includes(host));
-
-  if (!allowed) {
-    return res.status(403).json({ error: 'Access denied from invalid origin' });
-  }
-
-  next();
-};
-
-// ✅ Проверка ReCaptcha v3
-const verifyCaptcha = async (token) => {
-  if (!token) return false;
-
-  try {
-    const res = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `secret=${process.env.RECAPTCHA_SECRET}&response=${token}`,
-    });
-
-    const data = await res.json();
-    return data.success && data.score >= 0.4 && data.action === 'newsletter';
-  } catch (err) {
-    console.error('🛑 ReCaptcha verification error:', err);
-    return false;
-  }
-};
-
-router.post('/', checkOrigin, async (req, res) => {
-  const { token, email } = req.body;
-
-  if (!validator.isEmail(email)) {
-    return res.status(400).json({ error: 'Invalid email address' });
-  }
-
-  if (!token) {
-    console.warn('No ReCaptcha token provided');
-    return false;
-  }
-
-  if (!token || !(await verifyCaptcha(token))) {
-    return res.status(403).json({ error: 'ReCaptcha verification failed' });
+  if (!(await verifyRecaptcha(req.body?.token, 'newsletter'))) {
+    return res.status(403).json({ ok: false, error: 'captcha_failed' });
   }
 
   try {
-    const customer = await getCustomerByEmail(email);
-
-    if (customer) {
-      await Promise.all([
-        updateEmailMarketingConsent(customer.id),
-        updateTags(customer.id, ['newsletter'])
-      ]);
-      return res.json({ success: true, message: 'Existing customer updated' });
-    } else {
-      await createCustomer(email, ['newsletter']);
-      return res.json({ success: true, message: 'New customer created' });
+    const customer = await findCustomer(email);
+    if (customer?.emailMarketingConsent?.marketingState === 'SUBSCRIBED') {
+      return res.json({ ok: true, status: 'already_subscribed' });
     }
-  } catch (err) {
-    console.error('❌ Ошибка подписки:', err);
-    return res.status(500).json({ error: 'Server error', message: err.message });
+    if (customer) await subscribe(customer.id);
+    else await createSubscriber(email);
+    return res.json({ ok: true, status: 'subscribed' });
+  } catch (error) {
+    console.error('Newsletter sign-up failed:', error.message);
+    return res.status(502).json({ ok: false, error: 'server_error' });
   }
 });
+
+async function findCustomer(email) {
+  // The email is validated above (no quotes or spaces), so it is safe inside the search query
+  const data = await admin(
+    `query ($query: String!) {
+      customers(first: 1, query: $query) {
+        nodes { id emailMarketingConsent { marketingState } }
+      }
+    }`,
+    { query: `email:"${email}"` }
+  );
+  return data.customers.nodes[0] ?? null;
+}
+
+async function createSubscriber(email) {
+  await admin(
+    `mutation ($input: CustomerInput!) {
+      customerCreate(input: $input) { userErrors { message } }
+    }`,
+    { input: { email, emailMarketingConsent: consent, tags: [TAG] } },
+    'customerCreate'
+  );
+}
+
+async function subscribe(customerId) {
+  await admin(
+    `mutation ($input: CustomerEmailMarketingConsentUpdateInput!) {
+      customerEmailMarketingConsentUpdate(input: $input) { userErrors { message } }
+    }`,
+    { input: { customerId, emailMarketingConsent: consent } },
+    'customerEmailMarketingConsentUpdate'
+  );
+  await admin(
+    `mutation ($id: ID!, $tags: [String!]!) {
+      tagsAdd(id: $id, tags: $tags) { userErrors { message } }
+    }`,
+    { id: customerId, tags: [TAG] },
+    'tagsAdd'
+  );
+}
 
 export default router;

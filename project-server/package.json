@@ -1,16 +1,20 @@
 {
+  "name": "bioharmony-api",
+  "private": true,
   "type": "module",
+  "description": "Small API next to the theme: newsletter sign-up into Shopify customers",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env.local server.js",
+    "dev": "node --watch --env-file-if-exists=.env.local server.js"
+  },
   "dependencies": {
     "@shopify/admin-api-client": "^1.1.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-rate-limit": "^7.5.1",
-    "graphql": "^16.11.0",
-    "graphql-request": "^7.2.0",
-    "helmet": "^7.1.0",
-    "multer": "^2.0.1",
-    "node-fetch": "^3.3.2",
-    "validator": "^13.12.0"
+    "helmet": "^7.1.0"
   }
 }

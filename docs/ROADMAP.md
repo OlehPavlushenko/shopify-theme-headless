@@ -39,6 +39,10 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
 - "You may also like" (manual list) as product cards in a slider, drawer and cart page.
 - Recommendations panel next to the drawer (Shopify related products, up to 10, vertical slider).
 
+### Server
+- `project-server`: newsletter sign-up API (Shopify customers + marketing consent), reCAPTCHA v3,
+  origin allowlist, rate limit. The old custom checkout is in git history.
+
 ## Next
 
 1. **Home page sections**: hero / page banner, product list, collection list, content
@@ -60,4 +64,5 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
 | Panels are `popover="manual"` | Their closing (outside click, Esc) can then be animated too |
 | Announcement strips are three small sections, not one with block types | Each does one job, and each can sit above or below the header |
 | Dates in settings as text `2026-10-31 23:59` | Shopify has no date-time picker; one field is clearer than day/month/year selects |
+| Newsletter through our own small API, not the Shopify customer form | The form posts with a page reload and can hit Shopify's bot check; the API answers JSON, and later can issue a personal discount code |
 | Recommendations: related products from Shopify, no app | Works on every plan; Search & Discovery can add "complementary" later |

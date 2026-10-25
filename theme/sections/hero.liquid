@@ -59,7 +59,7 @@
                 srcset="{{ image | image_url: width: 1500 }} 1500w, {{ image | image_url: width: 2200 }} 2200w, {{ image | image_url: width: 3000 }} 3000w"
                 sizes="100vw"
               >
-              {%- if eager -%}
+              {%- if eager and block.settings.video == blank -%}
                 {{ image_mobile | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '600, 900, 1200', alt: image.alt }}
               {%- else -%}
                 {{ image_mobile | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '100vw', widths: '600, 900, 1200', alt: image.alt }}

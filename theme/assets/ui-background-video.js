@@ -4,31 +4,34 @@
  *
  * Markup contract: <background-video [data-start="<s>"] [data-end="<s>"]>
  *   <video muted loop playsinline preload="none" poster="…"> … </video> [<video class="… --mobile">]
- * </background-video>; CSS shows one video per screen size.
- * Always muted, looping and without controls. The video stays invisible until it really plays
- * ([data-playing], set here) — so neither its poster (Shopify takes the first frame) nor a jump to
- * data-start shows; the slide image is seen until then. The visible video starts after
- * the page has loaded, plays only while on screen (pauses in hidden slides and off screen), and never
- * starts with "reduce motion" or Data Saver — the poster (still image) shows then.
+ * </background-video>; CSS shows one video per screen size and hides the slide image while a video
+ * is in use.
+ * Always muted, looping, without controls. The visible video loads its frame at data-start right away
+ * and appears with it ([data-ready]) — no first-frame poster, no jump; it starts playing after the page
+ * has loaded and only while on screen (pauses in hidden slides and off screen).
+ * With "reduce motion" or Data Saver it never plays: [data-off] is set, the slide image shows instead
+ * (or the video poster when the slide has no image).
  * data-start / data-end: play only that part of the video and loop it.
  */
 const allowed = () =>
   !matchMedia('(prefers-reduced-motion: reduce)').matches && !navigator.connection?.saveData;
 
+const shown = (video) => getComputedStyle(video).display !== 'none';
+
 class BackgroundVideo extends HTMLElement {
   #observer;
 
   connectedCallback() {
-    // Not playing at all: show the video's poster (still image) instead
+    this.videos = [...this.querySelectorAll('video')];
     if (!allowed()) {
-      for (const video of this.querySelectorAll('video')) video.setAttribute('data-playing', '');
+      this.setAttribute('data-off', '');
       return;
     }
     this.start = Number(this.dataset.start) || 0;
     this.end = Number(this.dataset.end) || 0;
-    for (const video of this.querySelectorAll('video')) {
-      video.addEventListener('playing', () => video.setAttribute('data-playing', ''), { once: true });
+    for (const video of this.videos) {
       this.#segment(video);
+      if (shown(video)) this.#prepare(video);
     }
 
     const begin = () => {
@@ -43,11 +46,25 @@ class BackgroundVideo extends HTMLElement {
     this.#observer?.disconnect();
   }
 
-  // Start at data-start; at data-end (or the end of the file) jump back to data-start
+  // Load the frame at data-start and show the video with it
+  #prepare(video) {
+    if (video.dataset.prepared) return;
+    video.dataset.prepared = 'true';
+    const ready = () => video.setAttribute('data-ready', '');
+    if (this.start) {
+      video.addEventListener('loadedmetadata', () => (video.currentTime = this.start), { once: true });
+      video.addEventListener('seeked', ready, { once: true });
+    } else {
+      video.addEventListener('loadeddata', ready, { once: true });
+    }
+    video.preload = 'auto';
+    video.load();
+  }
+
+  // Loop data-start … data-end (or to the end of the file)
   #segment(video) {
     if (!this.start && !this.end) return;
     video.loop = false;
-    video.addEventListener('loadedmetadata', () => (video.currentTime = this.start));
     video.addEventListener('timeupdate', () => {
       if (this.end && video.currentTime >= this.end) video.currentTime = this.start;
     });
@@ -58,10 +75,9 @@ class BackgroundVideo extends HTMLElement {
   }
 
   #toggle(visible) {
-    for (const video of this.querySelectorAll('video')) {
-      const shown = getComputedStyle(video).display !== 'none';
-      if (visible && shown) {
-        video.preload = 'auto';
+    for (const video of this.videos) {
+      if (visible && shown(video)) {
+        this.#prepare(video);
         video.play().catch(() => {});
       } else {
         video.pause();

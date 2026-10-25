@@ -113,15 +113,23 @@
     object-fit: cover;
   }
 
-  /* Background video fades in once it really plays (from its start second); until then the slide
-     image shows, not the video poster */
+  /*
+   * Background video: appears with its first frame at the start second ([data-ready]); until then the
+   * slide shows its scheme background. The slide image is only a fallback for when the video can't
+   * play ([data-off]); without an image the video poster shows then.
+   */
   .hero__video-file {
     opacity: 0;
-    transition: opacity var(--duration-long) var(--ease);
+    transition: opacity var(--duration-default) var(--ease);
   }
 
-  .hero__video-file[data-playing] {
+  .hero__video-file[data-ready],
+  .hero__media:not(:has(picture)) .hero__video[data-off] .hero__video-file {
     opacity: 1;
+  }
+
+  .hero__media:has(.hero__video:not([data-off])) picture {
+    display: none;
   }
 
   /* Phone video only on phones, when there is one */

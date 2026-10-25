@@ -1,7 +1,7 @@
 {% comment %}
   Countdown bar: one line — heading, offer, "ends in 6d 19h 11m 39s" (<ui-countdown>) and a link,
   optionally over a soft background image. Hidden once the end date has passed: by Liquid on render and
-  by the timer itself when it reaches zero. Header group (above or below the header) or any template.
+  by the timer itself when it reaches zero. Header group only (above or below the header).
   Styles: packages/ui/css/announcements.css.
 {% endcomment %}
 {%- capture active -%}
@@ -38,6 +38,7 @@
 {
   "name": "t:sections.countdown.name",
   "class": "countdown-bar-section",
+  "enabled_on": { "groups": ["header"] },
   "settings": [
     {
       "type": "text",

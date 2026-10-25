@@ -1,7 +1,7 @@
 {% comment %}
   Marquee: phrases (blocks) running in a line, CSS only. The phrases are repeated to fill wide
   screens; only the first copy is read by screen readers and search engines. Pauses on hover,
-  stands still with "reduce motion". Header group (above or below the header) or any template.
+  stands still with "reduce motion". Header group only (above or below the header).
   Styles: packages/ui/css/announcements.css.
 {% endcomment %}
 {%- capture active -%}
@@ -43,6 +43,7 @@
 {
   "name": "t:sections.marquee.name",
   "class": "marquee-section",
+  "enabled_on": { "groups": ["header"] },
   "settings": [
     {
       "type": "color_scheme",

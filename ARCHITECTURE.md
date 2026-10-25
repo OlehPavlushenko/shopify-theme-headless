@@ -105,6 +105,18 @@ Components never set raw font sizes or weights; they use these tokens or roles.
 - Images via `image_url` + `image_tag` with explicit `sizes`; above-the-fold images load eagerly
   with `fetchpriority: 'high'`, everything else lazily.
 
+## Where sections can be added
+
+Every section that has presets says where it belongs, so each list in the theme editor only offers
+its own sections:
+
+| Place | Sections | Schema |
+|---|---|---|
+| Header group | header, announcement bar, countdown bar, marquee | `"enabled_on": { "groups": ["header"] }` |
+| Footer group | footer, newsletter | `"enabled_on": { "groups": ["footer"] }` |
+| Overlays group | promo popup | `"enabled_on": { "groups": ["custom.overlay"] }` |
+| Page templates | everything else (home sections, custom section, …) | `"disabled_on": { "groups": ["*"] }` |
+
 ## SEO
 
 Every new section and snippet follows these rules:

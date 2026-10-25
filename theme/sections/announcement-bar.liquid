@@ -1,7 +1,7 @@
 {% comment %}
   Announcement bar: one short message per block. With several blocks they take turns
   (<ui-slider> with autoplay and ‹ › arrows); a single message just sits in the middle.
-  Header group (above or below the header) or any template. Styles: packages/ui/css/announcements.css.
+  Header group only (above or below the header). Styles: packages/ui/css/announcements.css.
 {% endcomment %}
 {%- capture active -%}
   {%- render 'schedule-active', from: section.settings.show_from, until: section.settings.show_until -%}
@@ -46,6 +46,7 @@
 {
   "name": "t:sections.announcements.name",
   "class": "announcement-bar-section",
+  "enabled_on": { "groups": ["header"] },
   "settings": [
     {
       "type": "color_scheme",

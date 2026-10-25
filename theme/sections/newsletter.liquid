@@ -1,6 +1,5 @@
 {% comment %}
-  Newsletter: heading, text and the sign-up form (snippets/newsletter-form). Footer group or any
-  template. Styles: packages/ui/css/promo.css.
+  Newsletter: heading, text and the sign-up form (snippets/newsletter-form). Footer group only. Styles: packages/ui/css/promo.css.
 {% endcomment %}
 <div class="newsletter color-{{ section.settings.color_scheme }}">
   <div class="newsletter__inner page-width">
@@ -24,6 +23,7 @@
 {
   "name": "t:sections.newsletter.name",
   "class": "newsletter-section",
+  "enabled_on": { "groups": ["footer"] },
   "settings": [
     { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Stay in the loop" },
     { "type": "richtext", "id": "text", "label": "t:labels.text", "default": "<p>Seasonal offers and new arrivals, twice a month.</p>" },

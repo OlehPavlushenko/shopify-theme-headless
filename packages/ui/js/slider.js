@@ -12,6 +12,7 @@
  * Items added later (e.g. fetched) are picked up too.
  * data-autoplay="<seconds>": moves one page on its own (back to the start after the last one);
  * pauses while hovered or focused, off with "reduce motion".
+ * data-loop: the arrows and autoplay go round — past the last page back to the first and back.
  * [data-slider-dots] (optional, data-label="Slide %n"): one dot per item, the current one has
  * aria-current; a click scrolls to its item.
  */
@@ -67,8 +68,10 @@ class UiSlider extends HTMLElement {
     this.addEventListener('focusout', pause(false));
     this.#autoplay = setInterval(() => {
       if (paused || document.hidden) return;
-      if (this.next && !this.next.disabled) this.#go(1);
-      else this.track.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+      const max = this.vertical ? this.track.scrollHeight - this.track.clientHeight : this.track.scrollWidth - this.track.clientWidth;
+      const position = this.vertical ? this.track.scrollTop : this.track.scrollLeft;
+      // At the end: back to the first page with data-loop, otherwise stop
+      if (position < max - 1 || this.hasAttribute('data-loop')) this.#go(1);
     }, seconds * 1000);
   }
 
@@ -79,8 +82,18 @@ class UiSlider extends HTMLElement {
   }
 
   #go(direction) {
-    const page = this.vertical ? this.track.clientHeight : this.track.clientWidth;
-    this.track.scrollBy({ [this.vertical ? 'top' : 'left']: direction * page, behavior: 'smooth' });
+    const { track } = this;
+    const axis = this.vertical ? 'top' : 'left';
+    const page = this.vertical ? track.clientHeight : track.clientWidth;
+    const max = this.vertical ? track.scrollHeight - track.clientHeight : track.scrollWidth - track.clientWidth;
+    const position = this.vertical ? track.scrollTop : track.scrollLeft;
+    if (this.hasAttribute('data-loop') && direction > 0 && position >= max - 1) {
+      track.scrollTo({ [axis]: 0, behavior: 'smooth' });
+    } else if (this.hasAttribute('data-loop') && direction < 0 && position <= 1) {
+      track.scrollTo({ [axis]: max, behavior: 'smooth' });
+    } else {
+      track.scrollBy({ [axis]: direction * page, behavior: 'smooth' });
+    }
   }
 
   #onScroll = () => {
@@ -97,8 +110,9 @@ class UiSlider extends HTMLElement {
     const max = this.vertical ? track.scrollHeight - track.clientHeight : track.scrollWidth - track.clientWidth;
     const position = this.vertical ? track.scrollTop : track.scrollLeft;
     this.toggleAttribute('data-overflow', max > 1);
-    if (this.prev) this.prev.disabled = position <= 1;
-    if (this.next) this.next.disabled = position >= max - 1;
+    const loop = this.hasAttribute('data-loop');
+    if (this.prev) this.prev.disabled = !loop && position <= 1;
+    if (this.next) this.next.disabled = !loop && position >= max - 1;
     if (this.dots) {
       const offsets = [...track.children].map((item) => Math.abs(item.offsetLeft - track.offsetLeft - position));
       const current = offsets.indexOf(Math.min(...offsets));

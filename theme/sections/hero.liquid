@@ -30,6 +30,9 @@
   {% if several and section.settings.autoplay > 0 %}
     data-autoplay="{{ section.settings.autoplay }}"
   {% endif %}
+  {% if several and section.settings.loop %}
+    data-loop
+  {% endif %}
   aria-roledescription="carousel"
   aria-label="{{ 'sections.hero.label' | t }}"
 >
@@ -162,7 +165,8 @@
       "step": 1,
       "unit": "s",
       "default": 0
-    }
+    },
+    { "type": "checkbox", "id": "loop", "label": "t:sections.hero.loop", "info": "t:sections.hero.loop_info", "default": true }
   ],
   "blocks": [
     {

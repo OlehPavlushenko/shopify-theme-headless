@@ -342,7 +342,7 @@
       "button_link_2": "Second button link",
       "color_scheme_info": "Colors the caption: the card, the text side, or the text over the image.",
       "autoplay": "Change slides every",
-      "autoplay_info": "0 = only by swiping or with the arrows. Applies with two or more slides.",
+      "autoplay_info": "0 = off, slides change only by swiping or with the arrows. Pauses while the shopper points at or focuses the slider.",
       "slide_name": "Slide",
       "video": "Background video",
       "video_info": "Always muted, looping, without controls; plays inline on phones and shows its frame at the start second right away. With a video the image is only a fallback for visitors who turned animations off. Upload in Content > Files; short (10–20 s) and light (under 5 MB).",
@@ -357,7 +357,9 @@
       "tint_color": "Image tint color",
       "video_start": "Video starts at",
       "video_end": "Video ends at",
-      "video_end_info": "The part between start and end loops. 0 = to the end of the video."
+      "video_end_info": "The part between start and end loops. 0 = to the end of the video.",
+      "loop": "Loop slides",
+      "loop_info": "After the last slide the arrows and autoplay go back to the first one. Off: the slider stops at the ends."
     },
     "product_list": {
       "name": "Product list",

@@ -6,9 +6,10 @@
  *   <video muted loop playsinline preload="none" poster="…"> … </video> [<video class="… --mobile">]
  * </background-video>; CSS shows one video per screen size and hides the slide image while a video
  * is in use.
- * Always muted, looping, without controls. The visible video loads its frame at data-start right away
- * and appears with it ([data-ready]) — no first-frame poster, no jump; it starts playing after the page
- * has loaded and only while on screen (pauses in hidden slides and off screen).
+ * Always muted, looping, without controls. Nothing loads before the page has: then a video starts
+ * loading only once it is on screen (a video on a later slide waits until that slide is shown), shows
+ * its frame at data-start ([data-ready]) — no first-frame poster, no jump — and plays while on screen
+ * (pauses in hidden slides and off screen). Decoding runs off the page's main thread.
  * With "reduce motion" or Data Saver it never plays: [data-off] is set, the slide image shows instead
  * (or the video poster when the slide has no image).
  * data-start / data-end: play only that part of the video and loop it.
@@ -29,10 +30,7 @@ class BackgroundVideo extends HTMLElement {
     }
     this.start = Number(this.dataset.start) || 0;
     this.end = Number(this.dataset.end) || 0;
-    for (const video of this.videos) {
-      this.#segment(video);
-      if (shown(video)) this.#prepare(video);
-    }
+    for (const video of this.videos) this.#segment(video);
 
     const begin = () => {
       this.#observer = new IntersectionObserver(([entry]) => this.#toggle(entry.isIntersecting), { threshold: 0.25 });

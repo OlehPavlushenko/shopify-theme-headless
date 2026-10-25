@@ -18,8 +18,12 @@
             "image": "shopify://shop_images/slide_1_desktop.png",
             "image_mobile": "shopify://shop_images/slide_1_mobile.png",
             "video": "shopify://files/videos/Добра_Їжа.mp4",
+            "video_start": 9,
+            "video_end": 0,
             "position": "left",
             "color_scheme": "scheme-1",
+            "caption": "card",
+            "tint_color": "#000000",
             "overlay": 20,
             "eyebrow": "Christmas collection",
             "heading": "Natural care, every day",
@@ -27,25 +31,27 @@
             "button_label": "Shop gifts",
             "button_link": "/collections/all",
             "button_label_2": "Best sellers",
-            "button_link_2": "/collections/automated-collection",
-            "caption": "card"
+            "button_link_2": "/collections/automated-collection"
           }
         },
         "slide_2": {
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/slide_1_desktop.png",
+            "video_start": 0,
+            "video_end": 0,
             "position": "left",
             "color_scheme": "scheme-3",
-            "overlay": 0,
+            "caption": "split",
+            "tint_color": "#000000",
+            "overlay": 60,
             "eyebrow": "Gift guide",
             "heading": "Gifts that care",
             "text": "<p>Ready-to-give sets with free gift wrapping on every order.</p>",
             "button_label": "Shop gifts",
             "button_link": "/collections/all",
             "button_label_2": "",
-            "button_link_2": "",
-            "caption": "split"
+            "button_link_2": ""
           }
         }
       },

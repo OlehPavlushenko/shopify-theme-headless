@@ -4,9 +4,11 @@
  * Markup contract: <background-video [data-start="<s>"] [data-end="<s>"]>
  *   <video muted loop playsinline preload="none" poster="…"> … </video> [<video class="… --mobile">]
  * </background-video>; CSS shows one video per screen size.
- * Always muted, looping and without controls. The poster shows first; the visible video starts after
+ * Always muted, looping and without controls. The video stays invisible until it really plays
+ * ([data-playing], set here) — so neither its poster (Shopify takes the first frame) nor a jump to
+ * data-start shows; the slide image is seen until then. The visible video starts after
  * the page has loaded, plays only while on screen (pauses in hidden slides and off screen), and never
- * starts with "reduce motion" or Data Saver — the poster stays then.
+ * starts with "reduce motion" or Data Saver — the poster (still image) shows then.
  * data-start / data-end: play only that part of the video and loop it.
  */
 const allowed = () =>
@@ -16,10 +18,17 @@ class BackgroundVideo extends HTMLElement {
   #observer;
 
   connectedCallback() {
-    if (!allowed()) return;
+    // Not playing at all: show the video's poster (still image) instead
+    if (!allowed()) {
+      for (const video of this.querySelectorAll('video')) video.setAttribute('data-playing', '');
+      return;
+    }
     this.start = Number(this.dataset.start) || 0;
     this.end = Number(this.dataset.end) || 0;
-    for (const video of this.querySelectorAll('video')) this.#segment(video);
+    for (const video of this.querySelectorAll('video')) {
+      video.addEventListener('playing', () => video.setAttribute('data-playing', ''), { once: true });
+      this.#segment(video);
+    }
 
     const begin = () => {
       this.#observer = new IntersectionObserver(([entry]) => this.#toggle(entry.isIntersecting), { threshold: 0.25 });

@@ -345,7 +345,7 @@
       "autoplay_info": "0 = only by swiping or with the arrows. Applies with two or more slides.",
       "slide_name": "Slide",
       "video": "Background video",
-      "video_info": "Always muted, looping, without controls; plays inline on phones. The image shows until the video loads. Upload in Content > Files; short (10–20 s) and light (under 5 MB).",
+      "video_info": "Always muted, looping, without controls; plays inline on phones. Until the video plays, the slide image shows — pick an image close to the video's first frame (or its start second). Upload in Content > Files; short (10–20 s) and light (under 5 MB).",
       "video_mobile": "Background video on phones",
       "video_mobile_info": "Optional, a vertical crop works best.",
       "position_bottom": "Bottom center",

@@ -113,6 +113,17 @@
     object-fit: cover;
   }
 
+  /* Background video fades in once it really plays (from its start second); until then the slide
+     image shows, not the video poster */
+  .hero__video-file {
+    opacity: 0;
+    transition: opacity var(--duration-long) var(--ease);
+  }
+
+  .hero__video-file[data-playing] {
+    opacity: 1;
+  }
+
   /* Phone video only on phones, when there is one */
   .hero__video-file--mobile {
     display: none;

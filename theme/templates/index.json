@@ -22,7 +22,7 @@
             "color_scheme": "scheme-3",
             "caption": "card",
             "tint_color": "#000000",
-            "overlay": 0,
+            "overlay": 10,
             "eyebrow": "",
             "heading": "",
             "text": "",
@@ -34,7 +34,6 @@
         },
         "slide_1": {
           "type": "slide",
-          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/slide_3_desktop.webp",
             "image_mobile": "shopify://shop_images/slide_3_mobile.webp",
@@ -56,7 +55,6 @@
         },
         "slide_2": {
           "type": "slide",
-          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/slide_1_desk.webp",
             "image_mobile": "shopify://shop_images/slide_1_mob.webp",

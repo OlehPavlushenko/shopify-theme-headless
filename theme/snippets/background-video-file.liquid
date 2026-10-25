@@ -1,0 +1,54 @@
+{% doc %}
+  One muted <video> for <background-video>.
+  Sources: Shopify's HLS stream first (adaptive: the player picks a lighter quality on slow or mobile
+  connections; played natively by iOS and Android), then the best MP4 not taller than max_height for
+  browsers without HLS (desktop Chrome, Firefox). Falls back to the smallest MP4 when all are taller.
+
+  @param {object} video - Shopify video (video setting / media)
+  @param {number} max_height - Highest rendition to use, e.g. 1080 (desktop) or 720 (phones)
+  @param {string} [class] - Classes of the <video>
+  @param {number} [poster_width] - Poster width (default 1600)
+{% enddoc %}
+{%- liquid
+  assign best = nil
+  assign smallest = nil
+  assign hls = nil
+  for source in video.sources
+    if source.format == 'm3u8'
+      assign hls = source
+      continue
+    endif
+    if source.format != 'mp4'
+      continue
+    endif
+    if smallest == nil or source.height < smallest.height
+      assign smallest = source
+    endif
+    if source.height <= max_height
+      if best == nil or source.height > best.height
+        assign best = source
+      endif
+    endif
+  endfor
+  if best == nil
+    assign best = smallest
+  endif
+  assign poster_size = poster_width | default: 1600
+-%}
+{%- if best -%}
+  <video
+    class="{{ class }}"
+    muted
+    loop
+    playsinline
+    preload="none"
+    poster="{{ video.preview_image | image_url: width: poster_size }}"
+    width="{{ best.width }}"
+    height="{{ best.height }}"
+  >
+    {%- if hls -%}
+      <source src="{{ hls.url }}" type="{{ hls.mime_type }}">
+    {%- endif -%}
+    <source src="{{ best.url }}" type="video/mp4">
+  </video>
+{%- endif -%}

@@ -80,10 +80,10 @@
               {% if block.settings.video_start > 0 %}data-start="{{ block.settings.video_start }}"{% endif %}
               {% if block.settings.video_end > block.settings.video_start %}data-end="{{ block.settings.video_end }}"{% endif %}
             >
-              {{ block.settings.video | video_tag: muted: true, loop: true, playsinline: true, preload: 'none', image_size: '1600x', class: 'hero__video-file' }}
-              {%- if block.settings.video_mobile != blank -%}
-                {{ block.settings.video_mobile | video_tag: muted: true, loop: true, playsinline: true, preload: 'none', image_size: '800x', class: 'hero__video-file hero__video-file--mobile' }}
-              {%- endif -%}
+              {%- comment -%} Desktop: up to 1080p. Phones: the phone video or the same video, up to 720p {%- endcomment -%}
+              {%- render 'background-video-file', video: block.settings.video, max_height: 1080, class: 'hero__video-file' -%}
+              {%- assign phone_video = block.settings.video_mobile | default: block.settings.video -%}
+              {%- render 'background-video-file', video: phone_video, max_height: 720, poster_width: 800, class: 'hero__video-file hero__video-file--mobile' -%}
             </background-video>
           {%- endif -%}
         </div>

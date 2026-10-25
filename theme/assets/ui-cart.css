@@ -527,6 +527,15 @@
       opacity var(--duration-default) var(--ease);
   }
 
+  /*
+   * The cart is closing ([data-closing] from @ui/dialog): the open panel leaves at the same time and
+   * with the same motion — the sheet slides down; on desktop it slides back behind the drawer.
+   */
+  .cart-drawer[data-closing] .cart-recs[data-open] {
+    translate: 0 100%;
+    transition: translate var(--duration-long) var(--ease-in-out);
+  }
+
   /* Head row on top, the rows' track takes the rest of the height and pages up/down */
   .cart-recs__slider {
     grid-template-rows: auto minmax(0, 1fr);
@@ -563,6 +572,10 @@
       max-height: none;
       padding-block: var(--space-m) var(--space-l);
       border-radius: 0;
+      translate: 100% 0;
+    }
+
+    .cart-drawer[data-closing] .cart-recs[data-open] {
       translate: 100% 0;
     }
   }

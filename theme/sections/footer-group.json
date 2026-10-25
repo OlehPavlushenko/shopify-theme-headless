@@ -14,14 +14,14 @@
     "newsletter": {
       "type": "newsletter",
       "settings": {
+        "layout": "banner",
+        "image": "shopify://shop_images/about-image-1.png",
         "heading": "Want our warmest offers first?",
         "text": "<p>Subscribe to our news and get <strong>10% off</strong> your first order — the code goes straight into your cart.</p>",
         "button_label": "Subscribe",
         "success_text": "<p>You are in! Code <strong>XMAS10</strong> is already applied to your cart.</p>",
         "discount_code": "XMAS10",
-        "color_scheme": "scheme-4",
-        "layout": "banner",
-        "image": "shopify://shop_images/about-image-1.png"
+        "color_scheme": "scheme-4"
       }
     },
     "holiday_marquee": {
@@ -94,7 +94,7 @@
           "type": "products",
           "settings": {
             "heading": "Popular",
-            "collection": "automated-collection",
+            "collection": "best-sellers",
             "products": [],
             "limit": 2
           }

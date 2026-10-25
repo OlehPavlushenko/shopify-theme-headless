@@ -229,6 +229,22 @@
     border-radius: var(--radius-media);
   }
 
+  /* Phones: the image edge to edge at the top of the section */
+  @media (max-width: 749px) {
+    .newsletter--banner .newsletter__inner:has(.newsletter__media) {
+      padding-top: 0;
+    }
+
+    .newsletter__media {
+      width: auto;
+      margin-inline: calc(var(--gutter) * -1);
+    }
+
+    .newsletter__media img {
+      border-radius: 0;
+    }
+  }
+
   @media (min-width: 750px) {
     /* Image and content as one group in the middle of the row */
     .newsletter--banner .newsletter__inner {

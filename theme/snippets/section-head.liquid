@@ -1,9 +1,10 @@
 {% doc %}
-  Heading row of a content section: an h2 on the left, an optional "view all" link on the right.
-  Inside a <ui-slider> it also takes the slider arrows (nav: true). Styles: packages/ui/css/sections.css.
+  Heading row of a content section: an h2 with an optional "view all" link right after it.
+  Inside a <ui-slider> it also takes the slider arrows on the right (nav: true).
+  Styles: packages/ui/css/sections.css.
 
   @param {string} [heading] - Section heading (rich text allowed)
-  @param {string} [link_label] - Text of the link on the right
+  @param {string} [link_label] - Text of the link after the heading
   @param {string} [link] - URL of the link
   @param {boolean} [nav] - Render the slider arrows (inside <ui-slider>)
 {% enddoc %}
@@ -12,18 +13,16 @@
     {%- if heading != blank -%}
       <h2 class="h3 section-head__title">{{ heading }}</h2>
     {%- endif -%}
-    {%- if link_label != blank or nav -%}
+    {%- if link_label != blank and link != blank -%}
+      <a href="{{ link }}" class="section-head__link">
+        {{- link_label | escape -}}
+        {%- render 'icon', name: 'arrow-right' -%}
+      </a>
+    {%- endif -%}
+    {%- if nav -%}
       <div class="section-head__end">
-        {%- if link_label != blank and link != blank -%}
-          <a href="{{ link }}" class="section-head__link">
-            {{- link_label | escape -}}
-            {%- render 'icon', name: 'arrow-right' -%}
-          </a>
-        {%- endif -%}
-        {%- if nav -%}
-          {%- assign nav_label = heading | strip_html -%}
-          {%- render 'slider-nav', label: nav_label -%}
-        {%- endif -%}
+        {%- assign nav_label = heading | strip_html -%}
+        {%- render 'slider-nav', label: nav_label -%}
       </div>
     {%- endif -%}
   </div>

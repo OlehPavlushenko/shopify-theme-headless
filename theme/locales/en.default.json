@@ -157,6 +157,9 @@
     "hero": {
       "label": "Featured",
       "slide": "Slide %n"
+    },
+    "product_list": {
+      "show_more": "Show more"
     }
   },
   "newsletter": {

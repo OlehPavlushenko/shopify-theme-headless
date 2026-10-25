@@ -19,9 +19,12 @@
 -%}
 <div class="product-list color-{{ section.settings.color_scheme }} section-spacing">
   <div class="page-width">
+    {%- comment -%} Grid on phones: 4 cards (two rows of 2), the rest under "Show more" in steps of 4 {%- endcomment -%}
+    {%- assign total = 0 -%}
     {%- capture cards -%}
       {%- for product in list limit: section.settings.limit -%}
-        <li>
+        {%- assign total = forloop.length -%}
+        <li{% if slider == false and forloop.index > 4 %} data-more{% endif %}>
           {%- render 'product-card',
             product: product,
             quick_add: section.settings.quick_add,
@@ -41,9 +44,19 @@
       </ui-slider>
     {%- else -%}
       {%- render 'section-head', heading: section.settings.heading, link_label: section.settings.link_label, link: link -%}
-      <ul class="grid product-list__grid" role="list" style="--grid-columns: {{ section.settings.columns }}; --grid-columns-mobile: 2;">
-        {{ cards }}
-      </ul>
+      <show-more class="product-list__more" data-step="4">
+        <ul class="grid product-list__grid" role="list" style="--grid-columns: {{ section.settings.columns }}; --grid-columns-mobile: 2;">
+          {{ cards }}
+        </ul>
+        {%- if total > 4 -%}
+          <button type="button" class="btn btn--outline product-list__more-button" data-show-more>
+            {{- 'sections.product_list.show_more' | t -}}
+          </button>
+        {%- endif -%}
+      </show-more>
+      {%- if total > 4 -%}
+        <script type="module">import '@ui/show-more';</script>
+      {%- endif -%}
     {%- endif -%}
   </div>
 </div>

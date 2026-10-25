@@ -12,6 +12,27 @@
     "hero": {
       "type": "hero",
       "blocks": {
+        "slide_2": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/slide_1_desk.webp",
+            "image_mobile": "shopify://shop_images/slide_1_mob.webp",
+            "video_start": 0,
+            "video_end": 0,
+            "position": "left",
+            "color_scheme": "scheme-3",
+            "caption": "overlay",
+            "tint_color": "#100f0f",
+            "overlay": 60,
+            "eyebrow": "Gift guide",
+            "heading": "Gifts that care",
+            "text": "<p>Ready-to-give sets with free gift wrapping on every order.</p>",
+            "button_label": "Shop gifts",
+            "button_link": "/collections/all",
+            "button_label_2": "",
+            "button_link_2": ""
+          }
+        },
         "slide_NDtMy3": {
           "type": "slide",
           "settings": {
@@ -20,16 +41,16 @@
             "video_end": 0,
             "position": "left",
             "color_scheme": "scheme-3",
-            "caption": "card",
+            "caption": "overlay",
             "tint_color": "#000000",
             "overlay": 10,
-            "eyebrow": "",
-            "heading": "",
-            "text": "",
-            "button_label": "",
-            "button_link": "",
-            "button_label_2": "",
-            "button_link_2": ""
+            "eyebrow": "BioHarmony",
+            "heading": "Wellness rooted in nature",
+            "text": "<p>Phyto complexes, superfoods and clean beauty for every day.</p>",
+            "button_label": "Top sale",
+            "button_link": "shopify://collections/best-sellers",
+            "button_label_2": "Explore health",
+            "button_link_2": "shopify://collections/health"
           }
         },
         "slide_1": {
@@ -52,37 +73,17 @@
             "button_label_2": "Best sellers",
             "button_link_2": "/collections/automated-collection"
           }
-        },
-        "slide_2": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/slide_1_desk.webp",
-            "image_mobile": "shopify://shop_images/slide_1_mob.webp",
-            "video_start": 0,
-            "video_end": 0,
-            "position": "left",
-            "color_scheme": "scheme-3",
-            "caption": "overlay",
-            "tint_color": "#100F0F",
-            "overlay": 60,
-            "eyebrow": "Gift guide",
-            "heading": "Gifts that care",
-            "text": "<p>Ready-to-give sets with free gift wrapping on every order.</p>",
-            "button_label": "Shop gifts",
-            "button_link": "/collections/all",
-            "button_label_2": "",
-            "button_link_2": ""
-          }
         }
       },
       "block_order": [
+        "slide_2",
         "slide_NDtMy3",
-        "slide_1",
-        "slide_2"
+        "slide_1"
       ],
       "settings": {
-        "height": "large",
-        "autoplay": 0
+        "height": "medium",
+        "autoplay": 0,
+        "loop": true
       }
     },
     "trust": {
@@ -135,14 +136,14 @@
       "type": "product-list",
       "settings": {
         "heading": "Best sellers",
-        "collection": "automated-collection",
+        "collection": "best-sellers",
         "products": [],
         "limit": 8,
         "layout": "slider",
-        "columns": 4,
+        "columns": 5,
         "quick_add": true,
         "link_label": "View all",
-        "link": "",
+        "link": "shopify://collections/best-sellers",
         "color_scheme": "scheme-1"
       }
     },
@@ -152,6 +153,7 @@
         "p1": {
           "type": "promo",
           "settings": {
+            "image": "shopify://shop_images/biox3.png",
             "eyebrow": "Gift ideas",
             "heading": "Christmas sets",
             "text": "Ready-to-give boxes",
@@ -162,6 +164,7 @@
         "p2": {
           "type": "promo",
           "settings": {
+            "image": "shopify://shop_images/greenmax3.png",
             "eyebrow": "Skin care",
             "heading": "Winter routine",
             "text": "Hydration for cold days",
@@ -172,6 +175,7 @@
         "p3": {
           "type": "promo",
           "settings": {
+            "image": "shopify://shop_images/di3.jpg",
             "eyebrow": "Wellness",
             "heading": "Daily balance",
             "text": "Supplements that work",
@@ -188,7 +192,7 @@
       "settings": {
         "heading": "",
         "card_layout": "overlay",
-        "ratio": "4 / 5",
+        "ratio": "4 / 3",
         "color_scheme": "scheme-1"
       }
     },
@@ -197,8 +201,8 @@
       "settings": {
         "heading": "Shop by category",
         "collections": [],
-        "columns": 4,
-        "ratio": "4 / 5",
+        "columns": 6,
+        "ratio": "1",
         "link_label": "All collections",
         "color_scheme": "scheme-1"
       }
@@ -221,14 +225,14 @@
       "type": "product-list",
       "settings": {
         "heading": "New arrivals",
-        "collection": "",
+        "collection": "new-arrivals",
         "products": [],
         "limit": 8,
         "layout": "grid",
         "columns": 4,
         "quick_add": true,
         "link_label": "View all",
-        "link": "/collections/all",
+        "link": "shopify://collections/new-arrivals",
         "color_scheme": "scheme-1"
       }
     }

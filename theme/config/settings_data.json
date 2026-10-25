@@ -12,6 +12,13 @@
     "logo": "shopify://shop_images/logo-new2.png",
     "favicon": "shopify://shop_images/logo-small-new-finish.png",
     "share_image": "shopify://shop_images/socail-sharing-new.png",
+    "store_phone": "+380 44 123 45 67",
+    "store_email": "hello@bioharmony.com.ua",
+    "store_address": "Kyiv, Ukraine",
+    "store_hours": "Mon – Fri, 9:00 – 18:00",
+    "social_instagram": "https://www.instagram.com/",
+    "social_facebook": "https://www.facebook.com/",
+    "social_tiktok": "https://www.tiktok.com/",
     "type_heading_font": "bricolage_grotesque_n7",
     "type_body_font": "dm_sans_n4",
     "radius_button": 40,
@@ -22,17 +29,16 @@
     "cart_type": "drawer",
     "free_shipping_threshold": 1200,
     "upsell_products": [
-      "the-out-of-stock-snowboard",
-      "the-multi-managed-snowboard",
-      "the-multi-location-snowboard",
-      "the-inventory-not-tracked-snowboard"
+      "anti-age-code-spovilnennia-protsesiv-starinnia",
+      "collagen-active-kolagen",
+      "chlorophyll",
+      "kokteil-mix-protein-control",
+      "kokteil-protein-slim"
     ],
+    "api_url": "http://localhost:5000",
     "sections": {
       "cart-drawer": {
         "type": "cart-drawer",
-        "settings": {
-          "color_scheme": ""
-        },
         "blocks": {
           "package_text": {
             "type": "text",
@@ -67,7 +73,10 @@
           "delivery_day",
           "delivery_time",
           "leave_at_door"
-        ]
+        ],
+        "settings": {
+          "color_scheme": ""
+        }
       }
     },
     "content_for_index": [],
@@ -177,14 +186,6 @@
           "input_text": "#2a1a17"
         }
       }
-    },
-    "api_url": "http://localhost:5000",
-    "store_phone": "+380 44 123 45 67",
-    "store_email": "hello@bioharmony.com.ua",
-    "store_address": "Kyiv, Ukraine",
-    "store_hours": "Mon – Fri, 9:00 – 18:00",
-    "social_instagram": "https://www.instagram.com/",
-    "social_facebook": "https://www.facebook.com/",
-    "social_tiktok": "https://www.tiktok.com/"
+    }
   }
 }

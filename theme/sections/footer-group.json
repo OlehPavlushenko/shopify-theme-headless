@@ -11,6 +11,19 @@
   "type": "footer",
   "name": "t:general.footer",
   "sections": {
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Want our warmest offers first?",
+        "text": "<p>Subscribe to our news and get <strong>10% off</strong> your first order — the code goes straight into your cart.</p>",
+        "button_label": "Subscribe",
+        "success_text": "<p>You are in! Code <strong>XMAS10</strong> is already applied to your cart.</p>",
+        "discount_code": "XMAS10",
+        "color_scheme": "scheme-4",
+        "layout": "banner",
+        "image": "shopify://shop_images/about-image-1.png"
+      }
+    },
     "holiday_marquee": {
       "type": "marquee",
       "blocks": {
@@ -51,19 +64,6 @@
         "separator": "star",
         "show_from": "",
         "show_until": "2026-12-27 00:00"
-      }
-    },
-    "newsletter": {
-      "type": "newsletter",
-      "settings": {
-        "heading": "Want our warmest offers first?",
-        "text": "<p>Subscribe to our news and get <strong>10% off</strong> your first order — the code goes straight into your cart.</p>",
-        "button_label": "Subscribe",
-        "success_text": "<p>You are in! Code <strong>XMAS10</strong> is already applied to your cart.</p>",
-        "discount_code": "XMAS10",
-        "color_scheme": "scheme-2",
-        "layout": "banner",
-        "image": "shopify://shop_images/about-image-1.png"
       }
     },
     "footer": {
@@ -124,8 +124,8 @@
     }
   },
   "order": [
-    "holiday_marquee",
     "newsletter",
+    "holiday_marquee",
     "footer"
   ]
 }

@@ -444,7 +444,7 @@
   }
 
   @starting-style {
-    .menu-panel:popover-open {
+    .menu-panel:popover-open:not([data-closing]) {
       opacity: 0;
     }
   }

@@ -40,7 +40,7 @@
   }
 
   @starting-style {
-    .search-panel[open] {
+    .search-panel[open]:not([data-closing]) {
       translate: 0 -100%;
     }
   }
@@ -58,7 +58,7 @@
   }
 
   @starting-style {
-    .search-panel[open]::backdrop {
+    .search-panel[open]:not([data-closing])::backdrop {
       background: transparent;
     }
   }
@@ -74,7 +74,7 @@
   }
 
   @starting-style {
-    .search-panel--drawer[open] {
+    .search-panel--drawer[open]:not([data-closing]) {
       translate: 100% 0;
     }
   }

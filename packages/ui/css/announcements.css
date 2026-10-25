@@ -209,6 +209,20 @@
     color: var(--color-accent);
   }
 
+  /*
+   * Digits of this font differ in width and the line is centered: each value gets a fixed box,
+   * so the line never moves while the timer ticks (days can have 1–3 digits, the rest always 2)
+   */
+  .countdown__value {
+    display: inline-block;
+    min-width: 2.4ch;
+    text-align: end;
+  }
+
+  .countdown__value[data-unit="days"] {
+    min-width: 0;
+  }
+
   .countdown-bar__link {
     display: inline-flex;
     align-items: center;

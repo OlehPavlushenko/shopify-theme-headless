@@ -1,0 +1,298 @@
+/* Generated from packages/ui/css/sections.css by scripts/sync-ui.mjs. Do not edit here. */
+/*
+ * Content sections (home page and any template): section heading row, hero, product list,
+ * collection list, promo grid, image with text, trust bar.
+ * Markup contract: theme/snippets/section-head.liquid, theme/sections/hero.liquid, product-list.liquid,
+ * collection-list.liquid, promo-grid.liquid, image-text.liquid, trust-bar.liquid.
+ */
+@layer components {
+  /* -------------------------------------------------- section heading */
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--space-xs) var(--space-l);
+    margin-bottom: var(--space-l);
+  }
+
+  .section-head__end {
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+    margin-inline-start: auto;
+  }
+
+  .section-head__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-heading);
+    text-decoration: none;
+  }
+
+  .section-head__link .svg-icon {
+    --icon-size: 1.4rem;
+
+    transition: translate var(--duration-default) var(--ease-out);
+  }
+
+  .section-head__link:hover {
+    color: var(--color-link-hover);
+  }
+
+  .section-head__link:hover .svg-icon {
+    translate: 0.3rem 0;
+  }
+
+  /* Inside a slider the head already has the slider's spacing */
+  .slider > .section-head {
+    margin-bottom: var(--space-xs);
+  }
+
+  /* ------------------------------------------------------------- hero */
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-items: end;
+    overflow: hidden;
+    color: var(--color-foreground);
+    background: var(--color-background);
+  }
+
+  .hero--medium {
+    min-height: min(60svh, 56rem);
+  }
+
+  .hero--large {
+    min-height: min(80svh, 76rem);
+  }
+
+  .hero--full {
+    min-height: calc(100svh - var(--header-height, 0px));
+  }
+
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+
+  .hero__media :is(img, svg) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /*
+   * With an image: light text over a shade that is darker at the bottom, where the text is.
+   * Set on the inner wrapper: the color scheme class on .hero is unlayered CSS and would win there.
+   */
+  .hero--media .hero__inner {
+    --color-heading: #fff;
+    --color-foreground: rgb(255 255 255 / 0.9);
+    --color-button: #fff;
+    --color-button-label: #1b2a23;
+    --color-button-hover: rgb(255 255 255 / 0.85);
+    --color-button-label-hover: #1b2a23;
+  }
+
+  .hero--media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to top, rgb(0 0 0 / var(--hero-overlay)), rgb(0 0 0 / calc(var(--hero-overlay) * 0.3)));
+  }
+
+  .hero--media .hero__inner .btn--outline {
+    --btn-fg: #fff;
+    --btn-border: rgb(255 255 255 / 0.7);
+    --btn-fg-hover: #fff;
+    --btn-border-hover: #fff;
+    --btn-bg-hover: rgb(255 255 255 / 0.12);
+  }
+
+  .hero__inner {
+    padding-block: var(--space-3xl);
+  }
+
+  .hero__content {
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+    max-width: 60rem;
+  }
+
+  .hero--center .hero__content {
+    justify-items: center;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .hero--center {
+    align-items: center;
+  }
+
+  .hero__eyebrow {
+    color: var(--color-foreground);
+  }
+
+  .hero__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+    margin-top: var(--space-xs);
+  }
+
+  /* ----------------------------------------------------- product list */
+  .product-list__grid {
+    --grid-gap: var(--space-xl) var(--space-m);
+
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 990px) {
+    .product-list__grid {
+      --grid-gap: var(--space-xl) var(--space-l);
+    }
+  }
+
+  /* -------------------------------------------------- collection list */
+  .collection-card {
+    display: grid;
+    gap: var(--space-xs);
+    text-decoration: none;
+  }
+
+  .collection-card__media img {
+    transition: scale var(--duration-long) var(--ease-out);
+  }
+
+  .collection-card:hover .collection-card__media img {
+    scale: 1.04;
+  }
+
+  .collection-card__title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    margin-top: var(--space-2xs);
+    font-size: var(--text-md);
+    font-weight: var(--font-body-weight-semibold);
+    line-height: var(--leading-md);
+    color: var(--color-heading);
+  }
+
+  .collection-card__title .svg-icon {
+    --icon-size: 1.4rem;
+
+    transition: translate var(--duration-default) var(--ease-out);
+  }
+
+  .collection-card:hover .collection-card__title .svg-icon {
+    translate: 0.3rem 0;
+  }
+
+  .collection-card__count {
+    font-size: var(--text-xs);
+    line-height: var(--leading-xs);
+    color: color-mix(in srgb, var(--color-foreground) 65%, transparent);
+  }
+
+  /* ------------------------------------------------------- promo grid */
+  /* A slider: cards side by side on wide screens, a swipeable row on phones */
+  .promo-grid__slider {
+    --slider-gap: var(--space-m);
+  }
+
+  /* ---------------------------------------------------- image + text */
+  .image-text__inner {
+    display: grid;
+    gap: var(--space-xl);
+    align-items: center;
+  }
+
+  .image-text__content {
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+    max-width: 52rem;
+  }
+
+  .image-text__text {
+    font-size: var(--text-md);
+    line-height: var(--leading-md);
+  }
+
+  @media (min-width: 750px) {
+    .image-text__inner {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-2xl);
+    }
+
+    .image-text--image-right .image-text__media {
+      order: 2;
+    }
+  }
+
+  /* -------------------------------------------------------- trust bar */
+  .trust-bar {
+    color: var(--color-foreground);
+    background: var(--color-background);
+  }
+
+  .trust-bar__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-l) var(--space-m);
+    margin: 0 auto;
+    padding-block: var(--space-xl);
+    list-style: none;
+  }
+
+  .trust-bar__item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-s);
+    align-items: start;
+  }
+
+  .trust-bar__item .svg-icon {
+    --icon-size: 2.4rem;
+
+    color: var(--color-accent);
+  }
+
+  .trust-bar__text {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .trust-bar__title {
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-semibold);
+    line-height: var(--leading-sm);
+    color: var(--color-heading);
+  }
+
+  .trust-bar__note {
+    font-size: var(--text-xs);
+    line-height: var(--leading-xs);
+  }
+
+  @media (min-width: 990px) {
+    .trust-bar__list {
+      grid-template-columns: repeat(var(--trust-columns, 4), minmax(0, 1fr));
+    }
+
+    .trust-bar__item {
+      justify-content: center;
+    }
+  }
+}

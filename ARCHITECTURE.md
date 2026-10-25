@@ -56,6 +56,11 @@ scripts/
     `.cluster`, `.grid`, `.section-spacing`) and utilities.
   - `components.css`: `.btn` (+ `--secondary|outline|link|icon|sm|full`), `.field`/`.input`, `.qty`,
     `.price-tag`, `.pill`, `.frame`, `.svg-icon`, `.form-error`, `.drawer`, `.popup`.
+  - `sections.css`: content sections (hero, product list, collection list, promo grid, image with text,
+    trust bar) and their shared heading row (`snippets/section-head`).
+  - Color schemes are unlayered CSS (`snippets/color-schemes`), so they beat anything in `@layer components`:
+    to change scheme colors locally, set the custom properties on an inner element, not on the element
+    that carries the `color-scheme-*` class.
   - `promo.css`: promo card (`snippets/promo-card`, used everywhere promos are shown), newsletter form, promo popup.
   - Side panels are one component: `.drawer` > `.drawer__inner` > `__header` / `__body` / `__footer`,
     on a `<dialog>` (cart, search drawer) or a `[popover]` (utility panel); same width, motion and backdrop.

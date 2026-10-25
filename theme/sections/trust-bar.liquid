@@ -1,0 +1,62 @@
+{% comment %}
+  Trust bar: 2–4 short promises with an icon (free shipping, natural ingredients, returns…).
+  Styles: packages/ui/css/sections.css.
+{% endcomment %}
+<div class="trust-bar color-{{ section.settings.color_scheme }}">
+  <ul class="trust-bar__list page-width" role="list" style="--trust-columns: {{ section.blocks.size | at_least: 1 | at_most: 4 }};">
+    {%- for block in section.blocks -%}
+      <li class="trust-bar__item" {{ block.shopify_attributes }}>
+        {%- render 'icon', name: block.settings.icon -%}
+        <span class="trust-bar__text">
+          <span class="trust-bar__title">{{ block.settings.title | escape }}</span>
+          {%- if block.settings.text != blank -%}
+            <span class="trust-bar__note">{{ block.settings.text | escape }}</span>
+          {%- endif -%}
+        </span>
+      </li>
+    {%- endfor -%}
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.trust_bar.name",
+  "class": "trust-bar-section",
+  "disabled_on": { "groups": ["*"] },
+  "max_blocks": 4,
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-4" }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "t:sections.trust_bar.item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "t:sections.trust_bar.icon",
+          "options": [
+            { "value": "truck", "label": "t:sections.trust_bar.icon_truck" },
+            { "value": "leaf", "label": "t:sections.trust_bar.icon_leaf" },
+            { "value": "return", "label": "t:sections.trust_bar.icon_return" },
+            { "value": "shield", "label": "t:sections.trust_bar.icon_shield" },
+            { "value": "gift", "label": "t:sections.trust_bar.icon_gift" },
+            { "value": "chat", "label": "t:sections.trust_bar.icon_chat" },
+            { "value": "heart", "label": "t:sections.trust_bar.icon_heart" }
+          ],
+          "default": "truck"
+        },
+        { "type": "text", "id": "title", "label": "t:labels.heading", "default": "Free shipping" },
+        { "type": "text", "id": "text", "label": "t:labels.text", "default": "On orders over ₴1,200" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.trust_bar.name",
+      "blocks": [{ "type": "item" }, { "type": "item" }, { "type": "item" }]
+    }
+  ]
+}
+{% endschema %}

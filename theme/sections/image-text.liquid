@@ -1,0 +1,75 @@
+{% comment %}
+  Image with text: an image on one side, eyebrow, heading, text and a button on the other.
+  Styles: packages/ui/css/sections.css.
+{% endcomment %}
+<div class="image-text image-text--image-{{ section.settings.image_position }} color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="image-text__inner page-width">
+    <div class="frame image-text__media" style="--frame-ratio: {{ section.settings.ratio }};">
+      {%- if section.settings.image -%}
+        {{
+          section.settings.image
+          | image_url: width: 1600
+          | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 50vw, 100vw', widths: '600, 900, 1200, 1600', alt: section.settings.image.alt
+        }}
+      {%- else -%}
+        {{ 'image' | placeholder_svg_tag }}
+      {%- endif -%}
+    </div>
+    <div class="image-text__content">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="h2">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="rte image-text__text">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link | default: routes.root_url }}" class="btn btn--outline">
+          {{- section.settings.button_label | escape -}}
+          {%- render 'icon', name: 'arrow-right' -%}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.image_text.name",
+  "class": "image-text-section",
+  "disabled_on": { "groups": ["*"] },
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "t:sections.hero.image" },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "t:sections.image_text.image_position",
+      "options": [
+        { "value": "left", "label": "t:sections.hero.position_left" },
+        { "value": "right", "label": "t:sections.image_text.right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "ratio",
+      "label": "t:sections.collection_list.ratio",
+      "options": [
+        { "value": "4 / 5", "label": "t:sections.collection_list.ratio_portrait" },
+        { "value": "1", "label": "t:sections.collection_list.ratio_square" },
+        { "value": "4 / 3", "label": "t:sections.promo_grid.ratio_landscape" }
+      ],
+      "default": "1"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:sections.promo_popup.eyebrow", "default": "Our story" },
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Made with care for you" },
+    { "type": "richtext", "id": "text", "label": "t:labels.text", "default": "<p>We choose every ingredient for a reason and test every formula before it reaches you.</p>" },
+    { "type": "text", "id": "button_label", "label": "t:labels.button_label", "default": "Learn more" },
+    { "type": "url", "id": "button_link", "label": "t:labels.button_link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "t:sections.image_text.name" }]
+}
+{% endschema %}

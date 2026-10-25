@@ -1,0 +1,79 @@
+{% comment %}
+  Product list: products from a collection (or picked by hand) as a grid or a slider of product cards.
+  Without a collection: the store's catalog (collections.all). Styles: packages/ui/css/sections.css.
+{% endcomment %}
+{%- liquid
+  if section.settings.products.count > 0
+    assign list = section.settings.products
+  elsif section.settings.collection != blank
+    assign list = section.settings.collection.products
+  else
+    assign list = collections.all.products
+  endif
+  assign link = section.settings.link | default: section.settings.collection.url
+  assign slider = false
+  if section.settings.layout == 'slider'
+    assign slider = true
+  endif
+  assign card_sizes = '(min-width: 990px) calc((100vw - 10rem) / ' | append: section.settings.columns | append: '), (min-width: 750px) 33vw, 50vw'
+-%}
+<div class="product-list color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width">
+    {%- capture cards -%}
+      {%- for product in list limit: section.settings.limit -%}
+        <li>
+          {%- render 'product-card',
+            product: product,
+            quick_add: section.settings.quick_add,
+            sizes: card_sizes
+          -%}
+        </li>
+      {%- endfor -%}
+    {%- endcapture -%}
+
+    {%- if slider -%}
+      <ui-slider
+        class="slider product-list__slider"
+        style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 2.2;"
+      >
+        {%- render 'section-head', heading: section.settings.heading, link_label: section.settings.link_label, link: link, nav: true -%}
+        <ul class="slider__track" data-slider-track role="list">{{ cards }}</ul>
+      </ui-slider>
+    {%- else -%}
+      {%- render 'section-head', heading: section.settings.heading, link_label: section.settings.link_label, link: link -%}
+      <ul class="grid product-list__grid" role="list" style="--grid-columns: {{ section.settings.columns }}; --grid-columns-mobile: 2;">
+        {{ cards }}
+      </ul>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.product_list.name",
+  "class": "product-list-section",
+  "disabled_on": { "groups": ["*"] },
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Best sellers" },
+    { "type": "collection", "id": "collection", "label": "t:sections.footer.collection" },
+    { "type": "product_list", "id": "products", "label": "t:sections.footer.products_list", "info": "t:sections.footer.products_list_info", "limit": 12 },
+    { "type": "range", "id": "limit", "label": "t:sections.footer.limit", "min": 2, "max": 12, "step": 1, "default": 8 },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "t:sections.product_list.layout",
+      "options": [
+        { "value": "slider", "label": "t:sections.product_list.layout_slider" },
+        { "value": "grid", "label": "t:sections.product_list.layout_grid" }
+      ],
+      "default": "slider"
+    },
+    { "type": "range", "id": "columns", "label": "t:sections.product_list.columns", "min": 3, "max": 5, "step": 1, "default": 4 },
+    { "type": "checkbox", "id": "quick_add", "label": "t:sections.product_list.quick_add", "default": true },
+    { "type": "text", "id": "link_label", "label": "t:sections.product_list.link_label", "default": "View all" },
+    { "type": "url", "id": "link", "label": "t:sections.product_list.link", "info": "t:sections.product_list.link_info" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "t:sections.product_list.name" }]
+}
+{% endschema %}

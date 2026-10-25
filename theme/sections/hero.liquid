@@ -1,0 +1,107 @@
+{% comment %}
+  Hero: full-width image with a heading, text and up to two buttons, text on the left or centered.
+  Usually the first section of the home page: the image loads eagerly with high priority (LCP).
+  The heading is an h2 styled as h1 — on the home page the logo is the page's h1 (ARCHITECTURE.md, SEO).
+  Styles: packages/ui/css/sections.css.
+{% endcomment %}
+{%- liquid
+  assign image = section.settings.image
+  assign image_mobile = section.settings.image_mobile | default: image
+  assign first = false
+  if section.index == 1
+    assign first = true
+  endif
+-%}
+<div
+  class="hero hero--{{ section.settings.height }} hero--{{ section.settings.position }}{% if image %} hero--media{% endif %} color-{{ section.settings.color_scheme }}"
+  style="--hero-overlay: {{ section.settings.overlay | divided_by: 100.0 }};"
+>
+  {%- if image -%}
+    <picture class="hero__media">
+      <source
+        media="(min-width: 750px)"
+        srcset="{{ image | image_url: width: 1500 }} 1500w, {{ image | image_url: width: 2200 }} 2200w, {{ image | image_url: width: 3000 }} 3000w"
+        sizes="100vw"
+      >
+      {%- if first -%}
+        {{ image_mobile | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '600, 900, 1200', alt: image.alt }}
+      {%- else -%}
+        {{ image_mobile | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '100vw', widths: '600, 900, 1200', alt: image.alt }}
+      {%- endif -%}
+    </picture>
+  {%- else -%}
+    <div class="hero__media">{{ 'lifestyle-2' | placeholder_svg_tag }}</div>
+  {%- endif -%}
+
+  <div class="hero__inner page-width">
+    <div class="hero__content">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow hero__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="h1 hero__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="text-lead hero__text">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank or section.settings.button_label_2 != blank -%}
+        <div class="hero__buttons">
+          {%- if section.settings.button_label != blank -%}
+            <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="btn btn--lg">
+              {{- section.settings.button_label | escape -}}
+            </a>
+          {%- endif -%}
+          {%- if section.settings.button_label_2 != blank -%}
+            <a href="{{ section.settings.button_link_2 | default: routes.collections_url }}" class="btn btn--outline btn--lg">
+              {{- section.settings.button_label_2 | escape -}}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.hero.name",
+  "class": "hero-section",
+  "disabled_on": { "groups": ["*"] },
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "t:sections.hero.image" },
+    { "type": "image_picker", "id": "image_mobile", "label": "t:sections.hero.image_mobile", "info": "t:sections.hero.image_mobile_info" },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "t:sections.hero.height",
+      "options": [
+        { "value": "medium", "label": "t:sections.hero.height_medium" },
+        { "value": "large", "label": "t:sections.hero.height_large" },
+        { "value": "full", "label": "t:sections.hero.height_full" }
+      ],
+      "default": "large"
+    },
+    {
+      "type": "select",
+      "id": "position",
+      "label": "t:sections.hero.position",
+      "options": [
+        { "value": "left", "label": "t:sections.hero.position_left" },
+        { "value": "center", "label": "t:sections.hero.position_center" }
+      ],
+      "default": "left"
+    },
+    { "type": "range", "id": "overlay", "label": "t:sections.hero.overlay", "info": "t:sections.hero.overlay_info", "min": 0, "max": 70, "step": 5, "unit": "%", "default": 30 },
+    { "type": "header", "content": "t:labels.text" },
+    { "type": "text", "id": "eyebrow", "label": "t:sections.promo_popup.eyebrow" },
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Natural care, every day" },
+    { "type": "richtext", "id": "text", "label": "t:labels.text", "default": "<p>Gentle formulas and honest ingredients for skin, body and wellbeing.</p>" },
+    { "type": "text", "id": "button_label", "label": "t:labels.button_label", "default": "Shop now" },
+    { "type": "url", "id": "button_link", "label": "t:labels.button_link" },
+    { "type": "text", "id": "button_label_2", "label": "t:sections.hero.button_label_2" },
+    { "type": "url", "id": "button_link_2", "label": "t:sections.hero.button_link_2" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "info": "t:sections.hero.color_scheme_info", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "t:sections.hero.name" }]
+}
+{% endschema %}

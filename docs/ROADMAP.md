@@ -57,15 +57,17 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
 - `project-server`: newsletter sign-up API (Shopify customers + marketing consent), reCAPTCHA v3,
   origin allowlist, rate limit. The old custom checkout is in git history.
 
+### Home page
+- Sections: Hero, Trust bar, Product list (slider or grid), Promo grid, Collection list,
+  Image with text; shared heading row with a "view all" link; example home page.
+
 ## Next
 
-1. **Home page sections**: hero / page banner, product list, collection list, content
-   (text + image), on theme blocks so they are assembled in the editor.
-2. **Product page** on blocks: gallery, variants, buy buttons, complementary products.
-3. **Collection page**: filters and sorting.
-4. **Content pages**: contact, FAQ (metaobjects), testimonials, newsletter, trust bar.
-5. **Wishlist and compare** (kept from the old theme's feature list).
-6. **Spin-to-win** popup (server picks the prize and can issue a personal code), popup teaser tab.
+1. **Product page** on blocks: gallery, variants, buy buttons, complementary products.
+2. **Collection page**: filters and sorting.
+3. **Content pages**: contact, FAQ (metaobjects), testimonials, newsletter, trust bar.
+4. **Wishlist and compare** (kept from the old theme's feature list).
+5. **Spin-to-win** popup (server picks the prize and can issue a personal code), popup teaser tab.
 
 ## Decisions
 

@@ -9,12 +9,182 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "custom-section",
-      "settings": {}
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "image": "shopify://shop_images/about-image-1.png",
+        "image_mobile": "",
+        "height": "large",
+        "position": "left",
+        "overlay": 35,
+        "eyebrow": "Christmas collection",
+        "heading": "Natural care, every day",
+        "text": "<p>Gentle formulas and honest ingredients for skin, body and wellbeing.</p>",
+        "button_label": "Shop gifts",
+        "button_link": "/collections/all",
+        "button_label_2": "Best sellers",
+        "button_link_2": "/collections/automated-collection",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "trust": {
+      "type": "trust-bar",
+      "blocks": {
+        "t1": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Free shipping",
+            "text": "On orders over ₴1,200"
+          }
+        },
+        "t2": {
+          "type": "item",
+          "settings": {
+            "icon": "leaf",
+            "title": "Natural ingredients",
+            "text": "No parabens or sulfates"
+          }
+        },
+        "t3": {
+          "type": "item",
+          "settings": {
+            "icon": "return",
+            "title": "14-day returns",
+            "text": "Easy and free"
+          }
+        },
+        "t4": {
+          "type": "item",
+          "settings": {
+            "icon": "chat",
+            "title": "Personal advice",
+            "text": "We reply within a day"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-4"
+      }
+    },
+    "best_sellers": {
+      "type": "product-list",
+      "settings": {
+        "heading": "Best sellers",
+        "collection": "automated-collection",
+        "products": [],
+        "limit": 8,
+        "layout": "slider",
+        "columns": 4,
+        "quick_add": true,
+        "link_label": "View all",
+        "link": "",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "promos": {
+      "type": "promo-grid",
+      "blocks": {
+        "p1": {
+          "type": "promo",
+          "settings": {
+            "image": "",
+            "eyebrow": "Gift ideas",
+            "heading": "Christmas sets",
+            "text": "Ready-to-give boxes",
+            "link_label": "Shop sets",
+            "link": "/collections/all"
+          }
+        },
+        "p2": {
+          "type": "promo",
+          "settings": {
+            "image": "",
+            "eyebrow": "Skin care",
+            "heading": "Winter routine",
+            "text": "Hydration for cold days",
+            "link_label": "Discover",
+            "link": "/collections/all"
+          }
+        },
+        "p3": {
+          "type": "promo",
+          "settings": {
+            "image": "",
+            "eyebrow": "Wellness",
+            "heading": "Daily balance",
+            "text": "Supplements that work",
+            "link_label": "Shop now",
+            "link": "/collections/all"
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "settings": {
+        "heading": "",
+        "card_layout": "overlay",
+        "ratio": "4 / 5",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "collections": {
+      "type": "collection-list",
+      "settings": {
+        "heading": "Shop by category",
+        "collections": [],
+        "columns": 4,
+        "ratio": "4 / 5",
+        "link_label": "All collections",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "story": {
+      "type": "image-text",
+      "settings": {
+        "image": "shopify://shop_images/about-image-1.png",
+        "image_position": "right",
+        "ratio": "4 / 3",
+        "eyebrow": "Our story",
+        "heading": "Made with care for you",
+        "text": "<p>We choose every ingredient for a reason and test every formula before it reaches you. Natural, honest and made in small batches.</p>",
+        "button_label": "About us",
+        "button_link": "/pages/about",
+        "color_scheme": "scheme-2"
+      }
+    },
+    "new_arrivals": {
+      "type": "product-list",
+      "settings": {
+        "heading": "New arrivals",
+        "collection": "",
+        "products": [],
+        "limit": 8,
+        "layout": "grid",
+        "columns": 4,
+        "quick_add": true,
+        "link_label": "View all",
+        "link": "/collections/all",
+        "color_scheme": "scheme-1"
+      }
     }
   },
   "order": [
-    "main"
+    "hero",
+    "trust",
+    "best_sellers",
+    "promos",
+    "collections",
+    "story",
+    "new_arrivals"
   ]
 }

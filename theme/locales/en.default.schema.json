@@ -323,6 +323,64 @@
       "button": "Button",
       "discount_code": "Discount code to apply",
       "discount_code_info": "Added to the cart right after signing up, so the shopper doesn't need to copy it. Create the code in Discounts."
+    },
+    "hero": {
+      "name": "Hero",
+      "image": "Image",
+      "image_mobile": "Image on phones",
+      "image_mobile_info": "Optional, a portrait crop works best. Empty: the main image.",
+      "height": "Height",
+      "height_medium": "Medium",
+      "height_large": "Large",
+      "height_full": "Full screen",
+      "position": "Text position",
+      "position_left": "Left",
+      "position_center": "Center",
+      "overlay": "Image shade",
+      "overlay_info": "Darkens the image under the text so it reads well.",
+      "button_label_2": "Second button label",
+      "button_link_2": "Second button link",
+      "color_scheme_info": "Used when there is no image."
+    },
+    "product_list": {
+      "name": "Product list",
+      "layout": "Layout",
+      "layout_slider": "Slider",
+      "layout_grid": "Grid",
+      "columns": "Columns on desktop",
+      "quick_add": "Show “Add to cart”",
+      "link_label": "Link label",
+      "link": "Link",
+      "link_info": "Empty: the collection."
+    },
+    "collection_list": {
+      "name": "Collection list",
+      "collections": "Collections",
+      "ratio": "Image shape",
+      "ratio_square": "Square",
+      "ratio_portrait": "Portrait"
+    },
+    "promo_grid": {
+      "name": "Promo grid",
+      "promo": "Promo card",
+      "ratio_landscape": "Landscape"
+    },
+    "image_text": {
+      "name": "Image with text",
+      "image_position": "Image position",
+      "right": "Right"
+    },
+    "trust_bar": {
+      "name": "Trust bar",
+      "item": "Item",
+      "icon": "Icon",
+      "icon_truck": "Delivery",
+      "icon_leaf": "Natural",
+      "icon_return": "Returns",
+      "icon_shield": "Secure",
+      "icon_gift": "Gift",
+      "icon_chat": "Support",
+      "icon_heart": "Care"
     }
   },
   "blocks": {

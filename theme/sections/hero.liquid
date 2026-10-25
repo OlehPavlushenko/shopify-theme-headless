@@ -2,8 +2,10 @@
   Hero: one or more slides (blocks). One slide is a static banner; two or more make a slider
   (<ui-slider>: swipe, arrows, dots, optional autoplay).
   Each slide: image or background video (each with an optional phone version), eyebrow, heading,
-  text, two buttons, text position and its own color scheme — the scheme colors the text and
-  buttons and tints the image (shade in the scheme's background color).
+  text, two buttons, text position, its own color scheme and a caption style:
+  - card: the text in a panel in the scheme colors over the untouched image (default)
+  - split: image on one side, text on the scheme background on the other (image on top on phones)
+  - overlay: text right on the image, over a shade in the scheme background color on the text side
   First slide of the first section: image loads eagerly with high priority (LCP); the rest lazily.
   Headings are h2 styled as h1 — on the home page the logo is the page's h1 (ARCHITECTURE.md, SEO).
   Styles: packages/ui/css/sections.css. Behavior: @ui/slider, @ui/background-video.
@@ -39,7 +41,7 @@
         endif
       -%}
       <li
-        class="hero__slide hero__slide--{{ block.settings.position }}{% if image or block.settings.video %} hero__slide--media{% endif %} color-{{ block.settings.color_scheme }}"
+        class="hero__slide hero__slide--{{ block.settings.position }} hero__slide--{{ block.settings.caption }}{% if image or block.settings.video %} hero__slide--media{% endif %} color-{{ block.settings.color_scheme }}"
         style="--hero-overlay: {{ block.settings.overlay }}%;"
         {% if several %}
           aria-roledescription="slide" aria-label="{{ forloop.index }} / {{ forloop.length }}"
@@ -169,6 +171,18 @@
           "default": "left"
         },
         { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "info": "t:sections.hero.color_scheme_info", "default": "scheme-3" },
+        {
+          "type": "select",
+          "id": "caption",
+          "label": "t:sections.hero.caption",
+          "info": "t:sections.hero.caption_info",
+          "options": [
+            { "value": "card", "label": "t:sections.hero.caption_card" },
+            { "value": "split", "label": "t:sections.hero.caption_split" },
+            { "value": "overlay", "label": "t:sections.hero.caption_overlay" }
+          ],
+          "default": "card"
+        },
         { "type": "range", "id": "overlay", "label": "t:sections.hero.overlay", "info": "t:sections.hero.overlay_info", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 40 },
         { "type": "header", "content": "t:labels.text" },
         { "type": "text", "id": "eyebrow", "label": "t:sections.promo_popup.eyebrow" },

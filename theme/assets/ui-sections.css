@@ -128,8 +128,8 @@
     }
   }
 
-  /* Tint in the scheme's background color, stronger at the bottom where the text sits */
-  .hero__slide--media::after {
+  /* Caption "overlay": shade in the scheme background color from the text side only */
+  .hero__slide--overlay.hero__slide--media::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -137,8 +137,97 @@
     background: linear-gradient(
       to top,
       color-mix(in srgb, var(--color-background) var(--hero-overlay), transparent),
-      color-mix(in srgb, var(--color-background) calc(var(--hero-overlay) * 0.35), transparent)
+      transparent 70%
     );
+  }
+
+  @media (min-width: 750px) {
+    .hero__slide--overlay.hero__slide--left.hero__slide--media::after {
+      background: linear-gradient(
+        to right,
+        color-mix(in srgb, var(--color-background) var(--hero-overlay), transparent),
+        transparent 65%
+      );
+    }
+  }
+
+  /* Caption "card": the image stays as it is, the text sits in a panel in the scheme colors */
+  .hero__slide--card .hero__content {
+    padding: var(--space-xl);
+    background: var(--color-background);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+  }
+
+  @media (max-width: 749px) {
+    .hero__slide--card .hero__inner {
+      padding-inline: var(--space-s);
+    }
+
+    .hero__slide--card .hero__content {
+      max-width: none;
+      padding: var(--space-l);
+    }
+  }
+
+  /* Caption "split": text on the scheme background on one side, the image on the other;
+     on phones the image on top, the text under it */
+  .hero__slide--split {
+    align-items: stretch;
+  }
+
+  .hero__slide--split .hero__media {
+    position: relative;
+    z-index: 0;
+    aspect-ratio: 4 / 3;
+  }
+
+  .hero__slide--split .hero__inner {
+    align-self: center;
+  }
+
+  .hero--medium .hero__slide--split,
+  .hero--large .hero__slide--split,
+  .hero--full .hero__slide--split {
+    min-height: 0;
+  }
+
+  @media (min-width: 750px) {
+    .hero__slide--split {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .hero__slide--split .hero__media {
+      grid-column: 2;
+      grid-row: 1;
+      aspect-ratio: auto;
+    }
+
+    .hero__slide--split .hero__inner {
+      grid-column: 1;
+      grid-row: 1;
+      max-width: none;
+      margin: 0;
+      padding-inline: var(--gutter) var(--space-2xl);
+    }
+
+    .hero--medium .hero__slide--split {
+      min-height: min(60svh, 56rem);
+    }
+
+    .hero--large .hero__slide--split {
+      min-height: min(80svh, 76rem);
+    }
+
+    .hero--full .hero__slide--split {
+      min-height: calc(100svh - var(--header-height, 0px));
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .hero__slide--split .hero__inner {
+      padding-inline-start: max(var(--gutter), calc((100vw - var(--page-width)) / 2));
+    }
   }
 
   .hero__inner {

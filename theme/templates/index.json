@@ -16,25 +16,26 @@
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/slide_1_desktop.png",
-            "image_mobile": "",
+            "image_mobile": "shopify://shop_images/slide_1_mobile.png",
+            "video": "shopify://files/videos/Добра_Їжа.mp4",
             "position": "left",
             "color_scheme": "scheme-1",
-            "overlay": 55,
+            "overlay": 20,
             "eyebrow": "Christmas collection",
             "heading": "Natural care, every day",
             "text": "<p>Gentle formulas and honest ingredients for skin, body and wellbeing.</p>",
             "button_label": "Shop gifts",
             "button_link": "/collections/all",
             "button_label_2": "Best sellers",
-            "button_link_2": "/collections/automated-collection"
+            "button_link_2": "/collections/automated-collection",
+            "caption": "card"
           }
         },
         "slide_2": {
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/slide_1_desktop.png",
-            "image_mobile": "",
-            "position": "center",
+            "position": "left",
             "color_scheme": "scheme-3",
             "overlay": 60,
             "eyebrow": "Gift guide",
@@ -43,7 +44,8 @@
             "button_label": "Shop gifts",
             "button_link": "/collections/all",
             "button_label_2": "",
-            "button_link_2": ""
+            "button_link_2": "",
+            "caption": "split"
           }
         }
       },

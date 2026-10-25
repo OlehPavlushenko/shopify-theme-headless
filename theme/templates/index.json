@@ -12,13 +12,33 @@
     "hero": {
       "type": "hero",
       "blocks": {
-        "slide_1": {
+        "slide_NDtMy3": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/slide_1_desktop.png",
-            "image_mobile": "shopify://shop_images/slide_1_mobile.png",
-            "video": "shopify://files/videos/Добра_Їжа.mp4",
-            "video_start": 9,
+            "video": "shopify://files/videos/Impact_CHOICE.mp4",
+            "video_start": 0,
+            "video_end": 0,
+            "position": "left",
+            "color_scheme": "scheme-3",
+            "caption": "card",
+            "tint_color": "#000000",
+            "overlay": 0,
+            "eyebrow": "",
+            "heading": "",
+            "text": "",
+            "button_label": "",
+            "button_link": "",
+            "button_label_2": "",
+            "button_link_2": ""
+          }
+        },
+        "slide_1": {
+          "type": "slide",
+          "disabled": true,
+          "settings": {
+            "image": "shopify://shop_images/slide_3_desktop.webp",
+            "image_mobile": "shopify://shop_images/slide_3_mobile.webp",
+            "video_start": 0,
             "video_end": 0,
             "position": "left",
             "color_scheme": "scheme-1",
@@ -36,14 +56,16 @@
         },
         "slide_2": {
           "type": "slide",
+          "disabled": true,
           "settings": {
-            "image": "shopify://shop_images/slide_1_desktop.png",
+            "image": "shopify://shop_images/slide_1_desk.webp",
+            "image_mobile": "shopify://shop_images/slide_1_mob.webp",
             "video_start": 0,
             "video_end": 0,
             "position": "left",
             "color_scheme": "scheme-3",
-            "caption": "split",
-            "tint_color": "#000000",
+            "caption": "overlay",
+            "tint_color": "#100F0F",
             "overlay": 60,
             "eyebrow": "Gift guide",
             "heading": "Gifts that care",
@@ -56,6 +78,7 @@
         }
       },
       "block_order": [
+        "slide_NDtMy3",
         "slide_1",
         "slide_2"
       ],

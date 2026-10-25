@@ -7,6 +7,16 @@
 {% enddoc %}
 {%- liquid
   assign shop_url = request.origin | append: routes.root_url
+  assign networks = 'instagram,facebook,tiktok,youtube,telegram,pinterest' | split: ','
+  capture profiles_list
+    for name in networks
+      assign key = 'social_' | append: name
+      if settings[key] != blank
+        echo settings[key] | append: '|'
+      endif
+    endfor
+  endcapture
+  assign profiles = profiles_list | split: '|'
 -%}
 <script type="application/ld+json">
   {
@@ -16,6 +26,18 @@
     "url": {{ shop_url | json }}
     {%- if settings.logo != blank -%}
       ,"logo": {{ settings.logo | image_url: width: 600 | prepend: 'https:' | json }}
+    {%- endif -%}
+    {%- if settings.store_phone != blank -%}
+      ,"telephone": {{ settings.store_phone | json }}
+    {%- endif -%}
+    {%- if settings.store_email != blank -%}
+      ,"email": {{ settings.store_email | json }}
+    {%- endif -%}
+    {%- if settings.store_address != blank -%}
+      ,"address": {{ settings.store_address | newline_to_br | split: '<br />' | join: ', ' | strip_newlines | json }}
+    {%- endif -%}
+    {%- if profiles.size > 0 -%}
+      ,"sameAs": {{ profiles | json }}
     {%- endif %}
   }
 </script>

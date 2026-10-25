@@ -188,7 +188,7 @@ class CartRecommendations extends HTMLElement {
 
     async #load(productId) {
         // Bump the version when the markup of sections/cart-recommendations changes
-        const storageKey = `cart-recs:v3:${productId}`;
+        const storageKey = `cart-recs:v4:${productId}`;
         if (!this.#cache.has(productId)) {
             let stored = null;
             try {

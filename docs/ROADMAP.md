@@ -33,6 +33,12 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
   **Announcement bar** (rotating messages), **Marquee** (running line), **Countdown bar**
   (promo with a timer). All have a schedule ("show from / until").
 
+### Footer
+- Columns as blocks: brand (logo, text, social), menus, contacts, products (compact rows),
+  blog posts; accordions on phones; bottom row with copyright, policy links, payment icons.
+- Theme settings > Store details: contacts and social profiles, one source for the footer and
+  the Organization structured data (telephone, email, address, sameAs).
+
 ### Promo
 - Promo card (one component, stacked or text over the image): mega menu now, banner grids later.
 - Section group "Overlays" with the Promo popup: content blocks (text, countdown, newsletter,

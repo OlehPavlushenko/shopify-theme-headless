@@ -1,0 +1,20 @@
+{% doc %}
+  Social profile icons from Theme settings > Store details. Renders nothing when none are set.
+  Styles: packages/ui/css/footer.css.
+{% enddoc %}
+{%- assign networks = 'instagram,facebook,tiktok,youtube,telegram,pinterest' | split: ',' -%}
+{%- capture links -%}
+  {%- for name in networks -%}
+    {%- assign key = 'social_' | append: name -%}
+    {%- if settings[key] != blank -%}
+      <li>
+        <a href="{{ settings[key] }}" class="social-links__link" target="_blank" rel="noopener" aria-label="{{ name | capitalize }}">
+          {%- render 'icon', name: name -%}
+        </a>
+      </li>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- if links != blank -%}
+  <ul class="social-links" role="list">{{ links }}</ul>
+{%- endif -%}

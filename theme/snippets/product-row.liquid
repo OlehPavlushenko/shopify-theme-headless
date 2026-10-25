@@ -1,0 +1,39 @@
+{% doc %}
+  Compact product row: small image, title, price, and optionally an add button. Used by the cart
+  recommendations panel and the footer. Wrap rows in <ul class="product-rows">.
+  The add button: one-click Ajax add (<ajax-cart-product-form>) for single-variant products, a link to
+  the product page for products with options. Styles: packages/ui/css/product-card.css.
+
+  @param {object} product - Product
+  @param {boolean} [add] - Show the add button (default true)
+{% enddoc %}
+{%- assign variant = product.selected_or_first_available_variant -%}
+<li class="product-row" data-product-id="{{ product.id }}">
+  <a href="{{ product.url }}" class="frame product-row__media" style="--frame-ratio: 1;" tabindex="-1" aria-hidden="true">
+    {%- if product.featured_image -%}
+      {{ product.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', width: 120, height: 120, sizes: '60px' }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag }}
+    {%- endif -%}
+  </a>
+  <div class="product-row__info">
+    <a href="{{ product.url }}" class="product-row__title">{{ product.title | escape }}</a>
+    {%- render 'price', product: product -%}
+  </div>
+  {%- unless add == false -%}
+    {%- if product.has_only_default_variant -%}
+      <ajax-cart-product-form>
+        {%- form 'product', product -%}
+          <input type="hidden" name="id" value="{{ variant.id }}">
+          <button type="submit" class="btn btn--outline btn--icon" aria-label="{{ 'products.add_to_cart' | t }}: {{ product.title | escape }}">
+            {%- render 'icon', name: 'plus' -%}
+          </button>
+        {%- endform -%}
+      </ajax-cart-product-form>
+    {%- else -%}
+      <a href="{{ product.url }}" class="btn btn--outline btn--icon" aria-label="{{ product.title | escape }}">
+        {%- render 'icon', name: 'arrow-right' -%}
+      </a>
+    {%- endif -%}
+  {%- endunless -%}
+</li>

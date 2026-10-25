@@ -178,6 +178,13 @@
         }
       }
     },
-    "api_url": "http://localhost:5000"
+    "api_url": "http://localhost:5000",
+    "store_phone": "+380 44 123 45 67",
+    "store_email": "hello@bioharmony.com.ua",
+    "store_address": "Kyiv, Ukraine",
+    "store_hours": "Mon – Fri, 9:00 – 18:00",
+    "social_instagram": "https://www.instagram.com/",
+    "social_facebook": "https://www.facebook.com/",
+    "social_tiktok": "https://www.tiktok.com/"
   }
 }

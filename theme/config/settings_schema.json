@@ -40,6 +40,24 @@
     ]
   },
   {
+    "name": "t:settings.store.name",
+    "settings": [
+      { "type": "paragraph", "content": "t:settings.store.info" },
+      { "type": "header", "content": "t:settings.store.contacts" },
+      { "type": "text", "id": "store_phone", "label": "t:settings.store.phone" },
+      { "type": "text", "id": "store_email", "label": "t:settings.store.email" },
+      { "type": "textarea", "id": "store_address", "label": "t:settings.store.address" },
+      { "type": "text", "id": "store_hours", "label": "t:settings.store.hours", "info": "t:settings.store.hours_info" },
+      { "type": "header", "content": "t:settings.store.social" },
+      { "type": "url", "id": "social_instagram", "label": "Instagram" },
+      { "type": "url", "id": "social_facebook", "label": "Facebook" },
+      { "type": "url", "id": "social_tiktok", "label": "Tiktok" },
+      { "type": "url", "id": "social_youtube", "label": "Youtube" },
+      { "type": "url", "id": "social_telegram", "label": "Telegram" },
+      { "type": "url", "id": "social_pinterest", "label": "Pinterest" }
+    ]
+  },
+  {
     "name": "t:settings.colors.name",
     "settings": [
       {

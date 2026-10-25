@@ -1,31 +1,175 @@
 {% comment %}
-  Site footer: menu, payment icons and copyright. Styles: packages/ui/css/footer.css.
+  Site footer. Columns are blocks, in the editor's order: brand (logo, text, social), menu, contacts,
+  products, articles. Bottom row: copyright, policy links, payment icons.
+  Phones: the brand column stays open, the others are accordions (<details>, opened from 750px by
+  @ui/footer). Contacts and social profiles come from Theme settings > Store details.
+  Styles: packages/ui/css/footer.css.
 {% endcomment %}
 <footer class="site-footer color-{{ section.settings.color_scheme }}">
-  <div class="site-footer__inner page-width">
-    {%- if section.settings.menu.links.size > 0 -%}
-      <nav aria-label="{{ section.settings.menu.title | escape }}">
-        <ul class="site-footer__links cluster" role="list">
-          {%- for link in section.settings.menu.links -%}
-            <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
-          {%- endfor -%}
-        </ul>
-      </nav>
+  {%- if section.blocks.size > 0 -%}
+    {%- liquid
+      # Columns that have something to show (a menu without links or a blog without posts renders nothing)
+      assign has_brand = false
+      assign column_count = 0
+      for block in section.blocks
+        case block.type
+          when 'brand'
+            assign has_brand = true
+          when 'menu'
+            if block.settings.menu.links.size > 0
+              assign column_count = column_count | plus: 1
+            endif
+          when 'articles'
+            if block.settings.blog.articles_count > 0
+              assign column_count = column_count | plus: 1
+            endif
+          else
+            assign column_count = column_count | plus: 1
+        endcase
+      endfor
+    -%}
+    <site-footer
+      class="site-footer__columns page-width{% if has_brand %} site-footer__columns--brand{% endif %}"
+      style="--footer-columns: {{ column_count | at_least: 1 }};"
+    >
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'brand' -%}
+            <div class="site-footer__brand" {{ block.shopify_attributes }}>
+              <a href="{{ routes.root_url }}" class="site-footer__logo">
+                {%- if settings.logo -%}
+                  {{
+                    settings.logo
+                    | image_url: width: 400
+                    | image_tag: loading: 'lazy', width: block.settings.logo_width, alt: shop.name, sizes: '200px'
+                  }}
+                {%- else -%}
+                  <span class="h4">{{ shop.name | escape }}</span>
+                {%- endif -%}
+              </a>
+              {%- if block.settings.text != blank -%}
+                <div class="site-footer__text">{{ block.settings.text }}</div>
+              {%- endif -%}
+              {%- if block.settings.show_social -%}
+                {%- render 'social-links' -%}
+              {%- endif -%}
+            </div>
+
+          {%- when 'menu' -%}
+            {%- assign menu = block.settings.menu -%}
+            {%- if menu.links.size > 0 -%}
+              <details class="site-footer__column" data-footer-column open {{ block.shopify_attributes }}>
+                <summary class="site-footer__heading eyebrow">
+                  {{- block.settings.heading | default: menu.title | escape -}}
+                  {%- render 'icon', name: 'chevron-down' -%}
+                </summary>
+                <nav aria-label="{{ block.settings.heading | default: menu.title | escape }}">
+                  <ul class="link-list" role="list">
+                    {%- for link in menu.links -%}
+                      <li><a href="{{ link.url }}" class="link-list__link">{{ link.title | escape }}</a></li>
+                    {%- endfor -%}
+                  </ul>
+                </nav>
+              </details>
+            {%- endif -%}
+
+          {%- when 'contacts' -%}
+            <details class="site-footer__column" data-footer-column open {{ block.shopify_attributes }}>
+              <summary class="site-footer__heading eyebrow">
+                {{- block.settings.heading | escape -}}
+                {%- render 'icon', name: 'chevron-down' -%}
+              </summary>
+              <address class="site-footer__contacts">
+                {%- if settings.store_address != blank -%}
+                  <p class="site-footer__contact">{%- render 'icon', name: 'map-pin' -%}<span>{{ settings.store_address | escape | newline_to_br }}</span></p>
+                {%- endif -%}
+                {%- if settings.store_phone != blank -%}
+                  <p class="site-footer__contact">{%- render 'icon', name: 'phone' -%}<a href="tel:{{ settings.store_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' }}">{{ settings.store_phone | escape }}</a></p>
+                {%- endif -%}
+                {%- if settings.store_email != blank -%}
+                  <p class="site-footer__contact">{%- render 'icon', name: 'mail' -%}<a href="mailto:{{ settings.store_email }}">{{ settings.store_email | escape }}</a></p>
+                {%- endif -%}
+                {%- if settings.store_hours != blank -%}
+                  <p class="site-footer__contact">{%- render 'icon', name: 'clock' -%}<span>{{ settings.store_hours | escape }}</span></p>
+                {%- endif -%}
+              </address>
+            </details>
+
+          {%- when 'products' -%}
+            {%- liquid
+              if block.settings.products.count > 0
+                assign footer_products = block.settings.products
+              else
+                assign footer_products = block.settings.collection.products
+              endif
+            -%}
+            <details class="site-footer__column" data-footer-column open {{ block.shopify_attributes }}>
+              <summary class="site-footer__heading eyebrow">
+                {{- block.settings.heading | escape -}}
+                {%- render 'icon', name: 'chevron-down' -%}
+              </summary>
+              <ul class="product-rows" role="list">
+                {%- for product in footer_products limit: block.settings.limit -%}
+                  {%- render 'product-row', product: product, add: false -%}
+                {%- endfor -%}
+              </ul>
+            </details>
+
+          {%- when 'articles' -%}
+            {%- assign blog = block.settings.blog -%}
+            {%- if blog.articles_count > 0 -%}
+              <details class="site-footer__column" data-footer-column open {{ block.shopify_attributes }}>
+                <summary class="site-footer__heading eyebrow">
+                  {{- block.settings.heading | default: blog.title | escape -}}
+                  {%- render 'icon', name: 'chevron-down' -%}
+                </summary>
+                <ul class="site-footer__articles" role="list">
+                  {%- for article in blog.articles limit: block.settings.limit -%}
+                    <li class="site-footer__article">
+                      <a href="{{ article.url }}" class="frame site-footer__article-media" style="--frame-ratio: 1;" tabindex="-1" aria-hidden="true">
+                        {%- if article.image -%}
+                          {{ article.image | image_url: width: 120 | image_tag: loading: 'lazy', width: 120, height: 120, sizes: '60px', alt: '' }}
+                        {%- else -%}
+                          {{ 'image' | placeholder_svg_tag }}
+                        {%- endif -%}
+                      </a>
+                      <div class="site-footer__article-info">
+                        <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'date' }}</time>
+                        <a href="{{ article.url }}" class="site-footer__article-title">{{ article.title | escape }}</a>
+                      </div>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </details>
+            {%- endif -%}
+        {%- endcase -%}
+      {%- endfor -%}
+    </site-footer>
+    <script type="module">import '@ui/footer';</script>
+  {%- endif -%}
+
+  <div class="site-footer__bottom page-width">
+    <p class="site-footer__copyright">
+      &copy; {{ 'now' | date: '%Y' }}
+      {{ shop.name | link_to: routes.root_url }}
+      {%- if section.settings.show_powered_by %} · {{ powered_by_link }}{% endif %}
+    </p>
+
+    {%- if section.settings.show_policies and shop.policies.size > 0 -%}
+      <ul class="site-footer__policies" role="list">
+        {%- for policy in shop.policies -%}
+          <li><a href="{{ policy.url }}">{{ policy.title | escape }}</a></li>
+        {%- endfor -%}
+      </ul>
     {%- endif -%}
 
     {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
-      <ul class="site-footer__payment cluster" role="list">
+      <ul class="site-footer__payment" role="list">
         {%- for type in shop.enabled_payment_types -%}
           <li>{{ type | payment_type_svg_tag: class: 'site-footer__payment-icon' }}</li>
         {%- endfor -%}
       </ul>
     {%- endif -%}
-
-    <p class="site-footer__copyright small">
-      &copy; {{ 'now' | date: '%Y' }}
-      {{ shop.name | link_to: routes.root_url }}
-      {%- if section.settings.show_powered_by %} · {{ powered_by_link }}{% endif %}
-    </p>
   </div>
 </footer>
 
@@ -33,6 +177,7 @@
 {
   "name": "t:general.footer",
   "class": "site-footer-section",
+  "enabled_on": { "groups": ["footer"] },
   "settings": [
     {
       "type": "color_scheme",
@@ -40,27 +185,59 @@
       "label": "t:labels.color_scheme",
       "default": "scheme-1"
     },
-    {
-      "type": "link_list",
-      "id": "menu",
-      "label": "t:labels.menu",
-      "default": "footer"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_payment_icons",
-      "label": "t:labels.show_payment_icons",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_powered_by",
-      "label": "t:sections.footer.show_powered_by",
-      "default": false
-    }
+    { "type": "checkbox", "id": "show_policies", "label": "t:sections.footer.show_policies", "info": "t:sections.footer.show_policies_info", "default": true },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "t:labels.show_payment_icons", "default": true },
+    { "type": "checkbox", "id": "show_powered_by", "label": "t:sections.footer.show_powered_by", "default": false }
   ],
-  "enabled_on": {
-    "groups": ["footer"]
-  }
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "t:sections.footer.brand",
+      "limit": 1,
+      "settings": [
+        { "type": "paragraph", "content": "t:sections.footer.brand_info" },
+        { "type": "range", "id": "logo_width", "label": "t:sections.footer.logo_width", "min": 80, "max": 240, "step": 10, "unit": "px", "default": 140 },
+        { "type": "richtext", "id": "text", "label": "t:labels.text", "default": "<p>Natural care for every day — gentle formulas, honest ingredients.</p>" },
+        { "type": "checkbox", "id": "show_social", "label": "t:sections.footer.show_social", "default": true }
+      ]
+    },
+    {
+      "type": "menu",
+      "name": "t:labels.menu",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "t:labels.heading", "info": "t:sections.footer.menu_heading_info" },
+        { "type": "link_list", "id": "menu", "label": "t:labels.menu", "default": "footer" }
+      ]
+    },
+    {
+      "type": "contacts",
+      "name": "t:sections.footer.contacts",
+      "limit": 1,
+      "settings": [
+        { "type": "paragraph", "content": "t:sections.footer.contacts_info" },
+        { "type": "text", "id": "heading", "label": "t:labels.heading", "default": "Contacts" }
+      ]
+    },
+    {
+      "type": "products",
+      "name": "t:sections.footer.products",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "t:labels.heading", "default": "Popular" },
+        { "type": "collection", "id": "collection", "label": "t:sections.footer.collection" },
+        { "type": "product_list", "id": "products", "label": "t:sections.footer.products_list", "info": "t:sections.footer.products_list_info", "limit": 4 },
+        { "type": "range", "id": "limit", "label": "t:sections.footer.limit", "min": 1, "max": 4, "step": 1, "default": 2 }
+      ]
+    },
+    {
+      "type": "articles",
+      "name": "t:sections.footer.articles",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "t:labels.heading", "info": "t:sections.footer.articles_heading_info" },
+        { "type": "blog", "id": "blog", "label": "t:sections.footer.blog" },
+        { "type": "range", "id": "limit", "label": "t:sections.footer.limit", "min": 1, "max": 4, "step": 1, "default": 2 }
+      ]
+    }
+  ]
 }
 {% endschema %}

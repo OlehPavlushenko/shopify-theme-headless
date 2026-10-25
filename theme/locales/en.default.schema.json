@@ -175,6 +175,17 @@
       "api_url_info": "Base URL of project-server, e.g. https://api.example.com. Empty: the newsletter uses the standard Shopify form.",
       "recaptcha_site_key": "reCAPTCHA v3 site key",
       "recaptcha_site_key_info": "Protects the newsletter from bots. Its secret key goes into the server settings."
+    },
+    "store": {
+      "name": "Store details",
+      "info": "Contacts and social profiles for the footer, the contact page and search engines (structured data). One place for the whole site.",
+      "contacts": "Contacts",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "hours": "Opening hours",
+      "hours_info": "For example: Mon – Fri, 9:00 – 18:00",
+      "social": "Social profiles"
     }
   },
   "sections": {
@@ -221,7 +232,24 @@
       "search_blocks_info": "Add Search term, Quick link, Products and Collections blocks to fill the panel before the shopper types."
     },
     "footer": {
-      "show_powered_by": "Show \"Powered by Shopify\""
+      "show_powered_by": "Show \"Powered by Shopify\"",
+      "show_policies": "Show policy links",
+      "show_policies_info": "Refund, privacy, terms and shipping policies from Settings > Policies.",
+      "brand": "Brand",
+      "brand_info": "Logo from Theme settings > Brand; social profiles from Theme settings > Store details.",
+      "logo_width": "Logo width",
+      "show_social": "Show social profiles",
+      "menu_heading_info": "Empty: the menu name.",
+      "contacts": "Contacts",
+      "contacts_info": "Address, phone, email and opening hours from Theme settings > Store details.",
+      "products": "Products",
+      "collection": "Collection",
+      "products_list": "Or pick products",
+      "products_list_info": "Used instead of the collection when set.",
+      "limit": "Number shown",
+      "articles": "Blog posts",
+      "articles_heading_info": "Empty: the blog name.",
+      "blog": "Blog"
     },
     "main_search": {
       "results_per_page": "Results per page",

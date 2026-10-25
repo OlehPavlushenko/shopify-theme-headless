@@ -158,23 +158,23 @@
       },
       "scheme-5": {
         "settings": {
-          "background": "#f7e9da",
+          "background": "#f7efe8",
           "background_gradient": "",
-          "foreground": "#5a4636",
-          "heading": "#2b1d12",
-          "link_hover": "#b4561a",
-          "accent": "#b4561a",
-          "accent_2": "#6b4ea0",
-          "surface": "#f1dcc6",
-          "border": "#e6cdb2",
-          "button": "#2b1d12",
-          "button_label": "#fdf6ee",
-          "button_hover": "#b4561a",
-          "button_label_hover": "#fdf6ee",
-          "button_secondary": "#fdf6ee",
-          "button_secondary_label": "#2b1d12",
-          "input_background": "#fffaf4",
-          "input_text": "#2b1d12"
+          "foreground": "#4b3b36",
+          "heading": "#2a1a17",
+          "link_hover": "#a3302a",
+          "accent": "#a3302a",
+          "accent_2": "#2f6b4f",
+          "surface": "#efe1d7",
+          "border": "#e3cfc2",
+          "button": "#2a1a17",
+          "button_label": "#fbf6f1",
+          "button_hover": "#a3302a",
+          "button_label_hover": "#fbf6f1",
+          "button_secondary": "#fbf6f1",
+          "button_secondary_label": "#2a1a17",
+          "input_background": "#fffaf6",
+          "input_text": "#2a1a17"
         }
       }
     }

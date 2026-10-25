@@ -216,7 +216,7 @@
    */
   .countdown__value {
     display: inline-block;
-    min-width: 2.4ch;
+    min-width: 2ch; /* "00" is the widest pair of this font */
     text-align: end;
   }
 

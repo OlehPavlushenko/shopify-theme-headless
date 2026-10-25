@@ -15,7 +15,7 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
 ### Foundation
 - Tokens → CSS (`packages/tokens`), shared UI package synced into `theme/assets/ui-*`.
 - Studio style: Bricolage Grotesque + DM Sans, green accent, 5 color schemes
-  (Studio, Sage, Forest, Sand, Pumpkin — a dark one with an orange accent for promos).
+  (Studio, Sage, Forest, Sand, Holiday — warm light with a deep red accent for seasonal promos).
 - Typography system in the shadcn proportions, one set of components (button, chip, link list,
   product card, slider, drawer, price).
 - SEO base: structured data, meta tags, one `h1` per page, `noindex` on search.
@@ -63,6 +63,6 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
 | Overlays close through JS (`[data-closing]`), not CSS exit transitions | CSS exit transitions of dialogs and popovers don't play in every browser |
 | Panels are `popover="manual"` | Their closing (outside click, Esc) can then be animated too |
 | Announcement strips are three small sections, not one with block types | Each does one job, and each can sit above or below the header |
-| Dates in settings as text `2026-10-31 23:59` | Shopify has no date-time picker; one field is clearer than day/month/year selects |
+| Dates in settings as text `2026-12-24 23:59` | Shopify has no date-time picker; one field is clearer than day/month/year selects |
 | Newsletter through our own small API, not the Shopify customer form | The form posts with a page reload and can hit Shopify's bot check; the API answers JSON, and later can issue a personal discount code |
 | Recommendations: related products from Shopify, no app | Works on every plan; Search & Discovery can add "complementary" later |

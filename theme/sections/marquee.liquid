@@ -1,0 +1,96 @@
+{% comment %}
+  Marquee: phrases (blocks) running in a line, CSS only. The phrases are repeated to fill wide
+  screens; only the first copy is read by screen readers and search engines. Pauses on hover,
+  stands still with "reduce motion". Header group (above or below the header) or any template.
+  Styles: packages/ui/css/announcements.css.
+{% endcomment %}
+{%- capture active -%}
+  {%- render 'schedule-active', from: section.settings.show_from, until: section.settings.show_until -%}
+{%- endcapture -%}
+{%- if active contains 'true' and section.blocks.size > 0 -%}
+  {%- capture phrases -%}
+    {%- for block in section.blocks -%}
+      <li class="marquee__item" {{ block.shopify_attributes }}>
+        <span>{{ block.settings.text }}</span>
+        {%- if section.settings.separator != 'none' -%}
+          <span class="marquee__separator" aria-hidden="true">
+            {%- case section.settings.separator -%}
+              {%- when 'dot' -%}•
+              {%- when 'star' -%}✦
+              {%- when 'slash' -%}/
+            {%- endcase -%}
+          </span>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  {%- endcapture -%}
+  <div
+    class="marquee color-{{ section.settings.color_scheme }}"
+    style="--marquee-duration: {{ section.settings.duration }}s;"
+  >
+    <div class="marquee__track">
+      {%- comment -%} Two identical halves, each repeated 3×: the track moves by one half and loops {%- endcomment -%}
+      {%- for half in (1..2) -%}
+        <ul class="marquee__group" role="list"{% if half == 2 %} aria-hidden="true"{% endif %}>
+          {%- for copy in (1..3) -%}{{ phrases }}{%- endfor -%}
+        </ul>
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.marquee.name",
+  "class": "marquee-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "duration",
+      "label": "t:sections.marquee.duration",
+      "info": "t:sections.marquee.duration_info",
+      "min": 10,
+      "max": 90,
+      "step": 5,
+      "unit": "s",
+      "default": 40
+    },
+    {
+      "type": "select",
+      "id": "separator",
+      "label": "t:sections.marquee.separator",
+      "options": [
+        { "value": "dot", "label": "•" },
+        { "value": "star", "label": "✦" },
+        { "value": "slash", "label": "/" },
+        { "value": "none", "label": "t:sections.marquee.separator_none" }
+      ],
+      "default": "dot"
+    },
+    { "type": "header", "content": "t:labels.schedule" },
+    { "type": "text", "id": "show_from", "label": "t:labels.show_from", "info": "t:labels.schedule_info" },
+    { "type": "text", "id": "show_until", "label": "t:labels.show_until", "info": "t:labels.schedule_info" }
+  ],
+  "blocks": [
+    {
+      "type": "phrase",
+      "name": "t:sections.marquee.phrase",
+      "settings": [
+        { "type": "inline_richtext", "id": "text", "label": "t:labels.text", "default": "New arrivals every week" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.marquee.name",
+      "blocks": [{ "type": "phrase" }, { "type": "phrase" }, { "type": "phrase" }]
+    }
+  ]
+}
+{% endschema %}

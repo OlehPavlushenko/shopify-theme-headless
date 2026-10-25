@@ -30,9 +30,9 @@ Open http://127.0.0.1:9292. The theme editor link is printed by `shopify theme d
 
 ## Status
 
-Stage 1 — skeleton: layout, tokens, color schemes, header with mobile menu, footer, cart drawer
-and cart page (Liquid Ajax Cart v2.2.0). Product, collection and content sections are Shopify
-Skeleton v1 placeholders and are rebuilt stage by stage.
+Header, search, menus, announcement strips and the cart are done; home, product and collection
+sections are next. What is done, what comes next and why: [docs/ROADMAP.md](docs/ROADMAP.md).
+Code conventions: [ARCHITECTURE.md](ARCHITECTURE.md).
 
 `theme/` is based on [Shopify Skeleton Theme](https://github.com/Shopify/skeleton-theme) v1.0.0 (MIT,
 see `theme/LICENSE.md`).

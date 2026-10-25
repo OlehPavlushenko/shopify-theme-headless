@@ -10,11 +10,14 @@
  * Scrolling and swiping work without JS. This only wires the arrows: they scroll by one page,
  * get disabled at the edges, and the nav is hidden ([data-overflow] absent) when nothing overflows.
  * Items added later (e.g. fetched) are picked up too.
+ * data-autoplay="<seconds>": moves one page on its own (back to the start after the last one);
+ * pauses while hovered or focused, off with "reduce motion".
  */
 class UiSlider extends HTMLElement {
   #ticking = false;
   #resizeObserver;
   #mutationObserver;
+  #autoplay;
 
   connectedCallback() {
     this.track = this.querySelector('[data-slider-track]');
@@ -31,9 +34,27 @@ class UiSlider extends HTMLElement {
     this.#mutationObserver = new MutationObserver(() => this.#update());
     this.#mutationObserver.observe(this.track, { childList: true });
     this.#update();
+    this.#startAutoplay();
+  }
+
+  #startAutoplay() {
+    const seconds = Number(this.dataset.autoplay);
+    if (!seconds || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let paused = false;
+    const pause = (value) => () => (paused = value);
+    this.addEventListener('pointerenter', pause(true));
+    this.addEventListener('pointerleave', pause(false));
+    this.addEventListener('focusin', pause(true));
+    this.addEventListener('focusout', pause(false));
+    this.#autoplay = setInterval(() => {
+      if (paused || document.hidden) return;
+      if (this.next && !this.next.disabled) this.#go(1);
+      else this.track.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+    }, seconds * 1000);
   }
 
   disconnectedCallback() {
+    clearInterval(this.#autoplay);
     this.#resizeObserver?.disconnect();
     this.#mutationObserver?.disconnect();
   }

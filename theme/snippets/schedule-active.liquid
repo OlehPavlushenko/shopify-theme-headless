@@ -1,0 +1,30 @@
+{% doc %}
+  Outputs "true" while the current time is inside the schedule, nothing otherwise.
+  Dates as typed in the theme editor: "2026-10-31 23:59" (store timezone); blank = no limit.
+  Pages can be cached for a few minutes, so the switch happens within that time.
+
+  Usage: {% capture active %}{% render 'schedule-active', from: …, until: … %}{% endcapture %}
+  then {% if active contains 'true' %} (the captured output may carry whitespace).
+
+  @param {string} [from] - Show from this date and time
+  @param {string} [until] - Show until this date and time
+{% enddoc %}
+{%- liquid
+  assign now = 'now' | date: '%s' | plus: 0
+  assign active = true
+  if from != blank
+    assign start = from | date: '%s' | plus: 0
+    if start > now
+      assign active = false
+    endif
+  endif
+  if until != blank
+    assign finish = until | date: '%s' | plus: 0
+    if finish <= now
+      assign active = false
+    endif
+  endif
+  if active
+    echo 'true'
+  endif
+-%}

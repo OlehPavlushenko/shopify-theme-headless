@@ -141,5 +141,17 @@
   },
   "compare": {
     "title": "Compare"
+  },
+  "sections": {
+    "announcements": {
+      "label": "Announcements"
+    },
+    "countdown": {
+      "label": "Time left",
+      "days": "Days",
+      "hours": "Hrs",
+      "minutes": "Min",
+      "seconds": "Sec"
+    }
   }
 }

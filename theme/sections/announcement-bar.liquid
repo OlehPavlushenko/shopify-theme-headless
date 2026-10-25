@@ -1,0 +1,93 @@
+{% comment %}
+  Announcement bar: one short message per block. With several blocks they take turns
+  (<ui-slider> with autoplay and ‹ › arrows); a single message just sits in the middle.
+  Header group (above or below the header) or any template. Styles: packages/ui/css/announcements.css.
+{% endcomment %}
+{%- capture active -%}
+  {%- render 'schedule-active', from: section.settings.show_from, until: section.settings.show_until -%}
+{%- endcapture -%}
+{%- if active contains 'true' and section.blocks.size > 0 -%}
+  {%- assign several = false -%}
+  {%- if section.blocks.size > 1 -%}{%- assign several = true -%}{%- endif -%}
+  <div class="announcement-bar color-{{ section.settings.color_scheme }}">
+    <ui-slider
+      class="announcement-bar__inner page-width"
+      {% if several %}
+        data-autoplay="{{ section.settings.autoplay }}"
+      {% endif %}
+      aria-label="{{ 'sections.announcements.label' | t }}"
+    >
+      {%- if several -%}
+        <button type="button" class="announcement-bar__arrow" data-slider-prev aria-label="{{ 'general.slider.previous' | t }}">
+          {%- render 'icon', name: 'chevron-left' -%}
+        </button>
+      {%- endif -%}
+      <ul class="announcement-bar__track" data-slider-track role="list">
+        {%- for block in section.blocks -%}
+          <li class="announcement-bar__item" {{ block.shopify_attributes }}>
+            {%- if block.settings.link != blank -%}
+              <a href="{{ block.settings.link }}" class="announcement-bar__link">{{ block.settings.text }}</a>
+            {%- else -%}
+              <p class="announcement-bar__text">{{ block.settings.text }}</p>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+      {%- if several -%}
+        <button type="button" class="announcement-bar__arrow" data-slider-next aria-label="{{ 'general.slider.next' | t }}">
+          {%- render 'icon', name: 'chevron-right' -%}
+        </button>
+      {%- endif -%}
+    </ui-slider>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.announcements.name",
+  "class": "announcement-bar-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-3"
+    },
+    {
+      "type": "range",
+      "id": "autoplay",
+      "label": "t:sections.announcements.autoplay",
+      "info": "t:sections.announcements.autoplay_info",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5
+    },
+    { "type": "header", "content": "t:labels.schedule" },
+    { "type": "text", "id": "show_from", "label": "t:labels.show_from", "info": "t:labels.schedule_info" },
+    { "type": "text", "id": "show_until", "label": "t:labels.show_until", "info": "t:labels.schedule_info" }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "t:sections.announcements.message",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "text",
+          "label": "t:labels.text",
+          "default": "Free shipping on orders over ₴1,500"
+        },
+        { "type": "url", "id": "link", "label": "t:labels.link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.announcements.name",
+      "blocks": [{ "type": "message" }]
+    }
+  ]
+}
+{% endschema %}

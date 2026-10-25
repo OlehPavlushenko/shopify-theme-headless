@@ -24,7 +24,8 @@
     translate: 0 -100%;
   }
 
-  .site-header-section:has(site-header[data-transparent]) {
+  /* Transparent mode only when the header is the last section of its group (nothing under it) */
+  .site-header-section:not(:has(+ .shopify-section-group-header-group)):has(site-header[data-transparent]) {
     margin-bottom: calc(var(--header-height, 0px) * -1);
   }
 
@@ -135,7 +136,7 @@
   }
 
   /* Transparent at the top of the page; solid once scrolled or while a menu (desktop or mobile) is open */
-  html:not(:has(#MenuPanel:popover-open)) .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open])) {
+  html:not(:has(#MenuPanel:popover-open)) .site-header-section:not(:has(+ .shopify-section-group-header-group)) .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open])) {
     --color-heading: var(--header-transparent-fg);
     --color-foreground: var(--header-transparent-fg);
     --color-link-hover: var(--header-transparent-fg);
@@ -144,11 +145,11 @@
     border-color: transparent;
   }
 
-  html:not(:has(#MenuPanel:popover-open)) .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open])) :is(.site-header__logo-image:has(+ .site-header__logo-image--transparent)) {
+  html:not(:has(#MenuPanel:popover-open)) .site-header-section:not(:has(+ .shopify-section-group-header-group)) .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open])) :is(.site-header__logo-image:has(+ .site-header__logo-image--transparent)) {
     display: none;
   }
 
-  html:not(:has(#MenuPanel:popover-open)) .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open])) .site-header__logo-image--transparent {
+  html:not(:has(#MenuPanel:popover-open)) .site-header-section:not(:has(+ .shopify-section-group-header-group)) .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open])) .site-header__logo-image--transparent {
     display: block;
   }
 

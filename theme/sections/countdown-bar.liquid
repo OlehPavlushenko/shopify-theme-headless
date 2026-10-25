@@ -1,0 +1,92 @@
+{% comment %}
+  Countdown bar: a promo strip with a heading, an offer, a timer (<ui-countdown>) and a button,
+  optionally over a background image. Hidden once the end date has passed: by Liquid on render and
+  by the timer itself when it reaches zero. Header group (above or below the header) or any template.
+  Styles: packages/ui/css/announcements.css.
+{% endcomment %}
+{%- capture active -%}
+  {%- render 'schedule-active', from: section.settings.show_from, until: section.settings.end -%}
+{%- endcapture -%}
+{%- if active contains 'true' and section.settings.end != blank -%}
+  {%- assign end = section.settings.end | date: '%s' -%}
+  <div class="countdown-bar color-{{ section.settings.color_scheme }}" data-countdown-section>
+    {%- if section.settings.image -%}
+      {{
+        section.settings.image
+        | image_url: width: 2400
+        | image_tag: class: 'countdown-bar__image', loading: 'eager', sizes: '100vw', widths: '750, 1200, 1800, 2400', alt: ''
+      }}
+    {%- endif -%}
+    <div class="countdown-bar__inner page-width">
+      <p class="countdown-bar__text">
+        {%- if section.settings.heading != blank -%}
+          <span class="countdown-bar__heading">{{ section.settings.heading }}</span>
+        {%- endif -%}
+        {%- if section.settings.offer != blank -%}
+          <span class="countdown-bar__offer">{{ section.settings.offer }}</span>
+        {%- endif -%}
+      </p>
+
+      <ui-countdown class="countdown" data-end="{{ end }}" role="timer" aria-label="{{ 'sections.countdown.label' | t }}">
+        <span class="countdown__unit">
+          <span class="countdown__value" data-unit="days">00</span>
+          <span class="countdown__label">{{ 'sections.countdown.days' | t }}</span>
+        </span>
+        <span class="countdown__unit">
+          <span class="countdown__value" data-unit="hours">00</span>
+          <span class="countdown__label">{{ 'sections.countdown.hours' | t }}</span>
+        </span>
+        <span class="countdown__unit">
+          <span class="countdown__value" data-unit="minutes">00</span>
+          <span class="countdown__label">{{ 'sections.countdown.minutes' | t }}</span>
+        </span>
+        <span class="countdown__unit">
+          <span class="countdown__value" data-unit="seconds">00</span>
+          <span class="countdown__label">{{ 'sections.countdown.seconds' | t }}</span>
+        </span>
+      </ui-countdown>
+      <script type="module">import '@ui/countdown';</script>
+
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="btn btn--sm countdown-bar__button">
+          {{- section.settings.button_label | escape -}}
+          {%- render 'icon', name: 'arrow-right' -%}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.countdown.name",
+  "class": "countdown-bar-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "end",
+      "label": "t:sections.countdown.end",
+      "info": "t:sections.countdown.end_info",
+      "default": "2026-12-31 23:59"
+    },
+    { "type": "text", "id": "show_from", "label": "t:labels.show_from", "info": "t:labels.schedule_info" },
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Seasonal sale" },
+    { "type": "inline_richtext", "id": "offer", "label": "t:sections.countdown.offer", "default": "Up to 30% off" },
+    { "type": "text", "id": "button_label", "label": "t:labels.button_label", "default": "Shop the sale" },
+    { "type": "url", "id": "button_link", "label": "t:labels.button_link" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-3"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.countdown.image",
+      "info": "t:sections.countdown.image_info"
+    }
+  ],
+  "presets": [{ "name": "t:sections.countdown.name" }]
+}
+{% endschema %}

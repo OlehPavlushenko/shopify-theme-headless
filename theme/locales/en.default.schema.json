@@ -48,7 +48,15 @@
     "show_payment_icons": "Show payment icons",
     "spacing": "Spacing",
     "text_style": "Text style",
-    "text": "Text"
+    "text": "Text",
+    "heading": "Heading",
+    "link": "Link",
+    "button_label": "Button label",
+    "button_link": "Button link",
+    "schedule": "Schedule",
+    "show_from": "Show from",
+    "show_until": "Show until",
+    "schedule_info": "Date and time in the store timezone, e.g. 2026-10-31 23:59. Leave empty for no limit."
   },
   "options": {
     "alignment": {
@@ -218,6 +226,28 @@
     },
     "cart_recommendations": {
       "name": "Cart recommendations"
+    },
+    "announcements": {
+      "name": "Announcement bar",
+      "message": "Message",
+      "autoplay": "Change messages every",
+      "autoplay_info": "0 = only with the arrows. Applies when there are two or more messages."
+    },
+    "marquee": {
+      "name": "Marquee",
+      "phrase": "Phrase",
+      "duration": "One loop takes",
+      "duration_info": "Smaller is faster.",
+      "separator": "Separator",
+      "separator_none": "None"
+    },
+    "countdown": {
+      "name": "Countdown bar",
+      "end": "Ends at",
+      "end_info": "Date and time in the store timezone, e.g. 2026-10-31 23:59. The bar hides itself after that.",
+      "offer": "Offer",
+      "image": "Background image",
+      "image_info": "Shown softly behind the text, under the color scheme background."
     }
   },
   "blocks": {

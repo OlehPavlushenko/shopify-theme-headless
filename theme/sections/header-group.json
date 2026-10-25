@@ -11,6 +11,50 @@
   "type": "header",
   "name": "t:general.header",
   "sections": {
+    "announcements": {
+      "type": "announcement-bar",
+      "blocks": {
+        "msg_rewards": {
+          "type": "message",
+          "settings": {
+            "text": "<strong>10% back</strong> in rewards on your first order",
+            "link": "shopify://pages/contact"
+          }
+        },
+        "msg_shipping": {
+          "type": "message",
+          "disabled": true,
+          "settings": {
+            "text": "Free shipping on orders over ₴1,500",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "msg_rewards",
+        "msg_shipping"
+      ],
+      "settings": {
+        "color_scheme": "scheme-4",
+        "autoplay": 5,
+        "show_from": "",
+        "show_until": ""
+      },
+      "disabled": true
+    },
+    "halloween_countdown": {
+      "type": "countdown-bar",
+      "settings": {
+        "end": "2026-10-31 23:59",
+        "show_from": "",
+        "heading": "Halloween sale",
+        "offer": "Up to 31% off everything",
+        "button_label": "Shop now",
+        "button_link": "shopify://collections",
+        "color_scheme": "scheme-5",
+        "image": "shopify://shop_images/about-image-1.png"
+      }
+    },
     "header": {
       "type": "header",
       "blocks": {
@@ -159,47 +203,6 @@
         "utility_menu": ""
       }
     },
-    "announcements": {
-      "type": "announcement-bar",
-      "blocks": {
-        "msg_rewards": {
-          "type": "message",
-          "settings": {
-            "text": "<strong>10% back</strong> in rewards on your first order",
-            "link": "shopify://pages/contact"
-          }
-        },
-        "msg_shipping": {
-          "type": "message",
-          "settings": {
-            "text": "Free shipping on orders over ₴1,500",
-            "link": ""
-          }
-        }
-      },
-      "block_order": [
-        "msg_rewards",
-        "msg_shipping"
-      ],
-      "settings": {
-        "color_scheme": "scheme-3",
-        "autoplay": 5,
-        "show_from": "",
-        "show_until": ""
-      }
-    },
-    "halloween_countdown": {
-      "type": "countdown-bar",
-      "settings": {
-        "end": "2026-10-31 23:59",
-        "show_from": "",
-        "heading": "Halloween sale",
-        "offer": "Up to 31% off everything",
-        "button_label": "Shop the sale",
-        "button_link": "",
-        "color_scheme": "scheme-5"
-      }
-    },
     "halloween_marquee": {
       "type": "marquee",
       "blocks": {
@@ -236,8 +239,8 @@
       ],
       "settings": {
         "color_scheme": "scheme-5",
-        "duration": 40,
-        "separator": "star",
+        "duration": 50,
+        "separator": "dot",
         "show_from": "",
         "show_until": "2026-11-01 00:00"
       }

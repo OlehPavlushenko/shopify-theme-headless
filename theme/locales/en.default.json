@@ -148,10 +148,11 @@
     },
     "countdown": {
       "label": "Time left",
-      "days": "Days",
-      "hours": "Hrs",
-      "minutes": "Min",
-      "seconds": "Sec"
+      "days": "d",
+      "hours": "h",
+      "minutes": "m",
+      "seconds": "s",
+      "ends_in": "Ends in"
     }
   }
 }

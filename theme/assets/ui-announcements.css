@@ -87,11 +87,11 @@
   }
 
   /* --------------------------------------------------------- marquee */
+  /* Quiet line on the scheme's surface tone, same height as the other strips */
   .marquee {
     overflow: hidden;
-    color: var(--color-heading);
-    background: var(--color-background);
-    border-block: 0.1rem solid var(--color-border);
+    color: var(--color-foreground);
+    background: var(--color-surface);
   }
 
   /* Two identical halves; moving by one half makes a seamless loop */
@@ -122,17 +122,16 @@
     display: flex;
     align-items: center;
     gap: var(--space-l);
-    padding: var(--space-xs) 0 var(--space-xs) var(--space-l);
-    font-size: var(--text-xs);
-    font-weight: var(--font-body-weight-semibold);
-    line-height: var(--leading-xs);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
+    min-height: 3.6rem;
+    padding-left: var(--space-l);
+    font-size: var(--text-sm);
+    line-height: var(--leading-sm);
     white-space: nowrap;
   }
 
   .marquee__separator {
     color: var(--color-accent);
+    opacity: 0.7;
   }
 
   /* Reduce motion: the line stands still and can be scrolled by hand */
@@ -147,6 +146,7 @@
   }
 
   /* ---------------------------------------------------- countdown bar */
+  /* One line: heading, offer, "ends in 6d 19h 11m 39s", link; same height as the other strips */
   .countdown-bar {
     position: relative;
     isolation: isolate;
@@ -159,7 +159,7 @@
     display: none;
   }
 
-  /* Optional background image, toned down by the scheme background over it */
+  /* Optional background image, very soft behind the text */
   .countdown-bar__image {
     position: absolute;
     inset: 0;
@@ -167,87 +167,77 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.35;
+    opacity: 0.2;
   }
 
   .countdown-bar__inner {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-xs) var(--space-l);
-    padding-block: var(--space-s);
-  }
-
-  .countdown-bar__text {
-    display: flex;
-    flex-wrap: wrap;
     align-items: baseline;
     justify-content: center;
-    gap: 0 var(--space-xs);
+    gap: var(--space-2xs) var(--space-s);
+    padding-block: var(--space-xs);
+    font-size: var(--text-sm);
+    line-height: var(--leading-sm);
     text-align: center;
   }
 
   .countdown-bar__heading {
-    font-family: var(--font-heading-family);
-    font-size: var(--text-lg);
-    font-weight: var(--font-heading-weight);
-    line-height: var(--leading-lg);
-    letter-spacing: var(--tracking-tight);
+    font-weight: var(--font-body-weight-semibold);
     color: var(--color-heading);
   }
 
   .countdown-bar__offer {
-    font-size: var(--text-sm);
-    font-weight: var(--font-body-weight-semibold);
-    line-height: var(--leading-sm);
-    color: var(--color-accent);
+    display: none;
   }
 
-  .countdown {
-    display: flex;
+  .countdown-bar__timer {
+    display: inline-flex;
     gap: var(--space-2xs);
   }
 
-  /* Fixed-width digits: the timer never changes width while it ticks */
-  .countdown__unit {
-    display: grid;
-    justify-items: center;
-    min-width: 4.4rem;
-    padding: var(--space-2xs) var(--space-xs);
-    background: var(--color-surface);
-    border-radius: var(--radius-input);
+  /* "Ends in" from 750px; on phones the line stays one row without it */
+  .countdown-bar__ends {
+    display: none;
+    color: color-mix(in srgb, var(--color-foreground) 75%, transparent);
   }
 
-  .countdown__value {
-    font-size: var(--text-md);
+  .countdown {
+    display: inline-flex;
+    gap: var(--space-2xs);
     font-weight: var(--font-body-weight-semibold);
     font-variant-numeric: tabular-nums;
-    line-height: var(--leading-md);
+    color: var(--color-accent);
+  }
+
+  .countdown-bar__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    font-weight: var(--font-body-weight-medium);
     color: var(--color-heading);
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
   }
 
-  .countdown__label {
-    font-size: var(--text-xs);
-    line-height: var(--leading-xs);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--color-foreground) 70%, transparent);
+  .countdown-bar__link .svg-icon {
+    --icon-size: 1.4rem;
+
+    transition: translate var(--duration-default) var(--ease-out);
   }
 
-  .countdown-bar__button {
-    flex: none;
+  .countdown-bar__link:hover .svg-icon {
+    translate: 0.3rem 0;
   }
 
-  @media (min-width: 990px) {
-    .countdown-bar__inner {
-      justify-content: space-between;
-      flex-wrap: nowrap;
+  @media (min-width: 750px) {
+    .countdown-bar__offer,
+    .countdown-bar__ends {
+      display: inline;
     }
 
-    .countdown-bar__text {
-      justify-content: flex-start;
-      text-align: start;
+    .countdown-bar__offer::before {
+      content: '— ';
     }
   }
 }

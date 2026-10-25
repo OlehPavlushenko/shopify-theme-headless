@@ -30,7 +30,7 @@ class UiCountdown extends HTMLElement {
       const size = UNITS[el.dataset.unit] ?? 1;
       const value = Math.floor(left / size);
       left -= value * size;
-      el.textContent = String(value).padStart(2, '0');
+      el.textContent = el.dataset.unit === 'days' ? String(value) : String(value).padStart(2, '0');
     }
     if (this.end <= Date.now()) {
       clearInterval(this.#timer);

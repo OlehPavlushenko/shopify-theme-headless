@@ -158,23 +158,23 @@
       },
       "scheme-5": {
         "settings": {
-          "background": "#17140f",
+          "background": "#f7e9da",
           "background_gradient": "",
-          "foreground": "#e6ddd0",
-          "heading": "#fff7ec",
-          "link_hover": "#ff8a2b",
-          "accent": "#ff7a1a",
-          "accent_2": "#b48cff",
-          "surface": "#262019",
-          "border": "#3a3127",
-          "button": "#ff7a1a",
-          "button_label": "#17140f",
-          "button_hover": "#ffa04d",
-          "button_label_hover": "#17140f",
-          "button_secondary": "#2b241b",
-          "button_secondary_label": "#fff7ec",
-          "input_background": "#262019",
-          "input_text": "#fff7ec"
+          "foreground": "#5a4636",
+          "heading": "#2b1d12",
+          "link_hover": "#b4561a",
+          "accent": "#b4561a",
+          "accent_2": "#6b4ea0",
+          "surface": "#f1dcc6",
+          "border": "#e6cdb2",
+          "button": "#2b1d12",
+          "button_label": "#fdf6ee",
+          "button_hover": "#b4561a",
+          "button_label_hover": "#fdf6ee",
+          "button_secondary": "#fdf6ee",
+          "button_secondary_label": "#2b1d12",
+          "input_background": "#fffaf4",
+          "input_text": "#2b1d12"
         }
       }
     }

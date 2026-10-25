@@ -1,6 +1,6 @@
 {% doc %}
   Newsletter sign-up: an email field and a button.
-  - With Theme settings > Integrations > "API URL" set, <newsletter-form> (@ui/newsletter) sends the
+  - With Theme settings > Integrations > "API URL" set: a plain form; <newsletter-form> (@ui/newsletter) sends the
     email to project-server (POST /newsletter, reCAPTCHA v3 when a site key is set) and shows the
     answer in place.
   - Without it, or without JS, it is the plain Shopify customer form (tag "newsletter").
@@ -35,7 +35,7 @@
 -%}
 <newsletter-form
   class="newsletter-form"
-  {% if settings.api_url != blank %}
+  {% if api != blank %}
     data-endpoint="{{ api }}/newsletter"
   {% endif %}
   {% if settings.recaptcha_site_key != blank %}
@@ -44,32 +44,47 @@
   data-message-invalid="{{ 'newsletter.invalid_email' | t | escape }}"
   data-message-error="{{ 'newsletter.error' | t | escape }}"
 >
-  {%- form 'customer', id: form_id, class: 'newsletter-form__form', novalidate: 'novalidate' -%}
-    {%- if form.posted_successfully? -%}
-      <div class="newsletter-form__done" role="status">{{ success }}</div>
-    {%- else -%}
-      <input type="hidden" name="contact[tags]" value="newsletter">
-      <div class="newsletter-form__row" data-newsletter-fields>
-        <input
-          class="input"
-          type="email"
-          name="contact[email]"
-          id="{{ form_id }}-email"
-          autocomplete="email"
-          required
-          placeholder="{{ 'newsletter.placeholder' | t }}"
-          aria-label="{{ 'newsletter.placeholder' | t }}"
-          aria-describedby="{{ form_id }}-message"
-        >
-        <button type="submit" class="btn">{{ label | escape }}</button>
-      </div>
-      <p class="form-error newsletter-form__message" id="{{ form_id }}-message" data-newsletter-message aria-live="polite">
-        {%- if form.errors -%}{{ form.errors | default_errors }}{%- endif -%}
-      </p>
-      <template data-newsletter-success>{{ success }}</template>
-      <template data-newsletter-already>{{ already }}</template>
-    {%- endif -%}
-  {%- endform -%}
+  {%- capture fields -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    <div class="newsletter-form__row" data-newsletter-fields>
+      <input
+        class="input"
+        type="email"
+        name="contact[email]"
+        id="{{ form_id }}-email"
+        autocomplete="email"
+        required
+        placeholder="{{ 'newsletter.placeholder' | t }}"
+        aria-label="{{ 'newsletter.placeholder' | t }}"
+        aria-describedby="{{ form_id }}-message"
+      >
+      <button type="submit" class="btn">{{ label | escape }}</button>
+    </div>
+    <template data-newsletter-success>{{ success }}</template>
+    <template data-newsletter-already>{{ already }}</template>
+  {%- endcapture -%}
+
+  {%- comment -%}
+    With the API: a plain form, so Shopify's own bot check (it attaches to its customer form and may
+    submit it the normal way) stays out. Without the API: the Shopify customer form.
+  {%- endcomment -%}
+  {%- if api != blank -%}
+    <form id="{{ form_id }}" class="newsletter-form__form" novalidate>
+      {{ fields }}
+      <p class="form-error newsletter-form__message" id="{{ form_id }}-message" data-newsletter-message aria-live="polite"></p>
+    </form>
+  {%- else -%}
+    {%- form 'customer', id: form_id, class: 'newsletter-form__form', novalidate: 'novalidate' -%}
+      {%- if form.posted_successfully? -%}
+        <div class="newsletter-form__done" role="status">{{ success }}</div>
+      {%- else -%}
+        {{ fields }}
+        <p class="form-error newsletter-form__message" id="{{ form_id }}-message" data-newsletter-message aria-live="polite">
+          {%- if form.errors -%}{{ form.errors | default_errors }}{%- endif -%}
+        </p>
+      {%- endif -%}
+    {%- endform -%}
+  {%- endif -%}
   {%- if note != blank -%}
     <p class="newsletter-form__note">{{ note }}</p>
   {%- endif -%}

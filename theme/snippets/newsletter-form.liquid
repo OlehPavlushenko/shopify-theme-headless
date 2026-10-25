@@ -11,6 +11,7 @@
   @param {string} [button_label] - Button text (default "Subscribe")
   @param {string} [success_text] - Rich text shown after signing up (e.g. a discount code)
   @param {string} [already_text] - Rich text for an email that is already subscribed
+  @param {string} [note] - Small print under the field; a validation message takes its place
 {% enddoc %}
 {%- liquid
   assign form_id = 'Newsletter-' | append: id
@@ -69,5 +70,8 @@
       <template data-newsletter-already>{{ already }}</template>
     {%- endif -%}
   {%- endform -%}
+  {%- if note != blank -%}
+    <p class="newsletter-form__note">{{ note }}</p>
+  {%- endif -%}
 </newsletter-form>
 <script type="module">import '@ui/newsletter';</script>

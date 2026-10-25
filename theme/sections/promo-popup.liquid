@@ -89,11 +89,9 @@
                     id: block.id,
                     button_label: block.settings.button_label,
                     success_text: block.settings.success_text,
-                    already_text: block.settings.already_text
+                    already_text: block.settings.already_text,
+                    note: block.settings.note
                   -%}
-                  {%- if block.settings.note != blank -%}
-                    <p class="promo-popup__note">{{ block.settings.note }}</p>
-                  {%- endif -%}
                 </div>
 
               {%- when 'products' -%}

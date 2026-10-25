@@ -101,12 +101,37 @@
     gap: var(--space-xs);
   }
 
+  /*
+   * The validation message never moves the content: it sits right under the field, out of the
+   * flow (over the small print, which hides meanwhile, or in the space below the form)
+   */
+  .newsletter-form__form {
+    position: relative;
+  }
+
+  .newsletter-form__message {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: var(--space-2xs);
+    font-size: var(--text-xs);
+    line-height: var(--leading-xs);
+  }
+
   .newsletter-form__message:empty {
     display: none;
   }
 
-  .newsletter-form__message {
-    margin-top: var(--space-xs);
+  .newsletter-form__note {
+    margin-top: var(--space-2xs);
+    font-size: var(--text-xs);
+    line-height: var(--leading-xs);
+    color: color-mix(in srgb, var(--color-foreground) 65%, transparent);
+  }
+
+  .newsletter-form:has(.newsletter-form__message:not(:empty)) .newsletter-form__note {
+    visibility: hidden;
   }
 
   .newsletter-form__done {
@@ -193,17 +218,9 @@
     padding-right: var(--space-xl);
   }
 
-  .promo-popup__body,
-  .promo-popup__note {
+  .promo-popup__body {
     font-size: var(--text-sm);
     line-height: var(--leading-sm);
-  }
-
-  .promo-popup__note {
-    margin-top: var(--space-xs);
-    font-size: var(--text-xs);
-    line-height: var(--leading-xs);
-    color: color-mix(in srgb, var(--color-foreground) 65%, transparent);
   }
 
   .promo-popup__countdown {

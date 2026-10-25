@@ -51,17 +51,20 @@
   {%- capture fields -%}
     <input type="hidden" name="contact[tags]" value="newsletter">
     <div class="newsletter-form__row" data-newsletter-fields>
-      <input
-        class="input"
-        type="email"
-        name="contact[email]"
-        id="{{ form_id }}-email"
-        autocomplete="email"
-        required
-        placeholder="{{ 'newsletter.placeholder' | t }}"
-        aria-label="{{ 'newsletter.placeholder' | t }}"
-        aria-describedby="{{ form_id }}-message"
-      >
+      <span class="newsletter-form__field">
+        {%- render 'icon', name: 'mail' -%}
+        <input
+          class="input"
+          type="email"
+          name="contact[email]"
+          id="{{ form_id }}-email"
+          autocomplete="email"
+          required
+          placeholder="{{ 'newsletter.placeholder' | t }}"
+          aria-label="{{ 'newsletter.placeholder' | t }}"
+          aria-describedby="{{ form_id }}-message"
+        >
+      </span>
       <button type="submit" class="btn">{{ label | escape }}</button>
     </div>
     <template data-newsletter-success>{{ success }}</template>

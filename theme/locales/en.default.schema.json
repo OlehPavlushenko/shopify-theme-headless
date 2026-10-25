@@ -287,7 +287,13 @@
       "image_info": "Shown softly behind the text, under the color scheme background."
     },
     "newsletter": {
-      "name": "Newsletter"
+      "name": "Newsletter",
+      "layout": "Layout",
+      "layout_inline": "Text and form in one row",
+      "layout_banner": "Banner with an image",
+      "image": "Image",
+      "image_info": "Banner layout: shown on the left.",
+      "color_scheme_info": "A scheme with a background gradient makes a bold banner."
     },
     "promo_popup": {
       "name": "Promo popup",

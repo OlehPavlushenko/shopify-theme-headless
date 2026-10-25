@@ -1,22 +1,35 @@
 {% comment %}
-  Newsletter: heading, text and the sign-up form (snippets/newsletter-form). Footer group only. Styles: packages/ui/css/promo.css.
+  Newsletter: heading, text and the sign-up form (snippets/newsletter-form). Footer group only.
+  Layouts: inline (text left, form right) or banner (image left, bigger heading, form under the text).
+  The background comes from the color scheme, gradient included. Styles: packages/ui/css/promo.css.
 {% endcomment %}
-<div class="newsletter color-{{ section.settings.color_scheme }}">
+<div class="newsletter newsletter--{{ section.settings.layout }} color-{{ section.settings.color_scheme }}">
   <div class="newsletter__inner page-width">
-    <div class="newsletter__text">
-      {%- if section.settings.heading != blank -%}
-        <h2 class="h4">{{ section.settings.heading }}</h2>
-      {%- endif -%}
-      {%- if section.settings.text != blank -%}
-        <div class="newsletter__body">{{ section.settings.text }}</div>
-      {%- endif -%}
+    {%- if section.settings.layout == 'banner' and section.settings.image -%}
+      <div class="newsletter__media">
+        {{
+          section.settings.image
+          | image_url: width: 800
+          | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 320px, 60vw', widths: '320, 480, 640, 800', alt: ''
+        }}
+      </div>
+    {%- endif -%}
+    <div class="newsletter__content">
+      <div class="newsletter__text">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="{% if section.settings.layout == 'banner' %}h3{% else %}h4{% endif %}">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.text != blank -%}
+          <div class="newsletter__body">{{ section.settings.text }}</div>
+        {%- endif -%}
+      </div>
+      {%- render 'newsletter-form',
+        id: section.id,
+        button_label: section.settings.button_label,
+        success_text: section.settings.success_text,
+        discount_code: section.settings.discount_code
+      -%}
     </div>
-    {%- render 'newsletter-form',
-      id: section.id,
-      button_label: section.settings.button_label,
-      success_text: section.settings.success_text,
-      discount_code: section.settings.discount_code
-    -%}
   </div>
 </div>
 
@@ -26,12 +39,23 @@
   "class": "newsletter-section",
   "enabled_on": { "groups": ["footer"] },
   "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "t:sections.newsletter.layout",
+      "options": [
+        { "value": "inline", "label": "t:sections.newsletter.layout_inline" },
+        { "value": "banner", "label": "t:sections.newsletter.layout_banner" }
+      ],
+      "default": "inline"
+    },
+    { "type": "image_picker", "id": "image", "label": "t:sections.newsletter.image", "info": "t:sections.newsletter.image_info" },
     { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Stay in the loop" },
     { "type": "richtext", "id": "text", "label": "t:labels.text", "default": "<p>Seasonal offers and new arrivals, twice a month.</p>" },
     { "type": "text", "id": "button_label", "label": "t:labels.button_label" },
     { "type": "richtext", "id": "success_text", "label": "t:sections.promo_popup.success_text" },
     { "type": "text", "id": "discount_code", "label": "t:sections.promo_popup.discount_code", "info": "t:sections.promo_popup.discount_code_info" },
-    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-4" }
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "info": "t:sections.newsletter.color_scheme_info", "default": "scheme-4" }
   ],
   "presets": [{ "name": "t:sections.newsletter.name" }]
 }

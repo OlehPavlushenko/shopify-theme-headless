@@ -120,6 +120,28 @@
     line-height: var(--leading-xs);
   }
 
+  /* Email field with a mail icon at the start */
+  .newsletter-form__field {
+    position: relative;
+    display: block;
+  }
+
+  .newsletter-form__field .svg-icon {
+    --icon-size: 1.8rem;
+
+    position: absolute;
+    top: 50%;
+    left: var(--space-s);
+    translate: 0 -50%;
+    color: color-mix(in srgb, var(--color-input-text) 55%, transparent);
+    pointer-events: none;
+  }
+
+  .newsletter-form__field .input {
+    width: 100%;
+    padding-left: calc(var(--space-s) * 2 + 1.8rem);
+  }
+
   .newsletter-form__message:empty {
     display: none;
   }
@@ -151,7 +173,7 @@
   /* ---------------------------------------------- newsletter section */
   .newsletter {
     color: var(--color-foreground);
-    background: var(--color-background);
+    background: var(--color-background-gradient), var(--color-background);
   }
 
   .newsletter__inner {
@@ -170,11 +192,52 @@
     line-height: var(--leading-sm);
   }
 
+  .newsletter__content {
+    display: grid;
+    gap: var(--space-l);
+  }
+
   @media (min-width: 990px) {
-    .newsletter__inner {
+    .newsletter--inline .newsletter__content {
       grid-template-columns: minmax(0, 1fr) minmax(0, 44rem);
       align-items: center;
       gap: var(--space-2xl);
+    }
+  }
+
+  /* Banner: image on the left, bigger heading, the form under the text */
+  .newsletter--banner .newsletter__inner {
+    align-items: center;
+    padding-block: var(--space-3xl);
+  }
+
+  .newsletter--banner .newsletter__content {
+    max-width: 60rem;
+  }
+
+  .newsletter--banner .newsletter__body {
+    font-size: var(--text-md);
+    line-height: var(--leading-md);
+  }
+
+  .newsletter__media {
+    width: min(100%, 24rem);
+  }
+
+  .newsletter__media img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-media);
+  }
+
+  @media (min-width: 750px) {
+    .newsletter--banner .newsletter__inner {
+      grid-template-columns: minmax(0, 32rem) minmax(0, 1fr);
+      gap: var(--space-2xl);
+    }
+
+    .newsletter__media {
+      width: 100%;
     }
   }
 

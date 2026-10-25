@@ -61,7 +61,7 @@
         "button_label": "Subscribe",
         "success_text": "<p>You are in! Code <strong>XMAS10</strong> is already applied to your cart.</p>",
         "discount_code": "XMAS10",
-        "color_scheme": "scheme-6",
+        "color_scheme": "scheme-2",
         "layout": "banner",
         "image": "shopify://shop_images/about-image-1.png"
       }

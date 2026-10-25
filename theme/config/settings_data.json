@@ -176,27 +176,6 @@
           "input_background": "#fffaf6",
           "input_text": "#2a1a17"
         }
-      },
-      "scheme-6": {
-        "settings": {
-          "background": "#1b2a23",
-          "background_gradient": "linear-gradient(100deg, rgba(21, 33, 27, 1) 0%, rgba(27, 42, 35, 1) 40%, rgba(110, 31, 27, 1) 100%)",
-          "foreground": "#e3e8e4",
-          "heading": "#ffffff",
-          "link_hover": "#f2c9a7",
-          "accent": "#f2c9a7",
-          "accent_2": "#a8d5b8",
-          "surface": "#24372e",
-          "border": "#3b4f45",
-          "button": "#b8322c",
-          "button_label": "#ffffff",
-          "button_hover": "#d0443d",
-          "button_label_hover": "#ffffff",
-          "button_secondary": "#24372e",
-          "button_secondary_label": "#ffffff",
-          "input_background": "#ffffff",
-          "input_text": "#1b2a23"
-        }
       }
     },
     "api_url": "http://localhost:5000",

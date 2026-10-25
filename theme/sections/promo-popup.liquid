@@ -90,7 +90,8 @@
                     button_label: block.settings.button_label,
                     success_text: block.settings.success_text,
                     already_text: block.settings.already_text,
-                    note: block.settings.note
+                    note: block.settings.note,
+                    discount_code: block.settings.discount_code
                   -%}
                 </div>
 
@@ -215,7 +216,8 @@
         { "type": "text", "id": "button_label", "label": "t:labels.button_label" },
         { "type": "richtext", "id": "success_text", "label": "t:sections.promo_popup.success_text", "info": "t:sections.promo_popup.success_text_info" },
         { "type": "richtext", "id": "already_text", "label": "t:sections.promo_popup.already_text" },
-        { "type": "inline_richtext", "id": "note", "label": "t:sections.promo_popup.note" }
+        { "type": "inline_richtext", "id": "note", "label": "t:sections.promo_popup.note" },
+        { "type": "text", "id": "discount_code", "label": "t:sections.promo_popup.discount_code", "info": "t:sections.promo_popup.discount_code_info" }
       ]
     },
     {

@@ -9,7 +9,8 @@
  *   </newsletter-form>
  * Without data-endpoint (or without JS) the form submits normally.
  * The endpoint answers { ok, status: subscribed | already_subscribed } or { ok: false, error }.
- * On success the fields are replaced by the success text and newsletter:subscribed is dispatched.
+ * On success the fields are replaced by the success text and newsletter:subscribed is dispatched
+ * (detail: { status, discount } — discount from data-discount, for the cart to apply).
  */
 let recaptcha;
 
@@ -75,7 +76,7 @@ class NewsletterForm extends HTMLElement {
     done.setAttribute('role', 'status');
     done.append(template.content.cloneNode(true));
     this.form.replaceChildren(done);
-    this.dispatchEvent(new CustomEvent('newsletter:subscribed', { bubbles: true, detail: { status } }));
+    this.dispatchEvent(new CustomEvent('newsletter:subscribed', { bubbles: true, detail: { status, discount: this.dataset.discount } }));
   }
 }
 

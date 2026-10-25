@@ -14,7 +14,8 @@
     {%- render 'newsletter-form',
       id: section.id,
       button_label: section.settings.button_label,
-      success_text: section.settings.success_text
+      success_text: section.settings.success_text,
+      discount_code: section.settings.discount_code
     -%}
   </div>
 </div>
@@ -29,6 +30,7 @@
     { "type": "richtext", "id": "text", "label": "t:labels.text", "default": "<p>Seasonal offers and new arrivals, twice a month.</p>" },
     { "type": "text", "id": "button_label", "label": "t:labels.button_label" },
     { "type": "richtext", "id": "success_text", "label": "t:sections.promo_popup.success_text" },
+    { "type": "text", "id": "discount_code", "label": "t:sections.promo_popup.discount_code", "info": "t:sections.promo_popup.discount_code_info" },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-4" }
   ],
   "presets": [{ "name": "t:sections.newsletter.name" }]

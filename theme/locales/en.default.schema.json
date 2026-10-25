@@ -286,7 +286,9 @@
       "already_text": "Text for an email already subscribed",
       "note": "Small print",
       "products": "Products",
-      "button": "Button"
+      "button": "Button",
+      "discount_code": "Discount code to apply",
+      "discount_code_info": "Added to the cart right after signing up, so the shopper doesn't need to copy it. Create the code in Discounts."
     }
   },
   "blocks": {

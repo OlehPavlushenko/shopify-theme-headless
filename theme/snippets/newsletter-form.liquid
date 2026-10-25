@@ -12,6 +12,7 @@
   @param {string} [success_text] - Rich text shown after signing up (e.g. a discount code)
   @param {string} [already_text] - Rich text for an email that is already subscribed
   @param {string} [note] - Small print under the field; a validation message takes its place
+  @param {string} [discount_code] - Discount code the cart gets right after signing up (assets/cart.js)
 {% enddoc %}
 {%- liquid
   assign form_id = 'Newsletter-' | append: id
@@ -40,6 +41,9 @@
   {% endif %}
   {% if settings.recaptcha_site_key != blank %}
     data-recaptcha="{{ settings.recaptcha_site_key | escape }}"
+  {% endif %}
+  {% if discount_code != blank %}
+    data-discount="{{ discount_code | strip | escape }}"
   {% endif %}
   data-message-invalid="{{ 'newsletter.invalid_email' | t | escape }}"
   data-message-error="{{ 'newsletter.error' | t | escape }}"

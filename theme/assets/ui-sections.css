@@ -128,26 +128,22 @@
     }
   }
 
-  /* Caption "overlay": shade in the scheme background color from the text side only */
-  .hero__slide--overlay.hero__slide--media::after {
+  /* Image tint (own color, not the scheme): even over the image; from the text side for "overlay" */
+  .hero__slide--media .hero__media::after {
     content: '';
     position: absolute;
     inset: 0;
-    z-index: -1;
-    background: linear-gradient(
-      to top,
-      color-mix(in srgb, var(--color-background) var(--hero-overlay), transparent),
-      transparent 70%
-    );
+    background: color-mix(in srgb, var(--hero-tint) var(--hero-overlay), transparent);
+    pointer-events: none;
+  }
+
+  .hero__slide--overlay.hero__slide--media .hero__media::after {
+    background: linear-gradient(to top, color-mix(in srgb, var(--hero-tint) var(--hero-overlay), transparent), transparent 70%);
   }
 
   @media (min-width: 750px) {
-    .hero__slide--overlay.hero__slide--left.hero__slide--media::after {
-      background: linear-gradient(
-        to right,
-        color-mix(in srgb, var(--color-background) var(--hero-overlay), transparent),
-        transparent 65%
-      );
+    .hero__slide--overlay.hero__slide--left.hero__slide--media .hero__media::after {
+      background: linear-gradient(to right, color-mix(in srgb, var(--hero-tint) var(--hero-overlay), transparent), transparent 65%);
     }
   }
 

@@ -37,7 +37,7 @@
             "image": "shopify://shop_images/slide_1_desktop.png",
             "position": "left",
             "color_scheme": "scheme-3",
-            "overlay": 60,
+            "overlay": 0,
             "eyebrow": "Gift guide",
             "heading": "Gifts that care",
             "text": "<p>Ready-to-give sets with free gift wrapping on every order.</p>",

@@ -5,7 +5,10 @@
   text, two buttons, text position, its own color scheme and a caption style:
   - card: the text in a panel in the scheme colors over the untouched image (default)
   - split: image on one side, text on the scheme background on the other (image on top on phones)
-  - overlay: text right on the image, over a shade in the scheme background color on the text side
+  - overlay: text right on the image
+  Image tint: own color and strength, independent of the scheme — an even tint for card / split,
+  a gradient from the text side for overlay. Background video: optional start / end second (that
+  part loops).
   First slide of the first section: image loads eagerly with high priority (LCP); the rest lazily.
   Headings are h2 styled as h1 — on the home page the logo is the page's h1 (ARCHITECTURE.md, SEO).
   Styles: packages/ui/css/sections.css. Behavior: @ui/slider, @ui/background-video.
@@ -42,7 +45,7 @@
       -%}
       <li
         class="hero__slide hero__slide--{{ block.settings.position }} hero__slide--{{ block.settings.caption }}{% if image or block.settings.video %} hero__slide--media{% endif %} color-{{ block.settings.color_scheme }}"
-        style="--hero-overlay: {{ block.settings.overlay }}%;"
+        style="--hero-overlay: {{ block.settings.overlay }}%; --hero-tint: {{ block.settings.tint_color | default: '#000000' }};"
         {% if several %}
           aria-roledescription="slide" aria-label="{{ forloop.index }} / {{ forloop.length }}"
         {% endif %}
@@ -67,7 +70,11 @@
           {%- endif -%}
 
           {%- if block.settings.video != blank -%}
-            <background-video class="hero__video">
+            <background-video
+              class="hero__video"
+              {% if block.settings.video_start > 0 %}data-start="{{ block.settings.video_start }}"{% endif %}
+              {% if block.settings.video_end > block.settings.video_start %}data-end="{{ block.settings.video_end }}"{% endif %}
+            >
               {{ block.settings.video | video_tag: muted: true, loop: true, playsinline: true, preload: 'none', image_size: '1600x', class: 'hero__video-file' }}
               {%- if block.settings.video_mobile != blank -%}
                 {{ block.settings.video_mobile | video_tag: muted: true, loop: true, playsinline: true, preload: 'none', image_size: '800x', class: 'hero__video-file hero__video-file--mobile' }}
@@ -159,6 +166,8 @@
         { "type": "image_picker", "id": "image_mobile", "label": "t:sections.hero.image_mobile", "info": "t:sections.hero.image_mobile_info" },
         { "type": "video", "id": "video", "label": "t:sections.hero.video", "info": "t:sections.hero.video_info" },
         { "type": "video", "id": "video_mobile", "label": "t:sections.hero.video_mobile", "info": "t:sections.hero.video_mobile_info" },
+        { "type": "range", "id": "video_start", "label": "t:sections.hero.video_start", "min": 0, "max": 60, "step": 1, "unit": "s", "default": 0 },
+        { "type": "range", "id": "video_end", "label": "t:sections.hero.video_end", "info": "t:sections.hero.video_end_info", "min": 0, "max": 60, "step": 1, "unit": "s", "default": 0 },
         {
           "type": "select",
           "id": "position",
@@ -183,7 +192,8 @@
           ],
           "default": "card"
         },
-        { "type": "range", "id": "overlay", "label": "t:sections.hero.overlay", "info": "t:sections.hero.overlay_info", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 40 },
+        { "type": "color", "id": "tint_color", "label": "t:sections.hero.tint_color", "default": "#000000" },
+        { "type": "range", "id": "overlay", "label": "t:sections.hero.overlay", "info": "t:sections.hero.overlay_info", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 0 },
         { "type": "header", "content": "t:labels.text" },
         { "type": "text", "id": "eyebrow", "label": "t:sections.promo_popup.eyebrow" },
         { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Natural care, every day" },

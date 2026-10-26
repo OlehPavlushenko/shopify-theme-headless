@@ -263,6 +263,11 @@
     max-width: 60rem;
   }
 
+  /* Text right on the image: a narrower column, so it stays on the tinted side */
+  .hero__slide--overlay .hero__content {
+    max-width: 48rem;
+  }
+
   .hero__slide--center {
     align-items: center;
   }
@@ -353,6 +358,37 @@
     }
   }
 
+  /* Deal of the week. Slider: the deal card stays put, one column wide, next to the slider of the
+     other products from 990px (above it, full width, on tablets and phones). Grid: the first cell;
+     the whole row on phones. */
+  .product-list__deal-layout {
+    display: grid;
+    gap: var(--slider-gap);
+  }
+
+  .product-list__deal-layout > .slider__track {
+    min-width: 0;
+  }
+
+  @media (min-width: 990px) {
+    .product-list__deal-layout {
+      grid-template-columns: calc((100% - (var(--list-columns) - 1) * var(--slider-gap)) / var(--list-columns)) minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 749px) {
+    .product-list__grid > .product-list__deal {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* Tablets: a slider of product cards shows 3 at most (5 at 768px would be too small) */
+  @media (min-width: 750px) and (max-width: 989px) {
+    .product-list__slider .slider__track {
+      --columns: min(var(--slider-columns, 4), 3);
+    }
+  }
+
   /* Grid on phones: the rest of the cards behind "Show more" (@ui/show-more) */
   .product-list__more {
     display: block;
@@ -390,10 +426,9 @@
     scale: 1.04;
   }
 
+  /* Inline, so a wrapped title keeps the arrow right after its last word */
   .collection-card__title {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2xs);
+    display: block;
     margin-top: var(--space-2xs);
     font-size: var(--text-md);
     font-weight: var(--font-body-weight-semibold);
@@ -401,9 +436,16 @@
     color: var(--color-heading);
   }
 
+  .collection-card__title-end {
+    white-space: nowrap;
+  }
+
   .collection-card__title .svg-icon {
     --icon-size: 1.4rem;
 
+    display: inline-block;
+    margin-inline-start: var(--space-2xs);
+    vertical-align: -0.1em;
     transition: translate var(--duration-default) var(--ease-out);
   }
 
@@ -470,6 +512,125 @@
   @media (min-width: 990px) {
     .page-header__inner {
       padding-block: var(--space-3xl);
+    }
+  }
+
+  /* -------------------------------------------------------- rich text */
+  .rich-text__inner {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .rich-text__text {
+    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+  }
+
+  /* Small: an SEO block that doesn't compete with the page — smaller text, muted */
+  .rich-text--small .rich-text__text {
+    font-size: var(--text-sm);
+    line-height: var(--leading-sm);
+    color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
+  }
+
+  .rich-text--center .rich-text__inner {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .rich-text--center .read-more {
+    justify-items: center;
+  }
+
+  /* ----------------------------------------------------------- brands */
+  /* Logo tiles on the surface color; muted: grayscale until hovered */
+  /* Every tile the same 3:2 box whatever the logo's shape (min-height 0: content can't stretch it) */
+  .brand-card {
+    display: grid;
+    grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+    place-items: center;
+    aspect-ratio: 3 / 2;
+    min-height: 0;
+    padding: var(--space-m);
+    color: var(--color-heading);
+    text-decoration: none;
+    background: var(--color-surface);
+    border-radius: var(--radius-card);
+    transition: background-color var(--duration-default) var(--ease);
+  }
+
+  a.brand-card:hover {
+    background: color-mix(in srgb, var(--color-surface) 80%, var(--color-foreground) 6%);
+  }
+
+  /* Logos of any shape fit the same tile: a wide one by its width, a tall one by its height */
+  .brand-card__logo {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: min(5.6rem, 100%);
+    object-fit: contain;
+    transition:
+      filter var(--duration-default) var(--ease),
+      opacity var(--duration-default) var(--ease);
+  }
+
+  .brand-card__name {
+    font-family: var(--font-heading-family);
+    font-size: var(--text-lg);
+    font-weight: var(--font-heading-weight);
+    text-align: center;
+  }
+
+  .brands--muted .brand-card__logo {
+    opacity: 0.7;
+    filter: grayscale(1);
+  }
+
+  .brands--muted .brand-card:hover .brand-card__logo {
+    opacity: 1;
+    filter: none;
+  }
+
+  /* -------------------------------------------------------------- FAQ */
+  /* Split: intro on the left (sticky), questions on the right; stacked: intro above, centered */
+  .faq__inner {
+    display: grid;
+    gap: var(--space-xl);
+  }
+
+  .faq__intro {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: var(--space-m);
+  }
+
+  .faq__text {
+    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+  }
+
+  .faq__list {
+    border-top: 0.1rem solid var(--color-border);
+  }
+
+  .faq--stacked .faq__inner {
+    max-width: calc(var(--page-width-narrow) + var(--gutter) * 2);
+  }
+
+  .faq--stacked .faq__intro {
+    justify-items: center;
+    text-align: center;
+  }
+
+  @media (min-width: 990px) {
+    .faq--split .faq__inner:not(.faq__inner--list-only) {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      gap: var(--space-3xl);
+    }
+
+    .faq--split .faq__intro {
+      position: sticky;
+      top: calc(var(--header-height, 0px) + var(--space-l));
     }
   }
 

@@ -1,9 +1,10 @@
 {% doc %}
   Utility panel: an icon in the header that opens a panel with account, wishlist and compare links,
-  an optional utility menu, and the currency/language switchers.
+  an optional utility menu, and the currency/language switchers (snippets/utility-content).
   A .drawer on a manual popover (top layer from the browser); @ui/dialog handles the buttons,
   outside click and Esc, and plays the closing animation.
-  Renders nothing, icon included, when the panel would be empty.
+  Renders nothing, icon included, when the panel would be empty. With in_mobile_menu the same
+  content is at the bottom of the mobile menu, so the icon shows from 990px only.
 
   @param {string} id - Popover element id
   @param {object} [menu] - link_list with extra links (shipping, contacts, help…)
@@ -12,61 +13,24 @@
   @param {boolean} show_compare - Show the compare link
   @param {boolean} show_currency - Show the currency switcher
   @param {boolean} show_language - Show the language switcher
+  @param {boolean} [in_mobile_menu] - The mobile menu shows this content too: no icon below 990px
 {% enddoc %}
-{%- capture links -%}
-  {%- if show_account and shop.customer_accounts_enabled -%}
-    <li>
-      <a href="{{ routes.account_url }}" class="utility-panel__link">
-        {%- render 'icon', name: 'account' -%}
-        {%- if customer -%}
-          {{ 'customers.account.title' | t }}
-        {%- else -%}
-          {{ 'customers.login.title' | t }}
-        {%- endif -%}
-      </a>
-    </li>
-  {%- endif -%}
-  {%- if show_wishlist and settings.wishlist_enabled -%}
-    <li>
-      <a href="{{ pages['wishlist'].url | default: routes.root_url }}" class="utility-panel__link">
-        {%- render 'icon', name: 'heart' -%}
-        {{ 'wishlist.title' | t }}
-        <span class="saved-count" data-saved-count="wishlist" data-empty></span>
-      </a>
-    </li>
-  {%- endif -%}
-  {%- if show_compare and settings.compare_enabled -%}
-    <li>
-      <a href="{{ pages['compare'].url | default: routes.root_url }}" class="utility-panel__link">
-        {%- render 'icon', name: 'compare' -%}
-        {{ 'compare.title' | t }}
-        <span class="saved-count" data-saved-count="compare" data-empty></span>
-      </a>
-    </li>
-  {%- endif -%}
-  {%- for link in menu.links -%}
-    <li>
-      <a href="{{ link.url }}" class="utility-panel__link">
-        {%- render 'icon', name: 'arrow-right' -%}
-        {{ link.title | escape }}
-      </a>
-    </li>
-  {%- endfor -%}
+{%- capture content -%}
+  {%- render 'utility-content',
+    id: id,
+    menu: menu,
+    show_account: show_account,
+    show_wishlist: show_wishlist,
+    show_compare: show_compare,
+    show_currency: show_currency,
+    show_language: show_language
+  -%}
 {%- endcapture -%}
 
-{%- capture switchers -%}
-  {%- if show_currency -%}
-    {%- render 'localization-form', type: 'currency' -%}
-  {%- endif -%}
-  {%- if show_language -%}
-    {%- render 'localization-form', type: 'language' -%}
-  {%- endif -%}
-{%- endcapture -%}
-
-{%- if links != blank or switchers != blank -%}
+{%- if content != blank -%}
   <button
     type="button"
-    class="btn btn--icon utility-panel__trigger"
+    class="btn btn--icon utility-panel__trigger{% if in_mobile_menu %} utility-panel__trigger--desktop{% endif %}"
     popovertarget="{{ id }}"
     aria-label="{{ 'accessibility.utility_panel' | t }}"
   >
@@ -87,12 +51,7 @@
           {%- render 'icon', name: 'close' -%}
         </button>
       </div>
-      <div class="drawer__body utility-panel__body">
-        {%- if links != blank -%}
-          <ul class="utility-panel__links" role="list">{{ links }}</ul>
-        {%- endif -%}
-        {{ switchers }}
-      </div>
+      <div class="drawer__body utility-panel__body">{{ content }}</div>
     </div>
   </div>
 {%- endif -%}

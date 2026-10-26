@@ -21,6 +21,11 @@
   if template.name == 'cart'
     assign on_cart_page = true
   endif
+  # Below 990px the utility panel's content moves to the bottom of the mobile menu (when there is one)
+  assign has_mobile_menu = false
+  if menu.links.size > 0 and section.settings.show_utility_panel
+    assign has_mobile_menu = true
+  endif
 -%}
 
 <site-header
@@ -108,7 +113,8 @@
           show_wishlist: section.settings.show_wishlist,
           show_compare: section.settings.show_compare,
           show_currency: section.settings.show_currency,
-          show_language: section.settings.show_language
+          show_language: section.settings.show_language,
+          in_mobile_menu: has_mobile_menu
         -%}
       {%- endif -%}
       <a
@@ -156,7 +162,20 @@
     aria-label="{{ 'accessibility.menu' | t }}"
   >
     <div class="menu-panel__inner page-width">
-      {%- render 'mobile-menu', menu: menu -%}
+      {%- capture mobile_utility -%}
+        {%- if has_mobile_menu -%}
+          {%- render 'utility-content',
+            id: 'MenuPanelUtility',
+            menu: section.settings.utility_menu,
+            show_account: section.settings.show_account,
+            show_wishlist: section.settings.show_wishlist,
+            show_compare: section.settings.show_compare,
+            show_currency: section.settings.show_currency,
+            show_language: section.settings.show_language
+          -%}
+        {%- endif -%}
+      {%- endcapture -%}
+      {%- render 'mobile-menu', menu: menu, utility: mobile_utility -%}
     </div>
   </div>
 {%- endif -%}

@@ -5,7 +5,11 @@
   3rd level). Each sub-panel starts with a head row: "‹ Back" on the left and an
   "All <section>" link on the right, then the items. All item rows share one style.
 
+  The root panel ends with the utility content (account, wishlist, compare, currency, language)
+  when the header passes it — on phones the utility panel's icon is hidden.
+
   @param {object} menu - link_list
+  @param {string} [utility] - Rendered snippets/utility-content for the bottom of the root panel
 {% enddoc %}
 <drill-menu class="mobile-nav">
   <div class="mobile-nav__panel" data-panel="root">
@@ -26,6 +30,9 @@
         </li>
       {%- endfor -%}
     </ul>
+    {%- if utility != blank -%}
+      <div class="mobile-nav__utility utility-panel__body">{{ utility }}</div>
+    {%- endif -%}
   </div>
 
   {%- for link in menu.links -%}

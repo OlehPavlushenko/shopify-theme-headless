@@ -366,7 +366,8 @@
       "video_end": "Video ends at",
       "video_end_info": "The part between start and end loops. 0 = to the end of the video.",
       "loop": "Loop slides",
-      "loop_info": "After the last slide the arrows and autoplay go back to the first one. Off: the slider stops at the ends."
+      "loop_info": "After the last slide the arrows and autoplay go back to the first one. Off: the slider stops at the ends.",
+      "preset_banner": "Image banner"
     },
     "product_list": {
       "name": "Product list",
@@ -377,11 +378,18 @@
       "quick_add": "Show “Add to cart”",
       "link_label": "Link label",
       "link": "Link",
-      "link_info": "Empty: the collection."
+      "link_info": "Empty: the collection.",
+      "deal": "Deal of the week",
+      "deal_product": "Product",
+      "deal_product_info": "Shown first, highlighted, with a countdown.",
+      "deal_label": "Label",
+      "deal_end": "Ends",
+      "deal_end_info": "Date and time, e.g. 2026-12-24 23:59. Empty: no timer, the highlight stays."
     },
     "collection_list": {
       "name": "Collection list",
       "collections": "Collections",
+      "collections_info": "Empty: all collections with products, except those with \"Hide from collection lists\" ticked in the collection's metafields.",
       "ratio": "Image shape",
       "ratio_square": "Square",
       "ratio_portrait": "Portrait"
@@ -443,6 +451,34 @@
       "icon_gift": "Gift",
       "icon_chat": "Support",
       "icon_heart": "Care"
+    },
+    "faq": {
+      "name": "FAQ",
+      "layout": "Layout",
+      "layout_split": "Intro beside the questions",
+      "layout_stacked": "Intro above the questions",
+      "single_open": "One answer open at a time",
+      "open_first": "First answer open",
+      "question": "Question",
+      "answer": "Answer"
+    },
+    "brands": {
+      "name": "Brands",
+      "brand": "Brand",
+      "logo": "Logo",
+      "brand_name": "Name",
+      "brand_name_info": "Shown when there is no logo; also the logo's text for screen readers.",
+      "muted": "Muted logos",
+      "muted_info": "Grayscale until hovered."
+    },
+    "rich_text": {
+      "name": "Rich text",
+      "collapse": "Show the first lines only",
+      "collapse_info": "With a \"Read more\" button. The full text stays on the page for search engines.",
+      "lines": "Lines shown",
+      "text_size": "Text size",
+      "text_size_small": "Small (SEO text)",
+      "text_size_regular": "Regular"
     }
   },
   "blocks": {

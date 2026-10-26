@@ -82,7 +82,7 @@
       ],
       "settings": {
         "height": "medium",
-        "autoplay": 0,
+        "autoplay": 10,
         "loop": true
       }
     },
@@ -144,7 +144,10 @@
         "quick_add": true,
         "link_label": "View all",
         "link": "shopify://collections/best-sellers",
-        "color_scheme": "scheme-1"
+        "color_scheme": "scheme-1",
+        "deal_product": "active-set",
+        "deal_label": "Deal of the week",
+        "deal_end": "2026-12-31 23:59"
       }
     },
     "promos": {
@@ -200,7 +203,14 @@
       "type": "collection-list",
       "settings": {
         "heading": "Shop by category",
-        "collections": [],
+        "collections": [
+          "beauty",
+          "best-sellers",
+          "eco-home",
+          "health",
+          "sets-programs",
+          "superfoods"
+        ],
         "columns": 6,
         "ratio": "1",
         "link_label": "All collections",
@@ -233,19 +243,140 @@
         "quick_add": true,
         "link_label": "View all",
         "link": "shopify://collections/new-arrivals",
+        "color_scheme": "scheme-1",
+        "deal_product": "",
+        "deal_label": "Deal of the week",
+        "deal_end": ""
+      }
+    },
+    "brands": {
+      "type": "brands",
+      "blocks": {
+        "b1": {
+          "type": "brand",
+          "settings": {
+            "image": "shopify://shop_images/wm.svg",
+            "name": "White Mandarin",
+            "link": "/collections/vendors?q=White%20Mandarin"
+          }
+        },
+        "b2": {
+          "type": "brand",
+          "settings": {
+            "image": "shopify://shop_images/izha.svg",
+            "name": "CHOICE",
+            "link": "/collections/vendors?q=CHOICE"
+          }
+        },
+        "b3": {
+          "type": "brand",
+          "settings": {
+            "image": "shopify://shop_images/greenmax.svg",
+            "name": "Green Max",
+            "link": "/collections/vendors?q=Green%20Max"
+          }
+        },
+        "b4": {
+          "type": "brand",
+          "settings": {
+            "image": "shopify://shop_images/prohealthy.svg",
+            "name": "Pro Healthy",
+            "link": "/collections/vendors?q=Pro%20Healthy"
+          }
+        },
+        "b5": {
+          "type": "brand",
+          "settings": {
+            "image": "shopify://shop_images/biox.svg",
+            "name": "Biox",
+            "link": "/collections/vendors?q=Biox"
+          }
+        },
+        "b6": {
+          "type": "brand",
+          "settings": {
+            "image": "shopify://shop_images/choicephyto.svg",
+            "name": "Choice Phyto",
+            "link": "/collections/vendors?q=Choice%20Phyto"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6"
+      ],
+      "settings": {
+        "heading": "Our brands",
+        "link_label": "",
+        "link": "",
+        "columns": 6,
+        "muted": true,
         "color_scheme": "scheme-1"
       }
     },
-    "blog": {
-      "type": "blog-posts",
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "How long does delivery take?",
+            "answer": "<p>Orders ship within 1–2 business days. Delivery across the country usually takes 2–4 days.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Can I return a product?",
+            "answer": "<p>Yes — unopened products can be returned within 14 days. Write to us and we will arrange a free pickup.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Are your products natural?",
+            "answer": "<p>We choose formulas without parabens and sulfates, and every product lists its full ingredients on its page.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "How do I use a discount code?",
+            "answer": "<p>Enter it in the cart under “Have a promo code?” — the discount shows before checkout.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4"
+      ],
       "settings": {
-        "heading": "From the blog",
-        "blog": "news",
-        "limit": 6,
-        "columns": 3,
-        "show_date": true,
-        "show_excerpt": true,
-        "link_label": "View all",
+        "layout": "split",
+        "eyebrow": "FAQ",
+        "heading": "Questions & answers",
+        "text": "<p>Can’t find what you’re looking for? Our team replies within a day.</p>",
+        "button_label": "Contact us",
+        "button_link": "/pages/contact",
+        "single_open": true,
+        "open_first": false,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "seo_text": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "Natural care, made simple",
+        "text": "<p>Our store brings together natural skin care, wellness supplements, superfoods and eco-friendly home products in one place. Every product is chosen for its ingredients and tested before it reaches our shelves.</p><p>Free delivery on orders over the threshold, easy returns within 14 days and personal advice from our team make shopping simple. Explore best sellers, new arrivals and seasonal gift sets, or read our guides on the blog to find a routine that suits you.</p><p>We work directly with brands we trust, so prices stay fair and every order arrives fresh. Questions about an ingredient or a set? Write to us — we reply within a day.</p>",
+        "collapse": true,
+        "lines": 3,
+        "alignment": "center",
+        "text_size": "small",
         "color_scheme": "scheme-1"
       }
     }
@@ -258,6 +389,8 @@
     "collections",
     "story",
     "new_arrivals",
-    "blog"
+    "brands",
+    "faq",
+    "seo_text"
   ]
 }

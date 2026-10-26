@@ -6,15 +6,17 @@
   submits a country that uses it (the current country when it already uses that currency).
 
   @param {string} type - 'currency' or 'language'
+  @param {string} [id] - Prefix of the form id, unique per place it is rendered (default Localization)
 {% enddoc %}
 {%- liquid
+  assign form_id = id | default: 'Localization' | append: '-' | append: type
   assign current_country = localization.country
   assign currency_codes = localization.available_countries | map: 'currency' | map: 'iso_code' | uniq
 -%}
 {%- case type -%}
   {%- when 'currency' -%}
     {%- if currency_codes.size > 1 -%}
-      {%- form 'localization', class: 'localization' -%}
+      {%- form 'localization', id: form_id, class: 'localization' -%}
         <p class="eyebrow">{{ 'localization.currency' | t }}</p>
         <div class="localization__options">
           {%- for code in currency_codes -%}
@@ -78,7 +80,7 @@
 
   {%- when 'language' -%}
     {%- if localization.available_languages.size > 1 -%}
-      {%- form 'localization', class: 'localization' -%}
+      {%- form 'localization', id: form_id, class: 'localization' -%}
         <p class="eyebrow">{{ 'localization.language' | t }}</p>
         <div class="localization__options">
           {%- for language in localization.available_languages -%}

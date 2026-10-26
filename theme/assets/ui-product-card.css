@@ -288,6 +288,124 @@
     }
   }
 
+  /* --------------------------------------------------- deal of the week */
+  /* Product list's highlighted card: accent frame, label on top, countdown at the bottom */
+  .deal-card {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100%;
+    overflow: hidden;
+    border: 0.2rem solid var(--color-accent);
+    border-radius: var(--radius-card);
+  }
+
+  .deal-card__label {
+    padding: var(--space-2xs) var(--space-s);
+    font-size: var(--text-xs);
+    font-weight: var(--font-body-weight-semibold);
+    line-height: var(--leading-xs);
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--color-button-label);
+    background: var(--color-accent);
+  }
+
+  /* The image runs edge to edge inside the frame; the text keeps the card's inner padding */
+  .deal-card__body {
+    display: grid;
+    padding-bottom: var(--space-s);
+  }
+
+  .deal-card .product-card__media {
+    border-radius: 0;
+  }
+
+  .deal-card :is(.product-card__info, .product-card__quick-add) {
+    padding-inline: var(--space-s);
+  }
+
+  /* A wide deal box (phones, tablets: full width above the slider) gets a wide card — image on
+     the left, name, price and button on the right; a narrow one (a column) stays upright */
+  .deal-card {
+    container-type: inline-size;
+  }
+
+  @container (min-width: 32rem) {
+    .deal-card__body {
+      padding-bottom: 0;
+    }
+
+    .deal-card .product-card:has(> .product-card__quick-add) {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      grid-template-rows: 1fr auto;
+      column-gap: 0;
+      row-gap: var(--space-s);
+    }
+  }
+
+  /* Tablets: the image stays a moderate square, the text gets the rest */
+  @container (min-width: 56rem) {
+    .deal-card .product-card:has(> .product-card__quick-add) {
+      grid-template-columns: 24rem minmax(0, 1fr);
+    }
+
+    .deal-card .product-card__actions {
+      left: calc(24rem - 3.4rem - var(--space-s));
+    }
+
+    .deal-card .product-card__info {
+      padding-inline: var(--space-l);
+      padding-top: var(--space-l);
+    }
+
+    .deal-card .product-card__quick-add {
+      justify-self: start;
+      width: min(100%, 28rem);
+      padding-inline: var(--space-l);
+      padding-bottom: var(--space-l);
+    }
+
+    .deal-card .product-card__media {
+      grid-row: 1 / span 2;
+      height: 100%;
+    }
+
+    .deal-card :is(.product-card__info, .product-card__quick-add) {
+      grid-column: 2;
+    }
+
+    .deal-card .product-card__info {
+      padding-top: var(--space-s);
+    }
+
+    .deal-card .product-card__quick-add {
+      padding-bottom: var(--space-s);
+    }
+
+    /* Wishlist / compare stay on the image */
+    .deal-card .product-card__actions {
+      right: auto;
+      left: calc(40% - 3.4rem - var(--space-s));
+    }
+  }
+
+  .deal-card__timer {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-xs) var(--space-s);
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-heading);
+    white-space: nowrap;
+    background: color-mix(in srgb, var(--color-accent) 12%, var(--color-background));
+  }
+
+  /* One line even in the narrowest card: "66d 11h 59m 14s" */
+  .deal-card__timer :is(.countdown, .countdown__part) {
+    white-space: nowrap;
+  }
+
   /* ------------------------------------------------------ quick view */
   /* snippets/quick-view-dialog (.popup) + sections/quick-view: images | info side by side */
   .quick-view-dialog {

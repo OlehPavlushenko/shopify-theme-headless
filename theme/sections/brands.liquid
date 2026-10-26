@@ -1,0 +1,78 @@
+{% comment %}
+  Brands: a row of brand logos (blocks: logo, name, link — e.g. to the brand's collection) in a
+  slider that turns into a full row on wide screens. A brand without a logo shows its name.
+  Optional muted logos (grayscale, full color on hover). Styles: packages/ui/css/sections.css.
+{% endcomment %}
+<div class="brands{% if section.settings.muted %} brands--muted{% endif %} color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width">
+    <ui-slider class="slider" style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 2.5;">
+      {%- render 'section-head', heading: section.settings.heading, link_label: section.settings.link_label, link: section.settings.link, nav: true -%}
+      <ul class="slider__track" data-slider-track role="list">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign name = block.settings.name | default: block.settings.image.alt
+            assign tag = 'div'
+            if block.settings.link != blank
+              assign tag = 'a'
+            endif
+          -%}
+          <li {{ block.shopify_attributes }}>
+            <{{ tag }}
+              class="brand-card"
+              {% if tag == 'a' %}
+                href="{{ block.settings.link }}" aria-label="{{ name | escape }}"
+              {% endif %}
+            >
+              {%- if block.settings.image -%}
+                {{ block.settings.image | image_url: width: 400 | image_tag: loading: 'lazy', class: 'brand-card__logo', sizes: '(min-width: 990px) 16vw, 40vw', widths: '200, 300, 400', alt: name }}
+              {%- else -%}
+                <span class="brand-card__name">{{ name | escape }}</span>
+              {%- endif -%}
+            </{{ tag }}>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </ui-slider>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.brands.name",
+  "class": "brands-section",
+  "disabled_on": { "groups": ["*"] },
+  "max_blocks": 24,
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Our brands" },
+    { "type": "text", "id": "link_label", "label": "t:sections.product_list.link_label" },
+    { "type": "url", "id": "link", "label": "t:sections.product_list.link" },
+    { "type": "range", "id": "columns", "label": "t:sections.product_list.columns", "min": 3, "max": 8, "step": 1, "default": 6 },
+    { "type": "checkbox", "id": "muted", "label": "t:sections.brands.muted", "info": "t:sections.brands.muted_info", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "t:sections.brands.brand",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "t:sections.brands.logo" },
+        { "type": "text", "id": "name", "label": "t:sections.brands.brand_name", "info": "t:sections.brands.brand_name_info", "default": "Brand" },
+        { "type": "url", "id": "link", "label": "t:labels.button_link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.brands.name",
+      "blocks": [
+        { "type": "brand", "settings": { "name": "Brand one" } },
+        { "type": "brand", "settings": { "name": "Brand two" } },
+        { "type": "brand", "settings": { "name": "Brand three" } },
+        { "type": "brand", "settings": { "name": "Brand four" } },
+        { "type": "brand", "settings": { "name": "Brand five" } },
+        { "type": "brand", "settings": { "name": "Brand six" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

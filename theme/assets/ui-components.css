@@ -426,6 +426,109 @@
     outline-offset: 0.2rem;
   }
 
+  /* --------------------------------------------------------- accordion */
+  /* Native <details>: question row with a "+" that turns into "×" while open */
+  .accordion {
+    border-bottom: 0.1rem solid var(--color-border);
+  }
+
+  .accordion__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    padding-block: var(--space-m);
+    font-size: var(--text-md);
+    font-weight: var(--font-body-weight-semibold);
+    line-height: var(--leading-md);
+    color: var(--color-heading);
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .accordion__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .accordion__summary:hover {
+    color: var(--color-link-hover);
+  }
+
+  .accordion__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 3.2rem;
+    aspect-ratio: 1;
+    border: 0.1rem solid var(--color-border);
+    border-radius: 50%;
+    transition:
+      rotate var(--duration-default) var(--ease-out),
+      background-color var(--duration-short) var(--ease);
+  }
+
+  .accordion__icon .svg-icon {
+    --icon-size: 1.4rem;
+  }
+
+  .accordion[open] .accordion__icon {
+    color: var(--color-button-label);
+    background: var(--color-button);
+    border-color: var(--color-button);
+    rotate: 45deg;
+  }
+
+  .accordion__content {
+    padding-bottom: var(--space-m);
+    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+  }
+
+  /* Opening: the answer fades and slides in */
+  .accordion[open] .accordion__content {
+    animation: accordion-in var(--duration-default) var(--ease-out);
+  }
+
+  @keyframes accordion-in {
+    from {
+      opacity: 0;
+      translate: 0 -0.4rem;
+    }
+  }
+
+  /* --------------------------------------------------------- read more */
+  /* @ui/read-more: the first --read-more-lines lines, fading out, until "Read more" */
+  .read-more {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-s);
+  }
+
+  .read-more[data-ready]:not([data-expanded]) [data-read-more-content] {
+    max-height: calc(var(--read-more-lines, 4) * 1lh);
+    overflow: hidden;
+  }
+
+  .read-more[data-overflow]:not([data-expanded]) [data-read-more-content] {
+    mask-image: linear-gradient(to bottom, #000 40%, transparent);
+  }
+
+  .read-more__toggle {
+    padding: 0;
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-heading);
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .read-more__toggle:hover {
+    color: var(--color-link-hover);
+  }
+
   /* ---------------------------------------------------------- skeleton */
   /* Placeholder block while content loads: the surface color with a soft sweep of light */
   .skeleton {

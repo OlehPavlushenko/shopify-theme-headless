@@ -1,6 +1,9 @@
 {% comment %}
   Product list: products from a collection (or picked by hand) as a grid or a slider of product cards.
   Without a collection: the store's catalog (collections.all). Styles: packages/ui/css/sections.css.
+  Deal of the week (optional): one product shown first in an accent frame with a label on top and a
+  countdown under it; after the end date it's an ordinary card again (on the next render; the open
+  page hides the timer). Not repeated if it's in the list too.
 {% endcomment %}
 {%- liquid
   if section.settings.products.count > 0
@@ -16,15 +19,41 @@
     assign slider = true
   endif
   assign card_sizes = '(min-width: 990px) calc((100vw - 10rem) / ' | append: section.settings.columns | append: '), (min-width: 750px) 33vw, 50vw'
+  assign deal = section.settings.deal_product
+  if deal != blank and section.settings.deal_end != blank
+    assign deal_end = section.settings.deal_end | date: '%s' | plus: 0
+    assign now = 'now' | date: '%s' | plus: 0
+    if deal_end <= now
+      assign deal = nil
+    endif
+  endif
 -%}
 <div class="product-list color-{{ section.settings.color_scheme }} section-spacing">
   <div class="page-width">
     {%- comment -%} Grid on phones: 4 cards (two rows of 2), the rest under "Show more" in steps of 4 {%- endcomment -%}
     {%- assign total = 0 -%}
+    {%- capture deal_card -%}
+      {%- if deal != blank -%}
+        {%- assign total = 1 -%}
+        <div class="deal-card">
+          <p class="deal-card__label">{{ section.settings.deal_label | escape }}</p>
+          <div class="deal-card__body">
+            {%- render 'product-card', product: deal, quick_add: section.settings.quick_add, sizes: '(min-width: 750px) 25vw, 40vw' -%}
+          </div>
+          {%- if section.settings.deal_end != blank -%}
+            <div class="deal-card__timer" data-countdown-section>
+              {%- render 'countdown', end: section.settings.deal_end, label: false -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endcapture -%}
     {%- capture cards -%}
-      {%- for product in list limit: section.settings.limit -%}
-        {%- assign total = forloop.length -%}
-        <li{% if slider == false and forloop.index > 4 %} data-more{% endif %}>
+      {%- for product in list -%}
+        {%- if product.id == deal.id -%}{%- continue -%}{%- endif -%}
+        {%- if total >= section.settings.limit -%}{%- break -%}{%- endif -%}
+        {%- assign total = total | plus: 1 -%}
+        <li{% if slider == false and total > 4 %} data-more{% endif %}>
           {%- render 'product-card',
             product: product,
             quick_add: section.settings.quick_add,
@@ -35,17 +64,37 @@
     {%- endcapture -%}
 
     {%- if slider -%}
+      {%- comment -%}
+        With a deal: the deal card stays put on the left (one column wide; above the slider on phones)
+        and the slider of the other products, one column less, scrolls next to it
+      {%- endcomment -%}
+      {%- liquid
+        assign slider_columns = section.settings.columns
+        if deal_card != blank
+          assign slider_columns = slider_columns | minus: 1
+        endif
+      -%}
       <ui-slider
-        class="slider product-list__slider"
-        style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 2.2;"
+        class="slider product-list__slider{% if deal_card != blank %} product-list__slider--deal{% endif %}"
+        style="--slider-columns: {{ slider_columns }}; --slider-columns-mobile: 2.2; --list-columns: {{ section.settings.columns }};"
       >
         {%- render 'section-head', heading: section.settings.heading, link_label: section.settings.link_label, link: link, nav: true -%}
-        <ul class="slider__track" data-slider-track role="list">{{ cards }}</ul>
+        {%- if deal_card != blank -%}
+          <div class="product-list__deal-layout">
+            <div class="product-list__deal">{{ deal_card }}</div>
+            <ul class="slider__track" data-slider-track role="list">{{ cards }}</ul>
+          </div>
+        {%- else -%}
+          <ul class="slider__track" data-slider-track role="list">{{ cards }}</ul>
+        {%- endif -%}
       </ui-slider>
     {%- else -%}
       {%- render 'section-head', heading: section.settings.heading, link_label: section.settings.link_label, link: link -%}
       <show-more class="product-list__more" data-step="4">
         <ul class="grid product-list__grid" role="list" style="--grid-columns: {{ section.settings.columns }}; --grid-columns-mobile: 2;">
+          {%- if deal_card != blank -%}
+            <li class="product-list__deal">{{ deal_card }}</li>
+          {%- endif -%}
           {{ cards }}
         </ul>
         {%- if total > 4 -%}
@@ -85,7 +134,11 @@
     { "type": "checkbox", "id": "quick_add", "label": "t:sections.product_list.quick_add", "default": true },
     { "type": "text", "id": "link_label", "label": "t:sections.product_list.link_label", "default": "View all" },
     { "type": "url", "id": "link", "label": "t:sections.product_list.link", "info": "t:sections.product_list.link_info" },
-    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" },
+    { "type": "header", "content": "t:sections.product_list.deal" },
+    { "type": "product", "id": "deal_product", "label": "t:sections.product_list.deal_product", "info": "t:sections.product_list.deal_product_info" },
+    { "type": "text", "id": "deal_label", "label": "t:sections.product_list.deal_label", "default": "Deal of the week" },
+    { "type": "text", "id": "deal_end", "label": "t:sections.product_list.deal_end", "info": "t:sections.product_list.deal_end_info", "placeholder": "2026-12-24 23:59" }
   ],
   "presets": [{ "name": "t:sections.product_list.name" }]
 }

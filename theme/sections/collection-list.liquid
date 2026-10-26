@@ -1,22 +1,35 @@
 {% comment %}
   Collection list: collection tiles (image, title, number of products) in a slider that turns into
-  a full row on wide screens. Without picked collections: the store's first collections.
-  Styles: packages/ui/css/sections.css.
+  a full row on wide screens. Picked collections show as picked; without them, the store's
+  collections minus empty ones and those marked "Hide from collection lists" (metafield
+  theme.hidden) — e.g. Best sellers, Sale — up to 12. Styles: packages/ui/css/sections.css.
 {% endcomment %}
 {%- liquid
+  assign picked = false
   if section.settings.collections.count > 0
     assign list = section.settings.collections
+    assign picked = true
   else
     assign list = collections
   endif
+  assign shown = 0
 -%}
 <div class="collection-list color-{{ section.settings.color_scheme }} section-spacing">
   <div class="page-width">
     <ui-slider class="slider" style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 1.6;">
       {%- render 'section-head', heading: section.settings.heading, link_label: section.settings.link_label, link: routes.collections_url, nav: true -%}
       <ul class="slider__track" data-slider-track role="list">
-        {%- for collection in list limit: 12 -%}
+        {%- for collection in list -%}
           {%- liquid
+            if picked == false
+              if collection.metafields.theme.hidden.value or collection.products_count == 0
+                continue
+              endif
+            endif
+            if shown >= 12
+              break
+            endif
+            assign shown = shown | plus: 1
             assign cover = collection.image | default: collection.products.first.featured_image
           -%}
           <li>
@@ -28,9 +41,18 @@
                   {{ 'collection-1' | placeholder_svg_tag }}
                 {%- endif -%}
               </span>
+              {%- comment -%} The last word and the arrow never part when the title wraps {%- endcomment -%}
+              {%- liquid
+                assign title_words = collection.title | escape | split: ' '
+                assign last_word = title_words | last
+                assign first_words = title_words | slice: 0, title_words.size | join: ' ' | remove_last: last_word
+              -%}
               <span class="collection-card__title">
-                {{- collection.title | escape -}}
-                {%- render 'icon', name: 'arrow-right' -%}
+                {{- first_words -}}
+                <span class="collection-card__title-end">
+                  {{- last_word -}}
+                  {%- render 'icon', name: 'arrow-right' -%}
+                </span>
               </span>
               <span class="collection-card__count">{{ 'collections.product_count' | t: count: collection.products_count }}</span>
             </a>
@@ -48,7 +70,7 @@
   "disabled_on": { "groups": ["*"] },
   "settings": [
     { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Shop by category" },
-    { "type": "collection_list", "id": "collections", "label": "t:sections.collection_list.collections", "limit": 12 },
+    { "type": "collection_list", "id": "collections", "label": "t:sections.collection_list.collections", "info": "t:sections.collection_list.collections_info", "limit": 12 },
     { "type": "range", "id": "columns", "label": "t:sections.product_list.columns", "min": 3, "max": 6, "step": 1, "default": 4 },
     {
       "type": "select",

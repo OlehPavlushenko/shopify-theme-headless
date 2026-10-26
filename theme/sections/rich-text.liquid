@@ -1,0 +1,78 @@
+{% comment %}
+  Rich text — e.g. the SEO text at the bottom of a page: a heading and text, optionally shown as its
+  first lines with "Read more" (<read-more>, @ui/read-more). The whole text stays in the HTML for
+  search engines; only its height is limited on screen. Styles: packages/ui/css/sections.css.
+{% endcomment %}
+{%- liquid
+  assign label_more = 'general.read_more' | t
+  assign label_less = 'general.read_less' | t
+-%}
+<div class="rich-text rich-text--{{ section.settings.alignment }} rich-text--{{ section.settings.text_size }} color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width page-width--narrow rich-text__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="{% if section.settings.text_size == 'small' %}h4{% else %}h2{% endif %} rich-text__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}
+      {%- if section.settings.collapse -%}
+        <read-more class="read-more" style="--read-more-lines: {{ section.settings.lines }};">
+          <div class="rte rich-text__text" data-read-more-content>{{ section.settings.text }}</div>
+          <button
+            type="button"
+            class="read-more__toggle"
+            data-read-more-toggle
+            data-label-more="{{ label_more | escape }}"
+            data-label-less="{{ label_less | escape }}"
+            aria-expanded="false"
+            hidden
+          >
+            {{- label_more -}}
+          </button>
+        </read-more>
+        <script type="module">import '@ui/read-more';</script>
+      {%- else -%}
+        <div class="rte rich-text__text">{{ section.settings.text }}</div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.rich_text.name",
+  "class": "rich-text-section",
+  "disabled_on": { "groups": ["*"] },
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Natural care, made simple" },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:labels.text",
+      "default": "<p>Our store brings together natural skin care, wellness supplements, superfoods and eco-friendly home products in one place. Every product is chosen for its ingredients and tested before it reaches our shelves.</p><p>Free delivery on orders over the threshold, easy returns within 14 days and personal advice from our team make shopping simple. Explore best sellers, new arrivals and seasonal gift sets.</p>"
+    },
+    { "type": "checkbox", "id": "collapse", "label": "t:sections.rich_text.collapse", "info": "t:sections.rich_text.collapse_info", "default": true },
+    { "type": "range", "id": "lines", "label": "t:sections.rich_text.lines", "min": 2, "max": 12, "step": 1, "default": 4 },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "t:sections.page_header.alignment",
+      "options": [
+        { "value": "left", "label": "t:sections.page_header.alignment_left" },
+        { "value": "center", "label": "t:sections.page_header.alignment_center" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "t:sections.rich_text.text_size",
+      "options": [
+        { "value": "small", "label": "t:sections.rich_text.text_size_small" },
+        { "value": "regular", "label": "t:sections.rich_text.text_size_regular" }
+      ],
+      "default": "small"
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "t:sections.rich_text.name" }]
+}
+{% endschema %}

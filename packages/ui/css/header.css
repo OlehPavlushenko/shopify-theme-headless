@@ -519,6 +519,18 @@
     align-content: start;
   }
 
+  /* Below 990px the utility content is at the bottom of the mobile menu: no header icon for it */
+  @media (max-width: 989px) {
+    .utility-panel__trigger--desktop {
+      display: none;
+    }
+  }
+
+  /* The last menu row's border already separates it from the menu */
+  .mobile-nav__utility {
+    padding-top: var(--space-l);
+  }
+
   .utility-panel__links {
     display: grid;
     gap: var(--space-2xs);

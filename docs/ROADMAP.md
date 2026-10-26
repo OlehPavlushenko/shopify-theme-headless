@@ -58,16 +58,44 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
   origin allowlist, rate limit. The old custom checkout is in git history.
 
 ### Home page
-- Sections: Hero, Trust bar, Product list (slider or grid), Promo grid, Collection list,
-  Image with text; shared heading row with a "view all" link; example home page.
+- Sections: Hero (slides, video, "Image banner" preset), Trust bar, Product list (slider or grid,
+  "Show more" on phones, deal of the week with countdown), Promo grid, Collection list (skips empty
+  and `theme.hidden` collections), Image with text, Blog posts, Brands, FAQ (FAQPage data), Rich
+  text (SEO text with "Read more"), Page header (breadcrumbs + h1).
+- Checked at 390 / 768 / 1024 / 1366 px.
+
+### Products
+- Product card: "−X%" / Sale / Sold out badges, color swatches or a one-line value list, one
+  overlay link, "Add to cart" → "− 2 in cart +", "✓ In cart" for products with options.
+- Quick view with linked options (missing / sold-out combinations, closest variant), variant
+  images, in-cart marks; loads its JS on first use.
+- Wishlist and compare in the browser (`@ui/saved-list`), toasts with View / Undo, wishlist page
+  (cards) and compare page (table), skeleton loading and empty states.
+- Cart: sale prices and "−X%" on lines, swatches in options, savings include sale prices.
+
+### Quality pass (2026-10-26)
+- Lighthouse audit: off-screen CSS no longer blocks render, lazy variant picker, reduced variant
+  JSON, alt texts, one canonical, store description as meta fallback, AA contrast for secondary
+  text, 24 px tap targets.
+- Refactor: text / radius / icon / control tokens, one arrow-nudge rule, `option-is-color` and
+  `discount-percent` helpers, Prettier + editorconfig, unused locale keys removed.
+- [STYLEGUIDE.md](STYLEGUIDE.md): checklist and pitfalls.
 
 ## Next
 
-1. **Product page** on blocks: gallery, variants, buy buttons, complementary products.
-2. **Collection page**: filters and sorting.
-3. **Content pages**: contact, FAQ (metaobjects), testimonials, newsletter, trust bar.
-4. **Wishlist and compare** (kept from the old theme's feature list).
-5. **Spin-to-win** popup (server picks the prize and can issue a personal code), popup teaser tab.
+1. **Product page** on blocks: gallery, variant picker (`@ui/variant-picker` is ready), buy
+   buttons, FAQ / accordion blocks, complementary products. Replaces Skeleton `main-product`.
+2. **Collection page**: filters and sorting, Page header, "Show more" / pagination.
+3. **Blog, article, pages, 404, list of collections** rebuilt on our components; then `pages.css`
+   and `snippets/image` go away.
+4. **SEO pass** over all templates: one h1 everywhere (main section or Page header), breadcrumbs,
+   meta, structured data per template; the store description in Online Store → Preferences.
+5. **Product cards settings** in Theme settings (image ratio, fit, vendor, swatches, toggles),
+   rating stars from `reviews.rating`, tag badges.
+6. **Shared CSS patterns** still duplicated: underlined text buttons → `.btn--link`, counter pills
+   → one `.count-badge`.
+7. **Spin-to-win** popup (server picks the prize and can issue a personal code), popup teaser tab.
+8. Wishlist / compare synced to the customer account through project-server.
 
 ## Decisions
 
@@ -83,3 +111,7 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
 | Dates in settings as text `2026-12-24 23:59` | Shopify has no date-time picker; one field is clearer than day/month/year selects |
 | Newsletter through our own small API, not the Shopify customer form | The form posts with a page reload and can hit Shopify's bot check; the API answers JSON, and later can issue a personal discount code |
 | Recommendations: related products from Shopify, no app | Works on every plan; Search & Discovery can add "complementary" later |
+| Wishlist and compare live in the browser, pages render through the Section Rendering API | No app and no account needed; cards stay Liquid, the same as everywhere else |
+| No persistent compare bar; toasts + a link in the utility menu | A fixed bar covered content and the footer and looked heavy |
+| Off-screen CSS loads without blocking render | First paint needs only what is visible; layers keep the cascade stable |
+| Secondary text through one token at 80% | 72% and lower failed AA contrast on 12–14 px text |

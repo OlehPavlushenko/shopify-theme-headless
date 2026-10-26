@@ -1,6 +1,10 @@
 # Architecture
 
-The Shopify theme is built step by step on a small, documented skeleton. Everything that is not
+The Shopify theme is built step by step on a small, documented skeleton. The day-to-day rules
+and the list of pitfalls are in [docs/STYLEGUIDE.md](docs/STYLEGUIDE.md); the plan is in
+[docs/ROADMAP.md](docs/ROADMAP.md).
+
+ Everything that is not
 Shopify-specific lives in framework-agnostic packages, so a future headless storefront (Next.js)
 reuses the same design tokens, CSS and JS.
 
@@ -55,9 +59,15 @@ scripts/
   - `base.css`: reset, element defaults, typography, `.rte`, layout primitives (`.page-width`, `.stack`,
     `.cluster`, `.grid`, `.section-spacing`) and utilities.
   - `components.css`: `.btn` (+ `--secondary|outline|link|icon|sm|full`), `.field`/`.input`, `.qty`,
-    `.price-tag`, `.pill`, `.frame`, `.svg-icon`, `.form-error`, `.drawer`, `.popup`.
+    `.price-tag`, `.pill`, `.chip`, `.swatch`, `.variant-picker`, `.accordion`, `.read-more`,
+    `.skeleton`, `.breadcrumbs`, `.toast`, `.frame`, `.svg-icon` (+ the one arrow-nudge rule),
+    `.form-error`, `.drawer`, `.popup`.
+  - `product-card.css`: product card, compact product row, deal-of-the-week card, quick view.
+  - `saved.css`: wishlist / compare toggles, counters, their pages and the compare table.
+  - `slider.css`: the slider (`<ui-slider>`), 4 columns at most on tablets.
   - `sections.css`: content sections (hero, product list, collection list, promo grid, image with text,
-    trust bar) and their shared heading row (`snippets/section-head`).
+    trust bar, blog posts, brands, FAQ, rich text, page header) and their shared heading row
+    (`snippets/section-head`).
   - Color schemes are unlayered CSS (`snippets/color-schemes`), so they beat anything in `@layer components`:
     to change scheme colors locally, set the custom properties on an inner element, not on the element
     that carries the `color-scheme-*` class.
@@ -69,6 +79,10 @@ scripts/
 - Formatting: 2-space indent; rule order base → elements → modifiers → states → responsive;
   property order layout/position → box model → typography → visual → motion; mobile first
   (breakpoints 750px, 990px).
+- Loading (`layout/theme.liquid`): tokens, base, components, product card, slider, announcements,
+  header, sections block render; search, cart, promo and footer load without blocking (blocking
+  on their own templates); `pages.css` only on Skeleton-baseline templates, `saved.css` only with
+  wishlist / compare on. Layer order is set by `tokens.css`, so load order never changes the cascade.
 - No `{% stylesheet %}` / `{% javascript %}` and no inline `<style>` with static CSS in the theme.
   Per-instance values go through custom properties in a `style=""` attribute.
 - Color schemes: a container opts in with `class="color-<scheme-id>"`; `base.css` applies its
@@ -136,7 +150,9 @@ Every new section and snippet follows these rules:
   `<button>` for actions.
 - **Structured data** lives in `snippets/structured-data.liquid` (Organization everywhere,
   WebSite + SearchAction on the home page, Product and Article via Shopify's `structured_data`
-  filter) and in `snippets/breadcrumbs.liquid` (BreadcrumbList). Don't add JSON-LD elsewhere.
+  filter) and in the components that own the content: `snippets/breadcrumbs.liquid`
+  (BreadcrumbList) and `sections/faq.liquid` (FAQPage, built from the same blocks it shows). Data
+  that describes visible content is output next to it; site-wide data only in structured-data.
 - **Meta**: `snippets/meta-tags.liquid` handles title, description, canonical, Open Graph and
   Twitter cards; the share image falls back to Theme settings → Brand → Social sharing image.
   Search results get `noindex, follow` (they duplicate catalogue content).
@@ -169,6 +185,8 @@ Every new section and snippet follows these rules:
 npm run dev        # tokens + sync, then shopify theme dev on theme/ (with theme editor sync)
 npm run watch      # re-sync packages/ui into theme/assets on every change (second terminal)
 npm run check      # shopify theme check on theme/
+npm run format     # Prettier on the JS (2 spaces, single quotes, width 140; .prettierrc.json)
+npm run lint       # format:check + check — run before every commit
 npm run dev:reference   # run the previous theme for comparison
 npm run shoot <scenario> [arg] <outDir>   # Playwright screenshots (desktop + mobile) of the dev store:
                    # home | menu <n> | mobile-menu [n] | utility | cart-drawer | search-empty | search <q> | cart | collection

@@ -1,7 +1,43 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "main": { "type": "main-404", "settings": { "heading": "We can't find that page", "text": "<p>The link may be old or the page has moved. Try a search, or keep browsing from the catalog.</p>", "color_scheme": "scheme-1" } },
-    "products": { "type": "product-list", "settings": { "heading": "Popular right now", "collection": "best-sellers", "products": [], "limit": 8, "layout": "slider", "columns": 4, "quick_add": true, "link_label": "View all", "link": "", "color_scheme": "scheme-1", "deal_label": "Deal of the week", "deal_end": "" } }
+    "main": {
+      "type": "main-404",
+      "settings": {
+        "heading": "We can't find that page",
+        "text": "<p>The link may be old or the page has moved. Try a search, or keep browsing from the catalog.</p>",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "products": {
+      "type": "product-list",
+      "settings": {
+        "heading": "Popular right now",
+        "collection": "best-sellers",
+        "products": [],
+        "limit": 4,
+        "layout": "slider",
+        "columns": 5,
+        "quick_add": false,
+        "link_label": "View all",
+        "link": "shopify://collections/best-sellers",
+        "color_scheme": "scheme-1",
+        "deal_product": "",
+        "deal_label": "Deal of the week",
+        "deal_end": ""
+      }
+    }
   },
-  "order": ["main", "products"]
+  "order": [
+    "main",
+    "products"
+  ]
 }

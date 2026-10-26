@@ -1,7 +1,13 @@
 {% comment %}
   Collections page (templates/list-collections.json, under the Page header): every collection with
-  products as cards (snippets/collection-card), minus those marked "Hide from collection lists"
-  (metafield theme.hidden), sorted as set. Styles: .main-collections in sections.css.
+  products, minus those marked "Hide from collection lists" (metafield theme.hidden), in one of
+  three layouts:
+  - editorial: one wide row per collection — number, title, description, count, four product
+    thumbnails, arrow (suits a handful of collections with descriptions)
+  - bento: a mosaic of tiles with the title over the image; "Featured in collection lists"
+    (metafield theme.featured) — or, without any, the first collection — gets a large tile
+  - grid: collection cards (snippets/collection-card)
+  Styles: .main-collections in sections.css.
 {% endcomment %}
 {%- liquid
   case section.settings.sort
@@ -12,15 +18,92 @@
     else
       assign list = collections
   endcase
+  assign layout = section.settings.layout
+  assign any_featured = false
+  for collection in list
+    if collection.metafields.theme.featured.value
+      assign any_featured = true
+      break
+    endif
+  endfor
+  assign index = 0
 -%}
-<div class="main-collections color-{{ section.settings.color_scheme }} section-spacing">
+<div class="main-collections main-collections--{{ layout }} color-{{ section.settings.color_scheme }} section-spacing">
   <div class="page-width">
-    <ul class="grid main-collections__grid" role="list" style="--grid-columns: {{ section.settings.columns }}; --grid-columns-mobile: 2;">
+    <ul
+      class="main-collections__list{% if layout == 'grid' %} grid main-collections__grid{% endif %}"
+      role="list"
+      {% if layout == 'grid' %}
+        style="--grid-columns: {{ section.settings.columns }}; --grid-columns-mobile: 2;"
+      {% endif %}
+    >
       {%- for collection in list -%}
         {%- if collection.metafields.theme.hidden.value or collection.products_count == 0 -%}{%- continue -%}{%- endif -%}
-        <li>
-          {%- render 'collection-card', collection: collection, ratio: section.settings.ratio, sizes: '(min-width: 990px) 25vw, 50vw' -%}
-        </li>
+        {%- assign index = index | plus: 1 -%}
+        {%- case layout -%}
+          {%- when 'editorial' -%}
+            <li>
+              <a href="{{ collection.url }}" class="collection-row">
+                <span class="collection-row__index" aria-hidden="true">{% if index < 10 %}0{% endif %}{{ index }}</span>
+                <span class="collection-row__text">
+                  <span class="h2 collection-row__title">{{ collection.title | escape }}</span>
+                  {%- if collection.description != blank -%}
+                    <span class="collection-row__description">{{ collection.description | strip_html | truncatewords: 26 }}</span>
+                  {%- endif -%}
+                  <span class="collection-row__count">{{ 'collections.product_count' | t: count: collection.products_count }}</span>
+                </span>
+                <span class="collection-row__products" aria-hidden="true">
+                  {%- for product in collection.products limit: 4 -%}
+                    <span class="frame collection-row__thumb" style="--frame-ratio: 1;">
+                      {%- if product.featured_media -%}
+                        {{ product.featured_media | image_url: width: 300 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 120px, 22vw', widths: '150, 300', alt: '' }}
+                      {%- endif -%}
+                    </span>
+                  {%- endfor -%}
+                </span>
+                <span class="collection-row__arrow" aria-hidden="true">{%- render 'icon', name: 'arrow-right' -%}</span>
+              </a>
+            </li>
+          {%- when 'bento' -%}
+            {%- liquid
+              assign large = false
+              if collection.metafields.theme.featured.value
+                assign large = true
+              elsif any_featured == false and index == 1
+                assign large = true
+              endif
+              assign cover = collection.image | default: collection.products.first.featured_image
+            -%}
+            <li class="collection-tile{% if large %} collection-tile--large{% endif %}">
+              <a href="{{ collection.url }}" class="collection-tile__link">
+                <span class="collection-tile__media">
+                  {%- if cover -%}
+                    {%- if large -%}
+                      {{ cover | image_url: width: 1400 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 50vw, 100vw', widths: '600, 900, 1200, 1400', alt: '' }}
+                    {%- else -%}
+                      {{ cover | image_url: width: 800 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 25vw, 50vw', widths: '400, 600, 800', alt: '' }}
+                    {%- endif -%}
+                  {%- else -%}
+                    {{ 'collection-1' | placeholder_svg_tag }}
+                  {%- endif -%}
+                </span>
+                <span class="collection-tile__caption">
+                  <span class="collection-tile__count">{{ 'collections.product_count' | t: count: collection.products_count }}</span>
+                  <span class="{% if large %}h2{% else %}h4{% endif %} collection-tile__title">
+                    {{- collection.title | escape -}}
+                    {%- render 'icon', name: 'arrow-right' -%}
+                  </span>
+                  {%- if large and collection.description != blank -%}
+                    <span class="collection-tile__description">{{ collection.description | strip_html | truncatewords: 18 }}</span>
+                  {%- endif -%}
+                </span>
+              </a>
+            </li>
+          {%- else -%}
+            <li>
+              {%- render 'collection-card', collection: collection, ratio: section.settings.ratio, sizes: '(min-width: 990px) 25vw, 50vw' -%}
+            </li>
+        {%- endcase -%}
       {%- endfor -%}
     </ul>
   </div>
@@ -33,6 +116,18 @@
   "settings": [
     {
       "type": "select",
+      "id": "layout",
+      "label": "t:sections.main_list_collections.layout",
+      "info": "t:sections.main_list_collections.layout_info",
+      "options": [
+        { "value": "editorial", "label": "t:sections.main_list_collections.layout_editorial" },
+        { "value": "bento", "label": "t:sections.main_list_collections.layout_bento" },
+        { "value": "grid", "label": "t:sections.main_list_collections.layout_grid" }
+      ],
+      "default": "editorial"
+    },
+    {
+      "type": "select",
       "id": "sort",
       "label": "t:sections.main_list_collections.sort",
       "options": [
@@ -42,6 +137,7 @@
       ],
       "default": "default"
     },
+    { "type": "header", "content": "t:sections.main_list_collections.grid_header" },
     { "type": "range", "id": "columns", "label": "t:sections.product_list.columns", "min": 2, "max": 5, "step": 1, "default": 4 },
     {
       "type": "select",

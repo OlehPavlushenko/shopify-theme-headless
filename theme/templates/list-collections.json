@@ -22,8 +22,8 @@
     "main": {
       "type": "main-list-collections",
       "settings": {
-        "sort": "default",
-        "columns": 4,
+        "layout": "editorial", "sort": "default",
+        "columns": 5,
         "ratio": "1",
         "color_scheme": "scheme-1"
       }

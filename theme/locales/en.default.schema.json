@@ -468,7 +468,13 @@
       "sort": "Order",
       "sort_default": "As in the admin",
       "sort_alphabetical": "Alphabetical",
-      "sort_products": "Most products first"
+      "sort_products": "Most products first",
+      "layout": "Layout",
+      "layout_info": "Bento: tick \"Featured in collection lists\" in a collection's metafields for a large tile (else the first collection is large).",
+      "layout_editorial": "Editorial list",
+      "layout_bento": "Bento mosaic",
+      "layout_grid": "Grid of cards",
+      "grid_header": "Grid layout"
     },
     "main_blog": {
       "name": "Blog posts",

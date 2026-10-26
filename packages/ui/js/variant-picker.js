@@ -2,17 +2,22 @@
  * <variant-picker> — linked option pickers, and <product-info> — the product block that follows them.
  *
  * Markup contract (Liquid: theme/snippets/variant-picker.liquid, theme/sections/quick-view.liquid):
- *   <product-info data-money-format="{{amount}} ₴" data-label-add data-label-sold-out data-label-unavailable>
+ *   <product-info data-money-format="{{amount}} ₴" data-label-add data-label-sold-out data-label-unavailable
+ *                 [data-update-url]>
  *     [data-media-id="<id>"] items (scrolled into view for the variant's image)
- *     .price-tag > .price-tag__current + .price-tag__compare > [data-compare-value]
+ *     [data-product-price].price-tag > .price-tag__current + .price-tag__compare > [data-compare-value]
+ *       (every one of them — the main price and a sticky bar's)
  *     [data-discount-badge] ("−X%", hidden when the variant isn't discounted)
+ *     [data-stock data-in data-low="Only %n left" data-out] (needs "stock" in the variant JSON)
  *     <variant-picker>
  *       <fieldset> per option: [data-selected-value] in the legend, radio inputs in labels
  *       <script type="application/json" data-variants> [Shopify variant objects] </script>
  *     </variant-picker>
- *     form: input[name="id"], [data-add-button] > [data-add-label]
+ *     [data-product-form] input[name="id"]; every [data-add-button] > [data-add-label]
  *     [data-product-link] (gets ?variant=)
  *   </product-info>
+ * Only the product's own form and prices are touched (cards inside, e.g. complementary products,
+ * keep theirs). data-update-url: the page URL follows the variant (?variant=, history.replaceState).
  *
  * Linked options: for every value the picker checks the variant made of that value plus the other
  * current picks — none: [data-missing] on its label, not available: [data-sold-out]. Picking a value
@@ -85,31 +90,45 @@ class ProductInfo extends HTMLElement {
 
   #render(variant) {
     const format = this.dataset.moneyFormat;
-    const price = this.querySelector('.price-tag');
-    if (price && variant) {
+    if (variant) {
       const sale = variant.compare_at_price > variant.price;
-      price.classList.toggle('price-tag--sale', sale);
-      price.querySelector('.price-tag__current').textContent = formatMoney(variant.price, format);
-      const compare = price.querySelector('.price-tag__compare');
-      if (compare) {
-        compare.hidden = !sale;
-        compare.querySelector('[data-compare-value]').textContent = sale ? formatMoney(variant.compare_at_price, format) : '';
-      }
-      const badge = this.querySelector('[data-discount-badge]');
-      if (badge) {
+      this.querySelectorAll('[data-product-price]').forEach((price) => {
+        price.classList.toggle('price-tag--sale', sale);
+        price.querySelector('.price-tag__current').textContent = formatMoney(variant.price, format);
+        const compare = price.querySelector('.price-tag__compare');
+        if (compare) {
+          compare.hidden = !sale;
+          compare.querySelector('[data-compare-value]').textContent = sale ? formatMoney(variant.compare_at_price, format) : '';
+        }
+      });
+      this.querySelectorAll('[data-discount-badge]').forEach((badge) => {
         badge.hidden = !sale;
         if (sale) badge.textContent = `−${discountPercent(variant.price, variant.compare_at_price)}%`;
-      }
+      });
     }
 
-    const input = this.querySelector('input[name="id"]');
+    const input = this.querySelector('[data-product-form] input[name="id"]');
     if (input && variant) input.value = variant.id;
 
-    const button = this.querySelector('[data-add-button]');
-    if (button) {
+    const label = !variant ? this.dataset.labelUnavailable : variant.available ? this.dataset.labelAdd : this.dataset.labelSoldOut;
+    this.querySelectorAll('[data-add-button]').forEach((button) => {
       button.disabled = !variant?.available;
-      const label = !variant ? this.dataset.labelUnavailable : variant.available ? this.dataset.labelAdd : this.dataset.labelSoldOut;
       button.querySelector('[data-add-label]').textContent = label;
+    });
+
+    // Stock line: in stock / only N left / sold out
+    const stock = this.querySelector('[data-stock]');
+    if (stock) {
+      const state = !variant?.available ? 'out' : variant.stock ? 'low' : 'in';
+      stock.dataset.state = state;
+      stock.querySelector('[data-stock-label]').textContent =
+        state === 'low' ? stock.dataset.low.replace('%n', variant.stock) : stock.dataset[state];
+    }
+
+    if (variant && this.hasAttribute('data-update-url')) {
+      const url = new URL(location.href);
+      url.searchParams.set('variant', variant.id);
+      history.replaceState(history.state, '', url);
     }
 
     const link = this.querySelector('[data-product-link]');

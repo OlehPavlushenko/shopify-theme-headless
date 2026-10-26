@@ -11,10 +11,185 @@
   "sections": {
     "main": {
       "type": "main-product",
-      "settings": {}
+      "blocks": {
+        "vendor": {
+          "type": "vendor",
+          "settings": {}
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "rating": {
+          "type": "rating",
+          "settings": {
+            "anchor": "Reviews"
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "picker": {
+          "type": "variant_picker",
+          "settings": {
+            "low_stock": 5
+          }
+        },
+        "buy": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_quantity": true,
+            "show_dynamic_checkout": true,
+            "show_stock": true,
+            "low_stock": 5
+          }
+        },
+        "delivery": {
+          "type": "delivery",
+          "settings": {
+            "min_days": 2,
+            "max_days": 4,
+            "cutoff": 14,
+            "fallback": "Ships within 1–2 business days"
+          }
+        },
+        "highlights": {
+          "type": "highlights",
+          "settings": {
+            "icon_1": "leaf",
+            "text_1": "<strong>Natural formula</strong> — no parabens or sulfates",
+            "icon_2": "truck",
+            "text_2": "<strong>Free delivery</strong> from ₴1,200",
+            "icon_3": "return",
+            "text_3": "<strong>14-day returns</strong>, easy and free"
+          }
+        },
+        "description": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Description",
+            "icon": "none",
+            "source": "description",
+            "metafield": "",
+            "content": "",
+            "open": true
+          }
+        },
+        "ingredients": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Ingredients",
+            "icon": "leaf",
+            "source": "metafield",
+            "metafield": "custom.ingredients",
+            "content": "",
+            "open": false
+          }
+        },
+        "shipping": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Delivery & returns",
+            "icon": "truck",
+            "source": "custom",
+            "metafield": "",
+            "content": "<p>Orders ship within 1–2 business days; delivery across the country takes 2–4 days and is free from ₴1,200.</p><p>Unopened products can be returned within 14 days — write to us and we arrange a free pickup.</p>",
+            "open": false
+          }
+        },
+        "complementary": {
+          "type": "complementary",
+          "settings": {
+            "heading": "Pairs well with",
+            "limit": 3
+          }
+        },
+        "share": {
+          "type": "share",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "rating",
+        "price",
+        "picker",
+        "buy",
+        "delivery",
+        "highlights",
+        "description",
+        "ingredients",
+        "shipping",
+        "complementary",
+        "share"
+      ],
+      "settings": {
+        "gallery_layout": "grid",
+        "ratio": "1",
+        "info_style": "plain",
+        "sticky_bar": true,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "related": {
+      "type": "product-recommendations",
+      "settings": {
+        "heading": "You may also like",
+        "limit": 8,
+        "columns": 4,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "How do I use it?",
+            "answer": "<p>See the description above for directions. Questions about your routine? Write to us — we reply within a day.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "When will my order arrive?",
+            "answer": "<p>Orders ship within 1–2 business days. Delivery across the country usually takes 2–4 days.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2"
+      ],
+      "settings": {
+        "layout": "split",
+        "eyebrow": "FAQ",
+        "heading": "Questions & answers",
+        "text": "",
+        "button_label": "Contact us",
+        "button_link": "shopify://pages/contact",
+        "single_open": true,
+        "open_first": false,
+        "color_scheme": "scheme-2"
+      }
+    },
+    "recent": {
+      "type": "recently-viewed",
+      "settings": {
+        "heading": "Recently viewed",
+        "limit": 8,
+        "columns": 5,
+        "color_scheme": "scheme-1"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "related",
+    "faq",
+    "recent"
   ]
 }

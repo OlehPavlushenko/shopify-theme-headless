@@ -24,12 +24,9 @@
     {{ 'ui-announcements.css' | asset_url | stylesheet_tag }}
     {{ 'ui-header.css' | asset_url | stylesheet_tag }}
     {{ 'ui-blocks.css' | asset_url | stylesheet_tag }}
-    {%- comment -%} Skeleton-baseline templates only (pages.css shrinks as they are rebuilt) {%- endcomment -%}
-    {%- liquid
-      if template.name == 'product'
-        echo 'ui-pages.css' | asset_url | stylesheet_tag
-      endif
-    -%}
+    {%- if template.name == 'product' -%}
+      {{ 'ui-product.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
     {{ 'ui-sections.css' | asset_url | stylesheet_tag }}
     {%- if template.name == 'collection' or template.name == 'search' -%}
       {{ 'ui-facets.css' | asset_url | stylesheet_tag }}
@@ -134,6 +131,7 @@
           "@ui/read-more": "{{ 'ui-read-more.js' | asset_url }}",
           "saved-pages": "{{ 'saved-pages.js' | asset_url }}",
           "facets": "{{ 'facets.js' | asset_url }}",
+          "product": "{{ 'product.js' | asset_url }}",
           "liquid-ajax-cart": "{{ 'liquid-ajax-cart-v2.2.0.js' | asset_url }}",
           "cart": "{{ 'cart.js' | asset_url }}",
           "quick-view": "{{ 'quick-view.js' | asset_url }}"

@@ -86,7 +86,24 @@
     "choose_options": "Choose options",
     "unavailable": "Unavailable",
     "view_details": "View full details",
-    "quick_view": "Quick view"
+    "quick_view": "Quick view",
+    "zoom": "Zoom image {{ index }}",
+    "show_media": "Show image {{ index }}",
+    "rating": "Rated {{ rating }} out of {{ max }}",
+    "reviews_count": {
+      "one": "{{ count }} review",
+      "other": "{{ count }} reviews"
+    },
+    "tax_included": "Tax included.",
+    "stock_in": "In stock, ready to ship",
+    "stock_low": {
+      "one": "Only {{ count }} left",
+      "other": "Only {{ count }} left"
+    },
+    "in_cart_note": "{{ count }} in your cart",
+    "delivery": "Delivered {{ dates }}",
+    "delivery_cutoff": "Order within {{ time }} — delivered {{ dates }}",
+    "link_copied": "Link copied"
   },
   "customers": {
     "login": {

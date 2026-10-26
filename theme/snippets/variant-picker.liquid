@@ -7,7 +7,9 @@
 
   @param {object} product - Product
   @param {string} id - Unique prefix for the radio groups (e.g. section.id)
+  @param {number} [low_stock] - "Only N left" at or under this stock (default 5)
 {% enddoc %}
+{%- assign low = low_stock | default: 5 -%}
 <variant-picker class="variant-picker">
   {%- for option in product.options_with_values -%}
     {%- liquid
@@ -55,7 +57,9 @@
           "available": {{ variant.available | json }},
           "price": {{ variant.price }},
           "compare_at_price": {{ variant.compare_at_price | default: 0 }},
-          "featured_media": {% if variant.featured_media %}{ "id": {{ variant.featured_media.id }} }{% else %}null{% endif %}
+          "featured_media": {% if variant.featured_media %}{ "id": {{ variant.featured_media.id }} }{% else %}null{% endif %},
+          {%- comment -%} "Only N left": the count only when tracked and at or under the threshold {%- endcomment -%}
+          "stock": {% if variant.inventory_management == 'shopify' and variant.inventory_quantity > 0 and variant.inventory_quantity <= low %}{{ variant.inventory_quantity }}{% else %}null{% endif %}
         }{% unless forloop.last %},{% endunless %}
       {%- endfor -%}
     ]

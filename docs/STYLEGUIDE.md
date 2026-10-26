@@ -64,6 +64,8 @@ and the list of mistakes we already made once. Read both before adding code.
   get the light scheme's value.
 - Color scheme classes are unlayered and beat `@layer components`: to recolor locally, set custom
   properties on an **inner** element.
+- The same goes for Shopify's own CSS (dynamic checkout, apps): it is unlayered, so a theme override
+  of it must be unlayered too (see the end of `product.css`), scoped to our component.
 - BEM, mobile first (750 / 990 px), 2-space indent, property order as in ARCHITECTURE.md.
 - When the layout depends on the space a component gets (a card in a column vs a full row), use a
   **container query**, not a viewport breakpoint (see the deal card).

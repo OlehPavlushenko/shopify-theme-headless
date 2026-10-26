@@ -7,7 +7,6 @@
     "header": "Header",
     "layout": "Layout",
     "password": "Password",
-    "product": "Product",
     "row": "Row",
     "search": "Search",
     "text": "Text",
@@ -524,6 +523,60 @@
       "image_layout": "Image",
       "image_wide": "Wide, under the title",
       "image_none": "Hide"
+    },
+    "main_product": {
+      "name": "Product information",
+      "gallery_layout": "Gallery",
+      "gallery_layout_info": "On phones the images are always a swipe slider.",
+      "gallery_grid": "Grid of images",
+      "gallery_thumbnails": "Slider with thumbnails",
+      "gallery_stacked": "Large images, one under another",
+      "info_style": "Info style",
+      "info_plain": "Plain",
+      "info_card": "Card",
+      "sticky_bar": "Sticky add to cart bar",
+      "sticky_bar_info": "Appears once the main button has scrolled out of view.",
+      "block_vendor": "Brand",
+      "block_title": "Title",
+      "block_rating": "Rating",
+      "rating_info": "Stars from the product metafields reviews.rating and reviews.rating_count (filled by review apps). Hidden without them.",
+      "rating_anchor": "Link to section id",
+      "block_price": "Price",
+      "block_variant_picker": "Variant picker",
+      "low_stock": "\"Only N left\" from",
+      "block_buy_buttons": "Buy buttons",
+      "show_quantity": "Quantity selector",
+      "show_dynamic_checkout": "Dynamic checkout button",
+      "show_dynamic_checkout_info": "Shop Pay, PayPal and other express checkouts enabled in the store.",
+      "show_stock": "Stock status",
+      "block_delivery": "Delivery estimate",
+      "delivery_min": "Delivery from (business days)",
+      "delivery_max": "Delivery to (business days)",
+      "delivery_cutoff": "Same-day dispatch until",
+      "delivery_cutoff_info": "Orders before this hour (shopper time) ship today.",
+      "delivery_fallback": "Text without JavaScript",
+      "block_highlights": "Highlights",
+      "icon": "Icon",
+      "block_collapsible": "Collapsible row",
+      "collapsible_source": "Content",
+      "source_description": "Product description",
+      "source_metafield": "Product metafield",
+      "source_page": "Page",
+      "source_custom": "Text below",
+      "metafield_key": "Metafield",
+      "metafield_key_info": "namespace.key, e.g. custom.ingredients. The row hides when the product has none.",
+      "block_complementary": "Complementary products",
+      "complementary_info": "Set up in Search & Discovery > Product recommendations. Hidden when there are none.",
+      "block_share": "Share"
+    },
+    "product_complementary": {
+      "name": "Complementary products"
+    },
+    "product_recommendations": {
+      "name": "Product recommendations"
+    },
+    "recently_viewed": {
+      "name": "Recently viewed"
     }
   },
   "blocks": {

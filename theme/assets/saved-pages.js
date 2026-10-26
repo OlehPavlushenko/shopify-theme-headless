@@ -7,6 +7,7 @@
  *     [data-saved-empty]    — the empty state
  *     [data-saved-skeleton] — loading placeholders (first load only), one per saved product
  *   </saved-products>
+ * Optional: data-exclude="<handle>" (left out), data-limit="<n>" (the first n).
  * data-state (loading → filled | empty) decides in CSS (saved.css) which of the two shows;
  * --saved-count holds the number of products shown (the compare table sizes itself by it).
  *
@@ -59,7 +60,10 @@ class SavedProducts extends HTMLElement {
   // data-state: loading (nothing shown yet) → filled | empty; CSS shows the container or the empty state
   async #render() {
     const run = (this.run = (this.run ?? 0) + 1);
-    const items = getItems(this.dataset.list);
+    // data-exclude: a handle left out (the current product); data-limit: the most shown
+    const items = getItems(this.dataset.list)
+      .filter((item) => item.handle !== this.dataset.exclude)
+      .slice(0, Number(this.dataset.limit) || undefined);
     if (!items.length) {
       this.container.querySelectorAll('[data-saved-item]').forEach((node) => node.remove());
       this.dataset.state = 'empty';

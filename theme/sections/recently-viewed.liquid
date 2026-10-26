@@ -1,0 +1,31 @@
+{% comment %}
+  Recently viewed products: the last products a shopper opened (kept in the browser by product.js,
+  list "recent" of @ui/saved-list) as a slider of product cards, the current product left out.
+  Cards come from sections/saved-product through <saved-products> (assets/saved-pages.js); the
+  section hides itself while the list is empty. Styles: sections.css (product list), saved.css.
+{% endcomment %}
+<div class="product-list recently-viewed color-{{ section.settings.color_scheme }} section-spacing">
+  <saved-products class="page-width" data-list="recent" data-section="saved-product" data-exclude="{{ product.handle }}" data-limit="{{ section.settings.limit }}" data-state="loading">
+    <ui-slider class="slider product-list__slider" style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 2.2;">
+      {%- render 'section-head', heading: section.settings.heading, nav: true -%}
+      <ul class="slider__track" data-slider-track role="list" data-saved-products></ul>
+    </ui-slider>
+    <div data-saved-empty></div>
+  </saved-products>
+</div>
+<script type="module">import 'saved-pages';</script>
+
+{% schema %}
+{
+  "name": "t:sections.recently_viewed.name",
+  "class": "recently-viewed-section",
+  "disabled_on": { "groups": ["*"] },
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Recently viewed" },
+    { "type": "range", "id": "limit", "label": "t:sections.footer.limit", "min": 2, "max": 12, "step": 1, "default": 8 },
+    { "type": "range", "id": "columns", "label": "t:sections.product_list.columns", "min": 3, "max": 6, "step": 1, "default": 5 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "t:sections.recently_viewed.name" }]
+}
+{% endschema %}

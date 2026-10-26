@@ -13,12 +13,13 @@
  * `saved-list:full` ({ detail: { list, max } }) when a list is at its limit.
  * Toasts (@ui/toast) on toggle for a list whose texts are on the page: [data-saved-toast="<list>"].
  * Limits: compare holds MAX.compare items (a new one is refused), the wishlist MAX.wishlist.
+ * "recent" (recently viewed) is written by recordView(), newest first.
  * Items: { handle, title, image, url } — enough for a toast's thumbnail without a request.
  * Storage can be unavailable (private mode, blocked): lists then live for the page only.
  */
 import { showToast } from '@ui/toast';
 
-const MAX = { wishlist: 100, compare: 4 };
+const MAX = { wishlist: 100, compare: 4, recent: 12 };
 const memory = {};
 const key = (list) => `saved-list:${list}`;
 
@@ -84,6 +85,11 @@ document.addEventListener('saved-list:full', (event) => {
   if (!texts?.full) return;
   showToast({ message: texts.full.replace('%n', max), action: { label: texts.view, href: texts.href } });
 });
+
+// Recently viewed ("recent"): the product goes first, the list keeps the last MAX.recent
+export function recordView(item) {
+  save('recent', [item, ...getItems('recent').filter((saved) => saved.handle !== item.handle)].slice(0, MAX.recent));
+}
 
 export const remove = (list, handle) =>
   save(

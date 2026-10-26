@@ -1,0 +1,47 @@
+{% comment %}
+  "You may also like" on the product page: Shopify's related products (Product Recommendations API)
+  as a slider of product cards. The section renders an empty shell first; product.js fetches it
+  with the product id once it nears the viewport (no cost for visitors who don't scroll), and it
+  disappears when there are no recommendations. Styles: sections.css (product list).
+{% endcomment %}
+{%- liquid
+  assign has_products = false
+  if recommendations.performed? and recommendations.products_count > 0
+    assign has_products = true
+  endif
+-%}
+<product-recommendations
+  class="product-list color-{{ section.settings.color_scheme }} section-spacing{% if recommendations.performed? and has_products == false %} product-recommendations--empty{% endif %}"
+  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.limit }}&intent=related"
+  data-replace
+>
+  {%- if has_products -%}
+    <div class="page-width">
+      <ui-slider class="slider product-list__slider" style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 2.2;">
+        {%- render 'section-head', heading: section.settings.heading, nav: true -%}
+        <ul class="slider__track" data-slider-track role="list">
+          {%- for product in recommendations.products -%}
+            <li>
+              {%- render 'product-card', product: product, quick_add: true, sizes: '(min-width: 990px) 22vw, 45vw' -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </ui-slider>
+    </div>
+  {%- endif -%}
+</product-recommendations>
+
+{% schema %}
+{
+  "name": "t:sections.product_recommendations.name",
+  "class": "product-recommendations-section",
+  "disabled_on": { "groups": ["*"] },
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "You may also like" },
+    { "type": "range", "id": "limit", "label": "t:sections.footer.limit", "min": 2, "max": 10, "step": 1, "default": 8 },
+    { "type": "range", "id": "columns", "label": "t:sections.product_list.columns", "min": 3, "max": 5, "step": 1, "default": 4 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "t:sections.product_recommendations.name" }]
+}
+{% endschema %}

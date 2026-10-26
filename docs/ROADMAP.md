@@ -73,6 +73,19 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
   (cards) and compare page (table), skeleton loading and empty states.
 - Cart: sale prices and "−X%" on lines, swatches in options, savings include sale prices.
 
+### Collection & product (2026-10-26)
+- Collection page: filters (Search & Discovery) as sidebar, dropdowns or drawer — counts, swatches,
+  price slider, active chips — live updates through the Section Rendering API with history; sort,
+  density toggle, promo tile, Load more; subcollection chips, collection image, SEO text and FAQ;
+  filtered lists noindex.
+- Collections page: Editorial list (default), Bento mosaic, Grid.
+- Product page: gallery grid / thumbnails / stacked (slider on phones), zoom lightbox, info blocks
+  (vendor, title, rating, price, linked variant picker, buy buttons with quantity + dynamic
+  checkout + stock + in-cart note, delivery estimate, highlights, collapsible rows from description /
+  metafield / page, complementary products, share), sticky buy bar, related products (lazy),
+  recently viewed, FAQ.
+- Pages rebuilt: page, contact, 404, blog (topics, featured), article (comments, share).
+
 ### Quality pass (2026-10-26)
 - Lighthouse audit: off-screen CSS no longer blocks render, lazy variant picker, reduced variant
   JSON, alt texts, one canonical, store description as meta fallback, AA contrast for secondary
@@ -83,11 +96,8 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
 
 ## Next
 
-1. **Product page** on blocks: gallery, variant picker (`@ui/variant-picker` is ready), buy
-   buttons, FAQ / accordion blocks, complementary products. Replaces Skeleton `main-product`.
-2. **Collection page**: filters and sorting, Page header, "Show more" / pagination.
-3. **Blog, article, pages, 404, list of collections** rebuilt on our components; then `pages.css`
-   and `snippets/image` go away.
+1. **Search page** on the same facets as the collection page.
+2. Review round of the collection and product pages; filters set up in Search & Discovery.
 4. **SEO pass** over all templates: one h1 everywhere (main section or Page header), breadcrumbs,
    meta, structured data per template; the store description in Online Store → Preferences.
 5. **Product cards settings** in Theme settings (image ratio, fit, vendor, swatches, toggles),

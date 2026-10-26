@@ -74,14 +74,14 @@ scripts/
   - `promo.css`: promo card (`snippets/promo-card`, used everywhere promos are shown), newsletter form, promo popup.
   - Side panels are one component: `.drawer` > `.drawer__inner` > `__header` / `__body` / `__footer`,
     on a `<dialog>` (cart, search drawer) or a `[popover]` (utility panel); same width, motion and backdrop.
-  - One file per area: `header.css`, `footer.css`, `cart.css`, `blocks.css`, `pages.css`
-    (baseline template sections; shrinks as pages are rebuilt).
+  - One file per area: `header.css`, `footer.css`, `cart.css`, `blocks.css`, `facets.css`
+    (collection / search filters and grid), `product.css` (product page).
 - Formatting: 2-space indent; rule order base → elements → modifiers → states → responsive;
   property order layout/position → box model → typography → visual → motion; mobile first
   (breakpoints 750px, 990px).
 - Loading (`layout/theme.liquid`): tokens, base, components, product card, slider, announcements,
   header, sections block render; search, cart, promo and footer load without blocking (blocking
-  on their own templates); `pages.css` only on Skeleton-baseline templates, `saved.css` only with
+  on their own templates); `facets.css` on collection / search, `product.css` on products, `saved.css` only with
   wishlist / compare on. Layer order is set by `tokens.css`, so load order never changes the cascade.
 - No `{% stylesheet %}` / `{% javascript %}` and no inline `<style>` with static CSS in the theme.
   Per-instance values go through custom properties in a `style=""` attribute.

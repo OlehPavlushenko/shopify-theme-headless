@@ -22,7 +22,7 @@
  * `variant-picker:connect` (bubbles) tells the page a picker appeared (e.g. to mark values in the cart).
  * Plain data in, DOM out: a headless storefront feeds the same JSON shape.
  */
-import { formatMoney } from '@ui/money';
+import { formatMoney, discountPercent } from '@ui/money';
 
 class VariantPicker extends HTMLElement {
   connectedCallback() {
@@ -46,9 +46,7 @@ class VariantPicker extends HTMLElement {
     const options = this.selected;
     if (!this.#find(options)) {
       const score = (variant) => (variant.available ? 10 : 0) + variant.options.filter((value, i) => value === options[i]).length;
-      const closest = this.variants
-        .filter((variant) => variant.options[index] === options[index])
-        .sort((a, b) => score(b) - score(a))[0];
+      const closest = this.variants.filter((variant) => variant.options[index] === options[index]).sort((a, b) => score(b) - score(a))[0];
       closest?.options.forEach((value, i) => {
         const radio = [...this.fieldsets[i].querySelectorAll('input')].find((item) => item.value === value);
         if (radio) radio.checked = true;
@@ -100,7 +98,7 @@ class ProductInfo extends HTMLElement {
       const badge = this.querySelector('[data-discount-badge]');
       if (badge) {
         badge.hidden = !sale;
-        if (sale) badge.textContent = `−${Math.round(((variant.compare_at_price - variant.price) * 100) / variant.compare_at_price)}%`;
+        if (sale) badge.textContent = `−${discountPercent(variant.price, variant.compare_at_price)}%`;
       }
     }
 

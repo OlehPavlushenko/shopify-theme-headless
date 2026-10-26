@@ -21,7 +21,7 @@
   .saved-toggle {
     display: grid;
     place-items: center;
-    width: 3.4rem;
+    width: var(--control-toggle);
     aspect-ratio: 1;
     padding: 0;
     color: var(--color-heading);
@@ -172,7 +172,7 @@
 
   .saved-empty__text {
     margin-bottom: var(--space-s);
-    color: color-mix(in srgb, var(--color-foreground) 80%, transparent);
+    color: var(--color-text-muted);
   }
 
   /* Compare table: a label column + a column per product; rows line up through subgrid.
@@ -257,7 +257,7 @@
   }
 
   .compare-table__stock--out {
-    color: color-mix(in srgb, var(--color-foreground) 60%, transparent);
+    color: var(--color-text-muted);
   }
 
   .compare-table__options {
@@ -289,12 +289,12 @@
   }
 
   .compare-table__value--unavailable {
-    color: color-mix(in srgb, var(--color-foreground) 45%, transparent);
+    color: var(--color-text-disabled);
     text-decoration: line-through;
   }
 
   .compare-table__description {
-    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+    color: var(--color-text-muted);
   }
 
   @media (min-width: 750px) {

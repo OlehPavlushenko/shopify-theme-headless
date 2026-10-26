@@ -125,7 +125,7 @@
     line-height: 1;
     color: var(--color-button-label);
     background: var(--color-accent);
-    border-radius: 99rem;
+    border-radius: var(--radius-full);
   }
 
   /* Empty cart: hidden before Liquid Ajax Cart init (data-empty from Liquid) and after it */
@@ -250,7 +250,7 @@
   }
 
   .site-nav__toggle .svg-icon {
-    --icon-size: 1.4rem;
+    --icon-size: var(--icon-sm);
 
     transition: rotate var(--duration-default) var(--ease);
   }
@@ -508,7 +508,7 @@
   .mobile-nav__back .svg-icon {
     --icon-size: 1.8rem;
 
-    color: color-mix(in srgb, var(--color-foreground) 55%, transparent);
+    color: var(--color-text-muted);
   }
 
   /* ------------------------------------------------- utility panel */

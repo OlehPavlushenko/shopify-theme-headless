@@ -48,7 +48,7 @@
   .cart-line__sku {
     font-size: var(--text-xs);
     line-height: var(--leading-xs);
-    color: color-mix(in srgb, var(--color-foreground) 60%, transparent);
+    color: var(--color-text-muted);
     overflow-wrap: anywhere;
   }
 
@@ -90,7 +90,7 @@
     width: 3.2rem;
     height: 3.2rem;
     margin: -0.6rem -0.6rem 0 0;
-    color: color-mix(in srgb, var(--color-foreground) 55%, transparent);
+    color: var(--color-text-muted);
     border-radius: 50%;
     transition:
       color var(--duration-short) var(--ease),
@@ -123,7 +123,7 @@
   .cart-line__unit {
     font-size: var(--text-xs);
     line-height: var(--leading-xs);
-    color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
+    color: var(--color-text-muted);
   }
 
   .cart-line__option dd {
@@ -148,7 +148,7 @@
   }
 
   .cart-line__discount .svg-icon {
-    --icon-size: 1.4rem;
+    --icon-size: var(--icon-sm);
   }
 
   .cart-line__actions {
@@ -162,7 +162,7 @@
 
   .cart-line__actions .qty {
     grid-template-columns: 3.2rem 3.6rem 3.2rem;
-    height: 3.6rem;
+    height: var(--control-height-sm);
   }
 
   .cart-line__price {
@@ -236,7 +236,7 @@
     background:
       linear-gradient(var(--color-accent), var(--color-accent)) 0 / var(--progress) 100% no-repeat,
       var(--color-border);
-    border-radius: 99rem;
+    border-radius: var(--radius-full);
     transition: background-size var(--duration-long) var(--ease-out);
   }
 
@@ -261,7 +261,7 @@
 
   .cart-discount__toggle:hover {
     text-decoration: underline;
-    text-underline-offset: 0.3rem;
+    text-underline-offset: var(--underline-offset);
   }
 
   /* Open: the field takes the toggle's place (the toggle stays for screen readers) */
@@ -302,12 +302,7 @@
   }
 
   .cart-discount__code .svg-icon {
-    --icon-size: 1.4rem;
-  }
-
-  .cart-discount__code--invalid {
-    color: color-mix(in srgb, var(--color-foreground) 55%, transparent);
-    text-decoration: line-through;
+    --icon-size: var(--icon-sm);
   }
 
   cart-discount[aria-busy='true'] {
@@ -370,7 +365,7 @@
   .cart-summary__note {
     font-size: var(--text-xs);
     line-height: var(--leading-xs);
-    color: color-mix(in srgb, var(--color-foreground) 60%, transparent);
+    color: var(--color-text-muted);
   }
 
   /* ----------------------------------------- order details (fields) */
@@ -427,7 +422,7 @@
   }
 
   .cart-attribute__label {
-    color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
+    color: var(--color-text-muted);
   }
 
   .cart-attribute .input {
@@ -498,7 +493,7 @@
     flex: none;
     font-size: var(--text-sm);
     color: var(--color-heading);
-    text-underline-offset: 0.3rem;
+    text-underline-offset: var(--underline-offset);
   }
 
   .cart-drawer__view-cart:hover {
@@ -567,8 +562,8 @@
   }
 
   .cart-recs__close {
-    width: 3.6rem;
-    min-height: 3.6rem;
+    width: var(--control-height-sm);
+    min-height: var(--control-height-sm);
   }
 
   /* Desktop: a full-height column that slides out from behind the drawer */

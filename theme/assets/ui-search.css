@@ -127,7 +127,7 @@
   }
 
   .search-panel__input::placeholder {
-    color: color-mix(in srgb, var(--color-foreground) 50%, transparent);
+    color: var(--color-text-disabled);
   }
 
   .search-panel__input::-webkit-search-cancel-button {
@@ -227,7 +227,7 @@
   }
 
   .search-results__footer .svg-icon {
-    --icon-size: 1.4rem;
+    --icon-size: var(--icon-sm);
   }
 
   .search-results__empty {

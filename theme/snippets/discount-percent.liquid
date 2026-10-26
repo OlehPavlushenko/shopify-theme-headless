@@ -1,0 +1,13 @@
+{% doc %}
+  Outputs the discount in whole percent ("18") of a price against its "was" price, nothing when
+  there is no discount. One rounding rule for cards, quick view and the cart (JS: @ui/money
+  discountPercent). Capture it:
+    {%- capture discount -%}{% render 'discount-percent', price: variant.price, compare_at: variant.compare_at_price %}{%- endcapture -%}
+    {%- assign discount = discount | strip | plus: 0 -%}  (the output starts with a newline)
+
+  @param {number} price - Current price (cents)
+  @param {number} compare_at - "Was" price (cents)
+{% enddoc %}
+{%- if compare_at > price -%}
+  {{- compare_at | minus: price | times: 100.0 | divided_by: compare_at | round -}}
+{%- endif -%}

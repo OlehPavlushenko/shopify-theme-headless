@@ -40,7 +40,7 @@
   .promo-card__text {
     font-size: var(--text-sm);
     line-height: var(--leading-sm);
-    color: color-mix(in srgb, var(--color-foreground) 80%, transparent);
+    color: var(--color-text-muted);
   }
 
   .promo-card__cta {
@@ -54,7 +54,7 @@
     color: var(--color-heading);
     text-decoration: underline;
     text-decoration-color: transparent;
-    text-underline-offset: 0.3rem;
+    text-underline-offset: var(--underline-offset);
     transition: text-decoration-color var(--duration-short) var(--ease);
   }
 
@@ -63,13 +63,7 @@
   }
 
   .promo-card__cta .svg-icon {
-    --icon-size: 1.4rem;
-
-    transition: translate var(--duration-default) var(--ease-out);
-  }
-
-  .promo-card:hover .promo-card__cta .svg-icon {
-    translate: 0.3rem 0;
+    --icon-size: var(--icon-sm);
   }
 
   /* Overlay: text over the image on a soft shade at the bottom */
@@ -149,7 +143,7 @@
     margin-top: var(--space-2xs);
     font-size: var(--text-xs);
     line-height: var(--leading-xs);
-    color: color-mix(in srgb, var(--color-foreground) 65%, transparent);
+    color: var(--color-text-muted);
   }
 
   .newsletter-form:has(.newsletter-form__message:not(:empty)) .newsletter-form__note {
@@ -310,7 +304,7 @@
   }
 
   .promo-popup__countdown .countdown-line__label {
-    color: color-mix(in srgb, var(--color-foreground) 75%, transparent);
+    color: var(--color-text-muted);
   }
 
   .promo-popup__products {

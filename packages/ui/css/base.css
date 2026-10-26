@@ -164,7 +164,7 @@
   .text-lead {
     font-size: var(--text-lg);
     line-height: var(--leading-lg);
-    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+    color: var(--color-text-muted);
   }
 
   .text-sm,
@@ -192,7 +192,7 @@
     line-height: var(--leading-xs);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--color-foreground) 70%, transparent);
+    color: var(--color-text-muted);
   }
 
   p {
@@ -207,7 +207,7 @@
   a {
     color: var(--color-heading);
     text-decoration-thickness: 0.1rem;
-    text-underline-offset: 0.3rem;
+    text-underline-offset: var(--underline-offset);
     transition: color var(--duration-short) var(--ease);
   }
 
@@ -362,6 +362,6 @@
 
 
   .muted {
-    color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
+    color: var(--color-text-muted);
   }
 }

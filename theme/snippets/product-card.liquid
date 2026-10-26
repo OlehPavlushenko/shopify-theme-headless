@@ -36,11 +36,12 @@
   endif
   assign variant = product.selected_or_first_available_variant
   # Badge: "−X%" when the shown variant is discounted, "Sale" when only another variant is
-  assign discount = 0
+  capture discount
+    render 'discount-percent', price: variant.price, compare_at: variant.compare_at_price
+  endcapture
+  assign discount = discount | strip | plus: 0
   assign on_sale = false
-  if variant.compare_at_price > variant.price
-    assign discount = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round
-  elsif product.compare_at_price_max > product.price_min
+  if discount == 0 and product.compare_at_price_max > product.price_min
     assign on_sale = true
   endif
   # Already in the cart: single-variant products get a quantity control instead of the add button,
@@ -109,10 +110,11 @@
     {%- unless product.has_only_default_variant -%}
       {%- liquid
         assign option = product.options_with_values.first
+        capture is_color
+          render 'option-is-color', option: option
+        endcapture
         assign swatches = false
-        assign color_names = 'color,colour,колір,цвет' | split: ','
-        assign option_name = option.name | downcase
-        if color_names contains option_name or option.values.first.swatch
+        if is_color contains 'true'
           assign swatches = true
         endif
         # Swatches: one row of 5 at most, then "+N"; text values: all of them on one line (ellipsis)

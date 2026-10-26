@@ -51,7 +51,7 @@
   .product-card__vendor {
     font-size: var(--text-xs);
     line-height: var(--leading-xs);
-    color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
+    color: var(--color-text-muted);
   }
 
   /* Max two lines, so every card in a row has the same height */
@@ -116,7 +116,7 @@
   }
 
   .main-collection__description {
-    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+    color: var(--color-text-muted);
   }
 
   .main-collection__empty {
@@ -152,7 +152,7 @@
     padding: 0;
     font-size: var(--text-xs);
     line-height: var(--leading-xs);
-    color: color-mix(in srgb, var(--color-foreground) 75%, transparent);
+    color: var(--color-text-muted);
     text-overflow: ellipsis;
     white-space: nowrap;
     list-style: none;
@@ -168,7 +168,7 @@
 
   /* Struck on the inner text, so the " · " before it stays clean */
   .product-card__value--unavailable > span {
-    color: color-mix(in srgb, var(--color-foreground) 45%, transparent);
+    color: var(--color-text-disabled);
     text-decoration: line-through;
   }
 
@@ -271,7 +271,7 @@
   }
 
   .product-card__options-in-cart .svg-icon {
-    --icon-size: 1.4rem;
+    --icon-size: var(--icon-sm);
 
     stroke-width: 2.4;
   }
@@ -351,7 +351,7 @@
     }
 
     .deal-card .product-card__actions {
-      left: calc(24rem - 3.4rem - var(--space-s));
+      left: calc(24rem - var(--control-toggle) - var(--space-s));
     }
 
     .deal-card .product-card__info {
@@ -386,7 +386,7 @@
     /* Wishlist / compare stay on the image */
     .deal-card .product-card__actions {
       right: auto;
-      left: calc(40% - 3.4rem - var(--space-s));
+      left: calc(40% - var(--control-toggle) - var(--space-s));
     }
   }
 

@@ -33,17 +33,11 @@
   }
 
   .section-head__link .svg-icon {
-    --icon-size: 1.4rem;
-
-    transition: translate var(--duration-default) var(--ease-out);
+    --icon-size: var(--icon-sm);
   }
 
   .section-head__link:hover {
     color: var(--color-link-hover);
-  }
-
-  .section-head__link:hover .svg-icon {
-    translate: 0.3rem 0;
   }
 
   /* Phones swipe sliders: no arrows, so the link stays on the heading's row */
@@ -329,7 +323,7 @@
     width: 0.8rem;
     height: 0.8rem;
     background: color-mix(in srgb, var(--color-heading) 35%, transparent);
-    border-radius: 99rem;
+    border-radius: var(--radius-full);
     transition:
       width var(--duration-default) var(--ease-out),
       background-color var(--duration-default) var(--ease);
@@ -343,7 +337,7 @@
   .hero__dots {
     padding: 0 0.4rem;
     background: color-mix(in srgb, var(--color-background) 70%, transparent);
-    border-radius: 99rem;
+    border-radius: var(--radius-full);
   }
 
   .hero__controls .slider__button {
@@ -451,22 +445,17 @@
   }
 
   .collection-card__title .svg-icon {
-    --icon-size: 1.4rem;
+    --icon-size: var(--icon-sm);
 
     display: inline-block;
     margin-inline-start: var(--space-2xs);
     vertical-align: -0.1em;
-    transition: translate var(--duration-default) var(--ease-out);
-  }
-
-  .collection-card:hover .collection-card__title .svg-icon {
-    translate: 0.3rem 0;
   }
 
   .collection-card__count {
     font-size: var(--text-xs);
     line-height: var(--leading-xs);
-    color: color-mix(in srgb, var(--color-foreground) 65%, transparent);
+    color: var(--color-text-muted);
   }
 
   /* ------------------------------------------------------ page header */
@@ -488,7 +477,7 @@
 
   .page-header__text {
     max-width: 64rem;
-    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+    color: var(--color-text-muted);
   }
 
   .page-header__counter {
@@ -532,14 +521,14 @@
   }
 
   .rich-text__text {
-    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+    color: var(--color-text-muted);
   }
 
   /* Small: an SEO block that doesn't compete with the page — smaller text, muted */
   .rich-text--small .rich-text__text {
     font-size: var(--text-sm);
     line-height: var(--leading-sm);
-    color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
+    color: var(--color-text-muted);
   }
 
   .rich-text--center .rich-text__inner {
@@ -616,7 +605,7 @@
   }
 
   .faq__text {
-    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+    color: var(--color-text-muted);
   }
 
   .faq__list {
@@ -669,7 +658,7 @@
   .article-card__date {
     font-size: var(--text-xs);
     line-height: var(--leading-xs);
-    color: color-mix(in srgb, var(--color-foreground) 65%, transparent);
+    color: var(--color-text-muted);
   }
 
   .article-card__title {
@@ -702,13 +691,7 @@
   }
 
   .article-card__more .svg-icon {
-    --icon-size: 1.4rem;
-
-    transition: translate var(--duration-default) var(--ease-out);
-  }
-
-  .article-card:hover .article-card__more .svg-icon {
-    translate: 0.3rem 0;
+    --icon-size: var(--icon-sm);
   }
 
   /* ------------------------------------------------------- promo grid */

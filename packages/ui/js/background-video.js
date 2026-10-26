@@ -13,8 +13,7 @@
  * (or the video poster when the slide has no image).
  * data-start / data-end: play only that part of the video and loop it.
  */
-const allowed = () =>
-  !matchMedia('(prefers-reduced-motion: reduce)').matches && !navigator.connection?.saveData;
+const allowed = () => !matchMedia('(prefers-reduced-motion: reduce)').matches && !navigator.connection?.saveData;
 
 const shown = (video) => getComputedStyle(video).display !== 'none';
 

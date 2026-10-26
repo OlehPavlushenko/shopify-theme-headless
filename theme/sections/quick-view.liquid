@@ -7,11 +7,13 @@
 {%- liquid
   assign variant = product.selected_or_first_available_variant
   assign images = product.media | where: 'media_type', 'image'
+  capture discount
+    render 'discount-percent', price: variant.price, compare_at: variant.compare_at_price
+  endcapture
+  assign discount = discount | strip | plus: 0
   assign on_sale = false
-  assign discount = 0
-  if variant.compare_at_price > variant.price
+  if discount > 0
     assign on_sale = true
-    assign discount = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round
   endif
   assign label_add = 'products.add_to_cart' | t
   assign label_sold_out = 'products.sold_out' | t

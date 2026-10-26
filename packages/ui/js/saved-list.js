@@ -46,7 +46,10 @@ export function toggle(list, item) {
   const items = getItems(list);
   const toggled = (added) => document.dispatchEvent(new CustomEvent('saved-list:toggle', { detail: { list, item, added } }));
   if (items.some((saved) => saved.handle === item.handle)) {
-    save(list, items.filter((saved) => saved.handle !== item.handle));
+    save(
+      list,
+      items.filter((saved) => saved.handle !== item.handle)
+    );
     toggled(false);
     return false;
   }
@@ -81,7 +84,11 @@ document.addEventListener('saved-list:full', (event) => {
   showToast({ message: texts.full.replace('%n', max), action: { label: texts.view, href: texts.href } });
 });
 
-export const remove = (list, handle) => save(list, getItems(list).filter((item) => item.handle !== handle));
+export const remove = (list, handle) =>
+  save(
+    list,
+    getItems(list).filter((item) => item.handle !== handle)
+  );
 export const clear = (list) => save(list, []);
 
 class SavedToggle extends HTMLElement {

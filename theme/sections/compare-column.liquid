@@ -6,7 +6,6 @@
 {% endcomment %}
 {%- liquid
   assign variant = product.selected_or_first_available_variant
-  assign color_names = 'color,colour,колір,цвет' | split: ','
 -%}
 {%- comment -%} A removed product renders nothing (Shopify answers 200 with an empty product): saved-pages.js then drops it from the list {%- endcomment -%}
 {%- if product.id -%}
@@ -40,13 +39,13 @@
     {%- else -%}
       <dl class="compare-table__options">
         {%- for option in product.options_with_values -%}
-          {%- assign option_name = option.name | downcase -%}
+          {%- capture is_color -%}{%- render 'option-is-color', option: option -%}{%- endcapture -%}
           <div>
             <dt>{{ option.name | escape }}</dt>
             <dd>
               {%- for value in option.values -%}
                 <span class="compare-table__value{% unless value.available %} compare-table__value--unavailable{% endunless %}">
-                  {%- if color_names contains option_name or value.swatch -%}
+                  {%- if is_color contains 'true' or value.swatch -%}
                     {%- render 'swatch', value: value -%}
                   {%- endif -%}
                   {{- value | escape -}}

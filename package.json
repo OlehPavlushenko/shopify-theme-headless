@@ -13,9 +13,15 @@
     "server": "npm --prefix project-server run dev",
     "server:install": "npm --prefix project-server install",
     "shoot": "node tools/screenshot/shoot.mjs",
-    "shoot:install": "cd tools/screenshot && npm install && npx playwright install chromium"
+    "shoot:install": "cd tools/screenshot && npm install && npx playwright install chromium",
+    "format": "prettier --write \"packages/ui/js/*.js\" \"theme/assets/{cart,quick-view,saved-pages}.js\" \"scripts/*.mjs\" \"packages/tokens/*.mjs\"",
+    "format:check": "prettier --check \"packages/ui/js/*.js\" \"theme/assets/{cart,quick-view,saved-pages}.js\"",
+    "lint": "npm run format:check && npm run check"
   },
   "engines": {
     "node": ">=22.12"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
   }
 }

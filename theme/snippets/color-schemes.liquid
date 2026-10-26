@@ -12,6 +12,9 @@
       --color-background: {{ s.background }};
       --color-background-gradient: {{ s.background_gradient | default: 'none' }};
       --color-foreground: {{ s.foreground }};
+      {%- comment -%} Derived per scheme: a var() on :root would keep the root scheme's color {%- endcomment %}
+      --color-text-muted: color-mix(in srgb, {{ s.foreground }} 80%, transparent);
+      --color-text-disabled: color-mix(in srgb, {{ s.foreground }} 45%, transparent);
       --color-heading: {{ s.heading }};
       --color-link-hover: {{ s.link_hover }};
       --color-accent: {{ s.accent }};

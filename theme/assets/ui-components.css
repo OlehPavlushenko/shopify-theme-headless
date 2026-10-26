@@ -45,13 +45,18 @@
       border-color: var(--btn-border-hover);
     }
 
-    .btn:hover .svg-icon--arrow-right {
-      translate: 0.3rem 0;
-    }
   }
 
-  .btn .svg-icon--arrow-right {
+  /* Arrow nudge, one rule for the whole theme: an arrow-right icon slides a little when its link,
+     button or card link is hovered ("View all →", "Read more →", buttons, collection cards) */
+  .svg-icon--arrow-right {
     transition: translate var(--duration-default) var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    :is(a, button):hover .svg-icon--arrow-right {
+      translate: 0.3rem 0;
+    }
   }
 
   .btn:active {
@@ -84,7 +89,7 @@
     min-height: auto;
     padding: 0;
     text-decoration: underline;
-    text-underline-offset: 0.3rem;
+    text-underline-offset: var(--underline-offset);
   }
 
   .btn--icon {
@@ -119,7 +124,7 @@
   .btn:disabled,
   .btn[aria-disabled='true'] {
     --btn-bg: var(--color-surface);
-    --btn-fg: color-mix(in srgb, var(--color-foreground) 60%, transparent);
+    --btn-fg: var(--color-text-disabled);
     --btn-border: var(--color-surface);
     --btn-bg-hover: var(--btn-bg);
     --btn-fg-hover: var(--btn-fg);
@@ -241,7 +246,7 @@
   }
 
   .qty__btn .svg-icon {
-    --icon-size: 1.4rem;
+    --icon-size: var(--icon-sm);
   }
 
   .qty__input {
@@ -275,7 +280,7 @@
 
   .price-tag__compare {
     font-weight: var(--font-body-weight);
-    color: color-mix(in srgb, var(--color-foreground) 60%, transparent);
+    color: var(--color-text-muted);
   }
 
   .price-tag--sale .price-tag__current {
@@ -365,7 +370,7 @@
 
   /* The picked chip isn't struck: the button already says "Sold out" / "Unavailable" */
   .variant-picker__chip:is([data-sold-out], [data-missing]):not(:has(input:checked)) {
-    color: color-mix(in srgb, var(--color-foreground) 45%, transparent);
+    color: var(--color-text-disabled);
     text-decoration: line-through;
   }
 
@@ -468,7 +473,7 @@
   }
 
   .accordion__icon .svg-icon {
-    --icon-size: 1.4rem;
+    --icon-size: var(--icon-sm);
   }
 
   .accordion[open] .accordion__icon {
@@ -480,7 +485,7 @@
 
   .accordion__content {
     padding-bottom: var(--space-m);
-    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+    color: var(--color-text-muted);
   }
 
   /* Opening: the answer fades and slides in */
@@ -519,7 +524,7 @@
     font-weight: var(--font-body-weight-semibold);
     color: var(--color-heading);
     text-decoration: underline;
-    text-underline-offset: 0.3rem;
+    text-underline-offset: var(--underline-offset);
     background: none;
     border: 0;
     cursor: pointer;
@@ -583,13 +588,13 @@
   }
 
   .breadcrumbs__item {
-    color: color-mix(in srgb, var(--color-foreground) 70%, transparent);
+    color: var(--color-text-muted);
   }
 
   .breadcrumbs__item + .breadcrumbs__item::before {
     content: '/';
     margin-inline-end: var(--space-2xs);
-    color: color-mix(in srgb, var(--color-foreground) 40%, transparent);
+    color: var(--color-text-disabled);
   }
 
   .breadcrumbs__item a {
@@ -645,8 +650,8 @@
   }
 
   .toast__image {
-    width: 3.6rem;
-    height: 3.6rem;
+    width: var(--control-height-sm);
+    height: var(--control-height-sm);
     object-fit: cover;
     border-radius: calc(var(--radius-media) * 0.4);
   }
@@ -664,7 +669,7 @@
     font-weight: var(--font-body-weight-semibold);
     color: inherit;
     text-decoration: underline;
-    text-underline-offset: 0.3rem;
+    text-underline-offset: var(--underline-offset);
     white-space: nowrap;
     background: none;
     border: 0;
@@ -750,7 +755,7 @@
   .link-list__link .svg-icon {
     --icon-size: 1.6rem;
 
-    color: color-mix(in srgb, var(--color-foreground) 55%, transparent);
+    color: var(--color-text-muted);
   }
 
   /* ----------------------------------------------- frame (media box) */

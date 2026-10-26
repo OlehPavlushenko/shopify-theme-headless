@@ -140,7 +140,7 @@
     --icon-size: 1.8rem;
 
     margin-top: 0.1rem;
-    color: color-mix(in srgb, var(--color-foreground) 60%, transparent);
+    color: var(--color-text-muted);
   }
 
   .site-footer__contact a {
@@ -181,7 +181,7 @@
   .site-footer__article-info time {
     font-size: var(--text-xs);
     line-height: var(--leading-xs);
-    color: color-mix(in srgb, var(--color-foreground) 65%, transparent);
+    color: var(--color-text-muted);
   }
 
   .site-footer__article-title {
@@ -213,8 +213,8 @@
   .social-links__link {
     display: grid;
     place-items: center;
-    width: 3.6rem;
-    height: 3.6rem;
+    width: var(--control-height-sm);
+    height: var(--control-height-sm);
     color: var(--color-heading);
     border: 0.1rem solid var(--color-border);
     border-radius: 50%;
@@ -241,7 +241,7 @@
     padding-block: var(--space-l);
     font-size: var(--text-xs);
     line-height: var(--leading-xs);
-    color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
+    color: var(--color-text-muted);
     border-top: 0.1rem solid var(--color-border);
   }
 
@@ -299,7 +299,7 @@
   }
 
   .site-footer__top .svg-icon {
-    --icon-size: 1.4rem;
+    --icon-size: var(--icon-sm);
 
     rotate: -90deg;
     transition: translate var(--duration-default) var(--ease-out);

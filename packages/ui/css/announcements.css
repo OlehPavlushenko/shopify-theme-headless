@@ -15,7 +15,7 @@
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    min-height: 3.6rem;
+    min-height: var(--control-height-sm);
   }
 
   /* One message per page of a scroll-snap track */
@@ -58,7 +58,7 @@
 
   .announcement-bar__link:hover {
     text-decoration: underline;
-    text-underline-offset: 0.3rem;
+    text-underline-offset: var(--underline-offset);
   }
 
   .announcement-bar__arrow {
@@ -121,7 +121,7 @@
     display: flex;
     align-items: center;
     gap: var(--space-l);
-    min-height: 3.6rem;
+    min-height: var(--control-height-sm);
     padding-left: var(--space-l);
     font-size: var(--text-sm);
     line-height: var(--leading-sm);
@@ -198,7 +198,7 @@
   /* "Ends in" from 750px in the bar; on phones the line stays one row without it */
   .countdown-bar .countdown-line__label {
     display: none;
-    color: color-mix(in srgb, var(--color-foreground) 75%, transparent);
+    color: var(--color-text-muted);
   }
 
   .countdown {
@@ -230,17 +230,11 @@
     font-weight: var(--font-body-weight-medium);
     color: var(--color-heading);
     text-decoration: underline;
-    text-underline-offset: 0.3rem;
+    text-underline-offset: var(--underline-offset);
   }
 
   .countdown-bar__link .svg-icon {
-    --icon-size: 1.4rem;
-
-    transition: translate var(--duration-default) var(--ease-out);
-  }
-
-  .countdown-bar__link:hover .svg-icon {
-    translate: 0.3rem 0;
+    --icon-size: var(--icon-sm);
   }
 
   @media (min-width: 750px) {

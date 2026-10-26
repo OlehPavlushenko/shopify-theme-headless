@@ -7,6 +7,8 @@
     --color-background: #fbfaf7;
     --color-background-gradient: none;
     --color-foreground: #3d4440;
+    --color-text-muted: color-mix(in srgb, var(--color-foreground) 80%, transparent);
+    --color-text-disabled: color-mix(in srgb, var(--color-foreground) 45%, transparent);
     --color-heading: #1b2a23;
     --color-link-hover: #2f6b4f;
     --color-accent: #2f6b4f;
@@ -76,11 +78,13 @@
     --control-height-sm: 3.6rem;
     --control-height: 4.4rem;
     --control-height-lg: 4.8rem;
+    --control-toggle: 3.4rem;
     --radius-button: 40px;
     --radius-input: 12px;
     --radius-card: 20px;
     --radius-media: 20px;
     --radius-badge: 40px;
+    --radius-full: 99rem;
     --shadow-sm: 0 1px 2px rgb(27 42 35 / 0.06), 0 1px 1px rgb(27 42 35 / 0.04);
     --shadow-md: 0 8px 24px rgb(27 42 35 / 0.08);
     --shadow-overlay: 0 24px 64px rgb(27 42 35 / 0.18);
@@ -96,5 +100,7 @@
     --weight-bold: 700;
     --drawer-width: min(42rem, 100vw);
     --backdrop-color: rgb(15 23 19 / 0.4);
+    --icon-sm: 1.4rem;
+    --underline-offset: 0.3rem;
   }
 }

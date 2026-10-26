@@ -12,7 +12,6 @@
 {% enddoc %}
 {%- liquid
   assign image_width = 160
-  assign color_names = 'color,colour,колір,цвет' | split: ','
   if eager
     assign loading = 'eager'
   else
@@ -24,10 +23,10 @@
   if item.variant.compare_at_price > item.original_price
     assign was_line_price = item.variant.compare_at_price | times: item.quantity
   endif
-  assign discount_percent = 0
-  if was_line_price > item.final_line_price
-    assign discount_percent = was_line_price | minus: item.final_line_price | times: 100.0 | divided_by: was_line_price | round
-  endif
+  capture discount_percent
+    render 'discount-percent', price: item.final_line_price, compare_at: was_line_price
+  endcapture
+  assign discount_percent = discount_percent | strip | plus: 0
 -%}
 <li class="cart-line" data-cart-line="{{ item.key }}">
   <div class="cart-line__media-col">
@@ -69,9 +68,11 @@
           {%- liquid
             # Color options get the same swatch as on the product card (snippets/swatch)
             assign swatch_value = null
-            assign option_name = option.name | downcase
             assign product_option = item.product.options_with_values[forloop.index0]
-            if color_names contains option_name or product_option.values.first.swatch
+            capture is_color
+              render 'option-is-color', option: product_option
+            endcapture
+            if is_color contains 'true'
               assign swatch_value = product_option.values | where: 'name', option.value | first
             endif
           -%}

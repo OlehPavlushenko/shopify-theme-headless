@@ -1,18 +1,29 @@
 {% comment %}
-  This section is used in the page template to render store pages like About us
-  or Contact us.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/page
+  Page content (templates/page*.json): the page's rich text in a reading column. The heading (h1)
+  and breadcrumbs come from the Page header section above it. Styles: .main-page in sections.css.
 {% endcomment %}
-
-<h1>{{ page.title }}</h1>
-
-{{ page.content }}
+<div class="main-page color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width{% if section.settings.width == 'narrow' %} page-width--narrow{% endif %}">
+    <div class="rte main-page__content">{{ page.content }}</div>
+  </div>
+</div>
 
 {% schema %}
 {
-  "name": "t:general.page",
-  "class": "page-section page-section--page",
-  "settings": []
+  "name": "t:sections.main_page.name",
+  "class": "main-page-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "width",
+      "label": "t:sections.main_page.width",
+      "options": [
+        { "value": "narrow", "label": "t:sections.main_page.width_narrow" },
+        { "value": "wide", "label": "t:sections.main_page.width_wide" }
+      ],
+      "default": "narrow"
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ]
 }
 {% endschema %}

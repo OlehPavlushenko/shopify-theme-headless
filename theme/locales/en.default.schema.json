@@ -1,17 +1,12 @@
 {
   "general": {
-    "404": "Not found",
-    "article": "Article",
-    "blog": "Blog",
     "collection": "Collection",
-    "collections_grid": "Collections grid",
     "column": "Column",
     "custom_section": "Custom section",
     "footer": "Footer",
     "group": "Group",
     "header": "Header",
     "layout": "Layout",
-    "page": "Page",
     "password": "Password",
     "product": "Product",
     "row": "Row",
@@ -23,8 +18,6 @@
     "alignment": "Alignment",
     "background": "Background",
     "color_scheme": "Color scheme",
-    "grid_gap": "Grid spacing",
-    "grid_item_width": "Grid item width",
     "layout_direction": "Layout direction",
     "menu": "Menu",
     "padding": "Padding",
@@ -52,10 +45,6 @@
     "direction": {
       "horizontal": "Horizontal",
       "vertical": "Vertical"
-    },
-    "size": {
-      "large": "Large",
-      "small": "Small"
     },
     "text_style": {
       "title": "Title",
@@ -463,6 +452,44 @@
       "text_size": "Text size",
       "text_size_small": "Small (SEO text)",
       "text_size_regular": "Regular"
+    },
+    "main_page": {
+      "name": "Page content",
+      "width": "Text width",
+      "width_narrow": "Reading column",
+      "width_wide": "Page width"
+    },
+    "main_404": {
+      "name": "404 page"
+    },
+    "main_contact": {
+      "name": "Contact form",
+      "form_heading": "Form heading",
+      "info": "Phone, email, address and hours come from Theme settings > Store details. The page text shows above them. Messages go to the store sender email (Settings > Notifications)."
+    },
+    "main_list_collections": {
+      "name": "Collections",
+      "sort": "Order",
+      "sort_default": "As in the admin",
+      "sort_alphabetical": "Alphabetical",
+      "sort_products": "Most products first"
+    },
+    "main_blog": {
+      "name": "Blog posts",
+      "per_page": "Articles per page",
+      "tags": "Show topic filter",
+      "tags_info": "Article tags as filter buttons.",
+      "featured": "Feature the latest article",
+      "featured_info": "The newest article is shown large on the first page."
+    },
+    "main_article": {
+      "name": "Article",
+      "show_author": "Show author",
+      "show_reading_time": "Show reading time",
+      "show_share": "Show share buttons",
+      "image_layout": "Image",
+      "image_wide": "Wide, under the title",
+      "image_none": "Hide"
     }
   },
   "blocks": {

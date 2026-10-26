@@ -1,8 +1,8 @@
 {
   "404": {
-    "title": "404",
-    "not_found": "Page not found.",
-    "back_to_shopping": "Back to shopping"
+    "title": "We can't find that page",
+    "back_to_shopping": "Back to shopping",
+    "home": "Go to the home page"
   },
   "accessibility": {
     "skip_to_content": "Skip to content",
@@ -13,14 +13,28 @@
     "submenu": "Show {{ title }} menu"
   },
   "blog": {
-    "article_comments": "Comments",
-    "article_metadata_html": "{{ date }} by {{ author }}",
     "comment_form_body": "Comment",
     "comment_form_email": "Email",
     "comment_form_name": "Name",
     "comment_form_submit": "Post",
     "comment_form_title": "Add a comment",
-    "read_more": "Read more"
+    "read_more": "Read more",
+    "all": "All",
+    "filter_label": "Filter articles by topic",
+    "reading_time": {
+      "one": "{{ count }} min read",
+      "other": "{{ count }} min read"
+    },
+    "by": "By {{ author }}",
+    "share": "Share",
+    "back": "Back to {{ blog }}",
+    "comments_count": {
+      "one": "{{ count }} comment",
+      "other": "{{ count }} comments"
+    },
+    "comment_posted": "Your comment was posted.",
+    "comment_moderated": "Thanks! Your comment will appear once it is approved.",
+    "empty": "No articles yet."
   },
   "cart": {
     "title": "Cart",
@@ -83,7 +97,6 @@
     }
   },
   "collections": {
-    "title": "Collections",
     "product_count": {
       "one": "{{ count }} product",
       "other": "{{ count }} products"
@@ -195,5 +208,15 @@
     "already": "You are already subscribed — thank you!",
     "invalid_email": "Please enter a valid email address.",
     "error": "Something went wrong. Please try again in a moment."
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "send": "Send message",
+    "success": "Thanks! We've got your message and will reply within a day.",
+    "address": "Address",
+    "hours": "Opening hours"
   }
 }

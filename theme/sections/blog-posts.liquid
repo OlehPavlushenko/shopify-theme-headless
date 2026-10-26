@@ -1,21 +1,26 @@
 {% comment %}
   Blog posts: the latest articles of a blog as cards (snippets/article-card) in a slider that turns
-  into a full row on wide screens. Without a picked blog: the store's first blog.
+  into a full row on wide screens. Without a picked blog: the current blog (on an article page,
+  where the article itself is skipped — "More articles"), else the store's first blog.
   Styles: packages/ui/css/sections.css.
 {% endcomment %}
 {%- liquid
-  assign blog = section.settings.blog | default: blogs.first
-  assign link = blog.url
+  assign source = section.settings.blog | default: blog | default: blogs.first
+  assign link = source.url
+  assign shown = 0
 -%}
 <div class="blog-posts color-{{ section.settings.color_scheme }} section-spacing">
   <div class="page-width">
     <ui-slider class="slider" style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 1.2;">
       {%- render 'section-head', heading: section.settings.heading, link_label: section.settings.link_label, link: link, nav: true -%}
       <ul class="slider__track" data-slider-track role="list">
-        {%- for article in blog.articles limit: section.settings.limit -%}
+        {%- for post in source.articles -%}
+          {%- if post.id == article.id -%}{%- continue -%}{%- endif -%}
+          {%- if shown >= section.settings.limit -%}{%- break -%}{%- endif -%}
+          {%- assign shown = shown | plus: 1 -%}
           <li>
             {%- render 'article-card',
-              article: article,
+              article: post,
               show_date: section.settings.show_date,
               show_excerpt: section.settings.show_excerpt,
               sizes: '(min-width: 990px) 33vw, 85vw'

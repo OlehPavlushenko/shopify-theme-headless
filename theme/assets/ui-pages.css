@@ -1,7 +1,7 @@
 /* Generated from packages/ui/css/pages.css by scripts/sync-ui.mjs. Do not edit here. */
 /*
  * Page-level layouts for template sections that are still on the Skeleton baseline
- * (product, collections list, blog, article, page, 404, password).
+ * (product, password).
  * Each of those sections gets class="page-section page-section--<name>" from its schema.
  * This file shrinks as the pages are rebuilt on blocks.
  */
@@ -85,39 +85,5 @@
     .product-images {
       grid-row: span 2;
     }
-  }
-
-  /* ------------------------------------------------ collections list */
-  .collections {
-    --collection-card-size: 28rem;
-
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(var(--collection-card-size), 100%), 1fr));
-    gap: var(--grid-gap, var(--space-l));
-  }
-
-  .collections--compact {
-    --collection-card-size: 16rem;
-  }
-
-  .collections--full {
-    --collection-card-size: 28rem;
-  }
-
-  .collection-card {
-    display: grid;
-    gap: var(--space-s);
-    text-decoration: none;
-  }
-
-  .collection-card__content p {
-    margin: 0;
-  }
-
-  .collection-card__content p:first-child {
-    font-family: var(--font-heading-family);
-    font-weight: var(--font-heading-weight);
-    font-size: var(--text-lg);
-    color: var(--color-heading);
   }
 }

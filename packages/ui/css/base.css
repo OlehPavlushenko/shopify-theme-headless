@@ -240,8 +240,42 @@
     margin-top: 1em;
   }
 
+  /* Headings inside long text sit a step below the page's own: h2 reads as h3, h3 as h4 */
   .rte :is(h2, h3, h4) {
     margin-top: 1.6em;
+  }
+
+  .rte h2 {
+    font-size: var(--text-2xl);
+    line-height: var(--leading-2xl);
+  }
+
+  .rte h3 {
+    font-size: var(--text-xl);
+    line-height: var(--leading-xl);
+  }
+
+  .rte :is(h2, h3, h4) + * {
+    margin-top: 0.6em;
+  }
+
+  .rte blockquote {
+    margin-inline: 0;
+    padding: var(--space-s) var(--space-l);
+    font-family: var(--font-heading-family);
+    font-size: var(--text-xl);
+    line-height: var(--leading-xl);
+    color: var(--color-heading);
+    border-inline-start: 0.3rem solid var(--color-accent);
+  }
+
+  .rte a {
+    color: var(--color-heading);
+    text-underline-offset: var(--underline-offset);
+  }
+
+  .rte a:hover {
+    color: var(--color-link-hover);
   }
 
   .rte :is(ul, ol) {

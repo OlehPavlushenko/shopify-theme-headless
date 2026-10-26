@@ -30,32 +30,9 @@
               break
             endif
             assign shown = shown | plus: 1
-            assign cover = collection.image | default: collection.products.first.featured_image
           -%}
           <li>
-            <a href="{{ collection.url }}" class="collection-card">
-              <span class="frame collection-card__media" style="--frame-ratio: {{ section.settings.ratio }};">
-                {%- if cover -%}
-                  {{ cover | image_url: width: 800 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 25vw, 60vw', widths: '400, 600, 800', alt: '' }}
-                {%- else -%}
-                  {{ 'collection-1' | placeholder_svg_tag }}
-                {%- endif -%}
-              </span>
-              {%- comment -%} The last word and the arrow never part when the title wraps {%- endcomment -%}
-              {%- liquid
-                assign title_words = collection.title | escape | split: ' '
-                assign last_word = title_words | last
-                assign first_words = title_words | slice: 0, title_words.size | join: ' ' | remove_last: last_word
-              -%}
-              <span class="collection-card__title">
-                {{- first_words -}}
-                <span class="collection-card__title-end">
-                  {{- last_word -}}
-                  {%- render 'icon', name: 'arrow-right' -%}
-                </span>
-              </span>
-              <span class="collection-card__count">{{ 'collections.product_count' | t: count: collection.products_count }}</span>
-            </a>
+            {%- render 'collection-card', collection: collection, ratio: section.settings.ratio, sizes: '(min-width: 990px) 25vw, 60vw' -%}
           </li>
         {%- endfor -%}
       </ul>

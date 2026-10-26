@@ -1,0 +1,100 @@
+{% comment %}
+  Contact page body (templates/page.contact.json, under the Page header): the store's contacts
+  (Theme settings > Store details — the same source as the footer and the Organization data) with
+  social links, the page text, and Shopify's contact form (name, email, phone, message; the message
+  goes to the store's sender email). Success and errors come back from the form post — no JS.
+  Styles: .main-contact in sections.css.
+{% endcomment %}
+<div class="main-contact color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width main-contact__inner">
+    <div class="main-contact__info">
+      {%- if page.content != blank -%}
+        <div class="rte main-contact__text">{{ page.content }}</div>
+      {%- endif -%}
+      <ul class="main-contact__list" role="list">
+        {%- if settings.store_phone != blank -%}
+          <li class="main-contact__item">
+            <span class="main-contact__icon">{%- render 'icon', name: 'phone' -%}</span>
+            <span>
+              <span class="main-contact__label">{{ 'contact.phone' | t }}</span>
+              <a href="tel:{{ settings.store_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' }}">{{ settings.store_phone | escape }}</a>
+            </span>
+          </li>
+        {%- endif -%}
+        {%- if settings.store_email != blank -%}
+          <li class="main-contact__item">
+            <span class="main-contact__icon">{%- render 'icon', name: 'mail' -%}</span>
+            <span>
+              <span class="main-contact__label">{{ 'contact.email' | t }}</span>
+              <a href="mailto:{{ settings.store_email }}">{{ settings.store_email | escape }}</a>
+            </span>
+          </li>
+        {%- endif -%}
+        {%- if settings.store_address != blank -%}
+          <li class="main-contact__item">
+            <span class="main-contact__icon">{%- render 'icon', name: 'map-pin' -%}</span>
+            <span>
+              <span class="main-contact__label">{{ 'contact.address' | t }}</span>
+              <span>{{ settings.store_address | escape | newline_to_br }}</span>
+            </span>
+          </li>
+        {%- endif -%}
+        {%- if settings.store_hours != blank -%}
+          <li class="main-contact__item">
+            <span class="main-contact__icon">{%- render 'icon', name: 'clock' -%}</span>
+            <span>
+              <span class="main-contact__label">{{ 'contact.hours' | t }}</span>
+              <span>{{ settings.store_hours | escape }}</span>
+            </span>
+          </li>
+        {%- endif -%}
+      </ul>
+      {%- render 'social-links' -%}
+    </div>
+
+    <div class="main-contact__form-card">
+      <h2 class="h4">{{ section.settings.form_heading | escape }}</h2>
+      {%- form 'contact', id: 'ContactForm', class: 'main-contact__form' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="main-contact__notice main-contact__notice--success" role="status" tabindex="-1" autofocus>
+            {%- render 'icon', name: 'check' -%}
+            {{ 'contact.success' | t }}
+          </p>
+        {%- elsif form.errors -%}
+          <p class="form-error" role="alert" tabindex="-1" autofocus>{{ form.errors | default_errors }}</p>
+        {%- endif -%}
+        <div class="main-contact__row">
+          <div class="field">
+            <label class="field__label" for="ContactForm-name">{{ 'contact.name' | t }}</label>
+            <input class="input" type="text" id="ContactForm-name" name="contact[{{ 'contact.name' | t }}]" value="{{ form.name | default: customer.name }}" autocomplete="name">
+          </div>
+          <div class="field">
+            <label class="field__label" for="ContactForm-email">{{ 'contact.email' | t }} *</label>
+            <input class="input" type="email" id="ContactForm-email" name="contact[email]" value="{{ form.email | default: customer.email }}" autocomplete="email" spellcheck="false" required>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field__label" for="ContactForm-phone">{{ 'contact.phone' | t }}</label>
+          <input class="input" type="tel" id="ContactForm-phone" name="contact[{{ 'contact.phone' | t }}]" value="{{ form.phone }}" autocomplete="tel" pattern="[0-9\-\+\s\(\)]*">
+        </div>
+        <div class="field">
+          <label class="field__label" for="ContactForm-body">{{ 'contact.message' | t }} *</label>
+          <textarea class="input" id="ContactForm-body" name="contact[body]" rows="6" required>{{ form.body }}</textarea>
+        </div>
+        <button type="submit" class="btn btn--full">{{ 'contact.send' | t }}</button>
+      {%- endform -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main_contact.name",
+  "class": "main-contact-section",
+  "settings": [
+    { "type": "text", "id": "form_heading", "label": "t:sections.main_contact.form_heading", "default": "Send us a message" },
+    { "type": "paragraph", "content": "t:sections.main_contact.info" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ]
+}
+{% endschema %}

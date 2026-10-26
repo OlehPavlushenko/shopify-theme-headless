@@ -1,69 +1,59 @@
 {% comment %}
-  This section is used in the list-collections template to render a list of
-  collections.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
+  Collections page (templates/list-collections.json, under the Page header): every collection with
+  products as cards (snippets/collection-card), minus those marked "Hide from collection lists"
+  (metafield theme.hidden), sorted as set. Styles: .main-collections in sections.css.
 {% endcomment %}
-
-<h1>{{ 'collections.title' | t }}</h1>
-
-<div
-  class="collections {{ section.settings.grid_item_width }}"
-  style="--grid-gap: {{ section.settings.grid_gap }}px"
->
-  {% for collection in collections %}
-    <a class="collection-card" href="{{ collection.url }}">
-      {% if collection.featured_image %}
-        {% render 'image',
-          class: 'collection-card__image',
-          image: collection.featured_image,
-          width: 600,
-          height: 600,
-          crop: 'center'
-        %}
-      {% endif %}
-
-      <div class="collection-card__content">
-        <p>{{ collection.title }}</p>
-
-        {% if collection.description %}
-          <p>{{ collection.description | strip_html | truncatewords: 15 }}</p>
-        {% endif %}
-      </div>
-    </a>
-  {% endfor %}
+{%- liquid
+  case section.settings.sort
+    when 'alphabetical'
+      assign list = collections | sort: 'title'
+    when 'products'
+      assign list = collections | sort: 'products_count' | reverse
+    else
+      assign list = collections
+  endcase
+-%}
+<div class="main-collections color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width">
+    <ul class="grid main-collections__grid" role="list" style="--grid-columns: {{ section.settings.columns }}; --grid-columns-mobile: 2;">
+      {%- for collection in list -%}
+        {%- if collection.metafields.theme.hidden.value or collection.products_count == 0 -%}{%- continue -%}{%- endif -%}
+        <li>
+          {%- render 'collection-card', collection: collection, ratio: section.settings.ratio, sizes: '(min-width: 990px) 25vw, 50vw' -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
 </div>
-
-
-
 
 {% schema %}
 {
-  "name": "t:general.collections_grid",
-  "class": "page-section page-section--list-collections",
-  "disabled_on": { "groups": ["*"] },
+  "name": "t:sections.main_list_collections.name",
+  "class": "main-collections-section",
   "settings": [
     {
       "type": "select",
-      "id": "grid_item_width",
-      "label": "t:labels.grid_item_width",
+      "id": "sort",
+      "label": "t:sections.main_list_collections.sort",
       "options": [
-        { "value": "collections--compact", "label": "t:options.size.small" },
-        { "value": "collections--full", "label": "t:options.size.large" }
+        { "value": "default", "label": "t:sections.main_list_collections.sort_default" },
+        { "value": "alphabetical", "label": "t:sections.main_list_collections.sort_alphabetical" },
+        { "value": "products", "label": "t:sections.main_list_collections.sort_products" }
       ],
-      "default": "collections--full"
+      "default": "default"
     },
+    { "type": "range", "id": "columns", "label": "t:sections.product_list.columns", "min": 2, "max": 5, "step": 1, "default": 4 },
     {
-      "type": "range",
-      "id": "grid_gap",
-      "label": "t:labels.grid_gap",
-      "min": 0,
-      "max": 50,
-      "step": 5,
-      "unit": "px",
-      "default": 10
-    }
-  ],
-  "presets": [{ "name": "t:general.collections_grid" }]
+      "type": "select",
+      "id": "ratio",
+      "label": "t:sections.collection_list.ratio",
+      "options": [
+        { "value": "1", "label": "t:sections.collection_list.ratio_square" },
+        { "value": "4 / 5", "label": "t:sections.collection_list.ratio_portrait" }
+      ],
+      "default": "1"
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ]
 }
 {% endschema %}

@@ -1,69 +1,138 @@
 {% comment %}
-  This section is used in the article template to render the article page, which
-  displays the full content of the blog post and can optionally include a
-  comments section for customers (not shown in this example).
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/article
+  Article page: breadcrumbs, tags, the title (h1), author · date · reading time, the cover image, the
+  text in a reading column, share links, then comments (when the blog allows them) with Shopify's
+  comment form. Article structured data comes from Shopify (snippets/structured-data). "More
+  articles" is the Blog posts section placed after it in templates/article.json.
+  Styles: .main-article in sections.css.
 {% endcomment %}
+{%- liquid
+  assign words = article.content | strip_html | split: ' ' | size
+  assign minutes = words | divided_by: 200 | at_least: 1
+  assign image_alt = article.image.alt | default: ''
+  assign share_url = request.origin | append: article.url
+-%}
+<article class="main-article color-{{ section.settings.color_scheme }} section-spacing">
+  <header class="page-width page-width--narrow main-article__header">
+    {%- render 'breadcrumbs' -%}
+    {%- if article.tags.size > 0 -%}
+      <ul class="main-article__tags" role="list">
+        {%- for tag in article.tags -%}
+          <li><a href="{{ blog.url }}/tagged/{{ tag | handleize }}" class="pill pill--soft">{{ tag | escape }}</a></li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+    <h1 class="h1 main-article__title">{{ article.title | escape }}</h1>
+    <p class="main-article__meta">
+      {%- if section.settings.show_author and article.author != blank -%}
+        <span>{{ 'blog.by' | t: author: article.author }}</span>
+      {%- endif -%}
+      <span>{{ article.published_at | time_tag: format: 'date' }}</span>
+      {%- if section.settings.show_reading_time -%}
+        <span>{{ 'blog.reading_time' | t: count: minutes }}</span>
+      {%- endif -%}
+    </p>
+  </header>
 
-{% if article.image %}
-  {{ article.image | image_url: width: 1000 | image_tag }}
-{% endif %}
+  {%- if article.image and section.settings.image_layout != 'none' -%}
+    <div class="page-width main-article__media">
+      <div class="frame" style="--frame-ratio: 16 / 9;">
+        {{ article.image | image_url: width: 2000 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 1440px) 1344px, 100vw', widths: '750, 1100, 1500, 2000', alt: image_alt }}
+      </div>
+    </div>
+  {%- endif -%}
 
-<h1>{{ article.title }}</h1>
+  <div class="page-width page-width--narrow main-article__body">
+    <div class="rte main-article__content">{{ article.content }}</div>
 
-{% assign date = article.published_at | time_tag: format: 'date' %}
-<p>{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
+    {%- if section.settings.show_share -%}
+      <div class="main-article__share">
+        <span class="main-article__share-label">{{ 'blog.share' | t }}</span>
+        <a class="btn btn--icon btn--outline" href="https://www.facebook.com/sharer/sharer.php?u={{ share_url | url_encode }}" target="_blank" rel="noopener" aria-label="Facebook">
+          {%- render 'icon', name: 'facebook' -%}
+        </a>
+        <a class="btn btn--icon btn--outline" href="https://t.me/share/url?url={{ share_url | url_encode }}&text={{ article.title | url_encode }}" target="_blank" rel="noopener" aria-label="Telegram">
+          {%- render 'icon', name: 'telegram' -%}
+        </a>
+        <a class="btn btn--icon btn--outline" href="https://pinterest.com/pin/create/button/?url={{ share_url | url_encode }}&description={{ article.title | url_encode }}" target="_blank" rel="noopener" aria-label="Pinterest">
+          {%- render 'icon', name: 'pinterest' -%}
+        </a>
+      </div>
+    {%- endif -%}
 
-{{ article.content }}
+    <a href="{{ blog.url }}" class="section-head__link main-article__back">
+      {%- render 'icon', name: 'arrow-left' -%}
+      {{- 'blog.back' | t: blog: blog.title -}}
+    </a>
 
-{% if blog.comments_enabled? %}
-  <h2>{{ 'blog.article_comments' | t }}</h2>
+    {%- if blog.comments_enabled? -%}
+      <section class="main-article__comments" id="Comments" aria-labelledby="CommentsTitle">
+        <h2 class="h4" id="CommentsTitle">{{ 'blog.comments_count' | t: count: article.comments_count }}</h2>
+        {%- paginate article.comments by 10 -%}
+          {%- if article.comments.size > 0 -%}
+            <ol class="main-article__comment-list" role="list">
+              {%- for comment in article.comments -%}
+                <li class="main-article__comment">
+                  <p class="main-article__comment-meta">
+                    <strong>{{ comment.author | escape }}</strong> · {{ comment.created_at | time_tag: format: 'date' }}
+                  </p>
+                  <div class="rte">{{ comment.content }}</div>
+                </li>
+              {%- endfor -%}
+            </ol>
+            {%- render 'pagination', paginate: paginate, anchor: '#Comments' -%}
+          {%- endif -%}
+        {%- endpaginate -%}
 
-  <div id="comments">
-    {% paginate article.comments by 10 %}
-      {% for comment in article.comments %}
-        <div>
-          <p>{{ comment.author }}</p>
-          <p>
-            {{- comment.created_at | time_tag: format: 'date' -}}
-          </p>
-          <p>{{ comment.content }}</p>
-        </div>
-      {% endfor %}
-
-      {{ paginate | default_pagination: anchor: 'comments' }}
-    {% endpaginate %}
+        {%- form 'new_comment', article, class: 'main-article__comment-form' -%}
+          <h3 class="h5">{{ 'blog.comment_form_title' | t }}</h3>
+          {%- if form.posted_successfully? -%}
+            <p class="main-contact__notice main-contact__notice--success" role="status">
+              {%- render 'icon', name: 'check' -%}
+              {%- if blog.moderated? -%}{{ 'blog.comment_moderated' | t }}{%- else -%}{{ 'blog.comment_posted' | t }}{%- endif -%}
+            </p>
+          {%- elsif form.errors -%}
+            <p class="form-error" role="alert">{{ form.errors | default_errors }}</p>
+          {%- endif -%}
+          <div class="main-contact__row">
+            <div class="field">
+              <label class="field__label" for="CommentAuthor">{{ 'blog.comment_form_name' | t }} *</label>
+              <input class="input" type="text" name="comment[author]" id="CommentAuthor" value="{{ form.author }}" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label class="field__label" for="CommentEmail">{{ 'blog.comment_form_email' | t }} *</label>
+              <input class="input" type="email" name="comment[email]" id="CommentEmail" value="{{ form.email }}" autocomplete="email" spellcheck="false" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field__label" for="CommentBody">{{ 'blog.comment_form_body' | t }} *</label>
+            <textarea class="input" name="comment[body]" id="CommentBody" rows="5" required>{{ form.body }}</textarea>
+          </div>
+          <button type="submit" class="btn">{{ 'blog.comment_form_submit' | t }}</button>
+        {%- endform -%}
+      </section>
+    {%- endif -%}
   </div>
-
-  {% form 'new_comment', article %}
-    <h2>{{ 'blog.comment_form_title' | t }}</h2>
-
-    {{ form.errors | default_errors }}
-
-    <div>
-      <label for="author">{{ 'blog.comment_form_name' | t }}</label>
-      <input type="text" name="comment[author]" id="author" value="{{ form.author }}" required>
-    </div>
-
-    <div>
-      <label for="email">{{ 'blog.comment_form_email' | t }}</label>
-      <input type="email" name="comment[email]" id="email" value="{{ form.email }}" required>
-    </div>
-
-    <div>
-      <label for="body">{{ 'blog.comment_form_body' | t }}</label>
-      <textarea name="comment[body]" id="body" required>{{ form.body }}</textarea>
-    </div>
-
-    <input type="submit" value="{{ 'blog.comment_form_submit' | t }}">
-  {% endform %}
-{% endif %}
+</article>
 
 {% schema %}
 {
-  "name": "t:general.article",
-  "class": "page-section page-section--article",
-  "settings": []
+  "name": "t:sections.main_article.name",
+  "class": "main-article-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "image_layout",
+      "label": "t:sections.main_article.image_layout",
+      "options": [
+        { "value": "wide", "label": "t:sections.main_article.image_wide" },
+        { "value": "none", "label": "t:sections.main_article.image_none" }
+      ],
+      "default": "wide"
+    },
+    { "type": "checkbox", "id": "show_author", "label": "t:sections.main_article.show_author", "default": true },
+    { "type": "checkbox", "id": "show_reading_time", "label": "t:sections.main_article.show_reading_time", "default": true },
+    { "type": "checkbox", "id": "show_share", "label": "t:sections.main_article.show_share", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ]
 }
 {% endschema %}

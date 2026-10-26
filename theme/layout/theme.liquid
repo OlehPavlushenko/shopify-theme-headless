@@ -26,8 +26,7 @@
     {{ 'ui-blocks.css' | asset_url | stylesheet_tag }}
     {%- comment -%} Skeleton-baseline templates only (pages.css shrinks as they are rebuilt) {%- endcomment -%}
     {%- liquid
-      assign baseline_templates = 'product,list-collections,blog,article,404' | split: ','
-      if baseline_templates contains template.name or template.name == 'page' and template.suffix == blank
+      if template.name == 'product'
         echo 'ui-pages.css' | asset_url | stylesheet_tag
       endif
     -%}

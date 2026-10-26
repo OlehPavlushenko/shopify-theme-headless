@@ -1,36 +1,64 @@
 {% comment %}
-  This section is used in the blog template to render the blog page listing all
-  articles within a blog.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/blog
+  Blog page (templates/blog.json, under the Page header): topic filter (the blog's tags as chips,
+  /blogs/<handle>/tagged/<tag>), the newest article large on the first page (optional), then the
+  articles as cards (snippets/article-card) with pagination. Styles: .main-blog in sections.css.
 {% endcomment %}
+{%- paginate blog.articles by section.settings.per_page -%}
+  <div class="main-blog color-{{ section.settings.color_scheme }} section-spacing">
+    <div class="page-width">
+      {%- if section.settings.tags and blog.all_tags.size > 0 -%}
+        <nav class="main-blog__tags" aria-label="{{ 'blog.filter_label' | t }}">
+          <a href="{{ blog.url }}" class="chip"{% unless current_tags %} aria-current="page"{% endunless %}>{{ 'blog.all' | t }}</a>
+          {%- for tag in blog.all_tags -%}
+            {%- assign tag_handle = tag | handleize -%}
+            <a
+              href="{{ blog.url }}/tagged/{{ tag_handle }}"
+              class="chip"
+              {% if current_tags contains tag %}
+                aria-current="page"
+              {% endif %}
+            >
+              {{- tag | escape -}}
+            </a>
+          {%- endfor -%}
+        </nav>
+      {%- endif -%}
 
-<h1>{{ blog.title }}</h1>
-
-{% paginate blog.articles by 5 %}
-  {% for article in blog.articles %}
-    <div>
-      {% if article.image %}
-        {{ article.image | image_url: width: 1000 | image_tag }}
-      {% endif %}
-      <h2>
-        {{ article.title | link_to: article.url }}
-      </h2>
-      {% assign date = article.published_at | time_tag: format: 'date' %}
-      <p>{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
-      <p>{{ article.excerpt }}</p>
+      {%- if blog.articles.size == 0 -%}
+        <p class="main-blog__empty">{{ 'blog.empty' | t }}</p>
+      {%- else -%}
+        {%- liquid
+          assign featured = false
+          if section.settings.featured and paginate.current_page == 1 and current_tags == blank
+            assign featured = true
+          endif
+        -%}
+        <ul class="grid main-blog__grid" role="list" style="--grid-columns: 3; --grid-columns-mobile: 1;">
+          {%- for article in blog.articles -%}
+            <li{% if featured and forloop.first %} class="main-blog__featured"{% endif %}>
+              {%- if featured and forloop.first -%}
+                {%- render 'article-card', article: article, layout: 'featured', heading_tag: 'h2', sizes: '(min-width: 990px) 60vw, 100vw' -%}
+              {%- else -%}
+                {%- render 'article-card', article: article, heading_tag: 'h2', sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw' -%}
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+        {%- render 'pagination', paginate: paginate -%}
+      {%- endif -%}
     </div>
-  {% endfor %}
-
-  {%- if paginate.pages > 1 -%}
-    {{- paginate | default_pagination -}}
-  {%- endif -%}
-{% endpaginate %}
+  </div>
+{%- endpaginate -%}
 
 {% schema %}
 {
-  "name": "t:general.blog",
-  "class": "page-section page-section--blog",
-  "settings": []
+  "name": "t:sections.main_blog.name",
+  "class": "main-blog-section",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "t:sections.main_blog.per_page", "min": 3, "max": 24, "step": 3, "default": 9 },
+    { "type": "checkbox", "id": "tags", "label": "t:sections.main_blog.tags", "info": "t:sections.main_blog.tags_info", "default": true },
+    { "type": "checkbox", "id": "featured", "label": "t:sections.main_blog.featured", "info": "t:sections.main_blog.featured_info", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ]
 }
 {% endschema %}

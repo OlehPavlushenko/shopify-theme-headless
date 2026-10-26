@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "header": { "type": "page-header", "settings": { "heading": "", "text": "<p>Questions about an order, a product or a gift set? Write to us — we reply within a day.</p>", "breadcrumbs": true, "counter": "none", "alignment": "left", "color_scheme": "scheme-2" } },
+    "main": { "type": "main-contact", "settings": { "form_heading": "Send us a message", "color_scheme": "scheme-1" } },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question", "settings": { "question": "How long does delivery take?", "answer": "<p>Orders ship within 1–2 business days. Delivery across the country usually takes 2–4 days.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "Can I return a product?", "answer": "<p>Yes — unopened products can be returned within 14 days. Write to us and we will arrange a free pickup.</p>" } }
+      },
+      "block_order": ["q1", "q2"],
+      "settings": { "layout": "split", "eyebrow": "FAQ", "heading": "Before you write", "text": "<p>The quickest answers to the questions we get most.</p>", "button_label": "", "button_link": "", "single_open": true, "open_first": false, "color_scheme": "scheme-1" }
+    }
+  },
+  "order": ["header", "main", "faq"]
+}

@@ -161,6 +161,12 @@
       "show_cart_recommendations": "Show recommended products next to the cart drawer",
       "show_cart_recommendations_info": "Related products Shopify picks for the items in the cart. Loaded only when the cart opens, shown beside the drawer on desktop and as a closable sheet on phones."
     },
+    "saved": {
+      "name": "Wishlist & compare",
+      "wishlist_enabled": "Wishlist",
+      "compare_enabled": "Compare",
+      "info": "Heart and compare buttons on product cards. Lists are kept in the shopper's browser. Create pages with the \"wishlist\" and \"compare\" templates (handles wishlist and compare)."
+    },
     "behavior": {
       "name": "Behavior",
       "view_transitions": "Smooth page transitions",
@@ -233,6 +239,7 @@
     },
     "footer": {
       "show_powered_by": "Show \"Powered by Shopify\"",
+      "show_back_to_top": "Show \"Back to top\"",
       "show_policies": "Show policy links",
       "show_policies_info": "Refund, privacy, terms and shipping policies from Settings > Policies.",
       "brand": "Brand",
@@ -381,6 +388,33 @@
     },
     "quick_view": {
       "name": "Quick view"
+    },
+    "saved_product": {
+      "name": "Wishlist product"
+    },
+    "compare_column": {
+      "name": "Compare column"
+    },
+    "main_wishlist": {
+      "name": "Wishlist",
+      "empty_heading": "Empty list heading",
+      "empty_text": "Empty list text"
+    },
+    "page_header": {
+      "name": "Page header",
+      "heading_info": "Empty: the page, collection or blog title.",
+      "text_info": "Empty: the collection or blog description.",
+      "breadcrumbs": "Show breadcrumbs",
+      "counter": "Product counter",
+      "counter_none": "None",
+      "counter_wishlist": "Wishlist",
+      "counter_compare": "Compare",
+      "alignment": "Alignment",
+      "alignment_left": "Left",
+      "alignment_center": "Center"
+    },
+    "main_compare": {
+      "name": "Compare"
     },
     "blog_posts": {
       "name": "Blog posts",

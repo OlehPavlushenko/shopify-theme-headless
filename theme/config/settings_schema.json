@@ -457,6 +457,14 @@
     ]
   },
   {
+    "name": "t:settings.saved.name",
+    "settings": [
+      { "type": "paragraph", "content": "t:settings.saved.info" },
+      { "type": "checkbox", "id": "wishlist_enabled", "label": "t:settings.saved.wishlist_enabled", "default": true },
+      { "type": "checkbox", "id": "compare_enabled", "label": "t:settings.saved.compare_enabled", "default": true }
+    ]
+  },
+  {
     "name": "t:settings.behavior.name",
     "settings": [
       {

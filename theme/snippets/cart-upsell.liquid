@@ -19,6 +19,7 @@
       <li data-product-id="{{ product.id }}">
         {%- render 'product-card',
           product: product,
+          actions: false,
           quick_add: true,
           show_secondary_image: false,
           heading_tag: 'p',

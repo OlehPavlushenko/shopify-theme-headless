@@ -416,6 +416,62 @@
     color: color-mix(in srgb, var(--color-foreground) 65%, transparent);
   }
 
+  /* ------------------------------------------------------ page header */
+  /* A band on its color scheme: breadcrumbs, h1, intro, optional counter */
+  .page-header {
+    color: var(--color-foreground);
+    background: var(--color-background);
+  }
+
+  .page-header__inner {
+    display: grid;
+    gap: var(--space-s);
+    padding-block: var(--space-2xl);
+  }
+
+  .page-header__breadcrumbs {
+    margin-bottom: var(--space-xs);
+  }
+
+  .page-header__text {
+    max-width: 64rem;
+    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+  }
+
+  .page-header__counter {
+    justify-self: start;
+    padding: 0.2rem var(--space-s);
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-medium);
+    color: var(--color-heading);
+    background: color-mix(in srgb, var(--color-background) 60%, var(--color-surface));
+    border: 0.1rem solid var(--color-border);
+    border-radius: var(--radius-badge);
+  }
+
+  .page-header__counter[data-empty] {
+    display: none;
+  }
+
+  .page-header--center .page-header__inner {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .page-header--center .page-header__counter {
+    justify-self: center;
+  }
+
+  .page-header--center .breadcrumbs__list {
+    justify-content: center;
+  }
+
+  @media (min-width: 990px) {
+    .page-header__inner {
+      padding-block: var(--space-3xl);
+    }
+  }
+
   /* ----------------------------------------------------- article card */
   .article-card {
     display: grid;

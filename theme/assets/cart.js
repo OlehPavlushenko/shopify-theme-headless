@@ -228,7 +228,7 @@ if (!customElements.get('cart-recommendations')) customElements.define('cart-rec
 /**
  * <cart-item-state data-variant-id|data-product-id data-label="%n in cart" [data-in-cart]> — an add
  * button that turns into "− 2 in cart +" once the variant is in the cart (product cards, quick view),
- * or a "✓ 2" count on "Choose options" for products with options. Liquid renders the first state;
+ * or a dark "✓ In cart" "Choose options" for products with options. Liquid renders the first state;
  * it follows every cart change after that. The steps change the cart line's quantity.
  */
 class CartItemState extends HTMLElement {

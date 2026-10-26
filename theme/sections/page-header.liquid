@@ -1,0 +1,88 @@
+{% comment %}
+  Page header: a band on its color scheme with breadcrumbs, the page heading (h1) and an intro line,
+  for any template — pages, collections, blogs, search, wishlist, compare. The heading and text
+  default to the page / collection / blog title and description and can be set here instead.
+  Optional product counter for the wishlist / compare pages ("4 products", @ui/saved-list).
+  Styles: packages/ui/css/sections.css.
+{% endcomment %}
+{%- liquid
+  assign heading = section.settings.heading
+  if heading == blank
+    case template.name
+      when 'collection'
+        assign heading = collection.title
+      when 'blog'
+        assign heading = blog.title
+      when 'list-collections'
+        assign heading = 'general.collections' | t
+      when 'search'
+        assign heading = 'search.title' | t
+      else
+        assign heading = page.title | default: page_title
+    endcase
+  endif
+  assign text = section.settings.text
+  if text == blank and template.name == 'collection'
+    assign text = collection.description
+  endif
+-%}
+<div class="page-header page-header--{{ section.settings.alignment }} color-{{ section.settings.color_scheme }}">
+  <div class="page-header__inner page-width">
+    {%- if section.settings.breadcrumbs -%}
+      {%- render 'breadcrumbs', class: 'page-header__breadcrumbs' -%}
+    {%- endif -%}
+    <h1 class="h1 page-header__heading">{{ heading }}</h1>
+    {%- if text != blank -%}
+      <div class="text-lead page-header__text">{{ text }}</div>
+    {%- endif -%}
+    {%- if section.settings.counter != 'none' -%}
+      {%- liquid
+        assign label_one = 'general.products_count' | t: count: 1
+        assign label_other = 'general.products_count' | t: count: '%n'
+      -%}
+      <p
+        class="page-header__counter"
+        data-saved-counter="{{ section.settings.counter }}"
+        data-one="{{ label_one | escape }}"
+        data-other="{{ label_other | escape }}"
+        data-empty
+      ></p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.page_header.name",
+  "class": "page-header-section",
+  "disabled_on": { "groups": ["*"] },
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "info": "t:sections.page_header.heading_info" },
+    { "type": "richtext", "id": "text", "label": "t:labels.text", "info": "t:sections.page_header.text_info" },
+    { "type": "checkbox", "id": "breadcrumbs", "label": "t:sections.page_header.breadcrumbs", "default": true },
+    {
+      "type": "select",
+      "id": "counter",
+      "label": "t:sections.page_header.counter",
+      "options": [
+        { "value": "none", "label": "t:sections.page_header.counter_none" },
+        { "value": "wishlist", "label": "t:sections.page_header.counter_wishlist" },
+        { "value": "compare", "label": "t:sections.page_header.counter_compare" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "t:sections.page_header.alignment",
+      "options": [
+        { "value": "left", "label": "t:sections.page_header.alignment_left" },
+        { "value": "center", "label": "t:sections.page_header.alignment_center" }
+      ],
+      "default": "left"
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-2" }
+  ],
+  "presets": [{ "name": "t:sections.page_header.name" }]
+}
+{% endschema %}

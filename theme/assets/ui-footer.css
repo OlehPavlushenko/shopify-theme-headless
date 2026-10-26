@@ -278,6 +278,38 @@
     height: 2.4rem;
   }
 
+  /* "Back to top ↑": a pill at the end of the bottom row */
+  .site-footer__top {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    padding: 0.6rem var(--space-s);
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-heading);
+    border: 0.1rem solid var(--color-border);
+    border-radius: var(--radius-button);
+    transition: border-color var(--duration-short) var(--ease);
+  }
+
+  .site-footer__bottom .site-footer__top {
+    color: var(--color-heading);
+  }
+
+  .site-footer__top:hover {
+    border-color: var(--color-heading);
+  }
+
+  .site-footer__top .svg-icon {
+    --icon-size: 1.4rem;
+
+    rotate: -90deg;
+    transition: translate var(--duration-default) var(--ease-out);
+  }
+
+  .site-footer__top:hover .svg-icon {
+    translate: 0 -0.2rem;
+  }
+
   @media (max-width: 749px) {
     .site-footer__payment {
       margin-left: 0;

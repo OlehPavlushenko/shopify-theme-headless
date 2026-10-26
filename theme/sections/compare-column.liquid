@@ -1,0 +1,90 @@
+{% comment %}
+  One product column of the compare table: saved-pages.js fetches
+  /products/<handle>?section_id=compare-column for every compared product. Its cells line up with
+  the label column of sections/main-compare (same order, CSS subgrid): product, price, brand, type,
+  availability, options, description, add button. Styles: packages/ui/css/saved.css.
+{% endcomment %}
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign color_names = 'color,colour,колір,цвет' | split: ','
+-%}
+{%- comment -%} A removed product renders nothing (Shopify answers 200 with an empty product): saved-pages.js then drops it from the list {%- endcomment -%}
+{%- if product.id -%}
+<div class="compare-table__column" data-saved-item>
+  <div class="compare-table__cell compare-table__product">
+    <a href="{{ product.url }}" class="frame compare-table__media" style="--frame-ratio: 1;" tabindex="-1" aria-hidden="true">
+      {%- if product.featured_media -%}
+        {{ product.featured_media | image_url: width: 480 | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 22rem, 45vw', widths: '240, 360, 480', alt: '' }}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag }}
+      {%- endif -%}
+    </a>
+    <a href="{{ product.url }}" class="compare-table__title">{{ product.title | escape }}</a>
+    <button type="button" class="btn btn--icon compare-table__remove" data-saved-remove="{{ product.handle }}" aria-label="{{ 'compare.remove' | t: product: product.title | escape }}">
+      {%- render 'icon', name: 'close' -%}
+    </button>
+  </div>
+  <div class="compare-table__cell">{%- render 'price', product: product -%}</div>
+  <div class="compare-table__cell">{{ product.vendor | escape | default: '—' }}</div>
+  <div class="compare-table__cell">{{ product.type | escape | default: '—' }}</div>
+  <div class="compare-table__cell">
+    {%- if product.available -%}
+      <span class="compare-table__stock">{{ 'compare.in_stock' | t }}</span>
+    {%- else -%}
+      <span class="compare-table__stock compare-table__stock--out">{{ 'products.sold_out' | t }}</span>
+    {%- endif -%}
+  </div>
+  <div class="compare-table__cell">
+    {%- if product.has_only_default_variant -%}
+      —
+    {%- else -%}
+      <dl class="compare-table__options">
+        {%- for option in product.options_with_values -%}
+          {%- assign option_name = option.name | downcase -%}
+          <div>
+            <dt>{{ option.name | escape }}</dt>
+            <dd>
+              {%- for value in option.values -%}
+                <span class="compare-table__value{% unless value.available %} compare-table__value--unavailable{% endunless %}">
+                  {%- if color_names contains option_name or value.swatch -%}
+                    {%- render 'swatch', value: value -%}
+                  {%- endif -%}
+                  {{- value | escape -}}
+                </span>
+              {%- endfor -%}
+            </dd>
+          </div>
+        {%- endfor -%}
+      </dl>
+    {%- endif -%}
+  </div>
+  <div class="compare-table__cell compare-table__description">
+    {%- comment -%} A space before every tag, so paragraphs don't run together once the tags are gone {%- endcomment -%}
+    {{- product.description | replace: '<', ' <' | strip_html | strip_newlines | truncatewords: 30 | default: '—' -}}
+  </div>
+  <div class="compare-table__cell">
+    {%- if product.available == false -%}
+      <span class="btn btn--outline btn--sm btn--full" aria-disabled="true">{{ 'products.sold_out' | t }}</span>
+    {%- elsif product.has_only_default_variant -%}
+      <ajax-cart-product-form>
+        {%- form 'product', product -%}
+          <input type="hidden" name="id" value="{{ variant.id }}">
+          <button type="submit" class="btn btn--sm btn--full">
+            {%- render 'icon', name: 'plus' -%}
+            {{- 'products.add_to_cart' | t -}}
+          </button>
+        {%- endform -%}
+      </ajax-cart-product-form>
+    {%- else -%}
+      <a href="{{ product.url }}" class="btn btn--sm btn--full" data-quick-view aria-haspopup="dialog">{{ 'products.choose_options' | t }}</a>
+    {%- endif -%}
+  </div>
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.compare_column.name",
+  "class": "compare-column-section"
+}
+{% endschema %}

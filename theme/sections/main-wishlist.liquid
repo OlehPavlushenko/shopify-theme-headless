@@ -1,0 +1,44 @@
+{% comment %}
+  Wishlist page body (templates/page.wishlist.json, under the page header section): the saved
+  products as product cards, or an empty state. The list lives in the browser (@ui/saved-list);
+  <saved-products> (saved-pages.js) fetches a card per product (sections/saved-product).
+  Styles: packages/ui/css/saved.css.
+{% endcomment %}
+<div class="main-saved color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width">
+    <saved-products class="main-saved__body" data-list="wishlist" data-section="saved-product" data-state="loading">
+      {%- capture grid_style -%}--grid-columns: {{ section.settings.columns }}; --grid-columns-mobile: 2;{%- endcapture -%}
+      {%- comment -%} Phones: 4 cards, the rest under "Show more" in steps of 4 (as in the product list grid) {%- endcomment -%}
+      <show-more class="product-list__more" data-step="4">
+        <ul class="grid product-list__grid" role="list" style="{{ grid_style }}" data-saved-products></ul>
+        <button type="button" class="btn btn--outline product-list__more-button" data-show-more hidden>
+          {{- 'sections.product_list.show_more' | t -}}
+        </button>
+      </show-more>
+      {%- render 'saved-skeleton', layout: 'grid', count: 8, style: grid_style -%}
+      {%- render 'saved-empty',
+        icon: 'heart',
+        heading: section.settings.empty_heading,
+        text: section.settings.empty_text,
+        link: routes.all_products_collection_url
+      -%}
+    </saved-products>
+  </div>
+</div>
+<script type="module">
+  import 'saved-pages';
+  import '@ui/show-more';
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.main_wishlist.name",
+  "class": "main-saved-section",
+  "settings": [
+    { "type": "range", "id": "columns", "label": "t:sections.product_list.columns", "min": 3, "max": 5, "step": 1, "default": 4 },
+    { "type": "text", "id": "empty_heading", "label": "t:sections.main_wishlist.empty_heading", "default": "Your wishlist is empty" },
+    { "type": "inline_richtext", "id": "empty_text", "label": "t:sections.main_wishlist.empty_text", "default": "Tap the heart on any product to save it here for later." },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ]
+}
+{% endschema %}

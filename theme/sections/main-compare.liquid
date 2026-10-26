@@ -1,0 +1,45 @@
+{% comment %}
+  Compare page body (templates/page.compare.json, under the page header section): a table with a
+  label column and one column per compared product (sections/compare-column, fetched by
+  <saved-products> in saved-pages.js), or an empty state. Rows line up through CSS subgrid; the table
+  grows with the number of products up to the page width and scrolls sideways on narrow screens,
+  labels pinned. Styles: packages/ui/css/saved.css.
+{% endcomment %}
+<div class="main-saved color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width">
+    <saved-products class="main-saved__body" data-list="compare" data-section="compare-column" data-state="loading">
+      <div class="compare-table" data-saved-products>
+        <div class="compare-table__column compare-table__labels" aria-hidden="true">
+          <div class="compare-table__cell"></div>
+          <div class="compare-table__cell">{{ 'compare.price' | t }}</div>
+          <div class="compare-table__cell">{{ 'compare.brand' | t }}</div>
+          <div class="compare-table__cell">{{ 'compare.type' | t }}</div>
+          <div class="compare-table__cell">{{ 'compare.availability' | t }}</div>
+          <div class="compare-table__cell">{{ 'compare.options' | t }}</div>
+          <div class="compare-table__cell">{{ 'compare.description' | t }}</div>
+          <div class="compare-table__cell"></div>
+        </div>
+      </div>
+      {%- render 'saved-skeleton', layout: 'columns', count: 4 -%}
+      {%- render 'saved-empty',
+        icon: 'compare',
+        heading: section.settings.empty_heading,
+        text: section.settings.empty_text,
+        link: routes.all_products_collection_url
+      -%}
+    </saved-products>
+  </div>
+</div>
+<script type="module">import 'saved-pages';</script>
+
+{% schema %}
+{
+  "name": "t:sections.main_compare.name",
+  "class": "main-saved-section",
+  "settings": [
+    { "type": "text", "id": "empty_heading", "label": "t:sections.main_wishlist.empty_heading", "default": "Nothing to compare yet" },
+    { "type": "inline_richtext", "id": "empty_text", "label": "t:sections.main_wishlist.empty_text", "default": "Use the compare button on product cards to pick up to 4 products and see them side by side." },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ]
+}
+{% endschema %}

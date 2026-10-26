@@ -68,6 +68,7 @@
     "add_to_cart": "Add to cart",
     "added": "Added",
     "in_cart": "{{ count }} in cart",
+    "in_cart_short": "In cart",
     "sold_out": "Sold out",
     "sale": "Sale",
     "regular_price": "Regular price",
@@ -126,6 +127,14 @@
   },
   "general": {
     "view_all": "View all",
+    "home": "Home",
+    "back_to_top": "Back to top",
+    "breadcrumbs": "Breadcrumbs",
+    "collections": "Collections",
+    "products_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    },
     "pagination": {
       "label": "Pagination",
       "previous": "Previous page",
@@ -143,10 +152,27 @@
     "language": "Language"
   },
   "wishlist": {
-    "title": "Wishlist"
+    "title": "Wishlist",
+    "toggle": "Save {{ product }} to wishlist",
+    "added": "Saved to wishlist",
+    "removed": "Removed from wishlist",
+    "view": "View",
+    "undo": "Undo"
   },
   "compare": {
-    "title": "Compare"
+    "title": "Compare",
+    "toggle": "Compare {{ product }}",
+    "remove": "Remove {{ product }} from comparison",
+    "added": "Added to compare",
+    "removed": "Removed from compare",
+    "full": "You can compare up to {{ max }} products",
+    "in_stock": "In stock",
+    "price": "Price",
+    "brand": "Brand",
+    "type": "Type",
+    "availability": "Availability",
+    "options": "Options",
+    "description": "Description"
   },
   "sections": {
     "announcements": {

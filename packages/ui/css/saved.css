@@ -1,0 +1,307 @@
+/*
+ * Wishlist & compare: the buttons on product cards, counters and the wishlist / compare pages.
+ * Markup contract: theme/snippets/saved-toggles.liquid, saved-empty.liquid, saved-skeleton.liquid,
+ * theme/sections/main-wishlist.liquid, main-compare.liquid, compare-column.liquid.
+ * Behavior: packages/ui/js/saved-list.js, theme/assets/saved-pages.js.
+ */
+@layer components {
+  /* ------------------------------------------- toggles on the card */
+  .saved-toggles {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .product-card__actions {
+    position: absolute;
+    z-index: 1;
+    top: var(--space-s);
+    right: var(--space-s);
+  }
+
+  .saved-toggle {
+    display: grid;
+    place-items: center;
+    width: 3.4rem;
+    aspect-ratio: 1;
+    padding: 0;
+    color: var(--color-heading);
+    background: color-mix(in srgb, var(--color-background) 85%, transparent);
+    border: 0;
+    border-radius: 50%;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition:
+      color var(--duration-short) var(--ease),
+      background-color var(--duration-short) var(--ease),
+      scale var(--duration-short) var(--ease-out);
+  }
+
+  .saved-toggle:hover {
+    background: var(--color-background);
+  }
+
+  .saved-toggle:active {
+    scale: 0.92;
+  }
+
+  .saved-toggle .svg-icon {
+    --icon-size: 1.8rem;
+  }
+
+  /* Saved: a filled accent heart; a compare button in the button colors */
+  saved-toggle[data-list='wishlist'] .saved-toggle[aria-pressed='true'] {
+    color: var(--color-accent);
+  }
+
+  saved-toggle[data-list='wishlist'] .saved-toggle[aria-pressed='true'] .svg-icon path {
+    fill: currentColor;
+  }
+
+  saved-toggle[data-list='compare'] .saved-toggle[aria-pressed='true'] {
+    color: var(--color-button-label);
+    background: var(--color-button);
+  }
+
+  /* Phones and touch: always shown; with a mouse: shown on card hover or once saved */
+  @media (hover: hover) {
+    .product-card__actions saved-toggle:not(:has([aria-pressed='true'])) {
+      opacity: 0;
+      transition: opacity var(--duration-default) var(--ease);
+    }
+
+    .product-card:is(:hover, :focus-within) .product-card__actions saved-toggle {
+      opacity: 1;
+    }
+  }
+
+  /* ------------------------------------------------------- counters */
+  .saved-count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2rem;
+    height: 2rem;
+    margin-inline-start: auto;
+    padding-inline: 0.6rem;
+    font-size: var(--text-xs);
+    font-weight: var(--font-body-weight-semibold);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: var(--color-button-label);
+    background: var(--color-accent);
+    border-radius: var(--radius-badge);
+  }
+
+  .saved-count[data-empty] {
+    display: none;
+  }
+
+  /* -------------------------------------------- wishlist & compare */
+  /* <saved-products data-state>: nothing until the list is read (loading), then the products
+     (filled) or the empty state (empty) */
+  saved-products {
+    display: block;
+  }
+
+  saved-products:not([data-state='filled']) [data-saved-products],
+  saved-products:not([data-state='empty']) [data-saved-empty] {
+    display: none;
+  }
+
+  saved-products:not([data-state='loading']) [data-saved-skeleton] {
+    display: none;
+  }
+
+  .saved-skeleton__item {
+    display: grid;
+    align-content: start;
+    gap: var(--space-s);
+  }
+
+  /* Compare: placeholder columns where the product columns will be (after the label column) */
+  .saved-skeleton--columns {
+    --label-width: 11rem;
+
+    display: grid;
+    grid-auto-columns: minmax(17rem, 1fr);
+    grid-auto-flow: column;
+    gap: var(--space-s);
+    max-width: calc(var(--label-width) + var(--saved-count, 1) * 30rem);
+    padding-inline-start: var(--label-width);
+    overflow: hidden;
+  }
+
+  @media (min-width: 750px) {
+    .saved-skeleton--columns {
+      --label-width: 16rem;
+
+      grid-auto-columns: minmax(22rem, 1fr);
+    }
+  }
+
+  saved-products[aria-busy='true'] [data-saved-products] {
+    opacity: 0.6;
+    transition: opacity var(--duration-default) var(--ease);
+  }
+
+  .saved-empty {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-s);
+    max-width: 52rem;
+    margin-inline: auto;
+    padding: var(--space-2xl) var(--space-l);
+    text-align: center;
+    background: var(--color-surface);
+    border-radius: var(--radius-card);
+  }
+
+  .saved-empty__icon {
+    display: grid;
+    place-items: center;
+    width: 6.4rem;
+    aspect-ratio: 1;
+    margin-bottom: var(--space-xs);
+    color: var(--color-accent);
+    background: var(--color-background);
+    border-radius: 50%;
+  }
+
+  .saved-empty__icon .svg-icon {
+    --icon-size: 2.8rem;
+  }
+
+  .saved-empty__text {
+    margin-bottom: var(--space-s);
+    color: color-mix(in srgb, var(--color-foreground) 80%, transparent);
+  }
+
+  /* Compare table: a label column + a column per product; rows line up through subgrid.
+     Its width grows with the number of products (--saved-count) up to the page width, so one or two
+     products don't stretch into huge columns and four fill the row; scrolls sideways when narrower
+     than its minimum, with the labels pinned on the left. */
+  .compare-table {
+    --label-width: 11rem;
+    --column-width: 30rem;
+
+    display: grid;
+    grid-auto-columns: minmax(17rem, 1fr);
+    grid-auto-flow: column;
+    grid-template-columns: var(--label-width);
+    grid-template-rows: repeat(8, auto);
+    max-width: calc(var(--label-width) + var(--saved-count, 1) * var(--column-width));
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .compare-table__column {
+    display: grid;
+    grid-row: 1 / -1;
+    grid-template-rows: subgrid;
+  }
+
+  .compare-table__cell {
+    padding: var(--space-s) var(--space-s);
+    font-size: var(--text-sm);
+    line-height: var(--leading-sm);
+    border-bottom: 0.1rem solid var(--color-border);
+  }
+
+  .compare-table__column > .compare-table__cell:first-child,
+  .compare-table__column > .compare-table__cell:last-child {
+    border-bottom: 0;
+  }
+
+  .compare-table__labels {
+    position: sticky;
+    z-index: 1;
+    left: 0;
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-heading);
+    background: var(--color-background);
+  }
+
+  .compare-table__product {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: var(--space-xs);
+  }
+
+  .compare-table__media img {
+    transition: scale var(--duration-long) var(--ease-out);
+  }
+
+  .compare-table__media:hover img {
+    scale: 1.04;
+  }
+
+  .compare-table__title {
+    font-weight: var(--font-body-weight-medium);
+    color: var(--color-heading);
+    text-decoration: none;
+  }
+
+  .compare-table__title:hover {
+    color: var(--color-link-hover);
+  }
+
+  .compare-table__remove {
+    position: absolute;
+    top: calc(var(--space-s) + var(--space-xs));
+    right: calc(var(--space-s) + var(--space-xs));
+    background: color-mix(in srgb, var(--color-background) 85%, transparent);
+  }
+
+  .compare-table__stock {
+    color: var(--color-accent);
+  }
+
+  .compare-table__stock--out {
+    color: color-mix(in srgb, var(--color-foreground) 60%, transparent);
+  }
+
+  .compare-table__options {
+    display: grid;
+    gap: var(--space-xs);
+    margin: 0;
+  }
+
+  .compare-table__options dt {
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-heading);
+  }
+
+  .compare-table__options dd {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem var(--space-xs);
+    margin: 0;
+  }
+
+  .compare-table__value {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .compare-table__value .swatch {
+    --swatch-size: 1.2rem;
+  }
+
+  .compare-table__value--unavailable {
+    color: color-mix(in srgb, var(--color-foreground) 45%, transparent);
+    text-decoration: line-through;
+  }
+
+  .compare-table__description {
+    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+  }
+
+  @media (min-width: 750px) {
+    .compare-table {
+      --label-width: 16rem;
+
+      grid-auto-columns: minmax(22rem, 1fr);
+    }
+  }
+}

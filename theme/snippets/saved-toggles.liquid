@@ -1,0 +1,30 @@
+{% doc %}
+  Wishlist and compare buttons of a product (<saved-toggle>, @ui/saved-list), shown when they are
+  on in Theme settings > Wishlist & compare. Used on the product card (over the image).
+  Styles: packages/ui/css/saved.css.
+
+  @param {object} product - Product
+  @param {string} [class] - Extra classes of the wrapper
+{% enddoc %}
+{%- if settings.wishlist_enabled or settings.compare_enabled -%}
+  {%- liquid
+    assign image = product.featured_media | image_url: width: 160
+    assign title = product.title | escape
+  -%}
+  <div class="saved-toggles {{ class }}">
+    {%- if settings.wishlist_enabled -%}
+      <saved-toggle data-list="wishlist" data-handle="{{ product.handle }}" data-title="{{ title }}" data-image="{{ image }}" data-url="{{ product.url }}">
+        <button type="button" class="saved-toggle" aria-pressed="false" aria-label="{{ 'wishlist.toggle' | t: product: title }}">
+          {%- render 'icon', name: 'heart' -%}
+        </button>
+      </saved-toggle>
+    {%- endif -%}
+    {%- if settings.compare_enabled -%}
+      <saved-toggle data-list="compare" data-handle="{{ product.handle }}" data-title="{{ title }}" data-image="{{ image }}" data-url="{{ product.url }}">
+        <button type="button" class="saved-toggle" aria-pressed="false" aria-label="{{ 'compare.toggle' | t: product: title }}">
+          {%- render 'icon', name: 'compare' -%}
+        </button>
+      </saved-toggle>
+    {%- endif -%}
+  </div>
+{%- endif -%}

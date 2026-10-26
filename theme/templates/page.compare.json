@@ -1,0 +1,24 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "heading": "",
+        "text": "<p>See up to 4 products side by side: price, options, availability and more.</p>",
+        "breadcrumbs": true,
+        "counter": "compare",
+        "alignment": "left",
+        "color_scheme": "scheme-2"
+      }
+    },
+    "main": {
+      "type": "main-compare",
+      "settings": {
+        "empty_heading": "Nothing to compare yet",
+        "empty_text": "Use the compare button on product cards to pick up to 4 products and see them side by side.",
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": ["header", "main"]
+}

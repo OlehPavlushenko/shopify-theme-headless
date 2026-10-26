@@ -170,6 +170,13 @@
         {%- endfor -%}
       </ul>
     {%- endif -%}
+
+    {%- if section.settings.show_back_to_top -%}
+      <a href="#" class="site-footer__top" data-back-to-top>
+        {{- 'general.back_to_top' | t -}}
+        {%- render 'icon', name: 'arrow-right' -%}
+      </a>
+    {%- endif -%}
   </div>
 </footer>
 
@@ -187,7 +194,8 @@
     },
     { "type": "checkbox", "id": "show_policies", "label": "t:sections.footer.show_policies", "info": "t:sections.footer.show_policies_info", "default": true },
     { "type": "checkbox", "id": "show_payment_icons", "label": "t:labels.show_payment_icons", "default": true },
-    { "type": "checkbox", "id": "show_powered_by", "label": "t:sections.footer.show_powered_by", "default": false }
+    { "type": "checkbox", "id": "show_powered_by", "label": "t:sections.footer.show_powered_by", "default": false },
+    { "type": "checkbox", "id": "show_back_to_top", "label": "t:sections.footer.show_back_to_top", "default": true }
   ],
   "blocks": [
     {

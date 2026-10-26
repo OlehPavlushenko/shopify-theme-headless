@@ -1,0 +1,17 @@
+{% doc %}
+  Empty state of the wishlist / compare page: an icon in a soft circle, a heading, a line of text and
+  a button to the catalog. Shown by saved.css when <saved-products> has data-state="empty".
+
+  @param {string} icon - Icon name (heart, compare)
+  @param {string} heading - Heading
+  @param {string} [text] - Text (rich text allowed)
+  @param {string} link - Button URL
+{% enddoc %}
+<div class="saved-empty" data-saved-empty>
+  <span class="saved-empty__icon">{%- render 'icon', name: icon -%}</span>
+  <h2 class="h4">{{ heading | escape }}</h2>
+  {%- if text != blank -%}
+    <p class="saved-empty__text">{{ text }}</p>
+  {%- endif -%}
+  <a href="{{ link }}" class="btn">{{ 'cart.continue_shopping' | t }}</a>
+</div>

@@ -31,6 +31,7 @@
     {{ 'ui-promo.css' | asset_url | stylesheet_tag }}
     {{ 'ui-sections.css' | asset_url | stylesheet_tag }}
     {{ 'ui-footer.css' | asset_url | stylesheet_tag }}
+    {{ 'ui-saved.css' | asset_url | stylesheet_tag }}
     {%- render 'theme-tokens' -%}
     {%- render 'color-schemes' -%}
 
@@ -99,6 +100,9 @@
           "@ui/background-video": "{{ 'ui-background-video.js' | asset_url }}",
           "@ui/show-more": "{{ 'ui-show-more.js' | asset_url }}",
           "@ui/variant-picker": "{{ 'ui-variant-picker.js' | asset_url }}",
+          "@ui/saved-list": "{{ 'ui-saved-list.js' | asset_url }}",
+          "@ui/toast": "{{ 'ui-toast.js' | asset_url }}",
+          "saved-pages": "{{ 'saved-pages.js' | asset_url }}",
           "liquid-ajax-cart": "{{ 'liquid-ajax-cart-v2.2.0.js' | asset_url }}",
           "cart": "{{ 'cart.js' | asset_url }}",
           "quick-view": "{{ 'quick-view.js' | asset_url }}"
@@ -118,6 +122,9 @@
       import 'cart';
       import 'quick-view';
     </script>
+    {%- if settings.wishlist_enabled or settings.compare_enabled -%}
+      <script type="module">import '@ui/saved-list';</script>
+    {%- endif -%}
 
     {{ content_for_header }}
   </head>
@@ -140,5 +147,28 @@
     {%- comment -%} Popups and other overlays (theme editor: "Overlays") {%- endcomment -%}
     {% sections 'overlay-group' %}
     {% render 'quick-view-dialog' %}
+    {%- if settings.compare_enabled -%}
+      {%- comment -%} Texts of the compare toasts (@ui/saved-list): added, removed, "up to 4" {%- endcomment -%}
+      <template
+        data-saved-toast="compare"
+        data-added="{{ 'compare.added' | t | escape }}"
+        data-removed="{{ 'compare.removed' | t | escape }}"
+        data-full="{{ 'compare.full' | t: max: '%n' | escape }}"
+        data-view="{{ 'compare.title' | t | escape }}"
+        data-undo="{{ 'wishlist.undo' | t | escape }}"
+        data-href="{{ pages['compare'].url | default: routes.root_url }}"
+      ></template>
+    {%- endif -%}
+    {%- if settings.wishlist_enabled -%}
+      {%- comment -%} Texts of the wishlist toasts (@ui/saved-list) {%- endcomment -%}
+      <template
+        data-saved-toast="wishlist"
+        data-added="{{ 'wishlist.added' | t | escape }}"
+        data-removed="{{ 'wishlist.removed' | t | escape }}"
+        data-view="{{ 'wishlist.view' | t | escape }}"
+        data-undo="{{ 'wishlist.undo' | t | escape }}"
+        data-href="{{ pages['wishlist'].url | default: routes.root_url }}"
+      ></template>
+    {%- endif -%}
   </body>
 </html>

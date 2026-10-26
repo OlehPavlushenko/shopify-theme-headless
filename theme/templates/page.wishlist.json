@@ -1,0 +1,25 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "heading": "",
+        "text": "<p>Products you saved for later. Your list is kept on this device.</p>",
+        "breadcrumbs": true,
+        "counter": "wishlist",
+        "alignment": "left",
+        "color_scheme": "scheme-2"
+      }
+    },
+    "main": {
+      "type": "main-wishlist",
+      "settings": {
+        "columns": 4,
+        "empty_heading": "Your wishlist is empty",
+        "empty_text": "Tap the heart on any product to save it here for later.",
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": ["header", "main"]
+}

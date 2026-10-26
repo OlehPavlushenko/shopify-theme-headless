@@ -25,3 +25,16 @@ class SiteFooter extends HTMLElement {
 }
 
 if (!customElements.get('site-footer')) customElements.define('site-footer', SiteFooter);
+
+// [data-back-to-top] (href="#", works without JS): a smooth scroll to the top (instant with
+// "reduce motion"), focus moves to the start of the page
+document.addEventListener('click', (event) => {
+  const link = event.target.closest('[data-back-to-top]');
+  if (!link) return;
+  event.preventDefault();
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+  document.body.setAttribute('tabindex', '-1');
+  document.body.focus({ preventScroll: true });
+  document.body.addEventListener('blur', () => document.body.removeAttribute('tabindex'), { once: true });
+});

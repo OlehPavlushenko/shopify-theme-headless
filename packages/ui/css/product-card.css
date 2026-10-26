@@ -1,7 +1,7 @@
 /*
  * Product card. Markup contract: theme/snippets/product-card.liquid.
- * The whole card is clickable through the title link's ::after; the image link is a duplicate
- * for pointer users and is hidden from assistive tech.
+ * The whole card is one link (.product-card__overlay, named by the product title); the title is
+ * plain text. Buttons inside the card (quick add, wishlist / compare) sit above the link.
  */
 @layer components {
   .product-card {
@@ -62,6 +62,8 @@
     font-weight: var(--font-body-weight-medium);
     line-height: var(--leading-sm);
     letter-spacing: 0;
+    color: var(--color-heading);
+    transition: color var(--duration-short) var(--ease);
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -71,23 +73,25 @@
     font-size: var(--text-sm);
   }
 
-  .product-card__link {
-    text-decoration: none;
-    color: var(--color-heading);
-  }
-
-  .product-card__link::after {
-    content: '';
+  /* One link over the whole card (named by the product title); buttons and toggles sit above it */
+  .product-card__overlay {
     position: absolute;
     z-index: 0;
     inset: 0;
+    border-radius: var(--radius-media);
   }
 
-  .product-card:hover .product-card__link {
-    color: var(--color-link-hover);
+  .product-card__overlay:focus-visible {
+    outline: 0.2rem solid var(--color-heading);
+    outline-offset: 0.4rem;
   }
 
+  /* Hover effects only with a mouse: on touch screens they would stick after a tap */
   @media (hover: hover) {
+    .product-card:hover .product-card__title {
+      color: var(--color-link-hover);
+    }
+
     .product-card--hover:hover .product-card__image--secondary {
       opacity: 1;
     }
@@ -238,28 +242,37 @@
     --icon-size: 1.6rem;
   }
 
-  /* Products with options: "Choose options ✓ 2" — how many of the product are in the cart */
-  .product-card__count {
+  /* Products with options in the cart: "Choose options" turns dark and reads "✓ In cart"
+     (the same signal as the quantity control of single-variant products); it still opens quick view */
+  .product-card__options-in-cart {
     display: none;
     align-items: center;
-    gap: 0.2rem;
-    margin-inline-start: var(--space-2xs);
-    padding: 0 0.6rem;
-    font-size: var(--text-xs);
-    font-weight: var(--font-body-weight-semibold);
-    line-height: 1.8rem;
-    color: var(--color-button-label);
-    background: var(--color-button);
-    border-radius: var(--radius-badge);
+    gap: var(--space-2xs);
   }
 
-  .product-card__count .svg-icon {
-    --icon-size: 1.2rem;
-  }
+  .product-card__cart[data-in-cart] .product-card__options {
+    --btn-bg: var(--color-button);
+    --btn-fg: var(--color-button-label);
+    --btn-border: var(--color-button);
+    --btn-bg-hover: var(--color-button-hover);
+    --btn-fg-hover: var(--color-button-label-hover);
+    --btn-border-hover: var(--color-button-hover);
 
-  .product-card__cart[data-in-cart] .product-card__count {
-    display: inline-flex;
     animation: product-card-in-cart var(--duration-default) var(--ease-out);
+  }
+
+  .product-card__cart[data-in-cart] .product-card__options-label {
+    display: none;
+  }
+
+  .product-card__cart[data-in-cart] .product-card__options-in-cart {
+    display: inline-flex;
+  }
+
+  .product-card__options-in-cart .svg-icon {
+    --icon-size: 1.4rem;
+
+    stroke-width: 2.4;
   }
 
   .js-ajax-cart-processing .product-card__in-cart {

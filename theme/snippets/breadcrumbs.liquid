@@ -1,0 +1,65 @@
+{% doc %}
+  Breadcrumbs: Home / … / the current page, plus their BreadcrumbList structured data (SEO).
+  Trail: page — Home / page; collection — Home / Collections / collection; blog — Home / blog;
+  article — Home / blog / article; product — Home / collection (when opened from one) / product;
+  search — Home / Search. The current page is the last item, not a link (aria-current).
+  Styles: .breadcrumbs in packages/ui/css/components.css.
+
+  @param {string} [class] - Extra classes
+{% enddoc %}
+{%- liquid
+  assign titles = ''
+  assign urls = ''
+  case template.name
+    when 'page'
+      assign current = page.title
+    when 'collection'
+      assign titles = 'general.collections' | t
+      assign urls = routes.collections_url
+      assign current = collection.title
+    when 'list-collections'
+      assign current = 'general.collections' | t
+    when 'blog'
+      assign current = blog.title
+    when 'article'
+      assign titles = blog.title
+      assign urls = blog.url
+      assign current = article.title
+    when 'product'
+      if collection
+        assign titles = collection.title
+        assign urls = collection.url
+      endif
+      assign current = product.title
+    when 'search'
+      assign current = 'search.title' | t
+    else
+      assign current = page_title
+  endcase
+  assign home = 'general.home' | t
+  assign origin = request.origin
+-%}
+<nav class="breadcrumbs {{ class }}" aria-label="{{ 'general.breadcrumbs' | t }}">
+  <ol class="breadcrumbs__list" role="list">
+    <li class="breadcrumbs__item"><a href="{{ routes.root_url }}">{{ home }}</a></li>
+    {%- if titles != blank -%}
+      <li class="breadcrumbs__item"><a href="{{ urls }}">{{ titles | escape }}</a></li>
+    {%- endif -%}
+    <li class="breadcrumbs__item" aria-current="page">{{ current | escape }}</li>
+  </ol>
+</nav>
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": {{ home | json }}, "item": {{ origin | append: routes.root_url | json }} }
+      {%- if titles != blank -%}
+        , { "@type": "ListItem", "position": 2, "name": {{ titles | json }}, "item": {{ origin | append: urls | json }} }
+        , { "@type": "ListItem", "position": 3, "name": {{ current | json }} }
+      {%- else -%}
+        , { "@type": "ListItem", "position": 2, "name": {{ current | json }} }
+      {%- endif -%}
+    ]
+  }
+</script>

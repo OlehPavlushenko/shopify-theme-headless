@@ -1,0 +1,44 @@
+{% doc %}
+  Active filters as removable chips ("Color: Green ×", "₴200–₴900 ×") and "Clear all". Every chip
+  is a link to the same list without that filter, so it works without JS; facets.js intercepts the
+  clicks. Renders nothing without active filters.
+
+  @param {object[]} filters - collection.filters or search.filters
+  @param {string} clear_url - URL without any filter (keeps sort / search terms)
+{% enddoc %}
+{%- capture chips -%}
+  {%- for filter in filters -%}
+    {%- if filter.type == 'price_range' -%}
+      {%- if filter.min_value.value != blank or filter.max_value.value != blank -%}
+        {%- liquid
+          assign from = filter.min_value.value | default: 0 | money_without_trailing_zeros
+          assign to = filter.max_value.value | default: filter.range_max | money_without_trailing_zeros
+        -%}
+        <li>
+          <a href="{{ filter.url_to_remove }}" class="chip facets-active__chip" data-facets-link>
+            {{- from }}–{{ to -}}
+            {%- render 'icon', name: 'close' -%}
+          </a>
+        </li>
+      {%- endif -%}
+    {%- else -%}
+      {%- for value in filter.active_values -%}
+        <li>
+          <a href="{{ value.url_to_remove }}" class="chip facets-active__chip" data-facets-link aria-label="{{ 'facets.remove' | t: filter: value.label | escape }}">
+            {%- if filter.presentation == 'swatch' -%}
+              {%- render 'swatch', value: value, class: 'facets-active__swatch' -%}
+            {%- endif -%}
+            {{- value.label | escape -}}
+            {%- render 'icon', name: 'close' -%}
+          </a>
+        </li>
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- if chips != blank -%}
+  <ul class="facets-active" role="list">
+    {{ chips }}
+    <li><a href="{{ clear_url }}" class="btn btn--link facets-active__clear" data-facets-link>{{ 'facets.clear_all' | t }}</a></li>
+  </ul>
+{%- endif -%}

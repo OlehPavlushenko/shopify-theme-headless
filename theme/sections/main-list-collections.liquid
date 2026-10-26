@@ -3,7 +3,7 @@
   products, minus those marked "Hide from collection lists" (metafield theme.hidden), in one of
   three layouts:
   - editorial: one wide row per collection — number, title, description, count, four product
-    thumbnails, arrow (suits a handful of collections with descriptions)
+    thumbnails, "Shop collection →" (suits a handful of collections with descriptions)
   - bento: a mosaic of tiles with the title over the image; "Featured in collection lists"
     (metafield theme.featured) — or, without any, the first collection — gets a large tile
   - grid: collection cards (snippets/collection-card)
@@ -61,7 +61,10 @@
                     </span>
                   {%- endfor -%}
                 </span>
-                <span class="collection-row__arrow" aria-hidden="true">{%- render 'icon', name: 'arrow-right' -%}</span>
+                <span class="collection-row__cta" aria-hidden="true">
+                  {{- 'collections.shop' | t -}}
+                  {%- render 'icon', name: 'arrow-right' -%}
+                </span>
               </a>
             </li>
           {%- when 'bento' -%}

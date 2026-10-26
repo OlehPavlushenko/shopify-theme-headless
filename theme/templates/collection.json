@@ -1,20 +1,83 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "heading": "",
+        "text": "",
+        "breadcrumbs": true,
+        "subcollections": true,
+        "alignment": "left",
+        "image_layout": "split",
+        "image_source": "collection",
+        "tint": 45,
+        "color_scheme": "scheme-2"
+      }
+    },
     "main": {
       "type": "main-collection",
-      "settings": {}
+      "blocks": {
+        "promo": {
+          "type": "promo",
+          "settings": {
+            "position": 6,
+            "image": "shopify://shop_images/di3.jpg",
+            "eyebrow": "Gift ideas",
+            "heading": "Ready-to-give sets",
+            "text": "Free gift wrapping on every order",
+            "link_label": "Shop sets",
+            "link": "shopify://collections/sets-programs"
+          }
+        }
+      },
+      "block_order": ["promo"],
+      "settings": {
+        "show_filters": true,
+        "filters_layout": "sidebar",
+        "show_sort": true,
+        "show_density": true,
+        "products_per_page": 24,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "pagination": "load_more",
+        "quick_add": true,
+        "show_vendor": false,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "seo": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "",
+        "text": "",
+        "source": "collection",
+        "collapse": true,
+        "lines": 3,
+        "alignment": "left",
+        "text_size": "small",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question", "settings": { "question": "How do I choose the right product?", "answer": "<p>Use the filters to narrow the list by type, brand, price or availability. Still unsure? Write to us — we reply within a day and help you choose.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "How long does delivery take?", "answer": "<p>Orders ship within 1–2 business days. Delivery across the country usually takes 2–4 days; free from the threshold.</p>" } },
+        "q3": { "type": "question", "settings": { "question": "Can I return a product?", "answer": "<p>Yes — unopened products can be returned within 14 days. Write to us and we will arrange a free pickup.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3"],
+      "settings": {
+        "layout": "split",
+        "eyebrow": "FAQ",
+        "heading": "Good to know",
+        "text": "<p>Answers to the questions we hear most often.</p>",
+        "button_label": "Contact us",
+        "button_link": "shopify://pages/contact",
+        "single_open": true,
+        "open_first": false,
+        "color_scheme": "scheme-2"
+      }
     }
   },
-  "order": [
-    "main"
-  ]
+  "order": ["header", "main", "seo", "faq"]
 }

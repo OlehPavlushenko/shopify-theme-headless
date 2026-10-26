@@ -1,6 +1,5 @@
 {
   "general": {
-    "collection": "Collection",
     "column": "Column",
     "custom_section": "Custom section",
     "footer": "Footer",
@@ -236,10 +235,27 @@
       "show_vendor": "Show vendor"
     },
     "main_collection": {
-      "show_description": "Show collection description",
       "products_per_page": "Products per page",
       "columns_desktop": "Columns on desktop",
-      "columns_mobile": "Columns on mobile"
+      "columns_mobile": "Columns on mobile",
+      "name": "Collection products",
+      "filters_header": "Filters",
+      "show_filters": "Show filters",
+      "show_filters_info": "Set up filters in the Search & Discovery app.",
+      "filters_layout": "Filters layout",
+      "filters_layout_info": "On phones filters always open in a drawer.",
+      "layout_sidebar": "Sidebar",
+      "layout_horizontal": "Dropdowns above the grid",
+      "layout_drawer": "Drawer",
+      "show_sort": "Show sorting",
+      "show_density": "Show grid toggle",
+      "grid_header": "Product grid",
+      "pagination": "More products",
+      "pagination_load_more": "Load more button",
+      "pagination_pages": "Page numbers",
+      "promo": "Promo tile",
+      "promo_position": "Position",
+      "promo_position_info": "Shown on the first page, before this product."
     },
     "cart_recommendations": {
       "name": "Cart recommendations"
@@ -388,7 +404,19 @@
       "breadcrumbs": "Show breadcrumbs",
       "alignment": "Alignment",
       "alignment_left": "Left",
-      "alignment_center": "Center"
+      "alignment_center": "Center",
+      "subcollections": "Show subcollections",
+      "subcollections_info": "From the collection metafield \"Subcollections\".",
+      "image_header": "Image",
+      "image_layout": "Layout",
+      "image_none": "No image",
+      "image_split": "Beside the text",
+      "image_cover": "Behind the text",
+      "image_source": "Source",
+      "image_source_collection": "Collection image",
+      "image_source_picked": "Picked image",
+      "image": "Image",
+      "image_info": "Overrides the collection image."
     },
     "main_compare": {
       "name": "Compare"
@@ -447,7 +475,11 @@
       "lines": "Lines shown",
       "text_size": "Text size",
       "text_size_small": "Small (SEO text)",
-      "text_size_regular": "Regular"
+      "text_size_regular": "Regular",
+      "source": "Text",
+      "source_info": "Collection: the collection metafields \"SEO text\" and \"SEO heading\"; nothing shows on collections without them.",
+      "source_custom": "Typed here",
+      "source_collection": "From the collection"
     },
     "main_page": {
       "name": "Page content",

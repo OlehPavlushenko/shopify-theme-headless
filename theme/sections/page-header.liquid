@@ -2,8 +2,12 @@
   Page header: a band on its color scheme with breadcrumbs, the page heading (h1) and an intro line,
   for any template — pages, collections, blogs, search, wishlist, compare. The heading and text
   default to the page / collection / blog title and description and can be set here instead.
-  On the wishlist / compare pages (template suffix) it adds the list's counter ("4 products",
-  @ui/saved-list) by itself.
+  - Image (optional): the collection's image or a picked one beside the text ("split"), or behind
+    it under a tint ("cover"). On collections without an image the band stays plain.
+  - Subcollections: on a collection, the collections in its metafield theme.subcollections as
+    chips under the text (with a thumbnail and the product count).
+  - On the wishlist / compare pages (template suffix) the list's counter ("4 products",
+    @ui/saved-list) by itself.
   Styles: packages/ui/css/sections.css.
 {% endcomment %}
 {%- liquid
@@ -26,28 +30,67 @@
   if text == blank and template.name == 'collection'
     assign text = collection.description
   endif
+  assign image = section.settings.image
+  if image == blank and section.settings.image_source == 'collection' and template.name == 'collection'
+    assign image = collection.image
+  endif
+  assign media = 'none'
+  if image != blank and section.settings.image_layout != 'none'
+    assign media = section.settings.image_layout
+  endif
+  assign subcollections = collection.metafields.theme.subcollections.value
 -%}
-<div class="page-header page-header--{{ section.settings.alignment }} color-{{ section.settings.color_scheme }}">
+<div class="page-header page-header--{{ section.settings.alignment }} page-header--media-{{ media }} color-{{ section.settings.color_scheme }}">
+  {%- if media == 'cover' -%}
+    <div class="page-header__cover" style="--page-header-tint: {{ section.settings.tint }}%;">
+      {{ image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750, 1200, 1800, 2400', alt: '' }}
+    </div>
+  {%- endif -%}
   <div class="page-header__inner page-width">
-    {%- if section.settings.breadcrumbs -%}
-      {%- render 'breadcrumbs', class: 'page-header__breadcrumbs' -%}
-    {%- endif -%}
-    <h1 class="h1 page-header__heading">{{ heading }}</h1>
-    {%- if text != blank -%}
-      <div class="text-lead page-header__text">{{ text }}</div>
-    {%- endif -%}
-    {%- if template.suffix == 'wishlist' or template.suffix == 'compare' -%}
-      {%- liquid
-        assign label_one = 'general.products_count' | t: count: 1
-        assign label_other = 'general.products_count' | t: count: '%n'
-      -%}
-      <p
-        class="page-header__counter"
-        data-saved-counter="{{ template.suffix }}"
-        data-one="{{ label_one | escape }}"
-        data-other="{{ label_other | escape }}"
-        data-empty
-      ></p>
+    <div class="page-header__text-col">
+      {%- if section.settings.breadcrumbs -%}
+        {%- render 'breadcrumbs', class: 'page-header__breadcrumbs' -%}
+      {%- endif -%}
+      <h1 class="h1 page-header__heading">{{ heading }}</h1>
+      {%- if text != blank -%}
+        <div class="text-lead page-header__text">{{ text }}</div>
+      {%- endif -%}
+      {%- if template.suffix == 'wishlist' or template.suffix == 'compare' -%}
+        {%- liquid
+          assign label_one = 'general.products_count' | t: count: 1
+          assign label_other = 'general.products_count' | t: count: '%n'
+        -%}
+        <p
+          class="page-header__counter"
+          data-saved-counter="{{ template.suffix }}"
+          data-one="{{ label_one | escape }}"
+          data-other="{{ label_other | escape }}"
+          data-empty
+        ></p>
+      {%- endif -%}
+      {%- if section.settings.subcollections and subcollections.size > 0 -%}
+        <nav class="page-header__subcollections" aria-label="{{ 'collections.subcollections' | t }}">
+          <ul class="subcollections" role="list">
+            {%- for sub in subcollections -%}
+              {%- assign thumb = sub.image | default: sub.products.first.featured_image -%}
+              <li>
+                <a href="{{ sub.url }}" class="subcollection"{% if sub.handle == collection.handle %} aria-current="page"{% endif %}>
+                  {%- if thumb -%}
+                    {{ thumb | image_url: width: 96 | image_tag: loading: 'lazy', class: 'subcollection__image', width: 48, height: 48, alt: '' }}
+                  {%- endif -%}
+                  <span class="subcollection__title">{{ sub.title | escape }}</span>
+                  <span class="subcollection__count">{{ sub.products_count }}</span>
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+    </div>
+    {%- if media == 'split' -%}
+      <div class="frame page-header__media" style="--frame-ratio: 4 / 3;">
+        {{ image | image_url: width: 1400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 40vw, 100vw', widths: '600, 900, 1200, 1400', alt: '' }}
+      </div>
     {%- endif -%}
   </div>
 </div>
@@ -61,6 +104,7 @@
     { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "info": "t:sections.page_header.heading_info" },
     { "type": "richtext", "id": "text", "label": "t:labels.text", "info": "t:sections.page_header.text_info" },
     { "type": "checkbox", "id": "breadcrumbs", "label": "t:sections.page_header.breadcrumbs", "default": true },
+    { "type": "checkbox", "id": "subcollections", "label": "t:sections.page_header.subcollections", "info": "t:sections.page_header.subcollections_info", "default": true },
     {
       "type": "select",
       "id": "alignment",
@@ -71,6 +115,30 @@
       ],
       "default": "left"
     },
+    { "type": "header", "content": "t:sections.page_header.image_header" },
+    {
+      "type": "select",
+      "id": "image_layout",
+      "label": "t:sections.page_header.image_layout",
+      "options": [
+        { "value": "none", "label": "t:sections.page_header.image_none" },
+        { "value": "split", "label": "t:sections.page_header.image_split" },
+        { "value": "cover", "label": "t:sections.page_header.image_cover" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "image_source",
+      "label": "t:sections.page_header.image_source",
+      "options": [
+        { "value": "collection", "label": "t:sections.page_header.image_source_collection" },
+        { "value": "picked", "label": "t:sections.page_header.image_source_picked" }
+      ],
+      "default": "collection"
+    },
+    { "type": "image_picker", "id": "image", "label": "t:sections.page_header.image", "info": "t:sections.page_header.image_info" },
+    { "type": "range", "id": "tint", "label": "t:sections.hero.overlay", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 45 },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-2" }
   ],
   "presets": [{ "name": "t:sections.page_header.name" }]

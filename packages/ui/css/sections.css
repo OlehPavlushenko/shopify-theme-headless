@@ -464,10 +464,119 @@
     background: var(--color-background);
   }
 
+  .page-header {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
   .page-header__inner {
     display: grid;
-    gap: var(--space-s);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-xl);
     padding-block: var(--space-2xl);
+  }
+
+  /* minmax(0, 1fr): the scrolling row of subcollections must not widen the column */
+  .page-header__text-col {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-s);
+    min-width: 0;
+  }
+
+  /* Split: the image beside the text from 990px, above it on phones */
+  .page-header__media {
+    order: -1;
+  }
+
+  /* Cover: the image behind the text, tinted toward the scheme background */
+  .page-header__cover {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .page-header__cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .page-header__cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, color-mix(in srgb, var(--color-background) calc(var(--page-header-tint) + 40%), transparent), color-mix(in srgb, var(--color-background) var(--page-header-tint), transparent));
+  }
+
+  .page-header--media-cover .page-header__inner {
+    min-height: 32rem;
+  }
+
+  /* Subcollections: chips with a thumbnail, title and count; one scrolling row on phones */
+  .page-header__subcollections {
+    margin-top: var(--space-s);
+  }
+
+  .subcollections {
+    display: flex;
+    gap: var(--space-xs);
+    margin: 0 calc(var(--gutter) * -1);
+    padding: 0.4rem var(--gutter);
+    overflow-x: auto;
+    scrollbar-width: none;
+    list-style: none;
+  }
+
+  .subcollections::-webkit-scrollbar {
+    display: none;
+  }
+
+  .subcollection {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: 0.4rem var(--space-m) 0.4rem 0.4rem;
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-medium);
+    color: var(--color-heading);
+    white-space: nowrap;
+    text-decoration: none;
+    background: color-mix(in srgb, var(--color-background) 70%, transparent);
+    border: 0.1rem solid var(--color-border);
+    border-radius: var(--radius-full);
+    transition:
+      border-color var(--duration-short) var(--ease),
+      background-color var(--duration-short) var(--ease);
+  }
+
+  .subcollection:hover {
+    background: var(--color-background);
+    border-color: var(--color-heading);
+  }
+
+  .subcollection[aria-current] {
+    color: var(--color-button-label);
+    background: var(--color-button);
+    border-color: var(--color-button);
+  }
+
+  .subcollection__image {
+    width: 3.2rem;
+    height: 3.2rem;
+    object-fit: cover;
+    border-radius: var(--radius-full);
+  }
+
+  .subcollection__count {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .subcollection[aria-current] .subcollection__count {
+    color: inherit;
   }
 
   .page-header__breadcrumbs {
@@ -494,9 +603,13 @@
     display: none;
   }
 
-  .page-header--center .page-header__inner {
+  .page-header--center .page-header__text-col {
     justify-items: center;
     text-align: center;
+  }
+
+  .page-header--center .subcollections {
+    justify-content: center;
   }
 
   .page-header--center .page-header__counter {
@@ -510,6 +623,23 @@
   @media (min-width: 990px) {
     .page-header__inner {
       padding-block: var(--space-3xl);
+    }
+
+    .page-header--media-split .page-header__inner {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: var(--space-3xl);
+      padding-block: var(--space-2xl);
+    }
+
+    .page-header__media {
+      order: 0;
+    }
+
+    .subcollections {
+      flex-wrap: wrap;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
     }
   }
 
@@ -856,21 +986,26 @@
     transition: scale var(--duration-long) var(--ease-out);
   }
 
-  .collection-row__arrow {
-    display: grid;
+  /* "Shop collection →": a text link, not a round button (that read as a slider arrow) */
+  .collection-row__cta {
+    display: inline-flex;
     grid-row: 1;
     grid-column: 3;
     align-self: start;
-    place-items: center;
-    width: var(--control-height);
-    aspect-ratio: 1;
+    align-items: center;
+    gap: var(--space-2xs);
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-semibold);
     color: var(--color-heading);
-    border: 0.1rem solid var(--color-border);
-    border-radius: var(--radius-full);
-    transition:
-      color var(--duration-short) var(--ease),
-      background-color var(--duration-short) var(--ease),
-      border-color var(--duration-short) var(--ease);
+    white-space: nowrap;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: var(--underline-offset);
+    transition: text-decoration-color var(--duration-short) var(--ease);
+  }
+
+  .collection-row__cta .svg-icon {
+    --icon-size: var(--icon-sm);
   }
 
   @media (hover: hover) {
@@ -878,10 +1013,8 @@
       color: var(--color-link-hover);
     }
 
-    .collection-row:hover .collection-row__arrow {
-      color: var(--color-button-label);
-      background: var(--color-button);
-      border-color: var(--color-button);
+    .collection-row:hover .collection-row__cta {
+      text-decoration-color: currentColor;
     }
 
     .collection-row:hover .collection-row__thumb img {
@@ -891,7 +1024,7 @@
 
   @media (min-width: 990px) {
     .collection-row {
-      grid-template-columns: 4.8rem minmax(0, 1fr) minmax(0, 44rem) auto;
+      grid-template-columns: 4.8rem minmax(0, 1fr) minmax(0, 40rem) auto;
       gap: var(--space-2xl);
       padding-block: var(--space-xl);
     }
@@ -900,7 +1033,7 @@
       grid-column: auto;
     }
 
-    .collection-row__arrow {
+    .collection-row__cta {
       grid-row: auto;
       grid-column: auto;
       align-self: center;

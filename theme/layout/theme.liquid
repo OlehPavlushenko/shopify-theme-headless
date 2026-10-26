@@ -31,6 +31,9 @@
       endif
     -%}
     {{ 'ui-sections.css' | asset_url | stylesheet_tag }}
+    {%- if template.name == 'collection' or template.name == 'search' -%}
+      {{ 'ui-facets.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
     {%- if settings.wishlist_enabled or settings.compare_enabled -%}
       {{ 'ui-saved.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
@@ -130,6 +133,7 @@
           "@ui/toast": "{{ 'ui-toast.js' | asset_url }}",
           "@ui/read-more": "{{ 'ui-read-more.js' | asset_url }}",
           "saved-pages": "{{ 'saved-pages.js' | asset_url }}",
+          "facets": "{{ 'facets.js' | asset_url }}",
           "liquid-ajax-cart": "{{ 'liquid-ajax-cart-v2.2.0.js' | asset_url }}",
           "cart": "{{ 'cart.js' | asset_url }}",
           "quick-view": "{{ 'quick-view.js' | asset_url }}"

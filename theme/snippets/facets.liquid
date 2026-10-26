@@ -1,0 +1,150 @@
+{% doc %}
+  Storefront filters (Shopify Search & Discovery) as a form of filter groups; one markup for every
+  layout — the panel is a sidebar column, a row of dropdowns or a drawer by CSS (facets.css), and
+  always a drawer on phones. Group types: list (checkboxes with counts; color swatches when the
+  filter's presentation is swatch), boolean, price range (two fields + a dual slider).
+  Works without JS (the form submits, "Apply"); <facet-filters> (facets.js) updates the results live.
+
+  @param {object[]} filters - collection.filters or search.filters
+  @param {string} form_id - Id of the form (the toolbar's sort select joins it with form="…")
+  @param {string} layout - sidebar | horizontal | drawer (groups start open in the sidebar)
+  @param {string} [sort_by] - Current sort, kept in the form
+  @param {string} [terms] - Search terms, kept in the form (search page)
+  @param {number} [visible] - Values shown per group before "Show more" (default 6)
+{% enddoc %}
+{%- liquid
+  assign shown = visible | default: 6
+  assign money_symbol = cart.currency.symbol
+-%}
+<form id="{{ form_id }}" class="facets__form" data-facets-form>
+  {%- if terms -%}
+    <input type="hidden" name="q" value="{{ terms | escape }}">
+    <input type="hidden" name="options[prefix]" value="last">
+  {%- endif -%}
+  {%- for filter in filters -%}
+    {%- liquid
+      assign active_count = filter.active_values.size
+      if filter.type == 'price_range'
+        assign active_count = 0
+        if filter.min_value.value != blank or filter.max_value.value != blank
+          assign active_count = 1
+        endif
+      endif
+      # Open: the first four groups of the sidebar and any group with active values (not in the
+      # horizontal row, where groups are dropdowns)
+      assign group_open = false
+      if layout != 'horizontal'
+        if layout == 'sidebar' and forloop.index <= 4
+          assign group_open = true
+        endif
+        if active_count > 0
+          assign group_open = true
+        endif
+      endif
+    -%}
+    <details class="facet facet--{{ filter.type }}" data-facet="{{ filter.param_name | default: filter.label | handleize }}"{% if group_open %} open{% endif %}>
+      <summary class="facet__summary">
+        <span class="facet__label">{{ filter.label | escape }}</span>
+        {%- if active_count > 0 -%}
+          <span class="facet__badge">{{ active_count }}</span>
+        {%- endif -%}
+        {%- render 'icon', name: 'chevron-down' -%}
+      </summary>
+      <div class="facet__body">
+        {%- case filter.type -%}
+          {%- when 'price_range' -%}
+            {%- liquid
+              assign range_max = filter.range_max | divided_by: 100.0 | ceil
+              assign min_value = filter.min_value.value | divided_by: 100.0 | floor
+              assign max_value = filter.max_value.value | divided_by: 100.0 | ceil
+            -%}
+            <price-range class="facet__price" data-max="{{ range_max }}">
+              <div class="facet__price-fields">
+                <label class="facet__price-field">
+                  <span class="visually-hidden">{{ 'facets.from' | t }}</span>
+                  <span class="facet__price-symbol" aria-hidden="true">{{ money_symbol }}</span>
+                  <input
+                    class="input"
+                    type="number"
+                    inputmode="numeric"
+                    name="{{ filter.min_value.param_name }}"
+                    {% if filter.min_value.value != blank %}value="{{ min_value }}"{% endif %}
+                    placeholder="0"
+                    min="0"
+                    max="{{ range_max }}"
+                    data-price-min
+                  >
+                </label>
+                <span class="facet__price-dash" aria-hidden="true">–</span>
+                <label class="facet__price-field">
+                  <span class="visually-hidden">{{ 'facets.to' | t }}</span>
+                  <span class="facet__price-symbol" aria-hidden="true">{{ money_symbol }}</span>
+                  <input
+                    class="input"
+                    type="number"
+                    inputmode="numeric"
+                    name="{{ filter.max_value.param_name }}"
+                    {% if filter.max_value.value != blank %}value="{{ max_value }}"{% endif %}
+                    placeholder="{{ range_max }}"
+                    min="0"
+                    max="{{ range_max }}"
+                    data-price-max
+                  >
+                </label>
+              </div>
+              <div class="facet__range" aria-hidden="true">
+                <input type="range" min="0" max="{{ range_max }}" step="1" value="{{ min_value | default: 0 }}" tabindex="-1" data-range-min>
+                <input type="range" min="0" max="{{ range_max }}" step="1" value="{% if filter.max_value.value != blank %}{{ max_value }}{% else %}{{ range_max }}{% endif %}" tabindex="-1" data-range-max>
+              </div>
+            </price-range>
+          {%- else -%}
+            {%- liquid
+              assign is_swatch = false
+              if filter.presentation == 'swatch'
+                assign is_swatch = true
+              endif
+            -%}
+            <ul class="facet__values{% if is_swatch %} facet__values--swatch{% endif %}" role="list">
+              {%- for value in filter.values -%}
+                <li class="facet__item"{% if forloop.index > shown %} data-facet-more hidden{% endif %}>
+                  <label class="facet__value{% if value.count == 0 and value.active == false %} facet__value--disabled{% endif %}">
+                    <input
+                      type="checkbox"
+                      class="facet__checkbox"
+                      name="{{ value.param_name }}"
+                      value="{{ value.value | escape }}"
+                      {% if value.active %}
+                        checked
+                      {% endif %}
+                      {% if value.count == 0 and value.active == false %}
+                        disabled
+                      {% endif %}
+                    >
+                    {%- if is_swatch -%}
+                      {%- render 'swatch', value: value, class: 'facet__swatch' -%}
+                    {%- else -%}
+                      <span class="facet__check" aria-hidden="true">{%- render 'icon', name: 'check' -%}</span>
+                    {%- endif -%}
+                    <span class="facet__value-label">{{ value.label | escape }}</span>
+                    <span class="facet__count">{{ value.count }}</span>
+                  </label>
+                </li>
+              {%- endfor -%}
+            </ul>
+            {%- if filter.values.size > shown -%}
+              {%- assign hidden_count = filter.values.size | minus: shown -%}
+              <button type="button" class="btn btn--link facet__more" data-facet-more-toggle data-label-less="{{ 'facets.show_less' | t | escape }}">
+                {{- 'facets.show_more' | t: count: hidden_count -}}
+              </button>
+            {%- endif -%}
+        {%- endcase -%}
+      </div>
+    </details>
+  {%- endfor -%}
+  {%- if sort_by -%}
+    <input type="hidden" name="sort_by" value="{{ sort_by }}" data-facets-sort-fallback>
+  {%- endif -%}
+  <noscript>
+    <button type="submit" class="btn btn--full">{{ 'facets.apply' | t }}</button>
+  </noscript>
+</form>

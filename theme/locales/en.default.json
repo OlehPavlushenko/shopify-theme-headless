@@ -101,7 +101,9 @@
       "one": "{{ count }} product",
       "other": "{{ count }} products"
     },
-    "empty": "This collection has no products yet."
+    "empty": "This collection has no products yet.",
+    "shop": "Shop collection",
+    "subcollections": "Subcollections"
   },
   "gift_card": {
     "add_to_apple_wallet": "Add to Apple Wallet",
@@ -218,5 +220,27 @@
     "success": "Thanks! We've got your message and will reply within a day.",
     "address": "Address",
     "hours": "Opening hours"
+  },
+  "facets": {
+    "filters": "Filters",
+    "sort_by": "Sort by",
+    "density": "Grid layout",
+    "density_few": "Bigger cards",
+    "density_many": "More cards",
+    "from": "From",
+    "to": "To",
+    "show_more": "Show {{ count }} more",
+    "show_less": "Show less",
+    "apply": "Apply",
+    "clear_all": "Clear all",
+    "remove": "Remove filter {{ filter }}",
+    "show_results": {
+      "one": "Show {{ count }} product",
+      "other": "Show {{ count }} products"
+    },
+    "progress": "Showing {{ shown }} of {{ total }}",
+    "load_more": "Load more",
+    "no_results": "No products match these filters",
+    "no_results_text": "Try removing a filter or two."
   }
 }

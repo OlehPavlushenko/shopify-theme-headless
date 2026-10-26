@@ -7,7 +7,7 @@
  *     [data-facets-active-count] [data-facets-show] — parts replaced after every change
  *     [data-facets-link] — chip / "Clear all" links, fetched instead of followed
  *     [data-facets-load-more] — "Load more": the next page's products are appended
- *     [data-density] buttons — few (bigger cards: a column less, 1 on phones) / many (as set),
+ *     button[data-density] (the grid carries data-density too) — few (bigger cards: a column less, 1 on phones) / many (as set),
  *       remembered per browser
  *   </facet-filters>
  *
@@ -102,7 +102,7 @@ class FacetFilters extends HTMLElement {
     }
     const toggle = event.target.closest('[data-facet-more-toggle]');
     if (toggle) this.#toggleValues(toggle);
-    const density = event.target.closest('[data-density]');
+    const density = event.target.closest('button[data-density]');
     if (density) {
       saveDensity(density.dataset.density);
       this.#applyDensity(density.dataset.density);
@@ -139,7 +139,7 @@ class FacetFilters extends HTMLElement {
   #applyDensity(value) {
     const grid = this.querySelector('[data-facets-grid]');
     if (grid) grid.dataset.density = value;
-    this.querySelectorAll('[data-density]').forEach((button) =>
+    this.querySelectorAll('button[data-density]').forEach((button) =>
       button.setAttribute('aria-pressed', String(button.dataset.density === value))
     );
   }

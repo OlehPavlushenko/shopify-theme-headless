@@ -111,6 +111,8 @@
 
         <div class="facets__results" data-facets-results>
           {%- if collection.products.size > 0 -%}
+            {%- comment -%} Heading order h1 (page header) → h2 → h3 (cards) {%- endcomment -%}
+            <h2 class="visually-hidden">{{ 'facets.products_heading' | t }}</h2>
             <ul
               id="ProductGrid-{{ section.id }}"
               class="grid facets__grid"

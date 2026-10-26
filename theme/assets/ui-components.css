@@ -369,8 +369,9 @@
   }
 
   /* The picked chip isn't struck: the button already says "Sold out" / "Unavailable" */
+  /* Muted (not disabled-light): these values stay clickable, so they keep AA contrast */
   .variant-picker__chip:is([data-sold-out], [data-missing]):not(:has(input:checked)) {
-    color: var(--color-text-disabled);
+    color: var(--color-text-muted);
     text-decoration: line-through;
   }
 

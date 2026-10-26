@@ -258,6 +258,7 @@
     "progress": "Showing {{ shown }} of {{ total }}",
     "load_more": "Load more",
     "no_results": "No products match these filters",
-    "no_results_text": "Try removing a filter or two."
+    "no_results_text": "Try removing a filter or two.",
+    "products_heading": "Products"
   }
 }

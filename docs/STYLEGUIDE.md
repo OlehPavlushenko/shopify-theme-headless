@@ -108,6 +108,7 @@ and the list of mistakes we already made once. Read both before adding code.
 | A number that means different things in two places ("3 in cart" on the card vs "2 in cart" for the variant) | Show a number only where it is unambiguous ("✓ In cart" on the card) |
 | A fixed bar at the bottom covering the footer | Avoid persistent overlays; if needed, reserve space at the end of the page |
 | Copying colors or gradients from a reference | References are for ideas; use the theme's schemes and tokens |
+| Writing Liquid through a shell one-liner (`node -e '…'`) — single quotes inside get eaten (`== 'search'` became `== search`, silently false) | Edit files with the editor tools; scripts that write code go in a file |
 | "Failed to resolve module specifier @ui/…" on every module | The page loaded while theme dev was uploading — reload once edits settle |
 
 ## Verifying

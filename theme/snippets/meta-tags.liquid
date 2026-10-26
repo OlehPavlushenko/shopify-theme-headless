@@ -115,10 +115,10 @@
 {%- endcomment -%}
 {%- liquid
   assign noindex = false
-  if request.page_type == search
+  if request.page_type == 'search'
     assign noindex = true
   endif
-  if request.page_type == collection
+  if request.page_type == 'collection'
     for filter in collection.filters
       if filter.active_values.size > 0 or filter.min_value.value != blank or filter.max_value.value != blank
         assign noindex = true

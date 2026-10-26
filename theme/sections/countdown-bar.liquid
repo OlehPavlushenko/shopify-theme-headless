@@ -12,8 +12,8 @@
     {%- if section.settings.image -%}
       {{
         section.settings.image
-        | image_url: width: 2400
-        | image_tag: class: 'countdown-bar__image', loading: 'eager', sizes: '100vw', widths: '750, 1200, 1800, 2400', alt: ''
+        | image_url: width: 1600
+        | image_tag: class: 'countdown-bar__image', loading: 'eager', fetchpriority: 'low', sizes: '100vw', widths: '750, 1200, 1600', alt: ''
       }}
     {%- endif -%}
     <div class="countdown-bar__inner page-width">

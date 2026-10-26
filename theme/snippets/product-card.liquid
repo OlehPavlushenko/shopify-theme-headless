@@ -19,6 +19,7 @@
 {% enddoc %}
 {%- liquid
   assign media = product.featured_media
+  assign media_alt = media.alt | default: product.title
   assign second = product.media[1]
   comment
     Not `| default: true`: Liquid's default also replaces an explicit false.
@@ -65,7 +66,7 @@
           loading: loading,
           sizes: image_sizes,
           widths: '240, 360, 480, 640, 800',
-          alt: media.alt
+          alt: media_alt
       }}
       {%- if second -%}
         {{

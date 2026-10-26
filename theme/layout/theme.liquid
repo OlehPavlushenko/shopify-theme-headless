@@ -3,7 +3,6 @@
   <head>
     {%- render 'meta-tags' -%}
     {%- render 'structured-data' -%}
-    <link rel="canonical" href="{{ canonical_url }}">
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
     {%- unless settings.type_heading_font.system? and settings.type_body_font.system? -%}
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
@@ -24,14 +23,42 @@
     {{ 'ui-slider.css' | asset_url | stylesheet_tag }}
     {{ 'ui-announcements.css' | asset_url | stylesheet_tag }}
     {{ 'ui-header.css' | asset_url | stylesheet_tag }}
-    {{ 'ui-search.css' | asset_url | stylesheet_tag }}
     {{ 'ui-blocks.css' | asset_url | stylesheet_tag }}
-    {{ 'ui-pages.css' | asset_url | stylesheet_tag }}
-    {{ 'ui-cart.css' | asset_url | stylesheet_tag }}
-    {{ 'ui-promo.css' | asset_url | stylesheet_tag }}
+    {%- comment -%} Skeleton-baseline templates only (pages.css shrinks as they are rebuilt) {%- endcomment -%}
+    {%- liquid
+      assign baseline_templates = 'product,list-collections,blog,article,404' | split: ','
+      if baseline_templates contains template.name or template.name == 'page' and template.suffix == blank
+        echo 'ui-pages.css' | asset_url | stylesheet_tag
+      endif
+    -%}
     {{ 'ui-sections.css' | asset_url | stylesheet_tag }}
-    {{ 'ui-footer.css' | asset_url | stylesheet_tag }}
-    {{ 'ui-saved.css' | asset_url | stylesheet_tag }}
+    {%- if settings.wishlist_enabled or settings.compare_enabled -%}
+      {{ 'ui-saved.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+    {%- comment -%}
+      Styles of what is off screen at first paint — the search panel, the cart drawer, popups and
+      promo banners further down, the footer — load without blocking the first render (layer order
+      comes from tokens.css, so the load order doesn't matter). On their own templates (search, cart)
+      they block as usual.
+    {%- endcomment -%}
+    {%- assign deferred = 'ui-search.css,ui-cart.css,ui-promo.css,ui-footer.css' | split: ',' -%}
+    {%- for file in deferred -%}
+      {%- liquid
+        assign blocking = false
+        if template.name == 'search' and file == 'ui-search.css'
+          assign blocking = true
+        endif
+        if template.name == 'cart' and file == 'ui-cart.css'
+          assign blocking = true
+        endif
+      -%}
+      {%- if blocking -%}
+        {{ file | asset_url | stylesheet_tag }}
+      {%- else -%}
+        <link rel="stylesheet" href="{{ file | asset_url }}" media="print" onload="this.media='all'">
+        <noscript>{{ file | asset_url | stylesheet_tag }}</noscript>
+      {%- endif -%}
+    {%- endfor %}
     {%- render 'theme-tokens' -%}
     {%- render 'color-schemes' -%}
 

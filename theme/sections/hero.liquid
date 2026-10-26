@@ -42,6 +42,8 @@
       {%- liquid
         assign image = block.settings.image
         assign image_mobile = block.settings.image_mobile | default: image
+        # Filters inside image_tag arguments would apply to the whole tag: resolve the alt first
+        assign image_alt = image.alt | default: ''
         assign eager = false
         # No eyebrow, heading, text or buttons: no caption at all, the media fills the slide
         assign caption = block.settings.caption
@@ -69,9 +71,9 @@
                 sizes="100vw"
               >
               {%- if eager and block.settings.video == blank -%}
-                {{ image_mobile | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '600, 900, 1200', alt: image.alt }}
+                {{ image_mobile | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '600, 900, 1200', alt: image_alt }}
               {%- else -%}
-                {{ image_mobile | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '100vw', widths: '600, 900, 1200', alt: image.alt }}
+                {{ image_mobile | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '100vw', widths: '600, 900, 1200', alt: image_alt }}
               {%- endif -%}
             </picture>
           {%- elsif block.settings.video == blank -%}

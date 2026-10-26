@@ -22,15 +22,14 @@
 const openers = new WeakMap();
 
 // Scrollbar width for the scroll lock (components.css pads <html> by it while an overlay is open).
-// Not measured while one is open: the page scrollbar is hidden then.
+// Measured right before an overlay opens (not at page load: reading layout then forces a reflow
+// while the page is still rendering). Not while one is open: the page scrollbar is hidden then.
 function measureScrollbar() {
   const width = window.innerWidth - document.documentElement.clientWidth;
   if (width >= 0 && !document.documentElement.matches(':has(dialog[open]:modal, [popover]:popover-open)')) {
     document.documentElement.style.setProperty('--scrollbar-width', `${width}px`);
   }
 }
-measureScrollbar();
-window.addEventListener('resize', measureScrollbar, { passive: true });
 
 // Longest transition of the element (duration + delay), in ms
 function transitionTime(element) {

@@ -95,10 +95,12 @@
   href="{{ canonical_url }}"
 >
 
-{% if page_description %}
+{%- comment -%} Pages without their own description fall back to the store description (Online Store > Preferences) {%- endcomment -%}
+{%- assign meta_description = page_description | default: shop.description -%}
+{% if meta_description != blank %}
   <meta
     name="description"
-    content="{{ page_description | escape }}"
+    content="{{ meta_description | escape }}"
   >
 {% endif %}
 

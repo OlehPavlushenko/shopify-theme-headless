@@ -11,7 +11,7 @@
 <li class="product-row" data-product-id="{{ product.id }}">
   <a href="{{ product.url }}" class="frame product-row__media" style="--frame-ratio: 1;" tabindex="-1" aria-hidden="true">
     {%- if product.featured_image -%}
-      {{ product.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', width: 120, height: 120, sizes: '60px' }}
+      {{ product.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', width: 120, height: 120, sizes: '60px', alt: '' }}
     {%- else -%}
       {{ 'product-1' | placeholder_svg_tag }}
     {%- endif -%}

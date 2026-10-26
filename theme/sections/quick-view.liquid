@@ -1,0 +1,111 @@
+{% comment %}
+  Quick view: the product's images, title, price, linked variant picker and add button, rendered for
+  the quick view popup (quick-view.js fetches /products/<handle>?section_id=quick-view).
+  Behavior: <product-info> and <variant-picker> (@ui/variant-picker), <ajax-cart-product-form>.
+  Styles: packages/ui/css/product-card.css (quick view part).
+{% endcomment %}
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign images = product.media | where: 'media_type', 'image'
+  assign on_sale = false
+  assign discount = 0
+  if variant.compare_at_price > variant.price
+    assign on_sale = true
+    assign discount = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round
+  endif
+  assign label_add = 'products.add_to_cart' | t
+  assign label_sold_out = 'products.sold_out' | t
+  assign label_unavailable = 'products.unavailable' | t
+  assign in_cart_label = 'products.in_cart' | t: count: '%n'
+  assign in_cart = 0
+  for item in cart.items
+    if item.variant_id == variant.id
+      assign in_cart = in_cart | plus: item.quantity
+    endif
+  endfor
+-%}
+<product-info
+  class="quick-view"
+  data-money-format="{{ shop.money_format | escape }}"
+  data-label-add="{{ label_add | escape }}"
+  data-label-sold-out="{{ label_sold_out | escape }}"
+  data-label-unavailable="{{ label_unavailable | escape }}"
+>
+  <ui-slider class="slider quick-view__media" style="--slider-columns: 1; --slider-columns-mobile: 1;">
+    <ul class="slider__track quick-view__track" data-slider-track role="list">
+      {%- for media in images -%}
+        <li class="frame quick-view__image" style="--frame-ratio: 1;" data-media-id="{{ media.id }}">
+          {{ media | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 45vw, 90vw', widths: '450, 600, 900', alt: media.alt }}
+        </li>
+      {%- else -%}
+        <li class="frame quick-view__image" style="--frame-ratio: 1;">{{ 'product-1' | placeholder_svg_tag }}</li>
+      {%- endfor -%}
+    </ul>
+    <span class="pill quick-view__badge" data-discount-badge{% unless on_sale %} hidden{% endunless %}>−{{ discount }}%</span>
+    {%- if images.size > 1 -%}
+      <div class="slider__dots quick-view__dots" data-slider-dots data-label="{{ 'sections.hero.slide' | t }}"></div>
+    {%- endif -%}
+  </ui-slider>
+
+  <div class="quick-view__info">
+    {%- if product.vendor != blank -%}
+      <p class="product-card__vendor">{{ product.vendor | escape }}</p>
+    {%- endif -%}
+    <h2 class="h4 quick-view__title">{{ product.title | escape }}</h2>
+    <span class="price-tag{% if on_sale %} price-tag--sale{% endif %} quick-view__price">
+      <span class="price-tag__current">{{ variant.price | money }}</span>
+      <s class="price-tag__compare"{% unless on_sale %} hidden{% endunless %}>
+        <span class="visually-hidden">{{ 'products.regular_price' | t }}</span>
+        <span data-compare-value>{{ variant.compare_at_price | money }}</span>
+      </s>
+    </span>
+
+    {%- unless product.has_only_default_variant -%}
+      {%- render 'variant-picker', product: product, id: 'QuickView' -%}
+    {%- endunless -%}
+
+    {%- comment -%} The picked variant already in the cart: "− 2 in cart +" instead of the add button (<cart-item-state>, cart.js) {%- endcomment -%}
+    <cart-item-state
+      class="product-card__cart quick-view__cart"
+      data-variant-id="{{ variant.id }}"
+      data-label="{{ in_cart_label | escape }}"
+      {% if in_cart > 0 %}
+        data-in-cart
+      {% endif %}
+    >
+      <ajax-cart-product-form>
+        {%- form 'product', product, class: 'quick-view__form' -%}
+          <input type="hidden" name="id" value="{{ variant.id }}">
+          <button type="submit" class="btn btn--full" data-add-button{% unless variant.available %} disabled{% endunless %}>
+            <span data-add-label>
+              {%- if variant.available -%}{{ label_add }}{%- else -%}{{ label_sold_out }}{%- endif -%}
+            </span>
+          </button>
+        {%- endform -%}
+      </ajax-cart-product-form>
+      <div class="product-card__in-cart">
+        <button type="button" class="product-card__step" data-step="-1" aria-label="{{ 'cart.decrease' | t: product: product.title | escape }}">
+          {%- render 'icon', name: 'minus' -%}
+        </button>
+        <span class="product-card__in-cart-label" data-in-cart-label aria-live="polite">
+          {{- in_cart_label | replace: '%n', in_cart -}}
+        </span>
+        <button type="button" class="product-card__step" data-step="1" aria-label="{{ 'cart.increase' | t: product: product.title | escape }}">
+          {%- render 'icon', name: 'plus' -%}
+        </button>
+      </div>
+    </cart-item-state>
+
+    <a href="{{ variant.url }}" class="section-head__link quick-view__link" data-product-link>
+      {{- 'products.view_details' | t -}}
+      {%- render 'icon', name: 'arrow-right' -%}
+    </a>
+  </div>
+</product-info>
+
+{% schema %}
+{
+  "name": "t:sections.quick_view.name",
+  "class": "quick-view-section"
+}
+{% endschema %}

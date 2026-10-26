@@ -21,7 +21,8 @@
     "comment_form_email": "Email",
     "comment_form_name": "Name",
     "comment_form_submit": "Post",
-    "comment_form_title": "Add a comment"
+    "comment_form_title": "Add a comment",
+    "read_more": "Read more"
   },
   "cart": {
     "title": "Cart",
@@ -65,11 +66,16 @@
   },
   "products": {
     "add_to_cart": "Add to cart",
+    "added": "Added",
+    "in_cart": "{{ count }} in cart",
     "sold_out": "Sold out",
     "sale": "Sale",
     "regular_price": "Regular price",
     "from_price_html": "From {{ price }}",
-    "choose_options": "Choose options"
+    "choose_options": "Choose options",
+    "unavailable": "Unavailable",
+    "view_details": "View full details",
+    "quick_view": "Quick view"
   },
   "customers": {
     "login": {

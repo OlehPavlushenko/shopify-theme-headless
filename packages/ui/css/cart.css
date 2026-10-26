@@ -27,8 +27,17 @@
   }
 
   .cart-line__media-col {
+    position: relative;
     display: grid;
     gap: var(--space-2xs);
+  }
+
+  /* "−X%" on the image of a discounted line */
+  .cart-line__badge {
+    position: absolute;
+    top: 0.4rem;
+    left: 0.4rem;
+    padding: 0 0.6rem;
   }
 
   .cart-line__media {
@@ -117,8 +126,15 @@
   }
 
   .cart-line__option dd {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
     margin: 0;
     color: var(--color-heading);
+  }
+
+  .cart-line__swatch {
+    --swatch-size: 1.2rem;
   }
 
   .cart-line__discount {
@@ -151,12 +167,35 @@
   .cart-line__price {
     display: grid;
     justify-items: end;
+    margin-inline-start: auto;
     text-align: end;
+  }
+
+  /* Discounted line: the new price over the smaller "was" price, both on the right */
+  .cart-line__price .price-tag {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0;
+  }
+
+  .cart-line__price .price-tag__compare {
+    font-size: var(--text-xs);
   }
 
   /* While Liquid Ajax Cart updates the cart: lines fade and controls wait */
   .js-ajax-cart-processing .cart-line {
     opacity: 0.55;
+  }
+
+  /* Just added: a short accent flash */
+  .cart-line[data-just-added] {
+    animation: cart-line-added 1.6s var(--ease);
+  }
+
+  @keyframes cart-line-added {
+    from {
+      background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+    }
   }
 
   .js-ajax-cart-processing :is(.cart-line, .cart-discount) :is(a, button, input) {

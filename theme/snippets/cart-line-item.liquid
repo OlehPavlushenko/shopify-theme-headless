@@ -1,7 +1,8 @@
 {% doc %}
   One cart line, shared by the cart drawer and the cart page.
   Layout: image (optional SKU under it) | title + remove icon, options as "Name: value",
-  then quantity and the line price in one row.
+  then quantity and the line price in one row. A discounted line (compare-at price or a discount
+  code) shows the "was" price struck through and "−X%" on the image.
   Quantity and remove controls are Liquid Ajax Cart v2 (<ajax-cart-quantity>, data-ajax-cart-request-button),
   so they work without JS as plain links to /cart/change.
 
@@ -11,10 +12,21 @@
 {% enddoc %}
 {%- liquid
   assign image_width = 160
+  assign color_names = 'color,colour,колір,цвет' | split: ','
   if eager
     assign loading = 'eager'
   else
     assign loading = 'lazy'
+  endif
+  # "Was" price of the line: the compare-at price when the variant is on sale, otherwise the price
+  # before discount codes; the badge shows the whole saving in percent
+  assign was_line_price = item.original_line_price
+  if item.variant.compare_at_price > item.original_price
+    assign was_line_price = item.variant.compare_at_price | times: item.quantity
+  endif
+  assign discount_percent = 0
+  if was_line_price > item.final_line_price
+    assign discount_percent = was_line_price | minus: item.final_line_price | times: 100.0 | divided_by: was_line_price | round
   endif
 -%}
 <li class="cart-line" data-cart-line="{{ item.key }}">
@@ -30,6 +42,9 @@
         {{ 'product-1' | placeholder_svg_tag }}
       {%- endif -%}
     </a>
+    {%- if discount_percent > 0 -%}
+      <span class="pill cart-line__badge">−{{ discount_percent }}%</span>
+    {%- endif -%}
     {%- if settings.show_cart_sku and item.sku != blank -%}
       <p class="cart-line__sku">{{ item.sku | escape }}</p>
     {%- endif -%}
@@ -51,9 +66,23 @@
     {%- unless item.product.has_only_default_variant -%}
       <dl class="cart-line__options">
         {%- for option in item.options_with_values -%}
+          {%- liquid
+            # Color options get the same swatch as on the product card (snippets/swatch)
+            assign swatch_value = null
+            assign option_name = option.name | downcase
+            assign product_option = item.product.options_with_values[forloop.index0]
+            if color_names contains option_name or product_option.values.first.swatch
+              assign swatch_value = product_option.values | where: 'name', option.value | first
+            endif
+          -%}
           <div class="cart-line__option">
             <dt>{{ option.name | escape }}:</dt>
-            <dd>{{ option.value | escape }}</dd>
+            <dd>
+              {%- if swatch_value -%}
+                {%- render 'swatch', value: swatch_value, class: 'cart-line__swatch' -%}
+              {%- endif -%}
+              {{- option.value | escape -}}
+            </dd>
           </div>
         {%- endfor -%}
       </dl>
@@ -121,10 +150,13 @@
       </ajax-cart-quantity>
 
       <div class="cart-line__price">
-        {%- if item.original_line_price > item.final_line_price -%}
+        {%- if was_line_price > item.final_line_price -%}
           <span class="price-tag price-tag--sale">
             <span class="price-tag__current">{{ item.final_line_price | money }}</span>
-            <s class="price-tag__compare">{{ item.original_line_price | money }}</s>
+            <s class="price-tag__compare">
+              <span class="visually-hidden">{{ 'products.regular_price' | t }}</span>
+              {{ was_line_price | money }}
+            </s>
           </span>
         {%- else -%}
           <span class="price-tag"><span class="price-tag__current">{{ item.final_line_price | money }}</span></span>

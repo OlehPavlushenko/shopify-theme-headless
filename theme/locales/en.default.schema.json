@@ -379,6 +379,15 @@
       "ratio_square": "Square",
       "ratio_portrait": "Portrait"
     },
+    "quick_view": {
+      "name": "Quick view"
+    },
+    "blog_posts": {
+      "name": "Blog posts",
+      "blog_info": "Empty: the store's first blog.",
+      "show_date": "Show date",
+      "show_excerpt": "Show excerpt"
+    },
     "promo_grid": {
       "name": "Promo grid",
       "promo": "Promo card",

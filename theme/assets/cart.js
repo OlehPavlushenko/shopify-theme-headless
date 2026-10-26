@@ -188,7 +188,7 @@ class CartRecommendations extends HTMLElement {
 
     async #load(productId) {
         // Bump the version when the markup of sections/cart-recommendations changes
-        const storageKey = `cart-recs:v4:${productId}`;
+        const storageKey = `cart-recs:v5:${productId}`;
         if (!this.#cache.has(productId)) {
             let stored = null;
             try {
@@ -225,9 +225,102 @@ class CartRecommendations extends HTMLElement {
 
 if (!customElements.get('cart-recommendations')) customElements.define('cart-recommendations', CartRecommendations);
 
+/**
+ * <cart-item-state data-variant-id|data-product-id data-label="%n in cart" [data-in-cart]> — an add
+ * button that turns into "− 2 in cart +" once the variant is in the cart (product cards, quick view),
+ * or a "✓ 2" count on "Choose options" for products with options. Liquid renders the first state;
+ * it follows every cart change after that. The steps change the cart line's quantity.
+ */
+class CartItemState extends HTMLElement {
+    connectedCallback() {
+        this.label = this.querySelector('[data-in-cart-label]');
+        this.addEventListener('click', (event) => {
+            const step = event.target.closest('[data-step]');
+            if (step && this.line) {
+                window.liquidAjaxCart.change({ id: this.line.key, quantity: this.quantity + Number(step.dataset.step) });
+            }
+        });
+        // Inside <product-info> (quick view): follow the picked variant
+        this.closest('product-info')?.addEventListener('variant:change', (event) => {
+            this.dataset.variantId = event.detail.variant?.id ?? '';
+            this.sync(window.liquidAjaxCart?.cart);
+        });
+        if (window.liquidAjaxCart?.init) this.sync(window.liquidAjaxCart.cart);
+    }
+
+    // data-variant-id: that variant's line (with steps); data-product-id: all the product's lines
+    // (a count only — product cards with options)
+    sync(cart) {
+        const productId = Number(this.dataset.productId);
+        const variantId = Number(this.dataset.variantId);
+        const lines = cart?.items?.filter((item) => (productId ? item.product_id === productId : item.variant_id === variantId)) ?? [];
+        this.line = lines[0];
+        this.quantity = lines.reduce((sum, item) => sum + item.quantity, 0);
+        this.toggleAttribute('data-in-cart', this.quantity > 0);
+        if (this.quantity) this.label.textContent = this.dataset.label.replace('%n', this.quantity);
+    }
+}
+
+if (!customElements.get('cart-item-state')) customElements.define('cart-item-state', CartItemState);
+
+// Variant pickers (quick view): a value whose variant — with the other current picks — is in the
+// cart gets [data-in-cart] on its label (a check mark, components.css)
+function markPickers(cart) {
+    const inCart = new Set(cart?.items?.map((item) => item.variant_id));
+    document.querySelectorAll('variant-picker').forEach((picker) => {
+        if (!picker.variants) return;
+        const selected = picker.selected;
+        picker.querySelectorAll('fieldset').forEach((fieldset, i) => {
+            fieldset.querySelectorAll('input').forEach((input) => {
+                const options = selected.with(i, input.value);
+                const variant = picker.variants.find((item) => item.options.every((value, j) => value === options[j]));
+                input.closest('label').toggleAttribute('data-in-cart', Boolean(variant && inCart.has(variant.id)));
+            });
+        });
+    });
+}
+
+const syncCartItemStates = () => {
+    const cart = window.liquidAjaxCart?.cart;
+    document.querySelectorAll('cart-item-state').forEach((element) => element.sync(cart));
+    markPickers(cart);
+};
+for (const type of ['variant:change', 'variant-picker:connect']) {
+    document.addEventListener(type, () => markPickers(window.liquidAjaxCart?.cart));
+}
+document.addEventListener('liquid-ajax-cart:init', syncCartItemStates);
+document.addEventListener('liquid-ajax-cart:request-end', syncCartItemStates);
+
+// Add buttons (<ajax-cart-product-form>): a spinner while the item is added, then "Added" for a moment
+const ADDED_FOR = 2000;
+const addButton = (requestState) => requestState.info?.initiator?.querySelector?.('[type="submit"]');
+
+document.addEventListener('liquid-ajax-cart:request-start', (event) => {
+    const { requestState } = event.detail;
+    if (requestState.requestType === 'add') addButton(requestState)?.setAttribute('aria-busy', 'true');
+});
+
 document.addEventListener('liquid-ajax-cart:request-end', (event) => {
     const { requestState } = event.detail;
-    if (requestState.requestType !== 'add' || !requestState.responseData?.ok) return;
+    if (requestState.requestType !== 'add') return;
+    const button = addButton(requestState);
+    button?.removeAttribute('aria-busy');
+    if (!requestState.responseData?.ok) return;
+
+    if (button) {
+        button.setAttribute('data-added', '');
+        clearTimeout(button.addedTimer);
+        button.addedTimer = setTimeout(() => button.removeAttribute('data-added'), ADDED_FOR);
+    }
+
+    // Flash the added lines in the re-rendered cart
+    const body = requestState.responseData.body;
+    for (const item of body.items ?? [body]) {
+        document.querySelectorAll(`[data-cart-line="${item.key}"]`).forEach((line) => {
+            line.setAttribute('data-just-added', '');
+            line.addEventListener('animationend', () => line.removeAttribute('data-just-added'), { once: true });
+        });
+    }
 
     if (settings.type === 'page') {
         window.location.href = settings.cartUrl;

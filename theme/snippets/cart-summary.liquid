@@ -17,8 +17,18 @@
       <span>{{ cart.total_price | money }}</span>
     </div>
   {%- endunless -%}
-  {%- if cart.total_discount > 0 -%}
-    <p class="cart-summary__savings">{{ 'cart.savings' | t }} {{ cart.total_discount | money }}</p>
+  {%- liquid
+    # Savings: discount codes and automatic discounts, plus compare-at (sale) prices
+    assign savings = cart.total_discount
+    for item in cart.items
+      if item.variant.compare_at_price > item.original_price
+        assign sale_saving = item.variant.compare_at_price | minus: item.original_price | times: item.quantity
+        assign savings = savings | plus: sale_saving
+      endif
+    endfor
+  -%}
+  {%- if savings > 0 -%}
+    <p class="cart-summary__savings">{{ 'cart.savings' | t }} {{ savings | money }}</p>
   {%- endif -%}
   <p class="cart-summary__note">{{ 'cart.taxes_note' | t }}</p>
 </div>

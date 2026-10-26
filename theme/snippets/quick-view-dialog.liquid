@@ -1,0 +1,13 @@
+{% doc %}
+  Quick view popup shell (one per page, in the layout). quick-view.js fills it with
+  sections/quick-view for the product whose [data-quick-view] link was clicked.
+  Styles: packages/ui/css/product-card.css.
+{% enddoc %}
+<dialog id="QuickView" class="popup quick-view-dialog" aria-label="{{ 'products.quick_view' | t }}">
+  <div class="quick-view-dialog__inner">
+    <button type="button" class="btn btn--icon quick-view-dialog__close" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">
+      {%- render 'icon', name: 'close' -%}
+    </button>
+    <div class="quick-view-dialog__content" data-quick-view-content aria-live="polite"></div>
+  </div>
+</dialog>

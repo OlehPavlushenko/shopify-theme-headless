@@ -98,8 +98,10 @@
           "@ui/footer": "{{ 'ui-footer.js' | asset_url }}",
           "@ui/background-video": "{{ 'ui-background-video.js' | asset_url }}",
           "@ui/show-more": "{{ 'ui-show-more.js' | asset_url }}",
+          "@ui/variant-picker": "{{ 'ui-variant-picker.js' | asset_url }}",
           "liquid-ajax-cart": "{{ 'liquid-ajax-cart-v2.2.0.js' | asset_url }}",
-          "cart": "{{ 'cart.js' | asset_url }}"
+          "cart": "{{ 'cart.js' | asset_url }}",
+          "quick-view": "{{ 'quick-view.js' | asset_url }}"
         }
       }
     </script>
@@ -114,6 +116,7 @@
       import '@ui/predictive-search';
       import '@ui/slider';
       import 'cart';
+      import 'quick-view';
     </script>
 
     {{ content_for_header }}
@@ -136,5 +139,6 @@
 
     {%- comment -%} Popups and other overlays (theme editor: "Overlays") {%- endcomment -%}
     {% sections 'overlay-group' %}
+    {% render 'quick-view-dialog' %}
   </body>
 </html>

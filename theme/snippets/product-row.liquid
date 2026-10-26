@@ -26,7 +26,8 @@
         {%- form 'product', product -%}
           <input type="hidden" name="id" value="{{ variant.id }}">
           <button type="submit" class="btn btn--outline btn--icon" aria-label="{{ 'products.add_to_cart' | t }}: {{ product.title | escape }}">
-            {%- render 'icon', name: 'plus' -%}
+            <span class="btn__state">{%- render 'icon', name: 'plus' -%}</span>
+            <span class="btn__state btn__state--done">{%- render 'icon', name: 'check' -%}</span>
           </button>
         {%- endform -%}
       </ajax-cart-product-form>

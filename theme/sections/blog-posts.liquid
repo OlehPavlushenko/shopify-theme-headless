@@ -1,0 +1,47 @@
+{% comment %}
+  Blog posts: the latest articles of a blog as cards (snippets/article-card) in a slider that turns
+  into a full row on wide screens. Without a picked blog: the store's first blog.
+  Styles: packages/ui/css/sections.css.
+{% endcomment %}
+{%- liquid
+  assign blog = section.settings.blog | default: blogs.first
+  assign link = blog.url
+-%}
+<div class="blog-posts color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width">
+    <ui-slider class="slider" style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 1.2;">
+      {%- render 'section-head', heading: section.settings.heading, link_label: section.settings.link_label, link: link, nav: true -%}
+      <ul class="slider__track" data-slider-track role="list">
+        {%- for article in blog.articles limit: section.settings.limit -%}
+          <li>
+            {%- render 'article-card',
+              article: article,
+              show_date: section.settings.show_date,
+              show_excerpt: section.settings.show_excerpt,
+              sizes: '(min-width: 990px) 33vw, 85vw'
+            -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </ui-slider>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.blog_posts.name",
+  "class": "blog-posts-section",
+  "disabled_on": { "groups": ["*"] },
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "From the blog" },
+    { "type": "blog", "id": "blog", "label": "t:sections.footer.blog", "info": "t:sections.blog_posts.blog_info" },
+    { "type": "range", "id": "limit", "label": "t:sections.footer.limit", "min": 2, "max": 12, "step": 1, "default": 6 },
+    { "type": "range", "id": "columns", "label": "t:sections.product_list.columns", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "checkbox", "id": "show_date", "label": "t:sections.blog_posts.show_date", "default": true },
+    { "type": "checkbox", "id": "show_excerpt", "label": "t:sections.blog_posts.show_excerpt", "default": true },
+    { "type": "text", "id": "link_label", "label": "t:sections.product_list.link_label", "default": "View all" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "t:sections.blog_posts.name" }]
+}
+{% endschema %}

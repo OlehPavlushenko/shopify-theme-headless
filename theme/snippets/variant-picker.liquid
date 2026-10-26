@@ -1,0 +1,52 @@
+{% doc %}
+  Variant picker: one group of chips per option (color options as swatches), linked to each other —
+  <variant-picker> (@ui/variant-picker) marks the values that don't exist with the other picks
+  ([data-missing]) or are sold out ([data-sold-out]), and on a pick of a missing combination
+  switches the other options to the closest variant. Used by quick view and the product page.
+  Styles: .variant-picker in packages/ui/css/components.css.
+
+  @param {object} product - Product
+  @param {string} id - Unique prefix for the radio groups (e.g. section.id)
+{% enddoc %}
+{%- liquid
+  assign color_names = 'color,colour,колір,цвет' | split: ','
+-%}
+<variant-picker class="variant-picker">
+  {%- for option in product.options_with_values -%}
+    {%- liquid
+      assign option_name = option.name | downcase
+      assign swatches = false
+      if color_names contains option_name or option.values.first.swatch
+        assign swatches = true
+      endif
+    -%}
+    <fieldset class="variant-picker__option">
+      <legend class="variant-picker__legend">
+        {{- option.name | escape }}: <span class="variant-picker__selected" data-selected-value>{{ option.selected_value | escape }}</span>
+      </legend>
+      <div class="variant-picker__values">
+        {%- for value in option.values -%}
+          <label class="{% if swatches %}variant-picker__swatch{% else %}chip variant-picker__chip{% endif %}">
+            <input
+              type="radio"
+              class="visually-hidden"
+              name="{{ id }}-option-{{ option.position }}"
+              value="{{ value | escape }}"
+              {% if value.selected %}
+                checked
+              {% endif %}
+            >
+            {%- if swatches -%}
+              {%- render 'swatch', value: value -%}
+            {%- else -%}
+              {{- value | escape -}}
+            {%- endif -%}
+          </label>
+        {%- endfor -%}
+      </div>
+    </fieldset>
+  {%- endfor -%}
+  <script type="application/json" data-variants>
+    {{ product.variants | json }}
+  </script>
+</variant-picker>

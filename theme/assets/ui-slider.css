@@ -67,8 +67,10 @@
     grid-auto-columns: calc((100% - (var(--columns) - 1) * var(--slider-gap)) / var(--columns));
     grid-auto-flow: column;
     gap: var(--slider-gap);
-    margin: 0;
-    padding: 0;
+    /* A scrolling track clips both axes: room for borders and focus rings at the top and bottom
+       edges, taken back by the margin so the layout doesn't move */
+    margin: -0.4rem 0;
+    padding: 0.4rem 0;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
@@ -87,6 +89,8 @@
 
   /* Vertical (data-axis="y"): items stack, the track scrolls up/down inside a bounded height */
   .slider--vertical .slider__track {
+    margin: 0;
+    padding: 0;
     grid-auto-columns: auto;
     grid-auto-flow: row;
     overflow: hidden auto;

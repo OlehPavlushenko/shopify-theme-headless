@@ -1,6 +1,8 @@
 {% doc %}
   Product card used across the theme: collection grids, search, product lists, mega menu.
-  Shows the featured image (second image on hover), sale / sold-out badge, vendor, title, price.
+  Shows the featured image (second image on hover), "−X%" / sale / sold-out badge, vendor, title,
+  price and the first option's values on one line: color swatches (5 at most, then "+N") or text
+  ("50 ml · 100 ml", cut with an ellipsis), sold-out ones faded / struck through.
   Styles: packages/ui/css/product-card.css.
 
   @param {object} product - Product
@@ -10,7 +12,8 @@
   @param {boolean} [eager] - Load the image eagerly (first row above the fold)
   @param {string} [heading_tag] - Title element (default h3)
   @param {boolean} [quick_add] - Add button under the price: one-click Ajax add for single-variant
-    products (Liquid Ajax Cart), a link to the product page for products with options
+    products (Liquid Ajax Cart) that turns into "− 2 in cart +" once added (<cart-item-state>,
+    cart.js); a link to the product page for products with options
 {% enddoc %}
 {%- liquid
   assign media = product.featured_media
@@ -29,10 +32,25 @@
     assign loading = 'lazy'
   endif
   assign variant = product.selected_or_first_available_variant
+  # Badge: "−X%" when the shown variant is discounted, "Sale" when only another variant is
+  assign discount = 0
   assign on_sale = false
   if variant.compare_at_price > variant.price
+    assign discount = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round
+  elsif product.compare_at_price_max > product.price_min
     assign on_sale = true
   endif
+  # Already in the cart: single-variant products get a quantity control instead of the add button,
+  # products with options a "✓ 2" count (all variants) on "Choose options"
+  assign in_cart = 0
+  if quick_add
+    for item in cart.items
+      if item.product_id == product.id
+        assign in_cart = in_cart | plus: item.quantity
+      endif
+    endfor
+  endif
+  assign in_cart_label = 'products.in_cart' | t: count: '%n'
 -%}
 <article class="product-card{% if second %} product-card--hover{% endif %}">
   <a href="{{ product.url }}" class="product-card__media frame" style="--frame-ratio: 1;" tabindex="-1" aria-hidden="true">
@@ -66,6 +84,8 @@
 
   {%- if product.available == false -%}
     <span class="pill pill--soft product-card__badge">{{ 'products.sold_out' | t }}</span>
+  {%- elsif discount > 0 -%}
+    <span class="pill product-card__badge">−{{ discount }}%</span>
   {%- elsif on_sale -%}
     <span class="pill product-card__badge">{{ 'products.sale' | t }}</span>
   {%- endif -%}
@@ -78,22 +98,87 @@
       <a href="{{ product.url }}" class="product-card__link">{{ product.title | escape }}</a>
     </{{ tag }}>
     {%- render 'price', product: product -%}
+    {%- unless product.has_only_default_variant -%}
+      {%- liquid
+        assign option = product.options_with_values.first
+        assign swatches = false
+        assign color_names = 'color,colour,колір,цвет' | split: ','
+        assign option_name = option.name | downcase
+        if color_names contains option_name or option.values.first.swatch
+          assign swatches = true
+        endif
+        # Swatches: one row of 5 at most, then "+N"; text values: all of them on one line (ellipsis)
+        assign shown = 50
+        if swatches
+          assign shown = 5
+        endif
+      -%}
+      <ul class="product-card__values{% if swatches %} product-card__values--swatches{% endif %}" role="list" aria-label="{{ option.name | escape }}">
+        {%- for value in option.values limit: shown -%}
+          <li class="product-card__value{% unless value.available %} product-card__value--unavailable{% endunless %}">
+            {%- if swatches -%}
+              {%- render 'swatch', value: value -%}
+            {%- else -%}
+              <span>{{- value | escape -}}</span>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+        {%- if option.values.size > shown -%}
+          <li class="product-card__value product-card__value--more">+{{ option.values.size | minus: shown }}</li>
+        {%- endif -%}
+      </ul>
+    {%- endunless -%}
   </div>
 
   {%- if quick_add and product.available -%}
     <div class="product-card__quick-add">
       {%- if product.has_only_default_variant -%}
-        <ajax-cart-product-form>
-          {%- form 'product', product -%}
-            <input type="hidden" name="id" value="{{ variant.id }}">
-            <button type="submit" class="btn btn--outline btn--sm btn--full">
-              {%- render 'icon', name: 'plus' -%}
-              {{- 'products.add_to_cart' | t -}}
+        <cart-item-state
+          class="product-card__cart"
+          data-variant-id="{{ variant.id }}"
+          data-label="{{ in_cart_label | escape }}"
+          {% if in_cart > 0 %}
+            data-in-cart
+          {% endif %}
+        >
+          <ajax-cart-product-form>
+            {%- form 'product', product -%}
+              <input type="hidden" name="id" value="{{ variant.id }}">
+              <button type="submit" class="btn btn--outline btn--sm btn--full">
+                {%- render 'icon', name: 'plus' -%}
+                {{- 'products.add_to_cart' | t -}}
+              </button>
+            {%- endform -%}
+          </ajax-cart-product-form>
+          <div class="product-card__in-cart">
+            <button type="button" class="product-card__step" data-step="-1" aria-label="{{ 'cart.decrease' | t: product: product.title | escape }}">
+              {%- render 'icon', name: 'minus' -%}
             </button>
-          {%- endform -%}
-        </ajax-cart-product-form>
+            <span class="product-card__in-cart-label" data-in-cart-label aria-live="polite">
+              {{- in_cart_label | replace: '%n', in_cart -}}
+            </span>
+            <button type="button" class="product-card__step" data-step="1" aria-label="{{ 'cart.increase' | t: product: product.title | escape }}">
+              {%- render 'icon', name: 'plus' -%}
+            </button>
+          </div>
+        </cart-item-state>
       {%- else -%}
-        <a href="{{ product.url }}" class="btn btn--outline btn--sm btn--full">{{ 'products.choose_options' | t }}</a>
+        <cart-item-state
+          class="product-card__cart"
+          data-product-id="{{ product.id }}"
+          data-label="%n"
+          {% if in_cart > 0 %}
+            data-in-cart
+          {% endif %}
+        >
+          <a href="{{ product.url }}" class="btn btn--outline btn--sm btn--full" data-quick-view aria-haspopup="dialog">
+            {{- 'products.choose_options' | t -}}
+            <span class="product-card__count" title="{{ in_cart_label | replace: '%n', in_cart | escape }}">
+              {%- render 'icon', name: 'check' -%}
+              <span data-in-cart-label>{{ in_cart }}</span>
+            </span>
+          </a>
+        </cart-item-state>
       {%- endif -%}
     </div>
   {%- endif -%}

@@ -235,6 +235,19 @@
         "link": "shopify://collections/new-arrivals",
         "color_scheme": "scheme-1"
       }
+    },
+    "blog": {
+      "type": "blog-posts",
+      "settings": {
+        "heading": "From the blog",
+        "blog": "news",
+        "limit": 6,
+        "columns": 3,
+        "show_date": true,
+        "show_excerpt": true,
+        "link_label": "View all",
+        "color_scheme": "scheme-1"
+      }
     }
   },
   "order": [
@@ -244,6 +257,7 @@
     "promos",
     "collections",
     "story",
-    "new_arrivals"
+    "new_arrivals",
+    "blog"
   ]
 }

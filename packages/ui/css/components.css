@@ -145,6 +145,22 @@
     animation: spin 0.7s linear infinite;
   }
 
+  /* Two states in one button (add → "Added"): [data-added] shows the second */
+  .btn__state {
+    display: inline-flex;
+    align-items: center;
+    gap: inherit;
+  }
+
+  .btn__state--done,
+  .btn[data-added] .btn__state:not(.btn__state--done) {
+    display: none;
+  }
+
+  .btn[data-added] .btn__state--done {
+    display: inline-flex;
+  }
+
   @keyframes spin {
     to {
       rotate: 1turn;
@@ -282,6 +298,131 @@
   .pill--soft {
     color: var(--color-heading);
     background: var(--color-surface);
+  }
+
+  /* ------------------------------------------------------------ swatch */
+  /* Color dot of an option value (snippets/swatch); --swatch is a color or a url() */
+  .swatch {
+    display: inline-block;
+    flex-shrink: 0;
+    width: var(--swatch-size, 1.6rem);
+    aspect-ratio: 1;
+    background: var(--swatch) center / cover;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 0.1rem color-mix(in srgb, var(--color-foreground) 18%, transparent);
+  }
+
+  /* --------------------------------------------------- variant picker */
+  /* snippets/variant-picker + @ui/variant-picker: chips (or swatches) per option.
+     Unavailable value — its combination with the other picks is sold out ([data-sold-out]) or
+     doesn't exist ([data-missing]) — looks the same, as in Shopify's own themes: a chip is faded and
+     struck through, a swatch keeps its color with a diagonal line. It stays clickable: a missing
+     combination switches the other options to the closest variant. */
+  .variant-picker {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .variant-picker__option {
+    display: grid;
+    gap: var(--space-xs);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .variant-picker__legend {
+    padding: 0;
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-heading);
+  }
+
+  .variant-picker__selected {
+    font-weight: var(--font-body-weight);
+    color: var(--color-foreground);
+  }
+
+  .variant-picker__values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  /* Chips size to their text; short values (S, M, L) get a minimum width */
+  .variant-picker__chip {
+    position: relative;
+    min-width: 4.8rem;
+    cursor: pointer;
+  }
+
+  .variant-picker__chip:has(input:checked) {
+    color: var(--color-button-label);
+    background: var(--color-button);
+    border-color: var(--color-button);
+  }
+
+  /* The picked chip isn't struck: the button already says "Sold out" / "Unavailable" */
+  .variant-picker__chip:is([data-sold-out], [data-missing]):not(:has(input:checked)) {
+    color: color-mix(in srgb, var(--color-foreground) 45%, transparent);
+    text-decoration: line-through;
+  }
+
+  .variant-picker__swatch {
+    --swatch-size: 2.8rem;
+
+    position: relative;
+    display: inline-flex;
+    padding: 0.3rem;
+    border: 0.1rem solid transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: border-color var(--duration-short) var(--ease);
+  }
+
+  .variant-picker__swatch:hover {
+    border-color: var(--color-border);
+  }
+
+  .variant-picker__swatch:has(input:checked) {
+    border-color: var(--color-heading);
+  }
+
+  .variant-picker__swatch:is([data-sold-out], [data-missing]) .swatch {
+    opacity: 0.6;
+  }
+
+  .variant-picker__swatch:is([data-sold-out], [data-missing])::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0.4rem auto;
+    height: 0.15rem;
+    background: var(--color-heading);
+    /* Edged in the background color, so it shows on dark swatches too */
+    box-shadow: 0 0 0 0.1rem var(--color-background);
+    rotate: -45deg;
+  }
+
+  /* That variant is already in the cart: a small check mark on the corner */
+  :is(.variant-picker__chip, .variant-picker__swatch)[data-in-cart]::before {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    top: -0.4rem;
+    right: -0.4rem;
+    width: 1.4rem;
+    aspect-ratio: 1;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")
+        center / 0.9rem no-repeat,
+      var(--color-accent);
+    border-radius: 50%;
+    box-shadow: 0 0 0 0.15rem var(--color-background);
+  }
+
+  .variant-picker :is(.variant-picker__chip, .variant-picker__swatch):has(input:focus-visible) {
+    outline: 0.2rem solid var(--color-heading);
+    outline-offset: 0.2rem;
   }
 
   /* -------------------------------------------------------------- chip */

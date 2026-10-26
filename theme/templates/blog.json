@@ -1,7 +1,27 @@
 {
   "sections": {
-    "header": { "type": "page-header", "settings": { "heading": "", "text": "<p>Guides, routines and ideas for natural care at home.</p>", "breadcrumbs": true, "counter": "none", "alignment": "left", "color_scheme": "scheme-2" } },
-    "main": { "type": "main-blog", "settings": { "per_page": 9, "tags": true, "featured": true, "color_scheme": "scheme-1" } }
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "heading": "",
+        "text": "<p>Guides, routines and ideas for natural care at home.</p>",
+        "breadcrumbs": true,
+        "alignment": "left",
+        "color_scheme": "scheme-2"
+      }
+    },
+    "main": {
+      "type": "main-blog",
+      "settings": {
+        "per_page": 9,
+        "tags": true,
+        "featured": true,
+        "color_scheme": "scheme-1"
+      }
+    }
   },
-  "order": ["header", "main"]
+  "order": [
+    "header",
+    "main"
+  ]
 }

@@ -2,7 +2,8 @@
   Page header: a band on its color scheme with breadcrumbs, the page heading (h1) and an intro line,
   for any template — pages, collections, blogs, search, wishlist, compare. The heading and text
   default to the page / collection / blog title and description and can be set here instead.
-  Optional product counter for the wishlist / compare pages ("4 products", @ui/saved-list).
+  On the wishlist / compare pages (template suffix) it adds the list's counter ("4 products",
+  @ui/saved-list) by itself.
   Styles: packages/ui/css/sections.css.
 {% endcomment %}
 {%- liquid
@@ -35,14 +36,14 @@
     {%- if text != blank -%}
       <div class="text-lead page-header__text">{{ text }}</div>
     {%- endif -%}
-    {%- if section.settings.counter != 'none' -%}
+    {%- if template.suffix == 'wishlist' or template.suffix == 'compare' -%}
       {%- liquid
         assign label_one = 'general.products_count' | t: count: 1
         assign label_other = 'general.products_count' | t: count: '%n'
       -%}
       <p
         class="page-header__counter"
-        data-saved-counter="{{ section.settings.counter }}"
+        data-saved-counter="{{ template.suffix }}"
         data-one="{{ label_one | escape }}"
         data-other="{{ label_other | escape }}"
         data-empty
@@ -60,17 +61,6 @@
     { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "info": "t:sections.page_header.heading_info" },
     { "type": "richtext", "id": "text", "label": "t:labels.text", "info": "t:sections.page_header.text_info" },
     { "type": "checkbox", "id": "breadcrumbs", "label": "t:sections.page_header.breadcrumbs", "default": true },
-    {
-      "type": "select",
-      "id": "counter",
-      "label": "t:sections.page_header.counter",
-      "options": [
-        { "value": "none", "label": "t:sections.page_header.counter_none" },
-        { "value": "wishlist", "label": "t:sections.page_header.counter_wishlist" },
-        { "value": "compare", "label": "t:sections.page_header.counter_compare" }
-      ],
-      "default": "none"
-    },
     {
       "type": "select",
       "id": "alignment",

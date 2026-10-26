@@ -6,7 +6,6 @@
         "heading": "",
         "text": "<p>See up to 4 products side by side: price, options, availability and more.</p>",
         "breadcrumbs": true,
-        "counter": "compare",
         "alignment": "left",
         "color_scheme": "scheme-2"
       }
@@ -20,5 +19,8 @@
       }
     }
   },
-  "order": ["header", "main"]
+  "order": [
+    "header",
+    "main"
+  ]
 }

@@ -1,7 +1,36 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "header": { "type": "page-header", "settings": { "heading": "", "text": "<p>Browse the catalog by category.</p>", "breadcrumbs": true, "counter": "none", "alignment": "left", "color_scheme": "scheme-2" } },
-    "main": { "type": "main-list-collections", "settings": { "sort": "default", "columns": 4, "ratio": "1", "color_scheme": "scheme-1" } }
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "heading": "",
+        "text": "<p>Browse the catalog by category.</p>",
+        "breadcrumbs": true,
+        "alignment": "left",
+        "color_scheme": "scheme-2"
+      }
+    },
+    "main": {
+      "type": "main-list-collections",
+      "settings": {
+        "sort": "default",
+        "columns": 4,
+        "ratio": "1",
+        "color_scheme": "scheme-1"
+      }
+    }
   },
-  "order": ["header", "main"]
+  "order": [
+    "header",
+    "main"
+  ]
 }

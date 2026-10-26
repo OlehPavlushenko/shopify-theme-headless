@@ -1,7 +1,25 @@
 {
   "sections": {
-    "header": { "type": "page-header", "settings": { "heading": "", "text": "", "breadcrumbs": true, "counter": "none", "alignment": "left", "color_scheme": "scheme-2" } },
-    "main": { "type": "main-page", "settings": { "width": "narrow", "color_scheme": "scheme-1" } }
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "heading": "",
+        "text": "",
+        "breadcrumbs": true,
+        "alignment": "left",
+        "color_scheme": "scheme-2"
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "width": "narrow",
+        "color_scheme": "scheme-1"
+      }
+    }
   },
-  "order": ["header", "main"]
+  "order": [
+    "header",
+    "main"
+  ]
 }

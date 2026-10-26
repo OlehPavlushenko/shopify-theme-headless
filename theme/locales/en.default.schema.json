@@ -386,10 +386,6 @@
       "heading_info": "Empty: the page, collection or blog title.",
       "text_info": "Empty: the collection or blog description.",
       "breadcrumbs": "Show breadcrumbs",
-      "counter": "Product counter",
-      "counter_none": "None",
-      "counter_wishlist": "Wishlist",
-      "counter_compare": "Compare",
       "alignment": "Alignment",
       "alignment_left": "Left",
       "alignment_center": "Center"

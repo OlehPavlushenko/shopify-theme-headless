@@ -255,8 +255,10 @@
   }
 
   /* ------------------------------------------------------ the groups */
+  /* align-content: the groups keep their height when facets.js holds the form's min-height */
   .facets__form {
     display: grid;
+    align-content: start;
   }
 
   .facet {

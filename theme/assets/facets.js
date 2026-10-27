@@ -19,6 +19,10 @@
  * <price-range>: two number fields + a dual range slider kept in sync.
  */
 const cache = new Map();
+
+// Selector of a form field, to find it again after the form is replaced
+const inputSelector = (input) =>
+  input.name ? `[name="${CSS.escape(input.name)}"]${input.type === 'checkbox' ? `[value="${CSS.escape(input.value)}"]` : ''}` : null;
 const DENSITY_KEY = 'facets:density';
 
 function readDensity() {
@@ -41,6 +45,8 @@ class FacetFilters extends HTMLElement {
   #controller;
   #timer;
   #resizeObserver;
+  #revealOnClose = false;
+  #lastChanged = null;
 
   connectedCallback() {
     this.section = this.dataset.section;
@@ -92,6 +98,7 @@ class FacetFilters extends HTMLElement {
   #onChange = (event) => {
     if (event.target.closest('price-range')) return; // handled with a pause in #onInput
     if (event.target.matches('[data-facets-form] *, [data-facets-sort]')) {
+      this.#lastChanged = inputSelector(event.target);
       clearTimeout(this.#timer);
       this.#timer = setTimeout(() => this.#apply(this.#formUrl()), 150);
     }
@@ -127,6 +134,12 @@ class FacetFilters extends HTMLElement {
 
   // Horizontal layout (desktop): the groups are dropdowns — one open at a time
   #onToggle = (event) => {
+    if (event.target.matches?.('.facets__panel') && event.newState === 'closed') {
+      if (this.#form) this.#form.style.minHeight = '';
+      if (this.#revealOnClose) this.#revealResults();
+      this.#revealOnClose = false;
+      return;
+    }
     const details = event.target;
     if (!details.matches?.('.facet') || !details.open || !this.#isDropdowns()) return;
     this.querySelectorAll('.facet[open]').forEach((other) => other !== details && (other.open = false));
@@ -204,6 +217,11 @@ class FacetFilters extends HTMLElement {
   // Fewer results make the page shorter: when the top of the results is above the screen, bring it
   // back under the header (otherwise the shopper is left looking at the footer)
   #revealResults() {
+    // Behind the open drawer the results aren't seen: the page scrolls once it closes, not now
+    if (this.querySelector('.facets__panel:popover-open')) {
+      this.#revealOnClose = true;
+      return;
+    }
     const anchor = this.querySelector('.facets__toolbar') || this;
     const headerBottom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-bottom')) || 0;
     const top = anchor.getBoundingClientRect().top - headerBottom - 16;
@@ -215,11 +233,21 @@ class FacetFilters extends HTMLElement {
   // Swap the changing parts; keep which groups are open and where "Show more" was expanded
   #replace(next) {
     const active = document.activeElement;
-    const focused =
-      active?.closest('[data-facets-form]') && active.name
-        ? `[name="${CSS.escape(active.name)}"]${active.type === 'checkbox' ? `[value="${CSS.escape(active.value)}"]` : ''}`
-        : null;
+    const focused = active?.closest('[data-facets-form]') ? inputSelector(active) : null;
     const open = new Set([...this.querySelectorAll('.facet[open]')].map((details) => details.dataset.facet));
+    // The filters scroll inside the drawer's body (or the sticky sidebar) and are replaced: keep the
+    // value just changed where it was on screen, or the list jumps
+    const anchor = this.#lastChanged || focused;
+    this.#lastChanged = null;
+    // Where the value sits in the form (not on screen: independent of the scroll position)
+    const anchorOffset = () => {
+      const row = anchor && this.querySelector(`[data-facets-form] ${anchor}`)?.closest('.facet__value, .facet');
+      return row ? row.getBoundingClientRect().top - this.#form.getBoundingClientRect().top : undefined;
+    };
+    const offsetBefore = anchorOffset();
+    const scrollBefore = this.#scroller()?.scrollTop ?? 0;
+    const drawerOpen = Boolean(this.querySelector('.facets__panel:popover-open'));
+    const formHeight = this.#form?.offsetHeight ?? 0;
     const expanded = new Set(
       [...this.querySelectorAll('.facet')]
         .filter((details) => details.querySelector('[data-facet-more]:not([hidden])'))
@@ -254,7 +282,22 @@ class FacetFilters extends HTMLElement {
       }
     });
     this.#applyDensity(readDensity());
+    const scroller = this.#scroller();
+    if (scroller) {
+      const offsetAfter = anchorOffset();
+      const shift = offsetBefore !== undefined && offsetAfter !== undefined ? offsetAfter - offsetBefore : 0;
+      // In the open drawer the list doesn't get shorter than it was plus the shift (groups left out
+      // below would clamp the scroll and move everything); the min-height goes when it closes.
+      // Set before the scroll position, in one assignment (Chrome clamps a second one to the old range)
+      if (drawerOpen && this.#form) this.#form.style.minHeight = `${formHeight + Math.max(shift, 0)}px`;
+      scroller.scrollTop = scrollBefore + shift;
+    }
     if (focused) this.querySelector(`[data-facets-form] ${focused}`)?.focus({ preventScroll: true });
+  }
+
+  // What the filters scroll in: the open drawer's body, otherwise the panel (the sticky sidebar)
+  #scroller() {
+    return this.querySelector('.facets__panel:popover-open [data-facets-body]') || this.querySelector('.facets__panel');
   }
 
   async #loadMore(link) {

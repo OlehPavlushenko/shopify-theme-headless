@@ -1,8 +1,9 @@
 {% doc %}
   Storefront filters (Shopify Search & Discovery) as a form of filter groups; one markup for every
   layout — the panel is a sidebar column, a row of dropdowns or a drawer by CSS (facets.css), and
-  always a drawer on phones. Group types: list (checkboxes with counts; color swatches when the
-  filter's presentation is swatch), boolean, price range (two fields + a dual slider).
+  always a drawer on phones. Group types: list (checkboxes with counts; color dots in their place
+  for a swatch or color filter, see option-is-color), boolean, price range (two fields + a dual
+  slider). Groups with nothing to choose are left out.
   Works without JS (the form submits, "Apply"); <facet-filters> (facets.js) updates the results live.
 
   @param {object[]} filters - collection.filters or search.filters
@@ -23,16 +24,21 @@
   {%- endif -%}
   {%- for filter in filters -%}
     {%- liquid
-      # Skip a group with no values at all (a price range without prices) — a bare heading reads as
-      # "still loading". A group whose values all dropped to 0 stays, disabled: removing it would
-      # shift the groups under the shopper's cursor
-      assign selectable = true
+      # Skip a group with nothing to choose: no values, or every value at 0 and none active (other
+      # filters exclude them all), or a price range without prices. A bare heading or a group of
+      # disabled values only gets in the way. Groups with some values left keep the 0s disabled.
+      assign selectable = false
       if filter.type == 'price_range'
-        if filter.range_max == 0
-          assign selectable = false
+        if filter.range_max > 0
+          assign selectable = true
         endif
-      elsif filter.values.size == 0
-        assign selectable = false
+      else
+        for value in filter.values
+          if value.count > 0 or value.active
+            assign selectable = true
+            break
+          endif
+        endfor
       endif
       unless selectable
         continue
@@ -129,7 +135,7 @@
                 endif
               endif
             -%}
-            <ul class="facet__values{% if is_swatch %} facet__values--swatch{% endif %}" role="list">
+            <ul class="facet__values" role="list">
               {%- for value in filter.values -%}
                 <li class="facet__item"{% if forloop.index > shown %} data-facet-more hidden{% endif %}>
                   <label class="facet__value{% if value.count == 0 and value.active == false %} facet__value--disabled{% endif %}">

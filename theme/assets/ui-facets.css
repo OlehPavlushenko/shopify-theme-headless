@@ -385,21 +385,12 @@
     opacity: 0.45;
   }
 
-  /* Swatches: round dots in a wrapping row, the label under each; checked gets a ring */
-  .facet__values--swatch {
-    grid-template-columns: repeat(auto-fill, minmax(5.6rem, 1fr));
-    gap: var(--space-xs);
-  }
-
-  .facet__values--swatch .facet__value {
-    flex-direction: column;
-    gap: 0.4rem;
-    text-align: center;
-  }
-
+  /* Swatches: rows like the checkboxes — the color dot in the checkbox's place, the label, the
+     count; checked gets a ring */
   .facet__swatch {
-    --swatch-size: 3.2rem;
+    --swatch-size: 2rem;
 
+    flex-shrink: 0;
     box-shadow:
       inset 0 0 0 0.1rem color-mix(in srgb, var(--color-foreground) 18%, transparent),
       0 0 0 0.2rem var(--color-background),
@@ -407,19 +398,18 @@
     transition: box-shadow var(--duration-short) var(--ease);
   }
 
+  .facet__value:hover .facet__swatch {
+    box-shadow:
+      inset 0 0 0 0.1rem color-mix(in srgb, var(--color-foreground) 18%, transparent),
+      0 0 0 0.2rem var(--color-background),
+      0 0 0 0.3rem var(--color-border);
+  }
+
   .facet__checkbox:checked + .facet__swatch {
     box-shadow:
       inset 0 0 0 0.1rem color-mix(in srgb, var(--color-foreground) 18%, transparent),
       0 0 0 0.2rem var(--color-background),
       0 0 0 0.35rem var(--color-heading);
-  }
-
-  .facet__values--swatch .facet__value-label {
-    font-size: var(--text-xs);
-  }
-
-  .facet__values--swatch .facet__count {
-    display: none;
   }
 
   .facet__more {

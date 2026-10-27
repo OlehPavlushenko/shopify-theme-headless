@@ -23,6 +23,25 @@
   {%- endif -%}
   {%- for filter in filters -%}
     {%- liquid
+      # Skip a group with nothing to choose (no values, or every value empty and none active;
+      # a price range without prices) — a bare heading reads as "still loading"
+      assign selectable = false
+      if filter.type == 'price_range'
+        if filter.range_max > 0
+          assign selectable = true
+        endif
+      else
+        for value in filter.values
+          if value.count > 0 or value.active
+            assign selectable = true
+            break
+          endif
+        endfor
+      endif
+      unless selectable
+        continue
+      endunless
+
       assign active_count = filter.active_values.size
       if filter.type == 'price_range'
         assign active_count = 0

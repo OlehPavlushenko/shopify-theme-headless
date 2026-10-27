@@ -31,7 +31,15 @@
     {%- if template.name == 'collection' or template.name == 'search' -%}
       {{ 'ui-facets.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
-    {%- if settings.wishlist_enabled or settings.compare_enabled -%}
+    {%- liquid
+      # Wishlist / compare pages: their styles block; elsewhere only the recently viewed list
+      # (below the fold) uses them, so they join the deferred files
+      assign saved_page = false
+      if template.suffix == 'wishlist' or template.suffix == 'compare'
+        assign saved_page = true
+      endif
+    -%}
+    {%- if saved_page -%}
       {{ 'ui-saved.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
     {%- comment -%}
@@ -40,7 +48,13 @@
       comes from tokens.css, so the load order doesn't matter). On their own templates (search, cart)
       they block as usual.
     {%- endcomment -%}
-    {%- assign deferred = 'ui-search.css,ui-cart.css,ui-promo.css,ui-footer.css' | split: ',' -%}
+    {%- liquid
+      assign deferred = 'ui-search.css,ui-cart.css,ui-promo.css,ui-footer.css'
+      unless saved_page
+        assign deferred = deferred | append: ',ui-saved.css'
+      endunless
+      assign deferred = deferred | split: ','
+    -%}
     {%- for file in deferred -%}
       {%- liquid
         assign blocking = false

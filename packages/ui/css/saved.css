@@ -1,100 +1,12 @@
 /*
- * Wishlist & compare: the buttons on product cards, counters and the wishlist / compare pages.
- * Markup contract: theme/snippets/saved-toggles.liquid, saved-empty.liquid, saved-skeleton.liquid,
- * theme/sections/main-wishlist.liquid, main-compare.liquid, compare-column.liquid.
+ * Wishlist & compare pages (and the recently viewed list, which shares <saved-products>).
+ * The buttons on product cards and the counters are global: components.css ("Saved toggles").
+ * Markup contract: theme/snippets/saved-empty.liquid, saved-skeleton.liquid,
+ * theme/sections/main-wishlist.liquid, main-compare.liquid, compare-column.liquid, recently-viewed.liquid.
  * Behavior: packages/ui/js/saved-list.js, theme/assets/saved-pages.js.
+ * Blocks rendering only on the wishlist and compare pages (theme.liquid); deferred elsewhere.
  */
 @layer components {
-  /* ------------------------------------------- toggles on the card */
-  .saved-toggles {
-    display: grid;
-    gap: var(--space-2xs);
-  }
-
-  .product-card__actions {
-    position: absolute;
-    z-index: 1;
-    top: var(--space-s);
-    right: var(--space-s);
-  }
-
-  .saved-toggle {
-    display: grid;
-    place-items: center;
-    width: var(--control-toggle);
-    aspect-ratio: 1;
-    padding: 0;
-    color: var(--color-heading);
-    background: color-mix(in srgb, var(--color-background) 85%, transparent);
-    border: 0;
-    border-radius: 50%;
-    box-shadow: var(--shadow-sm);
-    cursor: pointer;
-    transition:
-      color var(--duration-short) var(--ease),
-      background-color var(--duration-short) var(--ease),
-      scale var(--duration-short) var(--ease-out);
-  }
-
-  .saved-toggle:hover {
-    background: var(--color-background);
-  }
-
-  .saved-toggle:active {
-    scale: 0.92;
-  }
-
-  .saved-toggle .svg-icon {
-    --icon-size: 1.8rem;
-  }
-
-  /* Saved: a filled accent heart; a compare button in the button colors */
-  saved-toggle[data-list='wishlist'] .saved-toggle[aria-pressed='true'] {
-    color: var(--color-accent);
-  }
-
-  saved-toggle[data-list='wishlist'] .saved-toggle[aria-pressed='true'] .svg-icon path {
-    fill: currentColor;
-  }
-
-  saved-toggle[data-list='compare'] .saved-toggle[aria-pressed='true'] {
-    color: var(--color-button-label);
-    background: var(--color-button);
-  }
-
-  /* Phones and touch: always shown; with a mouse: shown on card hover or once saved */
-  @media (hover: hover) {
-    .product-card__actions saved-toggle:not(:has([aria-pressed='true'])) {
-      opacity: 0;
-      transition: opacity var(--duration-default) var(--ease);
-    }
-
-    .product-card:is(:hover, :focus-within) .product-card__actions saved-toggle {
-      opacity: 1;
-    }
-  }
-
-  /* ------------------------------------------------------- counters */
-  .saved-count {
-    display: inline-grid;
-    place-items: center;
-    min-width: 2rem;
-    height: 2rem;
-    margin-inline-start: auto;
-    padding-inline: 0.6rem;
-    font-size: var(--text-xs);
-    font-weight: var(--font-body-weight-semibold);
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
-    color: var(--color-button-label);
-    background: var(--color-accent);
-    border-radius: var(--radius-badge);
-  }
-
-  .saved-count[data-empty] {
-    display: none;
-  }
-
   /* -------------------------------------------- wishlist & compare */
   /* <saved-products data-state>: nothing until the list is read (loading), then the products
      (filled) or the empty state (empty) */
@@ -102,12 +14,12 @@
     display: block;
   }
 
-  saved-products:not([data-state='filled']) [data-saved-products],
-  saved-products:not([data-state='empty']) [data-saved-empty] {
+  saved-products:not([data-state="filled"]) [data-saved-products],
+  saved-products:not([data-state="empty"]) [data-saved-empty] {
     display: none;
   }
 
-  saved-products:not([data-state='loading']) [data-saved-skeleton] {
+  saved-products:not([data-state="loading"]) [data-saved-skeleton] {
     display: none;
   }
 
@@ -138,7 +50,7 @@
     }
   }
 
-  saved-products[aria-busy='true'] [data-saved-products] {
+  saved-products[aria-busy="true"] [data-saved-products] {
     opacity: 0.6;
     transition: opacity var(--duration-default) var(--ease);
   }

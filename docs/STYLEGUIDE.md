@@ -85,8 +85,10 @@ and the list of mistakes we already made once. Read both before adding code.
 - Load a module where it is used: `<script type="module">import '@ui/x';</script>` in the section,
   or `import()` on first use (quick view loads the variant picker on the first open). Only what
   every page needs is imported in `theme.liquid`.
-- Don't read layout (`clientWidth`, `getBoundingClientRect`) at module load: it forces a reflow
-  while the page renders. Measure right before you need it.
+- Don't read layout (`clientWidth`, `getBoundingClientRect`) at module load or in
+  `connectedCallback`: it forces a reflow while the page renders. A component that already has a
+  `ResizeObserver` gets its first measurement from the observer's first call (after layout, before
+  paint) — don't also call the update by hand. Otherwise measure right before you need it.
 - Overlays open and close through `@ui/dialog`; open styles go on `[open]:not([data-closing])` /
   `:popover-open:not([data-closing])`.
 - Server-render first: the HTML works without JS (forms post, links navigate); JS enhances.

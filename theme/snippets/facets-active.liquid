@@ -13,10 +13,11 @@
         {%- liquid
           assign from = filter.min_value.value | default: 0 | money_without_trailing_zeros
           assign to = filter.max_value.value | default: filter.range_max | money_without_trailing_zeros
+          assign range_label = from | append: '–' | append: to
         -%}
         <li>
-          <a href="{{ filter.url_to_remove }}" class="chip facets-active__chip" data-facets-link>
-            {{- from }}–{{ to -}}
+          <a href="{{ filter.url_to_remove }}" class="chip facets-active__chip" data-facets-link aria-label="{{ 'facets.remove' | t: filter: range_label | escape }}">
+            {{- range_label -}}
             {%- render 'icon', name: 'close' -%}
           </a>
         </li>

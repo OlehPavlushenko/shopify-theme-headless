@@ -33,12 +33,13 @@ class UiSlider extends HTMLElement {
     this.prev?.addEventListener('click', () => this.#go(-1));
     this.next?.addEventListener('click', () => this.#go(1));
     this.track.addEventListener('scroll', this.#onScroll, { passive: true });
+    // The observer's first call (after layout, before paint) runs #update: measuring here would
+    // force a layout while the page is still rendering
     this.#resizeObserver = new ResizeObserver(() => this.#update());
     this.#resizeObserver.observe(this.track);
     this.#mutationObserver = new MutationObserver(() => this.#update());
     this.#mutationObserver.observe(this.track, { childList: true });
     this.#buildDots();
-    this.#update();
     this.#startAutoplay();
   }
 

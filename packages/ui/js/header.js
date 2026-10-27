@@ -17,11 +17,14 @@ class SiteHeader extends HTMLElement {
   #resizeObserver;
 
   connectedCallback() {
+    // The observer's first call (after layout, before paint) sets the height; measuring here would
+    // force a layout while the page is still rendering
     this.#resizeObserver = new ResizeObserver(() => this.#syncHeight());
     this.#resizeObserver.observe(this);
-    this.#syncHeight();
-    this.#lastY = window.scrollY;
-    this.#update();
+    requestAnimationFrame(() => {
+      this.#lastY = window.scrollY;
+      this.#update();
+    });
     window.addEventListener('scroll', this.#onScroll, { passive: true });
   }
 

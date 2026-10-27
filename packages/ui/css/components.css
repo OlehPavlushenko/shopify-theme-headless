@@ -43,7 +43,6 @@
       background: var(--btn-bg-hover);
       border-color: var(--btn-border-hover);
     }
-
   }
 
   /* Arrow nudge, one rule for the whole theme: an arrow-right icon slides a little when its link,
@@ -121,7 +120,7 @@
   }
 
   .btn:disabled,
-  .btn[aria-disabled='true'] {
+  .btn[aria-disabled="true"] {
     --btn-bg: var(--color-surface);
     --btn-fg: var(--color-text-disabled);
     --btn-border: var(--color-surface);
@@ -133,14 +132,14 @@
     transform: none;
   }
 
-  .btn[aria-busy='true'] {
+  .btn[aria-busy="true"] {
     position: relative;
     color: transparent;
     pointer-events: none;
   }
 
-  .btn[aria-busy='true']::after {
-    content: '';
+  .btn[aria-busy="true"]::after {
+    content: "";
     position: absolute;
     width: 1.8rem;
     aspect-ratio: 1;
@@ -399,7 +398,7 @@
   }
 
   .variant-picker__swatch:is([data-sold-out], [data-missing])::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 50% 0.4rem auto;
     height: 0.15rem;
@@ -411,7 +410,7 @@
 
   /* That variant is already in the cart: a small check mark on the corner */
   :is(.variant-picker__chip, .variant-picker__swatch)[data-in-cart]::before {
-    content: '';
+    content: "";
     position: absolute;
     z-index: 1;
     top: -0.4rem;
@@ -539,8 +538,8 @@
   .skeleton {
     display: block;
     background:
-      linear-gradient(100deg, transparent 30%, color-mix(in srgb, var(--color-background) 55%, transparent) 50%, transparent 70%)
-        0 0 / 200% 100% no-repeat,
+      linear-gradient(100deg, transparent 30%, color-mix(in srgb, var(--color-background) 55%, transparent) 50%, transparent 70%) 0 0 / 200%
+        100% no-repeat,
       var(--color-surface);
     border-radius: calc(var(--radius-media) * 0.5);
     animation: skeleton-sweep 1.4s var(--ease) infinite;
@@ -561,11 +560,15 @@
 
   @keyframes skeleton-sweep {
     from {
-      background-position: 150% 0, 0 0;
+      background-position:
+        150% 0,
+        0 0;
     }
 
     to {
-      background-position: -50% 0, 0 0;
+      background-position:
+        -50% 0,
+        0 0;
     }
   }
 
@@ -592,7 +595,7 @@
   }
 
   .breadcrumbs__item + .breadcrumbs__item::before {
-    content: '/';
+    content: "/";
     margin-inline-end: var(--space-2xs);
     color: var(--color-text-disabled);
   }
@@ -708,8 +711,8 @@
     border-color: var(--color-heading);
   }
 
-  .chip[aria-pressed='true'],
-  .chip[aria-checked='true'] {
+  .chip[aria-pressed="true"],
+  .chip[aria-checked="true"] {
     color: var(--color-button-label);
     background: var(--color-button);
     border-color: var(--color-button);
@@ -808,12 +811,12 @@
     background: var(--color-surface);
   }
 
-  .pagination__item[aria-current='page'] {
+  .pagination__item[aria-current="page"] {
     color: var(--color-button-label);
     background: var(--color-button);
   }
 
-  .pagination__item[aria-disabled='true'] {
+  .pagination__item[aria-disabled="true"] {
     opacity: 0.35;
   }
 
@@ -951,5 +954,97 @@
   :is(.drawer, .search-panel, .menu-panel) {
     scrollbar-width: thin;
     scrollbar-color: color-mix(in srgb, var(--color-foreground) 22%, transparent) transparent;
+  }
+
+  /* ------------------------------------------------------ saved toggles */
+  /* Wishlist / compare buttons on product cards (snippets/saved-toggles) and the counters
+     (utility-content); the wishlist and compare pages are in saved.css */
+  .saved-toggles {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .product-card__actions {
+    position: absolute;
+    z-index: 1;
+    top: var(--space-s);
+    right: var(--space-s);
+  }
+
+  .saved-toggle {
+    display: grid;
+    place-items: center;
+    width: var(--control-toggle);
+    aspect-ratio: 1;
+    padding: 0;
+    color: var(--color-heading);
+    background: color-mix(in srgb, var(--color-background) 85%, transparent);
+    border: 0;
+    border-radius: 50%;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition:
+      color var(--duration-short) var(--ease),
+      background-color var(--duration-short) var(--ease),
+      scale var(--duration-short) var(--ease-out);
+  }
+
+  .saved-toggle:hover {
+    background: var(--color-background);
+  }
+
+  .saved-toggle:active {
+    scale: 0.92;
+  }
+
+  .saved-toggle .svg-icon {
+    --icon-size: 1.8rem;
+  }
+
+  /* Saved: a filled accent heart; a compare button in the button colors */
+  saved-toggle[data-list="wishlist"] .saved-toggle[aria-pressed="true"] {
+    color: var(--color-accent);
+  }
+
+  saved-toggle[data-list="wishlist"] .saved-toggle[aria-pressed="true"] .svg-icon path {
+    fill: currentColor;
+  }
+
+  saved-toggle[data-list="compare"] .saved-toggle[aria-pressed="true"] {
+    color: var(--color-button-label);
+    background: var(--color-button);
+  }
+
+  /* Phones and touch: always shown; with a mouse: shown on card hover or once saved */
+  @media (hover: hover) {
+    .product-card__actions saved-toggle:not(:has([aria-pressed="true"])) {
+      opacity: 0;
+      transition: opacity var(--duration-default) var(--ease);
+    }
+
+    .product-card:is(:hover, :focus-within) .product-card__actions saved-toggle {
+      opacity: 1;
+    }
+  }
+
+  /* ------------------------------------------------------- counters */
+  .saved-count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2rem;
+    height: 2rem;
+    margin-inline-start: auto;
+    padding-inline: 0.6rem;
+    font-size: var(--text-xs);
+    font-weight: var(--font-body-weight-semibold);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: var(--color-button-label);
+    background: var(--color-accent);
+    border-radius: var(--radius-badge);
+  }
+
+  .saved-count[data-empty] {
+    display: none;
   }
 }

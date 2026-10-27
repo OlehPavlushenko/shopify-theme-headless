@@ -40,6 +40,7 @@ function saveDensity(value) {
 class FacetFilters extends HTMLElement {
   #controller;
   #timer;
+  #resizeObserver;
 
   connectedCallback() {
     this.section = this.dataset.section;
@@ -53,12 +54,11 @@ class FacetFilters extends HTMLElement {
     this.addEventListener('toggle', this.#onToggle, true);
     document.addEventListener('click', this.#onOutsideClick);
     window.addEventListener('popstate', this.#onPopState);
-    this.#applyDensity(readDensity());
+    // No #fitMore here: the observer's first call does it after layout (no forced reflow on load)
+    this.#applyDensity(readDensity(), false);
     this.#resizeObserver = new ResizeObserver(() => this.#fitMore());
     this.#resizeObserver.observe(this);
   }
-
-  #resizeObserver;
 
   // "Load more" cell: span the columns left in the last row (all of them when the row is full)
   #fitMore() {
@@ -152,13 +152,13 @@ class FacetFilters extends HTMLElement {
     button.textContent = expand ? button.dataset.labelLess : button.dataset.labelMore;
   }
 
-  #applyDensity(value) {
+  #applyDensity(value, fit = true) {
     const grid = this.querySelector('[data-facets-grid]');
     if (grid) grid.dataset.density = value;
     this.querySelectorAll('button[data-density]').forEach((button) =>
       button.setAttribute('aria-pressed', String(button.dataset.density === value))
     );
-    this.#fitMore();
+    if (fit) this.#fitMore();
   }
 
   async #fetch(url) {

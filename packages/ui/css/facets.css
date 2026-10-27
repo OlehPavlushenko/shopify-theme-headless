@@ -648,14 +648,6 @@
     .facets--horizontal .facets__toolbar {
       order: 1;
     }
-
-    .facets__grid {
-      --grid-columns: var(--cols);
-    }
-
-    .facets__grid[data-density="few"] {
-      --grid-columns: var(--cols-few);
-    }
   }
 
   /* --------------------------------------------------------- the grid */
@@ -669,9 +661,41 @@
     list-style: none;
   }
 
+  /* Tablets, and the sidebar layout on small laptops: at most 3 columns (--cols-tablet) */
   .facets__grid[data-density="few"] {
     --grid-columns: var(--cols-few);
     --grid-columns-mobile: 1;
+  }
+
+  /* Tablets, and the sidebar layout on small laptops: at most 3 columns (--cols-tablet, set with
+     --cols on the grid) */
+  @media (min-width: 750px) and (max-width: 989px) {
+    .facets__grid {
+      --grid-columns: var(--cols-tablet);
+    }
+
+    /* The density icons draw the columns shown: the bars past the tablet count hide */
+    .facets__density-icon > [data-wide] {
+      display: none;
+    }
+
+    .facets__grid[data-density="few"] {
+      --grid-columns: var(--cols-few-tablet);
+    }
+  }
+
+  @media (min-width: 990px) and (max-width: 1199px) {
+    .facets--sidebar .facets__grid {
+      --grid-columns: var(--cols-tablet);
+    }
+
+    .facets--sidebar .facets__density-icon > [data-wide] {
+      display: none;
+    }
+
+    .facets--sidebar .facets__grid[data-density="few"] {
+      --grid-columns: var(--cols-few-tablet);
+    }
   }
 
   @media (min-width: 990px) {

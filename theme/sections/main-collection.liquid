@@ -27,9 +27,14 @@
     endif
   endfor
   assign columns = section.settings.columns_desktop
-  assign card_sizes = '(min-width: 990px) calc((100vw - 10rem) / ' | append: columns | append: '), (min-width: 750px) 33vw, 50vw'
+  # "Bigger cards" density: a column less. Tablets (and the sidebar below 1200px): at most 3
+  assign few_columns = columns | minus: 1 | at_least: 2
+  assign tablet_columns = columns | at_most: 3
+  assign few_tablet_columns = tablet_columns | minus: 1 | at_least: 2
+  assign tablet_size = 100 | divided_by: tablet_columns | append: 'vw'
+  assign card_sizes = '(min-width: 990px) calc((100vw - 10rem) / ' | append: columns | append: '), (min-width: 750px) ' | append: tablet_size | append: ', 50vw'
   if has_filters and layout == 'sidebar'
-    assign card_sizes = '(min-width: 990px) calc((100vw - 36rem) / ' | append: columns | append: '), (min-width: 750px) 33vw, 50vw'
+    assign card_sizes = '(min-width: 1200px) calc((100vw - 36rem) / ' | append: columns | append: '), (min-width: 990px) calc((100vw - 36rem) / ' | append: tablet_columns | append: '), (min-width: 750px) ' | append: tablet_size | append: ', 50vw'
   endif
   assign promo = section.blocks | where: 'type', 'promo' | first
 -%}
@@ -63,11 +68,10 @@
           {%- if section.settings.show_density -%}
             <div class="facets__density" role="group" aria-label="{{ 'facets.density' | t }}">
               <button type="button" class="facets__density-button facets__density-button--few" data-density="few" aria-label="{{ 'facets.density_few' | t }}" aria-pressed="false">
-                {%- assign few_columns = columns | minus: 1 | at_least: 2 -%}
-                <span class="facets__density-icon" aria-hidden="true">{% for i in (1..few_columns) %}<span></span>{% endfor %}</span>
+                <span class="facets__density-icon" aria-hidden="true">{% for i in (1..few_columns) %}<span{% if i > few_tablet_columns %} data-wide{% endif %}></span>{% endfor %}</span>
               </button>
               <button type="button" class="facets__density-button facets__density-button--many" data-density="many" aria-label="{{ 'facets.density_many' | t }}" aria-pressed="true">
-                <span class="facets__density-icon" aria-hidden="true">{% for i in (1..columns) %}<span></span>{% endfor %}</span>
+                <span class="facets__density-icon" aria-hidden="true">{% for i in (1..columns) %}<span{% if i > tablet_columns %} data-wide{% endif %}></span>{% endfor %}</span>
               </button>
             </div>
           {%- endif -%}
@@ -127,7 +131,7 @@
               id="ProductGrid-{{ section.id }}"
               class="grid facets__grid"
               role="list"
-              style="--cols: {{ columns }}; --cols-few: {{ columns | minus: 1 | at_least: 2 }}; --cols-mobile: {{ section.settings.columns_mobile }};"
+              style="--cols: {{ columns }}; --cols-few: {{ few_columns }}; --cols-tablet: {{ tablet_columns }}; --cols-few-tablet: {{ few_tablet_columns }}; --cols-mobile: {{ section.settings.columns_mobile }};"
               data-facets-grid
             >
               {%- for product in collection.products -%}

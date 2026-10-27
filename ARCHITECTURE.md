@@ -41,7 +41,7 @@ scripts/
    named like the props of the matching headless component. Leaf components (price, media, badge,
    card) take plain values rather than whole Liquid objects where practical.
 5. **JS: web components and pure modules.** Shared code is `packages/ui/js/*`, imported as `@ui/<name>`
-   (import map in the theme; a path alias in Next.js). Shopify-only integrations (Liquid Ajax Cart,
+   (import map in the theme — snippets/import-map, both layouts; a path alias in Next.js). Shopify-only integrations (Liquid Ajax Cart,
    Section Rendering API) are thin adapters in `theme/assets` (e.g. `cart.js`).
 
 ## CSS

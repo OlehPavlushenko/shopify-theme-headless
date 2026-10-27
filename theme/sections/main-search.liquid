@@ -1,125 +1,58 @@
 {% comment %}
-  Search results page (/search). Products render as product cards; pages and articles as text cards.
-  Filters and sorting from Search & Discovery come with the collection page rebuild.
+  Search header (templates/search.json, above the product grid section): breadcrumbs, the h1
+  ("Results for “serum”" or "Search"), the search field with the current terms, and — before a
+  search — a prompt with popular collections as chips. The results, filters and sort are the
+  Product grid section below it (sections/main-collection). Styles: .main-search in search.css.
 {% endcomment %}
-{%- liquid
-  assign per_page = section.settings.results_per_page
-  assign terms = search.terms | escape
--%}
-<div
-  class="main-search color-{{ section.settings.color_scheme }} section-spacing"
-  style="--section-padding-top: {{ section.settings.padding_top }}px; --section-padding-bottom: {{ section.settings.padding_bottom }}px;"
->
-  <div class="page-width stack" style="--stack-gap: var(--space-xl);">
-    <header class="main-search__header stack" style="--stack-gap: var(--space-l);">
-      <h1 class="h2">{{ 'search.title' | t }}</h1>
-      <form action="{{ routes.search_url }}" method="get" role="search" class="main-search__form">
-        <label class="visually-hidden" for="MainSearchInput">{{ 'search.title' | t }}</label>
-        <input
-          id="MainSearchInput"
-          class="input"
-          type="search"
-          name="q"
-          value="{{ terms }}"
-          placeholder="{{ 'search.placeholder' | t }}"
-          enterkeyhint="search"
-        >
-        <input type="hidden" name="options[prefix]" value="last">
-        <button type="submit" class="btn">{{ 'search.submit' | t }}</button>
-      </form>
-      {%- if search.performed -%}
-        <p class="main-search__count muted" role="status">
-          {%- if search.results_count == 0 -%}
-            {{ 'search.no_results_html' | t: terms: terms }}
-          {%- else -%}
-            {{ 'search.results_for_html' | t: terms: terms, count: search.results_count }}
-          {%- endif -%}
-        </p>
+{%- assign terms = search.terms | escape -%}
+<div class="main-search color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width main-search__inner">
+    {%- render 'breadcrumbs' -%}
+    <h1 class="h2 main-search__title">
+      {%- if search.performed and terms != blank -%}
+        {{ 'search.results_title_html' | t: terms: terms }}
+      {%- else -%}
+        {{ 'search.title' | t }}
       {%- endif -%}
-    </header>
-
-    {%- if search.performed and search.results_count > 0 -%}
-      {%- paginate search.results by per_page -%}
-        <ul id="SearchResults" class="grid main-search__grid" role="list" style="--grid-columns: 4; --grid-columns-mobile: 2;">
-          {%- for item in search.results -%}
-            <li>
-              {%- case item.object_type -%}
-                {%- when 'product' -%}
-                  {%- liquid
-                    assign eager = false
-                    if forloop.index <= 4
-                      assign eager = true
-                    endif
-                  -%}
-                  {%- render 'product-card', product: item, eager: eager, show_vendor: section.settings.show_vendor -%}
-                {%- else -%}
-                  <a href="{{ item.url }}" class="text-card">
-                    <span class="text-card__type">
-                      {%- if item.object_type == 'article' -%}{{ 'search.article' | t }}{%- else -%}{{ 'search.page' | t }}{%- endif -%}
-                    </span>
-                    <span class="text-card__title">{{ item.title | escape }}</span>
-                    <span class="text-card__excerpt small">{{ item.content | strip_html | truncatewords: 22 }}</span>
-                  </a>
-              {%- endcase -%}
-            </li>
-          {%- endfor -%}
-        </ul>
-        {%- render 'pagination', paginate: paginate, anchor: '#SearchResults' -%}
-      {%- endpaginate -%}
-    {%- endif -%}
+    </h1>
+    <form action="{{ routes.search_url }}" method="get" role="search" class="main-search__form">
+      <label class="visually-hidden" for="MainSearchInput">{{ 'search.title' | t }}</label>
+      {%- render 'icon', name: 'search' -%}
+      <input
+        id="MainSearchInput"
+        class="input"
+        type="search"
+        name="q"
+        value="{{ terms }}"
+        placeholder="{{ 'search.placeholder' | t }}"
+        enterkeyhint="search"
+        autocomplete="off"
+      >
+      <input type="hidden" name="options[prefix]" value="last">
+      <button type="submit" class="btn">{{ 'search.submit' | t }}</button>
+    </form>
+    {%- unless search.performed -%}
+      {%- if section.settings.collections.size > 0 -%}
+        <div class="main-search__popular">
+          <p class="eyebrow">{{ 'search.popular_collections' | t }}</p>
+          <ul class="main-search__chips" role="list">
+            {%- for item in section.settings.collections -%}
+              <li><a href="{{ item.url }}" class="chip">{{ item.title | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    {%- endunless -%}
   </div>
 </div>
 
 {% schema %}
 {
-  "name": "t:general.search",
+  "name": "t:sections.main_search.name",
   "class": "main-search-section",
   "settings": [
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "t:labels.color_scheme",
-      "default": "scheme-1"
-    },
-    {
-      "type": "range",
-      "id": "results_per_page",
-      "label": "t:sections.main_search.results_per_page",
-      "min": 8,
-      "max": 48,
-      "step": 4,
-      "default": 24
-    },
-    {
-      "type": "checkbox",
-      "id": "show_vendor",
-      "label": "t:sections.main_search.show_vendor",
-      "default": false
-    },
-    {
-      "type": "header",
-      "content": "t:labels.spacing"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "t:labels.padding_top",
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "unit": "px",
-      "default": 48
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "t:labels.padding_bottom",
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "unit": "px",
-      "default": 64
-    }
+    { "type": "collection_list", "id": "collections", "label": "t:sections.main_search.collections", "info": "t:sections.main_search.collections_info", "limit": 8 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-2" }
   ]
 }
 {% endschema %}

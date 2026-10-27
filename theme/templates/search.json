@@ -1,20 +1,28 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "main": {
+    "header": {
       "type": "main-search",
-      "settings": {}
+      "settings": {
+        "collections": ["beauty", "health", "superfoods", "eco-home", "sets-programs", "best-sellers"],
+        "color_scheme": "scheme-2"
+      }
+    },
+    "results": {
+      "type": "main-collection",
+      "settings": {
+        "show_filters": true,
+        "filters_layout": "sidebar",
+        "show_sort": true,
+        "show_density": true,
+        "products_per_page": 24,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "pagination": "load_more",
+        "quick_add": true,
+        "show_vendor": true,
+        "color_scheme": "scheme-1"
+      }
     }
   },
-  "order": [
-    "main"
-  ]
+  "order": ["header", "results"]
 }

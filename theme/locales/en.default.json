@@ -162,7 +162,14 @@
     "view_all_html": "View all results for “{{ terms }}”",
     "article": "Article",
     "page": "Page",
-    "quick_links": "Quick links"
+    "quick_links": "Quick links",
+    "results_title_html": "Results for “{{ terms }}”",
+    "results_count": {
+      "one": "{{ count }} result",
+      "other": "{{ count }} results"
+    },
+    "browse_all": "Browse all products",
+    "popular_collections": "Popular collections"
   },
   "general": {
     "home": "Home",

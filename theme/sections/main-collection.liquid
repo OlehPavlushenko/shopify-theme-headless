@@ -1,207 +1,74 @@
 {% comment %}
-  Collection products (templates/collection.json, under the Page header): toolbar (filters button,
-  product count, sort, grid density), active filter chips, the filters panel (snippets/facets) in
-  one of three layouts — sidebar, horizontal dropdowns or drawer; always a drawer on phones — and
-  the product grid with an optional promo tile, then "Load more" or page numbers.
-  <facet-filters> (assets/facets.js) re-renders this section through the Section Rendering API on
-  every change and keeps the URL in sync; without JS the form and the links still work.
-  Styles: packages/ui/css/facets.css.
+  Product grid with filters — the collection page (templates/collection.json, under the Page
+  header) and the search results (templates/search.json, under Search header): toolbar, active
+  filter chips, the filters panel in one of three layouts — sidebar, horizontal dropdowns or drawer;
+  always a drawer on phones — and the grid, then "Load more" or page numbers (snippets/facets-page).
+  On search the filters, sort and results come from search.* and the terms ride along in the form;
+  nothing renders before a search. <facet-filters> (assets/facets.js) re-renders this section
+  through the Section Rendering API on every change and keeps the URL in sync; without JS the form
+  and the links still work. Styles: packages/ui/css/facets.css.
 {% endcomment %}
 {%- liquid
-  assign layout = section.settings.filters_layout
-  assign form_id = 'FacetsForm-' | append: section.id
-  assign panel_id = 'FacetsPanel-' | append: section.id
-  assign sort_by = collection.sort_by | default: collection.default_sort_by
-  assign clear_url = collection.url | append: '?sort_by=' | append: sort_by
+  assign per_page = section.settings.products_per_page
+  assign is_search = false
+  if template.name == 'search'
+    assign is_search = true
+    assign filters = search.filters
+    assign sort_by = search.sort_by | default: search.default_sort_by
+    assign terms = search.terms | escape
+    assign clear_url = routes.search_url | append: '?q=' | append: search.terms | url_encode | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by
+    assign count = search.results_count
+    assign count_label = 'search.results_count' | t: count: count
+  else
+    assign filters = collection.filters
+    assign sort_by = collection.sort_by | default: collection.default_sort_by
+    assign clear_url = collection.url | append: '?sort_by=' | append: sort_by
+    assign count = collection.products_count
+    assign count_label = 'collections.product_count' | t: count: count
+  endif
   assign has_filters = false
-  if section.settings.show_filters and collection.filters.size > 0
+  if section.settings.show_filters and filters.size > 0
     assign has_filters = true
   endif
-  assign active_filters = 0
-  for filter in collection.filters
-    assign active_filters = active_filters | plus: filter.active_values.size
-    if filter.type == 'price_range'
-      if filter.min_value.value != blank or filter.max_value.value != blank
-        assign active_filters = active_filters | plus: 1
-      endif
-    endif
-  endfor
-  assign columns = section.settings.columns_desktop
-  # "Bigger cards" density: a column less. Tablets (and the sidebar below 1200px): at most 3
-  assign few_columns = columns | minus: 1 | at_least: 2
-  assign tablet_columns = columns | at_most: 3
-  assign few_tablet_columns = tablet_columns | minus: 1 | at_least: 2
-  assign tablet_size = 100 | divided_by: tablet_columns | append: 'vw'
-  assign card_sizes = '(min-width: 990px) calc((100vw - 10rem) / ' | append: columns | append: '), (min-width: 750px) ' | append: tablet_size | append: ', 50vw'
-  if has_filters and layout == 'sidebar'
-    assign card_sizes = '(min-width: 1200px) calc((100vw - 36rem) / ' | append: columns | append: '), (min-width: 990px) calc((100vw - 36rem) / ' | append: tablet_columns | append: '), (min-width: 750px) ' | append: tablet_size | append: ', 50vw'
-  endif
-  assign promo = section.blocks | where: 'type', 'promo' | first
 -%}
+{%- unless is_search and search.performed == false -%}
 <facet-filters
-  class="main-collection facets facets--{{ layout }}{% if has_filters == false %} facets--none{% endif %} color-{{ section.settings.color_scheme }} section-spacing"
+  class="main-collection facets facets--{{ section.settings.filters_layout }}{% if has_filters == false %} facets--none{% endif %} color-{{ section.settings.color_scheme }} section-spacing"
   data-section="{{ section.id }}"
 >
-  {%- paginate collection.products by section.settings.products_per_page -%}
-    <div class="page-width">
-      <div class="facets__toolbar">
-        {%- if has_filters -%}
-          <button type="button" class="btn btn--outline btn--sm facets__toggle" popovertarget="{{ panel_id }}">
-            {%- render 'icon', name: 'sliders' -%}
-            {{- 'facets.filters' | t -}}
-            <span class="facets__toggle-count" data-facets-active-count{% if active_filters == 0 %} hidden{% endif %}>{{ active_filters }}</span>
-          </button>
-        {%- endif -%}
-        <p class="facets__count" data-facets-count role="status">{{ 'collections.product_count' | t: count: collection.products_count }}</p>
-        <div class="facets__tools">
-          {%- if section.settings.show_sort -%}
-            <label class="facets__sort">
-              <span class="facets__sort-label">{{ 'facets.sort_by' | t }}</span>
-              <select name="sort_by" class="facets__sort-select" form="{{ form_id }}" data-facets-sort>
-                {%- for option in collection.sort_options -%}
-                  <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name | escape }}</option>
-                {%- endfor -%}
-              </select>
-              {%- render 'icon', name: 'chevron-down' -%}
-            </label>
-          {%- endif -%}
-          {%- if section.settings.show_density -%}
-            <div class="facets__density" role="group" aria-label="{{ 'facets.density' | t }}">
-              <button type="button" class="facets__density-button facets__density-button--few" data-density="few" aria-label="{{ 'facets.density_few' | t }}" aria-pressed="false">
-                <span class="facets__density-icon" aria-hidden="true">{% for i in (1..few_columns) %}<span{% if i > few_tablet_columns %} data-wide{% endif %}></span>{% endfor %}</span>
-              </button>
-              <button type="button" class="facets__density-button facets__density-button--many" data-density="many" aria-label="{{ 'facets.density_many' | t }}" aria-pressed="true">
-                <span class="facets__density-icon" aria-hidden="true">{% for i in (1..columns) %}<span{% if i > tablet_columns %} data-wide{% endif %}></span>{% endfor %}</span>
-              </button>
-            </div>
-          {%- endif -%}
-        </div>
-      </div>
-
-      <div class="facets__active" data-facets-active>
-        {%- if has_filters -%}
-          {%- render 'facets-active', filters: collection.filters, clear_url: clear_url -%}
-        {%- endif -%}
-      </div>
-
-      <div class="facets__layout">
-        {%- if has_filters -%}
-          <div id="{{ panel_id }}" class="facets__panel drawer drawer--start" popover="manual" aria-labelledby="{{ panel_id }}-title">
-            <div class="drawer__inner facets__panel-inner">
-              <div class="drawer__header facets__panel-header">
-                <p id="{{ panel_id }}-title" class="facets__panel-title">
-                  {%- render 'icon', name: 'sliders' -%}
-                  {{- 'facets.filters' | t -}}
-                </p>
-                {%- comment -%} "Clear all" beside the title (sidebar); re-rendered with the results {%- endcomment -%}
-                <span class="facets__panel-clear" data-facets-clear>
-                  {%- if active_filters > 0 -%}
-                    <a href="{{ clear_url }}" class="btn btn--link" data-facets-link>{{ 'facets.clear_all' | t }}</a>
-                  {%- endif -%}
-                </span>
-                <button type="button" class="btn btn--icon facets__panel-close" popovertarget="{{ panel_id }}" popovertargetaction="hide" aria-label="{{ 'accessibility.close' | t }}">
-                  {%- render 'icon', name: 'close' -%}
-                </button>
-              </div>
-              <div class="drawer__body facets__panel-body" data-facets-body>
-                {%- comment -%} The toolbar select joins the form (form="…"); without it the current sort rides along hidden {%- endcomment -%}
-                {%- liquid
-                  assign hidden_sort = nil
-                  unless section.settings.show_sort
-                    assign hidden_sort = sort_by
-                  endunless
-                -%}
-                {%- render 'facets', filters: collection.filters, form_id: form_id, layout: layout, sort_by: hidden_sort -%}
-              </div>
-              <div class="drawer__footer facets__panel-footer">
-                <a href="{{ clear_url }}" class="btn btn--outline" data-facets-link>{{ 'facets.clear_all' | t }}</a>
-                <button type="button" class="btn" popovertarget="{{ panel_id }}" popovertargetaction="hide" data-facets-show>
-                  {{- 'facets.show_results' | t: count: collection.products_count -}}
-                </button>
-              </div>
-            </div>
-          </div>
-        {%- endif -%}
-
-        <div class="facets__results" data-facets-results>
-          {%- if collection.products.size > 0 -%}
-            {%- comment -%} Heading order h1 (page header) → h2 → h3 (cards) {%- endcomment -%}
-            <h2 class="visually-hidden">{{ 'facets.products_heading' | t }}</h2>
-            <ul
-              id="ProductGrid-{{ section.id }}"
-              class="grid facets__grid"
-              role="list"
-              style="--cols: {{ columns }}; --cols-few: {{ few_columns }}; --cols-tablet: {{ tablet_columns }}; --cols-few-tablet: {{ few_tablet_columns }}; --cols-mobile: {{ section.settings.columns_mobile }};"
-              data-facets-grid
-            >
-              {%- for product in collection.products -%}
-                {%- if promo and paginate.current_page == 1 and forloop.index == promo.settings.position -%}
-                  <li class="facets__promo" {{ promo.shopify_attributes }}>
-                    {%- render 'promo-card',
-                      url: promo.settings.link,
-                      image: promo.settings.image,
-                      eyebrow: promo.settings.eyebrow,
-                      heading: promo.settings.heading,
-                      text: promo.settings.text,
-                      link_label: promo.settings.link_label,
-                      layout: 'overlay',
-                      ratio: '4 / 5',
-                      sizes: card_sizes
-                    -%}
-                  </li>
-                {%- endif -%}
-                {%- liquid
-                  assign eager = false
-                  if paginate.current_page == 1 and forloop.index <= columns
-                    assign eager = true
-                  endif
-                -%}
-                <li data-facets-item>
-                  {%- render 'product-card',
-                    product: product,
-                    eager: eager,
-                    sizes: card_sizes,
-                    quick_add: section.settings.quick_add,
-                    show_vendor: section.settings.show_vendor
-                  -%}
-                </li>
-              {%- endfor -%}
-              {%- comment -%}
-                "Load more" is the grid's last cell: it fills whatever is left of an incomplete last row
-                (no lonely card with empty space beside it), or takes a row of its own
-              {%- endcomment -%}
-              {%- if paginate.next and section.settings.pagination == 'load_more' -%}
-                {%- assign shown = paginate.current_offset | plus: collection.products.size -%}
-                <li class="facets__more" data-facets-more>
-                  <p class="facets__progress">{{ 'facets.progress' | t: shown: shown, total: paginate.items }}</p>
-                  <span class="facets__progress-bar" style="--progress: {{ shown | times: 100 | divided_by: paginate.items }}%;" aria-hidden="true"></span>
-                  <a href="{{ paginate.next.url }}" class="btn btn--outline" data-facets-load-more>{{ 'facets.load_more' | t }}</a>
-                </li>
-              {%- endif -%}
-            </ul>
-
-            {%- if paginate.pages > 1 and section.settings.pagination == 'pages' -%}
-              {%- render 'pagination', paginate: paginate, anchor: '' -%}
-            {%- endif -%}
-          {%- else -%}
-            <div class="facets__empty">
-              {%- render 'icon', name: 'search' -%}
-              {%- if active_filters > 0 -%}
-                <p class="h5">{{ 'facets.no_results' | t }}</p>
-                <p>{{ 'facets.no_results_text' | t }}</p>
-                <a href="{{ clear_url }}" class="btn" data-facets-link>{{ 'facets.clear_all' | t }}</a>
-              {%- else -%}
-                <p class="h5">{{ 'collections.empty' | t }}</p>
-                <a href="{{ routes.all_products_collection_url }}" class="btn">{{ 'cart.continue_shopping' | t }}</a>
-              {%- endif -%}
-            </div>
-          {%- endif -%}
-        </div>
-      </div>
-    </div>
-  {%- endpaginate -%}
+  {%- if is_search -%}
+    {%- paginate search.results by per_page -%}
+      {%- render 'facets-page',
+        section: section,
+        items: search.results,
+        paginate: paginate,
+        filters: filters,
+        sort_options: search.sort_options,
+        sort_by: sort_by,
+        count: count,
+        count_label: count_label,
+        clear_url: clear_url,
+        terms: terms
+      -%}
+    {%- endpaginate -%}
+  {%- else -%}
+    {%- paginate collection.products by per_page -%}
+      {%- render 'facets-page',
+        section: section,
+        items: collection.products,
+        paginate: paginate,
+        filters: filters,
+        sort_options: collection.sort_options,
+        sort_by: sort_by,
+        count: count,
+        count_label: count_label,
+        clear_url: clear_url
+      -%}
+    {%- endpaginate -%}
+  {%- endif -%}
 </facet-filters>
 <script type="module">import 'facets';</script>
+{%- endunless -%}
 
 {% schema %}
 {

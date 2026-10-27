@@ -232,8 +232,11 @@
       "blog": "Blog"
     },
     "main_search": {
+      "name": "Search header",
       "results_per_page": "Results per page",
-      "show_vendor": "Show vendor"
+      "show_vendor": "Show vendor",
+      "collections": "Popular collections",
+      "collections_info": "Shown as links before a search"
     },
     "main_collection": {
       "products_per_page": "Products per page",

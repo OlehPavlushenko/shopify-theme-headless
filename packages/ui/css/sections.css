@@ -768,8 +768,10 @@
     /* align-self: a grid item stretches to its row — sticky needs room to move in */
     .faq--split .faq__intro {
       position: sticky;
-      top: calc(var(--header-height, 0px) + var(--space-l));
+      top: calc(var(--header-bottom, 0px) + var(--space-l));
       align-self: start;
+      /* Follows the scroll-up header as it slides (same timing as header.css) */
+      transition: top var(--duration-long) var(--ease-out);
     }
   }
 
@@ -869,8 +871,9 @@
 
     .faq--nav .faq__tools {
       position: sticky;
-      top: var(--header-height, 0px);
+      top: var(--header-bottom, 0px);
       z-index: 2;
+      transition: top var(--duration-long) var(--ease-out);
       width: auto;
       margin-inline: calc(var(--gutter) * -1);
       padding: var(--space-s) var(--gutter);

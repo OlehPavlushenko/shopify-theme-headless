@@ -15,6 +15,8 @@ class SiteHeader extends HTMLElement {
   #lastY = 0;
   #ticking = false;
   #resizeObserver;
+  #sliding = false;
+  #slideTimer;
 
   connectedCallback() {
     // The observer's first call (after layout, before paint) sets the height; measuring here would
@@ -25,9 +27,12 @@ class SiteHeader extends HTMLElement {
       this.#lastY = window.scrollY;
       this.#update();
     });
-    // Scroll-up mode slides the header with a transition: measured on scroll it is still moving,
-    // so --header-bottom is set again once the slide ends
-    this.closest('.site-header-section')?.addEventListener('transitionend', () => this.#syncBottom());
+    // Scroll-up mode slides the header with a transition: --header-bottom is measured again once
+    // the slide ends (or after a moment, if no transitionend comes)
+    const section = this.closest('.site-header-section');
+    section?.addEventListener('transitionend', (event) => {
+      if (event.target === section && event.propertyName === 'translate') this.#endSlide();
+    });
     window.addEventListener('scroll', this.#onScroll, { passive: true });
   }
 
@@ -64,11 +69,26 @@ class SiteHeader extends HTMLElement {
       const menuOpen = this.querySelector('[data-menu-item][data-open], [popover]:popover-open');
       const goingDown = y > this.#lastY;
       const pastHeader = y > this.offsetHeight * 2;
-      this.toggleAttribute('data-hidden', goingDown && pastHeader && !menuOpen);
+      const wasHidden = this.hasAttribute('data-hidden');
+      const hidden = goingDown && pastHeader && !menuOpen;
+      this.toggleAttribute('data-hidden', hidden);
+      // The slide starts: --header-bottom gets where the header ends up right away, so sticky things
+      // under it (CSS-transitioned like the header) move with it; no measuring until it stops
+      if (hidden !== wasHidden) {
+        this.#sliding = true;
+        clearTimeout(this.#slideTimer);
+        this.#slideTimer = setTimeout(this.#endSlide, 800);
+        document.documentElement.style.setProperty('--header-bottom', hidden ? '0px' : `${this.offsetHeight}px`);
+      }
     }
     this.#lastY = y;
-    this.#syncBottom();
+    if (!this.#sliding) this.#syncBottom();
   }
+
+  #endSlide = () => {
+    this.#sliding = false;
+    this.#syncBottom();
+  };
 }
 
 if (!customElements.get('site-header')) customElements.define('site-header', SiteHeader);

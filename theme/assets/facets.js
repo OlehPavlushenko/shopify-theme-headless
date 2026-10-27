@@ -192,12 +192,24 @@ class FacetFilters extends HTMLElement {
       if (!next) throw new Error('No facets markup');
       this.#replace(next);
       if (push && url !== location.pathname + location.search) history.pushState({ facets: true }, '', url);
+      if (push) this.#revealResults();
     } catch (error) {
       if (error.name === 'AbortError') return;
       window.location.href = url;
     } finally {
       this.removeAttribute('aria-busy');
     }
+  }
+
+  // Fewer results make the page shorter: when the top of the results is above the screen, bring it
+  // back under the header (otherwise the shopper is left looking at the footer)
+  #revealResults() {
+    const anchor = this.querySelector('.facets__toolbar') || this;
+    const headerBottom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-bottom')) || 0;
+    const top = anchor.getBoundingClientRect().top - headerBottom - 16;
+    if (top >= 0) return;
+    const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollBy({ top, behavior: smooth ? 'smooth' : 'auto' });
   }
 
   // Swap the changing parts; keep which groups are open and where "Show more" was expanded

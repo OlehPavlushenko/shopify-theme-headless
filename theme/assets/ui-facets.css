@@ -528,6 +528,9 @@
     .facets--sidebar > .page-width {
       display: grid;
       grid-template-columns: 26rem minmax(0, 1fr);
+      /* A panel taller than few results: the extra height goes to the results row, not between
+         the toolbar, the chips and the grid */
+      grid-template-rows: auto auto 1fr;
       align-items: start;
       column-gap: var(--space-2xl);
     }

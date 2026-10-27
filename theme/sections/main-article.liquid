@@ -49,9 +49,19 @@
   <div class="page-width main-article__layout">
     {%- if section.settings.show_toc -%}
       <aside class="main-article__toc">
+        {%- comment -%} From 1200px a sticky list; below it a bar at the bottom of the screen that opens the list {%- endcomment -%}
         <article-toc class="article-toc" data-content="#ArticleContent-{{ section.id }}" hidden>
-          <p class="article-toc__title">{{ 'blog.on_this_page' | t }}</p>
-          <ol class="article-toc__list" role="list" data-toc-list></ol>
+          <button type="button" class="article-toc__toggle" aria-expanded="false" aria-controls="ArticleTocPanel-{{ section.id }}" data-toc-toggle>
+            <span class="article-toc__toggle-text">
+              <span class="article-toc__toggle-label">{{ 'blog.on_this_page' | t }}</span>
+              <span class="article-toc__toggle-current" data-toc-current></span>
+            </span>
+            {%- render 'icon', name: 'chevron-down' -%}
+          </button>
+          <div class="article-toc__panel" id="ArticleTocPanel-{{ section.id }}" data-toc-panel>
+            <p class="article-toc__title">{{ 'blog.on_this_page' | t }}</p>
+            <ol class="article-toc__list" role="list" data-toc-list></ol>
+          </div>
         </article-toc>
       </aside>
     {%- endif -%}

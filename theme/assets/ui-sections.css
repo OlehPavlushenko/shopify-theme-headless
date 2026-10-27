@@ -2002,12 +2002,8 @@
     }
   }
 
-  /* Table of contents: a quiet list, the section being read marked by a bar */
-  .article-toc {
-    display: grid;
-    gap: var(--space-xs);
-  }
-
+  /* Table of contents: a quiet list, the section being read marked by a bar. Below 1200px it is a
+     bar at the bottom of the screen (while the text is in view) that opens the list above it */
   .article-toc[hidden] {
     display: none;
   }
@@ -2050,6 +2046,129 @@
   @media (hover: hover) {
     .article-toc__link:hover {
       color: var(--color-heading);
+    }
+  }
+
+  @media (max-width: 1199px) {
+    /* The bar is fixed: its aside takes no room in the column */
+    .main-article__toc {
+      display: contents;
+    }
+
+    .article-toc {
+      position: fixed;
+      z-index: 14;
+      right: var(--gutter);
+      bottom: calc(var(--space-s) + env(safe-area-inset-bottom, 0px));
+      left: var(--gutter);
+      opacity: 0;
+      translate: 0 calc(100% + var(--space-l));
+      transition:
+        opacity var(--duration-default) var(--ease),
+        translate var(--duration-default) var(--ease-out);
+      pointer-events: none;
+    }
+
+    .article-toc[data-visible] {
+      opacity: 1;
+      translate: 0 0;
+      pointer-events: auto;
+    }
+
+    /* The toggle: the section being read, its bottom edge filling with the reading progress */
+    .article-toc__toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-s);
+      width: 100%;
+      min-height: 5.2rem;
+      padding: var(--space-xs) var(--space-m);
+      font: inherit;
+      color: var(--color-heading);
+      text-align: start;
+      background:
+        linear-gradient(var(--color-accent), var(--color-accent)) left bottom / calc(var(--progress, 0) * 100%) 0.3rem no-repeat,
+        var(--color-background);
+      border: 0.1rem solid var(--color-border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-md);
+      cursor: pointer;
+    }
+
+    .article-toc__toggle-text {
+      display: grid;
+      min-width: 0;
+    }
+
+    .article-toc__toggle-label {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    .article-toc__toggle-current {
+      overflow: hidden;
+      font-size: var(--text-sm);
+      font-weight: var(--font-body-weight-semibold);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .article-toc__toggle .svg-icon {
+      --icon-size: var(--icon-sm);
+
+      flex-shrink: 0;
+      rotate: 180deg;
+      transition: rotate var(--duration-default) var(--ease-out);
+    }
+
+    .article-toc[data-open] .article-toc__toggle .svg-icon {
+      rotate: 0deg;
+    }
+
+    /* The list opens above the bar */
+    .article-toc__panel {
+      position: absolute;
+      right: 0;
+      bottom: calc(100% + var(--space-xs));
+      left: 0;
+      display: grid;
+      gap: var(--space-xs);
+      max-height: 60vh;
+      padding: var(--space-m);
+      overflow-y: auto;
+      background: var(--color-background);
+      border: 0.1rem solid var(--color-border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      translate: 0 var(--space-xs);
+      transition:
+        opacity var(--duration-short) var(--ease),
+        translate var(--duration-short) var(--ease-out);
+      visibility: hidden;
+    }
+
+    .article-toc[data-open] .article-toc__panel {
+      opacity: 1;
+      translate: 0 0;
+      visibility: visible;
+    }
+
+    .article-toc__panel .article-toc__link {
+      padding-block: var(--space-xs);
+      font-size: var(--text-md);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .article-toc__toggle {
+      display: none;
+    }
+
+    .article-toc__panel {
+      display: grid;
+      gap: var(--space-xs);
     }
   }
 

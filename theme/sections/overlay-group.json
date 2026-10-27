@@ -43,9 +43,9 @@
           "settings": {
             "heading": "Gift ideas",
             "products": [
-              "tonic-active",
-              "probnik-serum-active",
-              "probnik-cream-active"
+              "active-tonic",
+              "active-serum-sample",
+              "active-cream-sample"
             ]
           }
         }

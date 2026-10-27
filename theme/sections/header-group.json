@@ -44,10 +44,10 @@
             "menu_item": "Shop",
             "heading": "Sale",
             "products": [
-              "collagen-active-kolagen",
-              "anti-age-code-spovilnennia-protsesiv-starinnia",
-              "macrosorb",
-              "melanin"
+              "collagen-active-marine-collagen",
+              "anti-age-code",
+              "macrosorb-sorbent",
+              "melanin-plus"
             ]
           }
         },
@@ -115,14 +115,14 @@
             "heading": "Best sellers",
             "collection": "hydrogen",
             "products": [
-              "omega-complex",
-              "collagen-active-kolagen",
-              "active-set",
-              "zelena-formula",
-              "macrosorb",
-              "imunna-formula",
-              "chlorophyll",
-              "solod-zhitnij"
+              "omega-complex-plus-omega-3-6-9",
+              "collagen-active-marine-collagen",
+              "active-set-for-problem-skin",
+              "green-formula-seaweed-superfood",
+              "macrosorb-sorbent",
+              "immune-formula",
+              "chlorophyll-drops",
+              "fermented-rye-malt"
             ],
             "limit": 6
           }
@@ -185,7 +185,7 @@
         "msg_shipping": {
           "type": "message",
           "settings": {
-            "text": "Free shipping on orders over ₴1,200",
+            "text": "Free shipping on orders over $50",
             "link": ""
           }
         }

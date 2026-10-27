@@ -60,7 +60,7 @@
             "icon_1": "leaf",
             "text_1": "<strong>Natural formula</strong> — no parabens or sulfates",
             "icon_2": "truck",
-            "text_2": "<strong>Free delivery</strong> from ₴1,200",
+            "text_2": "<strong>Free delivery</strong> from $50",
             "icon_3": "return",
             "text_3": "<strong>14-day returns</strong>, easy and free"
           }
@@ -94,7 +94,7 @@
             "icon": "truck",
             "source": "custom",
             "metafield": "",
-            "content": "<p>Orders ship within 1–2 business days; delivery across the country takes 2–4 days and is free from ₴1,200.</p><p>Unopened products can be returned within 14 days — write to us and we arrange a free pickup.</p>",
+            "content": "<p>Orders ship within 1–2 business days; delivery across the country takes 2–4 days and is free from $50.</p><p>Unopened products can be returned within 14 days — write to us and we arrange a free pickup.</p>",
             "open": false
           }
         },

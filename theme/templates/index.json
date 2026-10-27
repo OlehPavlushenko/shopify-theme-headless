@@ -94,7 +94,7 @@
           "settings": {
             "icon": "truck",
             "title": "Free shipping",
-            "text": "On orders over ₴1,200"
+            "text": "On orders over $50"
           }
         },
         "t2": {
@@ -145,7 +145,7 @@
         "link_label": "View all",
         "link": "shopify://collections/best-sellers",
         "color_scheme": "scheme-1",
-        "deal_product": "active-set",
+        "deal_product": "active-set-for-problem-skin",
         "deal_label": "Deal of the week",
         "deal_end": "2026-12-31 23:59"
       }

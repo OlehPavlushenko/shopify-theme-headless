@@ -27,13 +27,13 @@
     "radius_media": 20,
     "radius_badge": 40,
     "cart_type": "drawer",
-    "free_shipping_threshold": 1200,
+    "free_shipping_threshold": 50,
     "upsell_products": [
-      "anti-age-code-spovilnennia-protsesiv-starinnia",
-      "collagen-active-kolagen",
-      "chlorophyll",
-      "kokteil-mix-protein-control",
-      "kokteil-protein-slim"
+      "anti-age-code",
+      "collagen-active-marine-collagen",
+      "chlorophyll-drops",
+      "mix-protein-control-shake",
+      "mix-protein-slim-shake"
     ],
     "api_url": "http://localhost:5000",
     "sections": {

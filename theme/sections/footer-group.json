@@ -42,7 +42,7 @@
         "p3": {
           "type": "phrase",
           "settings": {
-            "text": "Free shipping over ₴1,200"
+            "text": "Free shipping over $50"
           }
         },
         "p4": {

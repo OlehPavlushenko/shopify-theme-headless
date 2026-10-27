@@ -165,6 +165,10 @@ class FaqSearch extends HTMLElement {
       if (terms) terms.textContent = this.input.value.trim();
     }
     if (this.status) this.status.textContent = words.length ? this.status.dataset.label.replace('%n', found) : '';
+    // The list got shorter: from far down the page the browser keeps the page's end in view, and the
+    // field and the results end up above the screen — bring the FAQ's start back below the header
+    const top = this.getBoundingClientRect().top;
+    if (top < 0) window.scrollTo({ top: top + window.scrollY - headerOffset(16), behavior: 'auto' });
     this.#onScroll();
   }
 }

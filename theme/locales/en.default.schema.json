@@ -200,6 +200,8 @@
       "show_currency": "Currency switcher",
       "show_currency_info": "Lists the currencies of your Shopify Markets countries.",
       "show_language": "Language switcher",
+      "show_menu_contacts": "Contacts in the mobile menu",
+      "show_menu_contacts_info": "Address, phone, email, hours and social links from Theme settings > Store details, at the bottom of the menu",
       "utility_menu": "Extra links",
       "utility_menu_info": "Optional menu shown in the panel, e.g. shipping, returns, contacts.",
       "search": "Search",

@@ -88,20 +88,7 @@
                 {{- block.settings.heading | escape -}}
                 {%- render 'icon', name: 'chevron-down' -%}
               </summary>
-              <address class="site-footer__contacts">
-                {%- if settings.store_address != blank -%}
-                  <p class="site-footer__contact">{%- render 'icon', name: 'map-pin' -%}<span>{{ settings.store_address | escape | newline_to_br }}</span></p>
-                {%- endif -%}
-                {%- if settings.store_phone != blank -%}
-                  <p class="site-footer__contact">{%- render 'icon', name: 'phone' -%}<a href="tel:{{ settings.store_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' }}">{{ settings.store_phone | escape }}</a></p>
-                {%- endif -%}
-                {%- if settings.store_email != blank -%}
-                  <p class="site-footer__contact">{%- render 'icon', name: 'mail' -%}<a href="mailto:{{ settings.store_email }}">{{ settings.store_email | escape }}</a></p>
-                {%- endif -%}
-                {%- if settings.store_hours != blank -%}
-                  <p class="site-footer__contact">{%- render 'icon', name: 'clock' -%}<span>{{ settings.store_hours | escape }}</span></p>
-                {%- endif -%}
-              </address>
+              {%- render 'store-contacts' -%}
             </details>
 
           {%- when 'products' -%}

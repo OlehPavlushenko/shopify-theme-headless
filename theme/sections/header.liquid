@@ -175,6 +175,16 @@
         {%- endif -%}
       {%- endcapture -%}
       {%- render 'mobile-menu', menu: menu, utility: mobile_utility -%}
+      {%- if section.settings.show_menu_contacts -%}
+        {%- capture menu_contacts -%}
+          {%- render 'store-contacts' -%}
+          {%- render 'social-links' -%}
+        {%- endcapture -%}
+        {%- if menu_contacts != blank -%}
+          {%- comment -%} Pinned to the bottom of the panel (header.css) {%- endcomment -%}
+          <div class="menu-panel__contacts">{{ menu_contacts }}</div>
+        {%- endif -%}
+      {%- endif -%}
     </div>
   </div>
 {%- endif -%}
@@ -338,6 +348,13 @@
       "label": "t:sections.header.show_language",
       "default": true,
       "visible_if": "{{ section.settings.show_utility_panel }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_menu_contacts",
+      "label": "t:sections.header.show_menu_contacts",
+      "info": "t:sections.header.show_menu_contacts_info",
+      "default": true
     },
     {
       "type": "link_list",

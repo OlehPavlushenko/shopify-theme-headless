@@ -1,0 +1,22 @@
+{% doc %}
+  Store contacts from Theme settings > Store details: address, phone, email, opening hours, each
+  with its icon. Used by the footer's contacts column and the bottom of the mobile menu.
+  Renders nothing when none are set. Styles: .store-contacts in components.css.
+{% enddoc %}
+{%- capture items -%}
+  {%- if settings.store_address != blank -%}
+    <p class="store-contacts__item">{%- render 'icon', name: 'map-pin' -%}<span>{{ settings.store_address | escape | newline_to_br }}</span></p>
+  {%- endif -%}
+  {%- if settings.store_phone != blank -%}
+    <p class="store-contacts__item">{%- render 'icon', name: 'phone' -%}<a href="tel:{{ settings.store_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' }}">{{ settings.store_phone | escape }}</a></p>
+  {%- endif -%}
+  {%- if settings.store_email != blank -%}
+    <p class="store-contacts__item">{%- render 'icon', name: 'mail' -%}<a href="mailto:{{ settings.store_email }}">{{ settings.store_email | escape }}</a></p>
+  {%- endif -%}
+  {%- if settings.store_hours != blank -%}
+    <p class="store-contacts__item">{%- render 'icon', name: 'clock' -%}<span>{{ settings.store_hours | escape }}</span></p>
+  {%- endif -%}
+{%- endcapture -%}
+{%- if items != blank -%}
+  <address class="store-contacts">{{ items }}</address>
+{%- endif -%}

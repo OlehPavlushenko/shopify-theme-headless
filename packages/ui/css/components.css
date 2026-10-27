@@ -1047,4 +1047,69 @@
   .saved-count[data-empty] {
     display: none;
   }
+
+  /* ----------------------------------------------------- store contacts */
+  /* Address, phone, email, hours (snippets/store-contacts): the footer and the mobile menu */
+  .store-contacts {
+    display: grid;
+    gap: var(--space-xs);
+    font-size: var(--text-sm);
+    font-style: normal;
+    line-height: var(--leading-sm);
+  }
+
+  .store-contacts__item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-xs);
+    align-items: start;
+  }
+
+  .store-contacts__item .svg-icon {
+    --icon-size: 1.8rem;
+
+    margin-top: 0.1rem;
+    color: var(--color-text-muted);
+  }
+
+  .store-contacts__item a {
+    color: var(--color-heading);
+    text-decoration: none;
+  }
+
+  .store-contacts__item a:hover {
+    color: var(--color-link-hover);
+  }
+
+  /* ----------------------------------------------------- social links */
+  .social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .social-links__link {
+    display: grid;
+    place-items: center;
+    width: var(--control-height-sm);
+    height: var(--control-height-sm);
+    color: var(--color-heading);
+    border: 0.1rem solid var(--color-border);
+    border-radius: 50%;
+    transition:
+      color var(--duration-short) var(--ease),
+      border-color var(--duration-short) var(--ease);
+  }
+
+  .social-links__link:hover {
+    color: var(--color-link-hover);
+    border-color: currentColor;
+  }
+
+  .social-links__link .svg-icon {
+    --icon-size: 1.8rem;
+  }
 }

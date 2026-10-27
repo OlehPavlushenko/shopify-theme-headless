@@ -1,62 +1,65 @@
 {% comment %}
-  Predictive search results, fetched by @ui/predictive-search through the Section Rendering API:
-  {{ routes.predictive_search_url }}?q=<terms>&section_id=predictive-search&resources[...]
-  Not added through the theme editor (no presets). The client reads [data-predictive-results].
-  Products, collections and query suggestions (pages and articles are left out: the blog has its
-  own search); links to the search page carry snippets/search-options.
+  Search panel results, fetched by @ui/predictive-search through the Section Rendering API from two
+  places at once (the client reads [data-predictive-results] of each):
+  - The search page ({{ routes.search_url }}?q=<terms>&section_id=predictive-search + search-options):
+    the products — the same ones, in the same order as the search page itself (Shopify's semantic
+    search). Only the first ones are rendered (one slider), then "View all" — without a count:
+    Shopify's count for the same query varies a little between requests.
+    The left column is left as a slot ([data-predictive-aside]).
+  - Predictive search ({{ routes.predictive_search_url }}?q=<terms>&section_id=predictive-search
+    &resources[type]=collection,query): query suggestions (the typed part highlighted) and
+    collections, which the search page doesn't give; the client puts them into the slot.
+  Not added through the theme editor (no presets). Links to the search page carry
+  snippets/search-options.
 {% endcomment %}
 {%- capture search_query -%}{% render 'search-options', format: 'query' %}{%- endcapture -%}
-{%- liquid
-  assign search_query = search_query | strip
-  assign resources = predictive_search.resources
-  assign total = resources.products.size | plus: resources.collections.size | plus: resources.queries.size
-  assign terms = predictive_search.terms | escape
--%}
-<div data-predictive-results data-count="{{ total }}">
+{%- assign search_query = search_query | strip -%}
+<div data-predictive-results>
   {%- if predictive_search.performed -%}
-    {%- if total == 0 -%}
-      <p class="search-results__empty">{{ 'search.no_results_html' | t: terms: terms }}</p>
-    {%- else -%}
-      <div class="search-results__layout">
-        <div class="search-results__aside">
-          {%- if resources.queries.size > 0 -%}
-            <section class="search-results__group" aria-labelledby="PredictiveQueries">
-              <h2 id="PredictiveQueries" class="eyebrow search-results__heading">{{ 'search.suggestions' | t }}</h2>
-              <ul class="link-list" role="list">
-                {%- for query in resources.queries limit: 5 -%}
-                  <li>
-                    <a href="{{ routes.search_url }}?q={{ query.text | url_encode }}{{ search_query }}" class="link-list__link">
-                      {%- render 'icon', name: 'search' -%}
-                      <span class="link-list__text">{{- query.styled_text -}}</span>
-                    </a>
-                  </li>
-                {%- endfor -%}
-              </ul>
-            </section>
-          {%- endif -%}
+    {%- assign resources = predictive_search.resources -%}
+    {%- if resources.queries.size > 0 -%}
+      <section class="search-results__group" aria-labelledby="PredictiveQueries">
+        <h2 id="PredictiveQueries" class="eyebrow search-results__heading">{{ 'search.suggestions' | t }}</h2>
+        <ul class="link-list" role="list">
+          {%- for query in resources.queries limit: 5 -%}
+            <li>
+              <a href="{{ routes.search_url }}?q={{ query.text | url_encode }}{{ search_query }}" class="link-list__link">
+                {%- render 'icon', name: 'search' -%}
+                <span class="link-list__text">{{- query.styled_text -}}</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </section>
+    {%- endif -%}
 
-          {%- if resources.collections.size > 0 -%}
-            <section class="search-results__group" aria-labelledby="PredictiveCollections">
-              <h2 id="PredictiveCollections" class="eyebrow search-results__heading">{{ 'search.collections' | t }}</h2>
-              <ul class="link-list" role="list">
-                {%- for collection in resources.collections limit: 5 -%}
-                  <li><a href="{{ collection.url }}" class="link-list__link"><span class="link-list__text">{{ collection.title | escape }}</span></a></li>
-                {%- endfor -%}
-              </ul>
-            </section>
-          {%- endif -%}
-        </div>
-        {%- if resources.products.size > 0 -%}
-          <ui-slider class="slider search-slider search-results__main" aria-labelledby="PredictiveProducts">
-            <div class="slider__head">
-              <h2 id="PredictiveProducts" class="eyebrow search-results__heading">{{ 'search.products' | t }}</h2>
-              <div class="slider__head-end">
-                {%- assign products_label = 'search.products' | t -%}
-                {%- render 'slider-nav', label: products_label -%}
-              </div>
+    {%- if resources.collections.size > 0 -%}
+      <section class="search-results__group" aria-labelledby="PredictiveCollections">
+        <h2 id="PredictiveCollections" class="eyebrow search-results__heading">{{ 'search.collections' | t }}</h2>
+        <ul class="link-list" role="list">
+          {%- for collection in resources.collections limit: 5 -%}
+            <li><a href="{{ collection.url }}" class="link-list__link"><span class="link-list__text">{{ collection.title | escape }}</span></a></li>
+          {%- endfor -%}
+        </ul>
+      </section>
+    {%- endif -%}
+  {%- elsif search.performed -%}
+    {%- assign terms = search.terms | escape -%}
+    <div class="search-results__layout">
+      <div class="search-results__aside" data-predictive-aside></div>
+      {%- if search.results_count > 0 -%}
+        <ui-slider class="slider search-slider search-results__main" aria-labelledby="PredictiveProducts">
+          <div class="slider__head">
+            <h2 id="PredictiveProducts" class="eyebrow search-results__heading">{{ 'search.products' | t }}</h2>
+            <div class="slider__head-end">
+              {%- assign products_label = 'search.products' | t -%}
+              {%- render 'slider-nav', label: products_label -%}
             </div>
+          </div>
+          {%- comment -%} One page of 10: only these are rendered {%- endcomment -%}
+          {%- paginate search.results by 10 -%}
             <ul class="slider__track" data-slider-track role="list">
-              {%- for product in resources.products limit: 10 -%}
+              {%- for product in search.results -%}
                 <li>
                   {%- render 'product-card',
                     product: product,
@@ -68,15 +71,18 @@
                 </li>
               {%- endfor -%}
             </ul>
-          </ui-slider>
-        {%- endif -%}
+          {%- endpaginate -%}
+        </ui-slider>
+      {%- else -%}
+        <div class="search-results__main">
+          <p class="search-results__empty">{{ 'search.no_results_html' | t: terms: terms }}</p>
+        </div>
+      {%- endif -%}
+    </div>
 
-      </div>
-    {%- endif -%}
-
-    {%- if total > 0 -%}
+    {%- if search.results_count > 0 -%}
       <div class="search-results__footer">
-        <a href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}{{ search_query }}" class="btn btn--outline btn--sm">
+        <a href="{{ routes.search_url }}?q={{ search.terms | url_encode }}{{ search_query }}" class="btn btn--outline btn--sm">
           {{- 'search.view_all_html' | t: terms: terms -}}
           {%- render 'icon', name: 'arrow-right' -%}
         </a>

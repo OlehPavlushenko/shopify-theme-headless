@@ -106,6 +106,22 @@
     border-bottom: 0.2rem solid var(--color-heading);
   }
 
+  /* <form-validate> around the form adds no box: the form stays sticky in the panel */
+  .search-panel form-validate {
+    display: contents;
+  }
+
+  /* The empty-field hint (<form-validate>) in the form's bottom padding, under the typed text */
+  .search-panel .search-panel__form {
+    position: sticky;
+  }
+
+  .search-panel__form > .field-error {
+    top: auto;
+    bottom: var(--space-2xs);
+    left: calc(2.6rem + var(--space-s));
+  }
+
   .search-panel__icon {
     --icon-size: 2.6rem;
 
@@ -262,10 +278,11 @@
     justify-self: stretch;
   }
 
+  /* Room for the field's hint (under it, out of the flow) before the chips */
   .main-search__popular {
     display: grid;
     gap: var(--space-xs);
-    margin-top: var(--space-xs);
+    margin-top: var(--space-m);
   }
 
   .main-search__chips {

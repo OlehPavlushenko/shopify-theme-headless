@@ -13,15 +13,18 @@
     <p class="main-404__code" aria-hidden="true">404</p>
     <h1 class="h2">{{ heading | escape }}</h1>
     <div class="text-lead main-404__text">{{ section.settings.text }}</div>
+    <form-validate class="main-404__search-wrap" data-message-required="{{ 'search.empty_query' | t }}">
     <form action="{{ routes.search_url }}" method="get" role="search" class="main-404__search">
       <label class="visually-hidden" for="NotFoundSearch">{{ 'search.title' | t }}</label>
       <span class="search-field">
         {%- render 'icon', name: 'search' -%}
-        <input id="NotFoundSearch" class="input" type="search" name="q" placeholder="{{ 'search.placeholder' | t }}" autocomplete="off">
+        <input id="NotFoundSearch" class="input" type="search" name="q" placeholder="{{ 'search.placeholder' | t }}" autocomplete="off" required>
       </span>
       {%- render 'search-options' -%}
       <button type="submit" class="btn">{{ 'search.submit' | t }}</button>
     </form>
+    </form-validate>
+    <script type="module">import '@ui/form-validate';</script>
     <div class="main-404__actions">
       <a href="{{ routes.all_products_collection_url }}" class="btn btn--outline">
         {{- '404.back_to_shopping' | t -}}

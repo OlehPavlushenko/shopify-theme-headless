@@ -14,13 +14,14 @@
   @param {string} count_label - "86 products" / "12 results"
   @param {string} clear_url - The list without any filter (keeps sort / search terms)
   @param {string} [terms] - Search terms (search page): kept in the filter form
+  @param {boolean} [bare] - Only the results' message: no toolbar and no filters (a search that found nothing)
 {% enddoc %}
 {%- liquid
   assign layout = section.settings.filters_layout
   assign form_id = 'FacetsForm-' | append: section.id
   assign panel_id = 'FacetsPanel-' | append: section.id
   assign has_filters = false
-  if section.settings.show_filters and filters.size > 0
+  if section.settings.show_filters and filters.size > 0 and bare != true
     assign has_filters = true
   endif
   assign active_filters = 0
@@ -48,6 +49,7 @@
   endif
 -%}
 <div class="page-width">
+  {%- unless bare -%}
   <div class="facets__toolbar">
     {%- if has_filters -%}
       <button type="button" class="btn btn--outline btn--sm facets__toggle" popovertarget="{{ panel_id }}">
@@ -87,6 +89,7 @@
       {%- render 'facets-active', filters: filters, clear_url: clear_url -%}
     {%- endif -%}
   </div>
+  {%- endunless -%}
 
   <div class="facets__layout">
     {%- if has_filters -%}

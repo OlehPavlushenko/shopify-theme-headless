@@ -373,6 +373,8 @@
       "link_label": "Link label",
       "link": "Link",
       "link_info": "Empty: the collection.",
+      "search_empty_only": "On search: only without results",
+      "search_empty_only_info": "On the search page: shown before a search and when it finds nothing.",
       "deal": "Deal of the week",
       "deal_product": "Product",
       "deal_product_info": "Shown first, highlighted, with a countdown.",

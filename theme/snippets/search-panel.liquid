@@ -1,5 +1,7 @@
 {% doc %}
-  Search panel (@ui/dialog + @ui/predictive-search; results from sections/predictive-search.liquid).
+  Search panel (@ui/dialog + @ui/predictive-search; results from sections/predictive-search.liquid:
+  the products from the search page, as it finds them; suggestions and collections from predictive
+  search).
 
   Style: 'top' slides down full width, 'drawer' slides in from the right.
   While the query is empty the panel shows the header's search blocks, in editor order:
@@ -14,11 +16,12 @@
   @param {object[]} blocks - Header blocks
 {% enddoc %}
 {%- capture predictive_params -%}
-  section_id=predictive-search&resources%5Btype%5D=product,collection,query&resources%5Blimit%5D=10&resources%5Blimit_scope%5D=each&resources%5Boptions%5D%5Bunavailable_products%5D=last&resources%5Boptions%5D%5Bfields%5D=title,product_type,variants.title,vendor,tag,variants.sku
+  section_id=predictive-search&resources%5Btype%5D=collection,query&resources%5Blimit%5D=5&resources%5Blimit_scope%5D=each
 {%- endcapture -%}
 {%- capture search_query -%}{% render 'search-options', format: 'query' %}{%- endcapture -%}
 {%- liquid
   assign search_query = search_query | strip
+  assign products_params = 'section_id=predictive-search' | append: search_query
   assign panel_style = style | default: 'top'
   if panel_style == 'drawer'
     assign card_sizes = '(min-width: 750px) 180px, 45vw'
@@ -32,7 +35,11 @@
     class="search-panel__inner{% if panel_style == 'top' %} page-width{% endif %}"
     data-endpoint="{{ routes.predictive_search_url }}"
     data-params="{{ predictive_params | strip }}"
+    data-products-endpoint="{{ routes.search_url }}"
+    data-products-params="{{ products_params | escape }}"
   >
+    {%- comment -%} An empty field isn't sent: a hint under it instead (<form-validate>) {%- endcomment -%}
+    <form-validate data-message-required="{{ 'search.empty_query' | t }}">
     <form action="{{ routes.search_url }}" method="get" role="search" class="search-panel__form">
       <label class="visually-hidden" for="{{ id }}-input">{{ 'search.title' | t }}</label>
       {%- render 'icon', name: 'search', class: 'search-panel__icon' -%}
@@ -49,12 +56,14 @@
         enterkeyhint="search"
         aria-controls="{{ id }}-results"
         autofocus
+        required
       >
       {%- render 'search-options' -%}
       <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">
         {%- render 'icon', name: 'close' -%}
       </button>
     </form>
+    </form-validate>
 
     <div id="{{ id }}-results" class="search-panel__results" data-results aria-live="polite"></div>
 

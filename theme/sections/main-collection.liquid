@@ -4,7 +4,8 @@
   filter chips, the filters panel in one of three layouts — sidebar, horizontal dropdowns or drawer;
   always a drawer on phones — and the grid, then "Load more" or page numbers (snippets/facets-page).
   On search the filters, sort and results come from search.* and the terms ride along in the form;
-  nothing renders before a search. <facet-filters> (assets/facets.js) re-renders this section
+  before a search a prompt to type something (empty state); a search that finds nothing (and isn't
+  filtered) shows only its message, without the filters column and the toolbar. <facet-filters> (assets/facets.js) re-renders this section
   through the Section Rendering API on every change and keeps the URL in sync; without JS the form
   and the links still work. Styles: packages/ui/css/facets.css.
 {% endcomment %}
@@ -34,8 +35,31 @@
   if section.settings.show_filters and filters.size > 0
     assign has_filters = true
   endif
+  # A search with no results and no filter on: only its message (nothing to filter or sort)
+  assign bare = false
+  if is_search and count == 0 and search.performed
+    assign bare = true
+    for filter in filters
+      if filter.active_values.size > 0 or filter.min_value.value != blank or filter.max_value.value != blank
+        assign bare = false
+      endif
+    endfor
+    if bare
+      assign has_filters = false
+    endif
+  endif
 -%}
-{%- unless is_search and search.performed == false -%}
+{%- if is_search and search.performed == false -%}
+  <div class="main-collection color-{{ section.settings.color_scheme }} section-spacing">
+    <div class="page-width">
+      <div class="empty-state">
+        {%- render 'icon', name: 'search' -%}
+        <p class="h5">{{ 'search.start_title' | t }}</p>
+        <p>{{ 'search.start_text' | t }}</p>
+      </div>
+    </div>
+  </div>
+{%- else -%}
 <facet-filters
   class="main-collection facets facets--{{ section.settings.filters_layout }}{% if has_filters == false %} facets--none{% endif %} color-{{ section.settings.color_scheme }} section-spacing"
   data-section="{{ section.id }}"
@@ -52,7 +76,8 @@
         count: count,
         count_label: count_label,
         clear_url: clear_url,
-        terms: terms
+        terms: terms,
+        bare: bare
       -%}
     {%- endpaginate -%}
   {%- else -%}
@@ -75,7 +100,7 @@
   import 'facets';
   import '@ui/load-more';
 </script>
-{%- endunless -%}
+{%- endif -%}
 
 {% schema %}
 {

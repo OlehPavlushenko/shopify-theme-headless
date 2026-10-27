@@ -4,6 +4,8 @@
   Deal of the week (optional): one product shown first in an accent frame with a label on top and a
   countdown under it; after the end date it's an ordinary card again (on the next render; the open
   page hides the timer). Not repeated if it's in the list too.
+  On the search page (setting): only while there are no results to show — before a search and when it
+  finds nothing (templates/search.json).
 {% endcomment %}
 {%- liquid
   if section.settings.products.count > 0
@@ -28,6 +30,13 @@
     endif
   endif
 -%}
+{%- liquid
+  assign hidden = false
+  if section.settings.search_empty_only and template.name == 'search' and search.results_count > 0
+    assign hidden = true
+  endif
+-%}
+{%- unless hidden -%}
 <div class="product-list color-{{ section.settings.color_scheme }} section-spacing">
   <div class="page-width">
     {%- comment -%} Grid on phones: 4 cards (two rows of 2), the rest under "Show more" in steps of 4 {%- endcomment -%}
@@ -109,6 +118,7 @@
     {%- endif -%}
   </div>
 </div>
+{%- endunless -%}
 
 {% schema %}
 {
@@ -134,6 +144,7 @@
     { "type": "checkbox", "id": "quick_add", "label": "t:sections.product_list.quick_add", "default": true },
     { "type": "text", "id": "link_label", "label": "t:sections.product_list.link_label", "default": "View all" },
     { "type": "url", "id": "link", "label": "t:sections.product_list.link", "info": "t:sections.product_list.link_info" },
+    { "type": "checkbox", "id": "search_empty_only", "label": "t:sections.product_list.search_empty_only", "info": "t:sections.product_list.search_empty_only_info", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" },
     { "type": "header", "content": "t:sections.product_list.deal" },
     { "type": "product", "id": "deal_product", "label": "t:sections.product_list.deal_product", "info": "t:sections.product_list.deal_product_info" },

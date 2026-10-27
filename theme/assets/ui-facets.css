@@ -512,7 +512,8 @@
     /* Sidebar: one grid — the panel (title + "Clear all", then the groups) in the first column from
        the top, the toolbar, active chips and products in the second, so the title row lines up
        with the product count */
-    .facets--sidebar > .page-width {
+    /* Without filters (none set up, or a search that found nothing) the results take the width */
+    .facets--sidebar:not(.facets--none) > .page-width {
       display: grid;
       grid-template-columns: 26rem minmax(0, 1fr);
       /* A panel taller than few results: the extra height goes to the results row, not between

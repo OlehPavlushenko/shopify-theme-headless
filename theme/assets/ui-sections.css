@@ -1406,6 +1406,15 @@
     color: var(--color-text-muted);
   }
 
+  /* The form centered in the row; room under it for the field's hint (<form-validate>) */
+  .main-404__search-wrap {
+    display: grid;
+    justify-items: center;
+    justify-self: stretch;
+    margin-bottom: var(--space-xs);
+    text-align: start;
+  }
+
   .main-404__search {
     display: flex;
     gap: var(--space-xs);

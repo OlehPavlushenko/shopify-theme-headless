@@ -9,7 +9,8 @@
  *   <load-more data-section="<section id>">
  *     <ul data-load-more-grid> <li data-load-more-item>… <li data-load-more-cell> <a data-load-more-link href="?page=2"> </ul>
  *   </load-more>
- * Without JS the link opens the next page.
+ * fit() recomputes the span (call it when the grid's column count changes). Without JS the link
+ * opens the next page.
  */
 class LoadMore extends HTMLElement {
   #observer;
@@ -17,7 +18,7 @@ class LoadMore extends HTMLElement {
   connectedCallback() {
     this.addEventListener('click', this.#onClick);
     // The observer's first call sets the span after layout (no measuring while the page renders)
-    this.#observer = new ResizeObserver(() => this.#fit());
+    this.#observer = new ResizeObserver(() => this.fit());
     this.#observer.observe(this);
   }
 
@@ -32,7 +33,7 @@ class LoadMore extends HTMLElement {
   // From the layout, not from CSS values (they differ between browsers): the column where the last
   // item ends tells how many are left in its row. Never more than the grid has — a wider span
   // would add an implicit column and push the page sideways.
-  #fit() {
+  fit() {
     const grid = this.#grid;
     const cell = grid?.querySelector('[data-load-more-cell]');
     if (!cell) return;
@@ -69,7 +70,7 @@ class LoadMore extends HTMLElement {
       const next = html.querySelector('[data-load-more-cell]');
       if (next) cell.replaceWith(document.importNode(next, true));
       else cell.remove();
-      this.#fit();
+      this.fit();
       items[0]?.querySelector('a')?.focus({ preventScroll: true });
     } catch {
       window.location.href = link.href;

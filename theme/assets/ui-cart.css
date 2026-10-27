@@ -305,7 +305,7 @@
     --icon-size: var(--icon-sm);
   }
 
-  cart-discount[aria-busy='true'] {
+  cart-discount[aria-busy="true"] {
     opacity: 0.55;
   }
 
@@ -617,7 +617,8 @@
 
     .main-cart__summary {
       position: sticky;
-      top: calc(var(--header-height, 0px) + var(--space-l));
+      top: var(--sticky-top);
+      transition: var(--sticky-transition);
     }
   }
 

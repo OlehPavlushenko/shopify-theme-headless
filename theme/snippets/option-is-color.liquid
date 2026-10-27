@@ -10,7 +10,8 @@
 {%- liquid
   assign color_names = 'color,colour,колір,цвет' | split: ','
   assign option_name = option.name | default: option.label | downcase
-  if color_names contains option_name or option.values.first.swatch
+  # A filter set to swatches in Search & Discovery counts too
+  if color_names contains option_name or option.values.first.swatch or option.presentation == 'swatch'
     echo 'true'
   endif
 -%}

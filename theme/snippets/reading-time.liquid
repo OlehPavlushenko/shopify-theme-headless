@@ -1,0 +1,12 @@
+{% doc %}
+  Outputs an article's reading time in minutes (~200 words a minute, at least 1). The one place this
+  rule lives (article cards, the article page) — capture and strip it:
+    {%- capture minutes -%}{% render 'reading-time', article: article %}{%- endcapture -%}
+    {%- assign minutes = minutes | strip | plus: 0 -%}
+
+  @param {object} article - The article
+{% enddoc %}
+{%- liquid
+  assign words = article.content | strip_html | split: ' ' | size
+  echo words | divided_by: 200 | at_least: 1
+-%}

@@ -18,19 +18,23 @@
  *   </faq-search>
  * State: [data-ready] once enhanced (the field shows), [data-searching] while a query is set.
  */
+import { headerOffset, scrollBehavior } from '@ui/scroll';
+
 const normalize = (text) => text.toLowerCase().replace(/\s+/g, ' ').trim();
 const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-const smooth = () => !matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Unwraps earlier marks, then wraps every match of the words in the text nodes of root
 function highlight(root, words) {
   root.querySelectorAll('mark[data-faq-mark]').forEach((mark) => mark.replaceWith(mark.textContent));
   root.normalize();
   if (!words.length) return;
-  const pattern = new RegExp(`(${words.map(escapeRegExp).join('|')})`, 'gi');
+  const source = `(${words.map(escapeRegExp).join('|')})`;
+  // test() without the g flag: a global regex keeps lastIndex from one node to the next
+  const test = new RegExp(source, 'i');
+  const pattern = new RegExp(source, 'gi');
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   const nodes = [];
-  while (walker.nextNode()) if (pattern.test(walker.currentNode.nodeValue)) nodes.push(walker.currentNode);
+  while (walker.nextNode()) if (test.test(walker.currentNode.nodeValue)) nodes.push(walker.currentNode);
   for (const node of nodes) {
     const parts = node.nodeValue.split(pattern);
     node.replaceWith(
@@ -59,6 +63,8 @@ class FaqSearch extends HTMLElement {
       title: item.querySelector('.accordion__title'),
       content: item.querySelector('.accordion__content'),
       open: item.open,
+      // "One answer open at a time" groups the <details> by name; searching opens several
+      group: item.getAttribute('name'),
     }));
     this.topics = [...this.querySelectorAll('[data-faq-topic]')];
     this.links = [...this.querySelectorAll('[data-faq-topic-link]')];
@@ -80,9 +86,8 @@ class FaqSearch extends HTMLElement {
   // Space taken at the top: the header's full height (it may slide back in while scrolling up) and,
   // on phones, the sticky tools bar
   #offset() {
-    const header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
     const bar = this.tools && matchMedia('(max-width: 989px)').matches ? this.tools.offsetHeight : 0;
-    return header + bar + 16;
+    return headerOffset(bar + 16);
   }
 
   #onClick = (event) => {
@@ -91,7 +96,7 @@ class FaqSearch extends HTMLElement {
     const topic = this.querySelector(link.hash);
     if (!topic) return;
     event.preventDefault();
-    window.scrollTo({ top: topic.getBoundingClientRect().top + window.scrollY - this.#offset(), behavior: smooth() ? 'smooth' : 'auto' });
+    window.scrollTo({ top: topic.getBoundingClientRect().top + window.scrollY - this.#offset(), behavior: scrollBehavior() });
     history.replaceState(null, '', link.hash);
     this.#setCurrent(topic.id);
   };
@@ -118,7 +123,7 @@ class FaqSearch extends HTMLElement {
       // Phones: the topics row scrolls sideways — bring the new current topic into view
       const row = link.closest('.faq__nav-list');
       if (current && row.scrollWidth > row.clientWidth) {
-        row.scrollTo({ left: link.parentElement.offsetLeft - row.offsetLeft - 16, behavior: smooth() ? 'smooth' : 'auto' });
+        row.scrollTo({ left: link.parentElement.offsetLeft - row.offsetLeft - 16, behavior: scrollBehavior() });
       }
     }
   }
@@ -133,7 +138,12 @@ class FaqSearch extends HTMLElement {
       if (match) found += 1;
       if (entry.title) highlight(entry.title, match ? words : []);
       if (entry.content) highlight(entry.content, match ? words : []);
-      // Searching: open the answers that hold the match; cleared: back to how they were
+      // Searching: open the answers that hold the match (out of the one-open group, so several can
+      // be); cleared: back to how they were
+      if (entry.group) {
+        if (words.length) entry.item.removeAttribute('name');
+        else entry.item.setAttribute('name', entry.group);
+      }
       if (words.length) {
         const inAnswer = match && words.some((word) => !normalize(entry.title?.textContent ?? '').includes(word));
         entry.item.open = inAnswer || (match && entry.open);

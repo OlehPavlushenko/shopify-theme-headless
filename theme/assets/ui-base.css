@@ -27,13 +27,23 @@
   }
 
   body,
-  h1, h2, h3, h4, h5, h6,
-  p, figure, blockquote, dl, dd, fieldset {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  figure,
+  blockquote,
+  dl,
+  dd,
+  fieldset {
     margin: 0;
   }
 
-  ul[role='list'],
-  ol[role='list'] {
+  ul[role="list"],
+  ol[role="list"] {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -106,8 +116,8 @@
   }
 
   /* Color scheme containers: .color-<scheme-id> (theme) or the same class names headless */
-  [class^='color-scheme-'],
-  [class*=' color-scheme-'] {
+  [class^="color-scheme-"],
+  [class*=" color-scheme-"] {
     color: var(--color-foreground);
     background: var(--color-background-gradient), var(--color-background);
   }
@@ -122,8 +132,18 @@
    *   .eyebrow          group labels above lists: 12/16 semibold, uppercase, wide tracking, muted
    * Fluid headings scale from the mobile step to the desktop step.
    */
-  h1, h2, h3, h4, h5, h6,
-  .h1, .h2, .h3, .h4, .h5, .h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5,
+  .h6 {
     font-family: var(--font-heading-family);
     font-style: var(--font-heading-style);
     font-weight: var(--font-heading-weight);
@@ -132,32 +152,38 @@
     text-wrap: balance;
   }
 
-  h1, .h1 {
+  h1,
+  .h1 {
     font-size: calc(var(--font-heading-scale) * clamp(var(--text-4xl), 2.6rem + 2.4vw, var(--text-5xl)));
     line-height: var(--leading-tight);
   }
 
-  h2, .h2 {
+  h2,
+  .h2 {
     font-size: calc(var(--font-heading-scale) * clamp(var(--text-3xl), 2.4rem + 1.4vw, var(--text-4xl)));
     line-height: var(--leading-tight);
   }
 
-  h3, .h3 {
+  h3,
+  .h3 {
     font-size: calc(var(--font-heading-scale) * var(--text-2xl));
     line-height: var(--leading-2xl);
   }
 
-  h4, .h4 {
+  h4,
+  .h4 {
     font-size: calc(var(--font-heading-scale) * var(--text-xl));
     line-height: var(--leading-xl);
   }
 
-  h5, .h5 {
+  h5,
+  .h5 {
     font-size: calc(var(--font-heading-scale) * var(--text-lg));
     line-height: var(--leading-lg);
   }
 
-  h6, .h6 {
+  h6,
+  .h6 {
     font-size: calc(var(--font-heading-scale) * var(--text-md));
     line-height: var(--leading-md);
   }
@@ -391,10 +417,15 @@
     box-shadow: var(--shadow-md);
   }
 
-  .text-start { text-align: start; }
-  .text-center { text-align: center; }
-  .text-end { text-align: end; }
-
+  .text-start {
+    text-align: start;
+  }
+  .text-center {
+    text-align: center;
+  }
+  .text-end {
+    text-align: end;
+  }
 
   .muted {
     color: var(--color-text-muted);

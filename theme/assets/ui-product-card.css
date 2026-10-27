@@ -315,7 +315,7 @@
       padding-bottom: 0;
     }
 
-    .deal-card .product-card:has(> .product-card__quick-add) {
+    .deal-card .product-card {
       grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
       grid-template-rows: 1fr auto;
       column-gap: 0;
@@ -348,7 +348,7 @@
 
   /* Tablets: the image stays a moderate square, the text gets the rest */
   @container (min-width: 56rem) {
-    .deal-card .product-card:has(> .product-card__quick-add) {
+    .deal-card .product-card {
       grid-template-columns: 24rem minmax(0, 1fr);
     }
 

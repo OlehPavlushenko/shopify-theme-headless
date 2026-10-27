@@ -6,7 +6,8 @@
  *
  * Markup contract:
  *   <delivery-steps data-min="2" data-max="4" data-cutoff="14" data-locale="en"
- *     data-today="Today" data-lead-today="Order within %time — it ships today" data-lead-later="Order now — it ships %date">
+ *     data-today="Today" data-lead-today="Order within %time — it ships today" data-lead-later="Order now — it ships %date"
+ *     data-time-long="%h h %m min" data-time-short="%m min">
  *     <span data-delivery-lead>server fallback</span>
  *     <span data-delivery-date="order|ship|arrive">server fallback</span>
  *   </delivery-steps>
@@ -27,7 +28,7 @@ class DeliverySteps extends HTMLElement {
   }
 
   #render() {
-    const { min, max, cutoff, locale, today, leadToday, leadLater } = this.dataset;
+    const { min, max, cutoff, locale, today, leadToday, leadLater, timeLong, timeShort } = this.dataset;
     const { shipsToday, ship, from, to, minutesLeft } = deliveryDates({ min, max, cutoff });
     const day = new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short' });
     const set = (name, text) => {
@@ -39,7 +40,9 @@ class DeliverySteps extends HTMLElement {
     set('arrive', `${day.format(from)} – ${day.format(to)}`);
     const lead = this.querySelector('[data-delivery-lead]');
     if (lead)
-      lead.textContent = shipsToday ? leadToday.replace('%time', formatLeft(minutesLeft)) : leadLater.replace('%date', day.format(ship));
+      lead.textContent = shipsToday
+        ? leadToday.replace('%time', formatLeft(minutesLeft, timeLong, timeShort))
+        : leadLater.replace('%date', day.format(ship));
     this.toggleAttribute('data-ships-today', shipsToday);
   }
 }

@@ -229,6 +229,8 @@
                 data-cutoff="{{ block.settings.cutoff }}"
                 data-template="{{ 'products.delivery' | t: dates: '%dates' | escape }}"
                 data-template-today="{{ 'products.delivery_cutoff' | t: time: '%time', dates: '%dates' | escape }}"
+                data-time-long="{{ 'delivery.time_long' | t | escape }}"
+                data-time-short="{{ 'delivery.time_short' | t | escape }}"
                 data-locale="{{ request.locale.iso_code }}"
                 {{ block.shopify_attributes }}
               >

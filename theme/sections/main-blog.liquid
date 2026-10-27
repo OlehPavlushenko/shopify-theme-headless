@@ -7,7 +7,7 @@
   Styles: .main-blog in sections.css.
 {% endcomment %}
 {%- paginate blog.articles by section.settings.per_page -%}
-  <section-swap class="main-blog color-{{ section.settings.color_scheme }} section-spacing" data-section="{{ section.id }}">
+  <section-swap class="main-blog color-{{ section.settings.color_scheme }} section-spacing" data-section="{{ section.id }}" tabindex="-1">
   <load-more data-section="{{ section.id }}">
     <div class="page-width">
       {%- if current_tags.size > 0 -%}
@@ -30,7 +30,7 @@
       {%- endif -%}
 
       {%- if blog.articles.size == 0 -%}
-        <div class="main-blog__empty">
+        <div class="empty-state">
           {%- if current_tags.size > 0 -%}
             <p class="h5">{{ 'blog.no_match' | t }}</p>
             <a href="{{ blog.url }}" class="btn btn--outline" data-section-link>{{ 'facets.clear_all' | t }}</a>
@@ -50,9 +50,9 @@
           {%- for article in blog.articles -%}
             <li data-load-more-item{% if featured and forloop.first %} class="main-blog__featured"{% endif %}>
               {%- if featured and forloop.first -%}
-                {%- render 'article-card', article: article, layout: 'featured', heading_tag: 'h2', show_tags: section.settings.tags, sizes: '(min-width: 990px) 60vw, 100vw' -%}
+                {%- render 'article-card', article: article, layout: 'featured', heading_tag: 'h2', show_tags: section.settings.tags, blog_url: blog.url, sizes: '(min-width: 990px) 60vw, 100vw' -%}
               {%- else -%}
-                {%- render 'article-card', article: article, heading_tag: 'h2', show_tags: section.settings.tags, sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw' -%}
+                {%- render 'article-card', article: article, heading_tag: 'h2', show_tags: section.settings.tags, blog_url: blog.url, sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw' -%}
               {%- endif -%}
             </li>
             {%- comment -%} A promo tile among the articles (first page only; not a load-more item) {%- endcomment -%}
@@ -87,7 +87,7 @@
           {%- endfor -%}
           {%- if section.settings.pagination == 'load_more' -%}
             {%- assign shown = paginate.current_offset | plus: blog.articles.size -%}
-            {%- render 'load-more-cell', paginate: paginate, shown: shown, cell_attr: 'data-load-more-cell', link_attr: 'data-load-more-link' -%}
+            {%- render 'load-more-cell', paginate: paginate, shown: shown -%}
           {%- endif -%}
         </ul>
         {%- if section.settings.pagination == 'pages' -%}

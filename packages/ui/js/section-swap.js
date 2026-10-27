@@ -1,18 +1,22 @@
 /**
  * <section-swap> — links inside a section re-render it in place (Section Rendering API,
  * ?section_id=) instead of loading a new page: the URL updates (history), back / forward re-render,
- * the section's top is brought back into view when it is above the screen. Responses are cached
- * per URL. Without JS (or on a failed request) the links are ordinary links.
+ * the section's top is brought back into view when it is above the screen, and focus moves to the
+ * section (the clicked link is gone). Responses are cached per URL; only the latest click renders.
+ * Without JS (or on a failed request) the links are ordinary links.
  *
  * Markup contract:
- *   <section-swap data-section="<section id>"> … <a href="…" data-section-link> … </section-swap>
+ *   <section-swap data-section="<section id>" tabindex="-1"> … <a href="…" data-section-link> … </section-swap>
  * The element's children are replaced by those of the <section-swap> in the response. State:
  * [aria-busy] while loading.
  */
+import { headerOffset, scrollBehavior } from '@ui/scroll';
+
 const cache = new Map();
 
 class SectionSwap extends HTMLElement {
   #controller;
+  #request = 0;
 
   connectedCallback() {
     this.addEventListener('click', this.#onClick);
@@ -38,21 +42,30 @@ class SectionSwap extends HTMLElement {
     const sectionUrl = new URL(url, location.origin);
     sectionUrl.searchParams.set('section_id', this.dataset.section);
     const key = sectionUrl.toString();
+    // A newer click wins: the one before is aborted, and an older answer is ignored
+    const request = ++this.#request;
+    this.#controller?.abort();
     this.setAttribute('aria-busy', 'true');
     try {
       if (!cache.has(key)) {
-        this.#controller?.abort();
         this.#controller = new AbortController();
         cache.set(
           key,
-          fetch(key, { signal: this.#controller.signal }).then((response) => {
-            if (!response.ok) throw new Error(response.statusText);
-            return response.text();
-          })
+          fetch(key, { signal: this.#controller.signal })
+            .then((response) => {
+              if (!response.ok) throw new Error(response.statusText);
+              return response.text();
+            })
+            // An aborted or failed request leaves the cache, so the next click fetches again
+            .catch((error) => {
+              cache.delete(key);
+              throw error;
+            })
         );
       }
-      const html = new DOMParser().parseFromString(await cache.get(key), 'text/html');
-      const next = html.querySelector('section-swap');
+      const text = await cache.get(key);
+      if (request !== this.#request) return;
+      const next = new DOMParser().parseFromString(text, 'text/html').querySelector('section-swap');
       if (!next) throw new Error('No section-swap in the response');
       this.replaceChildren(...[...next.childNodes].map((node) => document.importNode(node, true)));
       if (push) {
@@ -61,20 +74,19 @@ class SectionSwap extends HTMLElement {
         history.pushState({ sectionSwap: this.dataset.section }, '', url);
         this.#reveal();
       }
+      this.focus({ preventScroll: true });
     } catch (error) {
       cache.delete(key);
-      if (error.name !== 'AbortError') window.location.href = url;
+      if (error.name !== 'AbortError' && request === this.#request) window.location.href = url;
     } finally {
-      this.removeAttribute('aria-busy');
+      if (request === this.#request) this.removeAttribute('aria-busy');
     }
   }
 
   // The top of the section above the screen (a shorter list): bring it back under the header
   #reveal() {
-    const headerBottom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
-    const top = this.getBoundingClientRect().top - headerBottom - 16;
-    if (top >= 0) return;
-    window.scrollBy({ top, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    const top = this.getBoundingClientRect().top - headerOffset();
+    if (top < 0) window.scrollBy({ top, behavior: scrollBehavior() });
   }
 }
 

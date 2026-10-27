@@ -5,6 +5,15 @@
  * utility-panel, localization-form. Behavior: @ui/header (<site-header>), @ui/nav-menu, @ui/drill-menu.
  */
 @layer components {
+  /* Where sticky things below the header stop (product columns, cart summary, filters, FAQ and
+     article sidebars), following the scroll-up header as it slides (@ui/header sets --header-bottom
+     at the slide's start; the transition matches the header's) */
+  :root {
+    --sticky-top: calc(var(--header-bottom, 0px) + var(--space-l));
+    --sticky-max-height: calc(100dvh - var(--header-bottom, 0px) - var(--space-xl));
+    --sticky-transition: top var(--duration-long) var(--ease-out);
+  }
+
   /* --------------------------------------------- section wrapper modes */
   .site-header-section {
     --header-row: 6.8rem;

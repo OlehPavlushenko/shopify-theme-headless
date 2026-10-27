@@ -16,7 +16,9 @@
     assign filters = search.filters
     assign sort_by = search.sort_by | default: search.default_sort_by
     assign terms = search.terms | escape
-    assign clear_url = routes.search_url | append: '?q=' | append: search.terms | url_encode | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by
+    # The terms encoded on their own (a filter at the end of the chain would encode the whole URL)
+    assign q = search.terms | url_encode
+    assign clear_url = routes.search_url | append: '?q=' | append: q | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by
     assign count = search.results_count
     assign count_label = 'search.results_count' | t: count: count
   else
@@ -67,7 +69,10 @@
     {%- endpaginate -%}
   {%- endif -%}
 </facet-filters>
-<script type="module">import 'facets';</script>
+<script type="module">
+  import 'facets';
+  import '@ui/load-more';
+</script>
 {%- endunless -%}
 
 {% schema %}

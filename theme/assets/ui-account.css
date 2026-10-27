@@ -189,8 +189,7 @@
     gap: var(--space-2xs);
   }
 
-  .account-form__field[hidden],
-  .account-form__field[style*="none"] {
+  .account-form__field[hidden] {
     display: none;
   }
 
@@ -244,28 +243,17 @@
     border-radius: var(--radius-card);
   }
 
-  .form-errors {
-    padding: var(--space-s) var(--space-m);
-    font-size: var(--text-sm);
-    color: var(--color-heading);
-    background: color-mix(in srgb, var(--color-danger) 10%, var(--color-background));
-    border: 0.1rem solid color-mix(in srgb, var(--color-danger) 40%, transparent);
-    border-radius: var(--radius-card);
-  }
-
-  .form-errors ul {
-    margin: 0;
-    padding-inline-start: var(--space-m);
-  }
-
   /* ------------------------------------------------- account, order, addresses */
+  /* minmax(0, 1fr): the tabs row (one line, scrolling on phones) must not widen the page */
   .account__inner {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-xl);
   }
 
   .account__head {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-l);
   }
 
@@ -338,36 +326,14 @@
     scrollbar-width: none;
   }
 
+  /* The tabs are .chip links (current = aria-current); one line each */
   .account-nav__link {
-    display: inline-flex;
-    align-items: center;
     gap: var(--space-xs);
-    min-height: var(--control-height-sm);
-    padding: 0 var(--space-m);
-    font-size: var(--text-sm);
-    font-weight: var(--font-body-weight-medium);
-    color: var(--color-heading);
     white-space: nowrap;
-    text-decoration: none;
-    border: 0.1rem solid var(--color-border);
-    border-radius: var(--radius-full);
-    transition: border-color var(--duration-short) var(--ease);
   }
 
   .account-nav__link .svg-icon {
     --icon-size: var(--icon-sm);
-  }
-
-  .account-nav__link[aria-current] {
-    color: var(--color-button-label);
-    background: var(--color-button);
-    border-color: var(--color-button);
-  }
-
-  @media (hover: hover) {
-    .account-nav__link:not([aria-current]):hover {
-      border-color: var(--color-heading);
-    }
   }
 
   /* Panels: a bordered card, or a whole-card link */
@@ -411,31 +377,6 @@
     font-style: normal;
     line-height: var(--leading-md);
     color: var(--color-foreground);
-  }
-
-  /* Status pills */
-  .account-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.2rem var(--space-xs);
-    font-size: var(--text-xs);
-    font-weight: var(--font-body-weight-semibold);
-    color: var(--color-heading);
-    background: var(--color-surface);
-    border-radius: var(--radius-badge);
-  }
-
-  .account-pill--success {
-    background: color-mix(in srgb, var(--color-success) 16%, var(--color-background));
-  }
-
-  .account-pill--danger {
-    background: color-mix(in srgb, var(--color-danger) 14%, var(--color-background));
-  }
-
-  .account-pill--accent {
-    color: var(--color-button-label);
-    background: var(--color-accent);
   }
 
   /* Order cards */
@@ -637,6 +578,10 @@
     border: 0.1rem solid var(--color-border);
   }
 
+  .account-addresses > .empty-state {
+    grid-column: 1 / -1;
+  }
+
   .account-addresses {
     display: grid;
     gap: var(--space-m);
@@ -695,20 +640,5 @@
   /* When an address form is open, the card spans the row for room */
   .account-address:has(.account-address__edit[open]) {
     grid-column: 1 / -1;
-  }
-
-  .account-empty {
-    display: grid;
-    justify-items: center;
-    gap: var(--space-s);
-    padding: var(--space-2xl) var(--space-l);
-    color: var(--color-text-muted);
-    text-align: center;
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
-  }
-
-  .account-empty > .svg-icon {
-    --icon-size: 3.2rem;
   }
 }

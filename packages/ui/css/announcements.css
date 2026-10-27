@@ -244,7 +244,7 @@
     }
 
     .countdown-bar__offer::before {
-      content: '— ';
+      content: "— ";
     }
   }
 }

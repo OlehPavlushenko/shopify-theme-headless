@@ -58,7 +58,7 @@
               {%- render 'pagination', paginate: paginate, anchor: '' -%}
             {%- endif -%}
           {%- else -%}
-            <div class="account-empty">
+            <div class="empty-state">
               {%- render 'icon', name: 'bag' -%}
               <p>{{ 'customers.account.no_orders' | t }}</p>
               <a href="{{ routes.all_products_collection_url }}" class="btn">{{ 'customers.account.start_shopping' | t }}</a>

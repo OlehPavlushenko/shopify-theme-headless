@@ -17,33 +17,39 @@ class SiteHeader extends HTMLElement {
   #resizeObserver;
   #sliding = false;
   #slideTimer;
+  #height = 0;
+  #section;
 
   connectedCallback() {
     // The observer's first call (after layout, before paint) sets the height; measuring here would
     // force a layout while the page is still rendering
     this.#resizeObserver = new ResizeObserver(() => this.#syncHeight());
     this.#resizeObserver.observe(this);
-    requestAnimationFrame(() => {
-      this.#lastY = window.scrollY;
-      this.#update();
-    });
+    // No layout reads here: scrolled state from scrollY only (the observer measures the rest)
+    this.#lastY = window.scrollY;
+    this.toggleAttribute('data-scrolled', this.#lastY > 4);
     // Scroll-up mode slides the header with a transition: --header-bottom is measured again once
     // the slide ends (or after a moment, if no transitionend comes)
-    const section = this.closest('.site-header-section');
-    section?.addEventListener('transitionend', (event) => {
-      if (event.target === section && event.propertyName === 'translate') this.#endSlide();
-    });
+    this.#section = this.closest('.site-header-section');
+    this.#section?.addEventListener('transitionend', this.#onTransitionEnd);
     window.addEventListener('scroll', this.#onScroll, { passive: true });
   }
 
   disconnectedCallback() {
     this.#resizeObserver?.disconnect();
+    this.#section?.removeEventListener('transitionend', this.#onTransitionEnd);
+    clearTimeout(this.#slideTimer);
     window.removeEventListener('scroll', this.#onScroll);
   }
 
+  #onTransitionEnd = (event) => {
+    if (event.target === this.#section && event.propertyName === 'translate') this.#endSlide();
+  };
+
   #syncHeight() {
     const rect = this.getBoundingClientRect();
-    document.documentElement.style.setProperty('--header-height', `${Math.round(rect.height)}px`);
+    this.#height = Math.round(rect.height);
+    document.documentElement.style.setProperty('--header-height', `${this.#height}px`);
     this.#syncBottom(rect);
   }
 
@@ -61,14 +67,17 @@ class SiteHeader extends HTMLElement {
     });
   };
 
+  // A scroll frame reads first (the header's position; its height from the last #syncHeight),
+  // then writes — no layout read in between
   #update() {
     const y = Math.max(window.scrollY, 0);
+    const rect = this.#sliding ? null : this.getBoundingClientRect();
     this.toggleAttribute('data-scrolled', y > 4);
 
     if (this.dataset.sticky === 'scroll-up') {
       const menuOpen = this.querySelector('[data-menu-item][data-open], [popover]:popover-open');
       const goingDown = y > this.#lastY;
-      const pastHeader = y > this.offsetHeight * 2;
+      const pastHeader = y > this.#height * 2;
       const wasHidden = this.hasAttribute('data-hidden');
       const hidden = goingDown && pastHeader && !menuOpen;
       this.toggleAttribute('data-hidden', hidden);
@@ -78,11 +87,11 @@ class SiteHeader extends HTMLElement {
         this.#sliding = true;
         clearTimeout(this.#slideTimer);
         this.#slideTimer = setTimeout(this.#endSlide, 800);
-        document.documentElement.style.setProperty('--header-bottom', hidden ? '0px' : `${this.offsetHeight}px`);
+        document.documentElement.style.setProperty('--header-bottom', hidden ? '0px' : `${this.#height}px`);
       }
     }
     this.#lastY = y;
-    if (!this.#sliding) this.#syncBottom();
+    if (rect && !this.#sliding) this.#syncBottom(rect);
   }
 
   #endSlide = () => {

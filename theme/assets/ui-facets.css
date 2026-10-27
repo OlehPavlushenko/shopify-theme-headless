@@ -329,8 +329,10 @@
     stroke-width: 2.6;
   }
 
-  .facet__value:hover .facet__check {
-    border-color: var(--color-heading);
+  @media (hover: hover) {
+    .facet__value:hover .facet__check {
+      border-color: var(--color-heading);
+    }
   }
 
   .facet__checkbox:checked + .facet__check {
@@ -372,8 +374,10 @@
     transition: box-shadow var(--duration-short) var(--ease);
   }
 
-  .facet__value:hover .facet__swatch {
-    --swatch-edge: var(--color-text-muted);
+  @media (hover: hover) {
+    .facet__value:hover .facet__swatch {
+      --swatch-edge: var(--color-text-muted);
+    }
   }
 
   .facet__checkbox:checked + .facet__swatch {
@@ -563,8 +567,9 @@
 
     .facets--sidebar .facets__panel {
       position: sticky;
-      top: calc(var(--header-height, 0px) + var(--space-m));
-      max-height: calc(100dvh - var(--header-height, 0px) - var(--space-xl));
+      top: var(--sticky-top);
+      transition: var(--sticky-transition);
+      max-height: var(--sticky-max-height);
       /* Room for the scrollbar, so it never covers the counts; thin and quiet */
       padding-inline-end: var(--space-xs);
       overflow-y: auto;
@@ -645,7 +650,7 @@
     list-style: none;
   }
 
-  /* Tablets, and the sidebar layout on small laptops: at most 3 columns (--cols-tablet) */
+  /* "Bigger cards": a column less, one per row on phones */
   .facets__grid[data-density="few"] {
     --grid-columns: var(--cols-few);
     --grid-columns-mobile: 1;
@@ -686,21 +691,5 @@
     .facets__grid {
       --grid-gap: var(--space-2xl) var(--space-l);
     }
-  }
-
-  .facets__empty {
-    display: grid;
-    justify-items: center;
-    gap: var(--space-s);
-    padding: var(--space-3xl) var(--space-l);
-    text-align: center;
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
-  }
-
-  .facets__empty > .svg-icon {
-    --icon-size: 3.2rem;
-
-    color: var(--color-text-muted);
   }
 }

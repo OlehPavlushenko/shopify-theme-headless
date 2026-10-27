@@ -8,8 +8,14 @@ and the list of mistakes we already made once. Read both before adding code.
 
 - **Look for the component first.** One pattern = one component. Product card, price, swatch,
   variant picker, slider, drawer / popup, accordion, toast, skeleton, section head, page header,
-  promo card, `.btn` variants, `.pill`, `.chip`. Extend one with a parameter or modifier instead of
-  writing a look-alike.
+  promo card (`.grid-promo` in a grid), `.btn` variants, `.pill` (statuses: `--soft`, `--success`,
+  `--danger`), `.chip` (selected: `aria-pressed` / `aria-checked` / `aria-current`; `--compact` for
+  removable filters), `.tag` (topics), `.empty-state`, `.form-errors`, `.load-more` cell. Extend one
+  with a parameter or modifier instead of writing a look-alike.
+- **Shared behavior already exists:** `<load-more>` (paginated grids), `<section-swap>` (links that
+  re-render a section), `@ui/scroll` (offset below the header, reduced motion), `@ui/delivery`
+  (delivery dates). Sticky things below the header use `--sticky-top`, `--sticky-max-height` and
+  `--sticky-transition` (header.css).
 - **Data lives in Shopify.** Content a headless storefront would also need goes into metafields,
   metaobjects or Shopify settings, not into theme settings or code (example: "Hide from collection
   lists" is the collection metafield `theme.hidden`).
@@ -101,6 +107,9 @@ and the list of mistakes we already made once. Read both before adding code.
 | Mistake | Instead |
 |---|---|
 | `alt: image.alt \| default: ''` inside `image_tag` arguments — the filter applies to the **whole tag**, the alt stays missing | `assign image_alt = image.alt \| default: ''` before, then `alt: image_alt` |
+| A filter at the end of an `append` chain (`… \| append: tag \| handleize`, `… \| append: terms \| url_encode`, `t: date: d \| time_tag`) — it runs on the **whole** string built so far | Filter the piece first (`assign one = tag \| handleize`), then append it |
+| A global regex (`/…/g`) used with `test()` in a loop — `lastIndex` carries over and later matches are skipped | A separate non-global regex for `test()` |
+| Fetch-and-swap code where only uncached requests are aborted — a slow older answer renders over the newer choice | A request counter: drop any answer that isn't the latest |
 | `a and b or c and d` in a Liquid condition — Liquid evaluates right to left | Split into separate `if`s or `assign` flags |
 | `reject` / `where` on an array of strings | They work on arrays of objects; loop instead |
 | `== 'true'` on a captured snippet output | `contains 'true'` (leading newline) |

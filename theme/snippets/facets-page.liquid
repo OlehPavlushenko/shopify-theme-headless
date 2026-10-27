@@ -131,12 +131,15 @@
       {%- if items.size > 0 -%}
         {%- comment -%} Heading order h1 (page header) → h2 → h3 (cards) {%- endcomment -%}
         <h2 class="visually-hidden">{{ 'facets.products_heading' | t }}</h2>
+        {%- comment -%} <load-more> (@ui/load-more): "Load more" appends the next page, the same as on the blog {%- endcomment -%}
+        <load-more data-section="{{ section.id }}">
         <ul
           id="ProductGrid-{{ section.id }}"
           class="grid facets__grid"
           role="list"
           style="--cols: {{ columns }}; --cols-few: {{ few_columns }}; --cols-tablet: {{ tablet_columns }}; --cols-few-tablet: {{ few_tablet_columns }}; --cols-mobile: {{ section.settings.columns_mobile }};"
           data-facets-grid
+          data-load-more-grid
         >
           {%- for item in items -%}
             {%- if promo and paginate.current_page == 1 and forloop.index == promo.settings.position -%}
@@ -161,7 +164,7 @@
               endif
               assign object_type = item.object_type | default: 'product'
             -%}
-            <li data-facets-item>
+            <li data-load-more-item>
               {%- if object_type == 'product' -%}
                 {%- render 'product-card',
                   product: item,
@@ -188,15 +191,16 @@
           {%- endcomment -%}
           {%- if section.settings.pagination == 'load_more' -%}
             {%- assign shown = paginate.current_offset | plus: items.size -%}
-            {%- render 'load-more-cell', paginate: paginate, shown: shown, cell_attr: 'data-facets-more', link_attr: 'data-facets-load-more' -%}
+            {%- render 'load-more-cell', paginate: paginate, shown: shown -%}
           {%- endif -%}
         </ul>
+        </load-more>
 
         {%- if paginate.pages > 1 and section.settings.pagination == 'pages' -%}
           {%- render 'pagination', paginate: paginate, anchor: '' -%}
         {%- endif -%}
       {%- else -%}
-        <div class="facets__empty">
+        <div class="empty-state">
           {%- render 'icon', name: 'search' -%}
           {%- if active_filters > 0 -%}
             <p class="h5">{{ 'facets.no_results' | t }}</p>

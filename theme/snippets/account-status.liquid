@@ -1,20 +1,20 @@
 {% doc %}
   An order's status as pills: cancelled, or the payment status and the delivery status (account
-  and order pages). Styles: .account-pill in packages/ui/css/account.css.
+  and order pages). Styles: .pill in packages/ui/css/components.css.
 
   @param {object} order - The order
 {% enddoc %}
 {%- if order.cancelled -%}
-  <span class="account-pill account-pill--danger">{{ 'customers.order.cancelled' | t }}</span>
+  <span class="pill pill--danger">{{ 'customers.order.cancelled' | t }}</span>
 {%- else -%}
   {%- liquid
-    assign paid_class = 'account-pill'
+    assign paid_class = 'pill pill--soft'
     if order.financial_status == 'paid'
-      assign paid_class = 'account-pill account-pill--success'
+      assign paid_class = 'pill pill--success'
     endif
-    assign ship_class = 'account-pill'
+    assign ship_class = 'pill pill--soft'
     if order.fulfillment_status == 'fulfilled'
-      assign ship_class = 'account-pill account-pill--success'
+      assign ship_class = 'pill pill--success'
     endif
   -%}
   <span class="{{ paid_class }}">{{ order.financial_status_label }}</span>

@@ -9,10 +9,13 @@
   @param {string} tag - The topic
 {% enddoc %}
 {%- liquid
+  # Compared as handles: current_tags may hold the names or the handles from the URL
   assign handles = ''
   assign chosen_already = false
+  assign tag_handle = tag | handleize
   for chosen in current_tags
-    if chosen == tag
+    assign chosen_handle = chosen | handleize
+    if chosen_handle == tag_handle
       assign chosen_already = true
     else
       assign one = chosen | handleize
@@ -20,8 +23,7 @@
     endif
   endfor
   unless chosen_already
-    assign one = tag | handleize
-    assign handles = handles | append: '+' | append: one
+    assign handles = handles | append: '+' | append: tag_handle
   endunless
   assign handles = handles | remove_first: '+'
   if handles == blank

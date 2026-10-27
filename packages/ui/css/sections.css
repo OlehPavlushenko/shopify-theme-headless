@@ -768,10 +768,13 @@
     /* align-self: a grid item stretches to its row — sticky needs room to move in */
     .faq--split .faq__intro {
       position: sticky;
-      top: calc(var(--header-bottom, 0px) + var(--space-l));
+      top: var(--sticky-top);
       align-self: start;
-      /* Follows the scroll-up header as it slides (same timing as header.css) */
-      transition: top var(--duration-long) var(--ease-out);
+      max-height: var(--sticky-max-height);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      transition: var(--sticky-transition);
     }
   }
 
@@ -822,47 +825,18 @@
     list-style: none;
   }
 
+  /* The topics are .chip links (the one being read = aria-current); one line each */
   .faq__nav-link {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--control-height-sm);
-    padding: 0 var(--space-m);
-    font-size: var(--text-sm);
-    font-weight: var(--font-body-weight-medium);
-    color: var(--color-heading);
     white-space: nowrap;
-    text-decoration: none;
-    border: 0.1rem solid var(--color-border);
-    border-radius: var(--radius-full);
-    transition:
-      color var(--duration-short) var(--ease),
-      background-color var(--duration-short) var(--ease),
-      border-color var(--duration-short) var(--ease);
-  }
-
-  @media (hover: hover) {
-    .faq__nav-link:hover {
-      border-color: var(--color-heading);
-    }
-  }
-
-  /* The topic being read */
-  .faq__nav-link[aria-current] {
-    color: var(--color-button-label);
-    background: var(--color-button);
-    border-color: var(--color-button);
   }
 
   /* Phones and tablets: the intro's children join the section grid, so the tools can stick under
      the header as a bar over the whole list; the topics are one row that scrolls sideways */
   @media (max-width: 989px) {
-    .faq--nav .faq__inner {
-      gap: var(--space-m);
-    }
-
     /* minmax(0, 1fr): the topics row (one line, wider than the screen) must not widen the column */
     .faq--nav .faq__inner {
       grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-m);
     }
 
     .faq--nav .faq__intro {
@@ -873,7 +847,7 @@
       position: sticky;
       top: var(--header-bottom, 0px);
       z-index: 2;
-      transition: top var(--duration-long) var(--ease-out);
+      transition: var(--sticky-transition);
       width: auto;
       margin-inline: calc(var(--gutter) * -1);
       padding: var(--space-s) var(--gutter);
@@ -916,7 +890,7 @@
     display: none;
   }
 
-  /* While searching, the first visible topic loses its top spacing too */
+  /* While searching, the topics left sit closer together */
   faq-search[data-searching] .faq__topic:not([hidden]) {
     padding-top: var(--space-l);
   }
@@ -941,18 +915,29 @@
     display: none;
   }
 
-  /* Desktop: the topics stack as a list in the sticky column, the current one marked by a bar */
+  /* Desktop: the topics stack as a list in the sticky column, the current one marked by a bar
+     (split); in the stacked layout they stay pills, wrapping and centered */
   @media (min-width: 990px) {
+    .faq--stacked .faq__nav-list {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
     .faq--split .faq__nav-list {
       display: grid;
       gap: 0;
       border-top: 0.1rem solid var(--color-border);
     }
 
+    /* A plain list here (not chips): the current topic marked by a bar, as in the article contents */
     .faq--split .faq__nav-link {
       display: flex;
+      justify-content: flex-start;
       min-height: auto;
-      padding: var(--space-s) var(--space-s);
+      padding: var(--space-s);
+      color: var(--color-text-muted);
+      white-space: normal;
+      background: none;
       border: 0;
       border-bottom: 0.1rem solid var(--color-border);
       border-radius: 0;
@@ -960,15 +945,15 @@
     }
 
     .faq--split .faq__nav-link[aria-current] {
-      color: var(--color-accent);
-      background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+      color: var(--color-heading);
+      background: none;
       border-color: var(--color-border);
       box-shadow: inset 0.2rem 0 0 var(--color-accent);
     }
 
     @media (hover: hover) {
       .faq--split .faq__nav-link:hover {
-        color: var(--color-accent);
+        color: var(--color-heading);
       }
     }
   }
@@ -1388,12 +1373,6 @@
   /* ------------------------------------------------------- policies */
   /* /policies/* pages are rendered by Shopify into the layout (no sections): .shopify-policy__*
      markup, styled as a reading column like the page content */
-  .shopify-policy__container {
-    max-width: calc(var(--page-width-narrow) + var(--gutter) * 2);
-    margin-inline: auto;
-    padding: var(--space-2xl) var(--gutter) var(--space-4xl);
-  }
-
   .shopify-policy__title {
     margin-bottom: var(--space-xl);
     padding-bottom: var(--space-l);
@@ -1487,8 +1466,10 @@
     text-decoration: none;
   }
 
-  .main-contact__item a:hover {
-    color: var(--color-link-hover);
+  @media (hover: hover) {
+    .main-contact__item a:hover {
+      color: var(--color-link-hover);
+    }
   }
 
   .main-contact__icon {
@@ -1880,17 +1861,6 @@
     }
   }
 
-  .main-blog__empty {
-    display: grid;
-    justify-items: center;
-    gap: var(--space-s);
-    padding: var(--space-2xl) var(--space-l);
-    color: var(--color-text-muted);
-    text-align: center;
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
-  }
-
   /* Article: header and text in a reading column, the cover wide between them */
   .main-article__header {
     display: grid;
@@ -1993,11 +1963,24 @@
       order: 0;
     }
 
+    .main-article__layout:not(:has(.main-article__shop)) {
+      grid-template-columns: 20rem minmax(0, 1fr) 20rem;
+    }
+
+    .main-article__layout:has(.main-article__toc article-toc[hidden]) .main-article__body,
+    .main-article__layout:not(:has(.main-article__toc)) .main-article__body {
+      grid-column: 1 / span 2;
+    }
+
     .main-article__toc,
     .main-article__shop {
       position: sticky;
-      top: calc(var(--header-bottom, 0px) + var(--space-l));
-      transition: top var(--duration-long) var(--ease-out);
+      top: var(--sticky-top);
+      max-height: var(--sticky-max-height);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      transition: var(--sticky-transition);
     }
   }
 
@@ -2133,7 +2116,7 @@
       left: 0;
       display: grid;
       gap: var(--space-xs);
-      max-height: 60vh;
+      max-height: calc(100dvh - var(--header-bottom, 0px) - 5.2rem - var(--space-2xl));
       padding: var(--space-m);
       overflow-y: auto;
       background: var(--color-background);
@@ -2182,7 +2165,7 @@
     background: var(--color-accent);
     transform: scaleX(var(--progress, 0));
     transform-origin: left;
-    transition: top var(--duration-long) var(--ease-out);
+    transition: var(--sticky-transition);
     pointer-events: none;
   }
 
@@ -2814,8 +2797,14 @@
   }
 }
 
-/* Unlayered on purpose: Shopify's policy-page CSS is unlayered and would beat @layer rules.
-   Titles start-aligned like every other page heading of the theme. */
+/* Unlayered on purpose: Shopify's policy-page CSS is unlayered and would beat @layer rules —
+   the reading column's width and padding, and titles start-aligned like every other page heading */
+.shopify-policy__container {
+  max-width: calc(var(--page-width-narrow) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding: var(--space-2xl) var(--gutter) var(--space-4xl);
+}
+
 .shopify-policy__container .shopify-policy__title {
   text-align: start;
 }

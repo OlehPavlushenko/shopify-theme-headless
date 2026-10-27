@@ -291,10 +291,11 @@
   }
 
   /* Text result card (pages, articles) */
+  /* A column: "Read more" (margin-top: auto) sits at the bottom of a cell as tall as its row */
   .text-card {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: var(--space-xs);
-    align-content: start;
     height: 100%;
     padding: var(--space-l);
     text-decoration: none;

@@ -366,6 +366,8 @@
   },
   "delivery": {
     "today": "Today",
+    "time_long": "%h h %m min",
+    "time_short": "%m min",
     "lead_today": "Order within %time — it ships today",
     "lead_later": "Order now — it ships %date",
     "lead_fallback": "Orders placed before {{ hour }}:00 on business days ship the same day",

@@ -6,7 +6,7 @@
  *
  *   deliveryDates({ min: 2, max: 4, cutoff: 14 }) →
  *     { shipsToday, ship, from, to, minutesLeft } (Dates; minutesLeft until the cut-off, or 0)
- *   formatLeft(143) → "2 h 23 min"
+ *   formatLeft(143, "%h h %m min", "%m min") → "2 h 23 min"
  */
 const isBusinessDay = (date) => date.getDay() !== 0 && date.getDay() !== 6;
 
@@ -33,4 +33,6 @@ export function deliveryDates({ min, max, cutoff, now = new Date() }) {
   };
 }
 
-export const formatLeft = (minutes) => (minutes >= 60 ? `${Math.floor(minutes / 60)} h ${minutes % 60} min` : `${minutes} min`);
+// The words come from the theme's translations: "%h h %m min" / "%m min"
+export const formatLeft = (minutes, long = '%h h %m min', short = '%m min') =>
+  minutes >= 60 ? long.replace('%h', Math.floor(minutes / 60)).replace('%m', minutes % 60) : short.replace('%m', minutes);

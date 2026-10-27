@@ -6,7 +6,7 @@
  *     [data-facets-body] [data-facets-clear] [data-facets-active] [data-facets-count] [data-facets-results]
  *     [data-facets-active-count] [data-facets-show] — parts replaced after every change
  *     [data-facets-link] — chip / "Clear all" links, fetched instead of followed
- *     [data-facets-load-more] — "Load more": the next page's products are appended
+ *     <load-more> (@ui/load-more) around the grid — "Load more" appends the next page's products
  *     button[data-density] (the grid carries data-density too) — few (bigger cards: a column less, 1 on phones) / many (as set),
  *       remembered per browser
  *   </facet-filters>
@@ -14,10 +14,12 @@
  * A change in the form (checkbox, sort, price after a pause) builds the URL from the form, fetches
  * it with ?section_id=<section>, replaces the parts above and pushes the URL to the history (back
  * and forward re-render). Open filter groups and the open drawer stay as they are. Responses are
- * cached per URL; an older request is aborted by a newer one. Without JS the form submits and
- * every link is a real URL.
+ * cached per URL; only the latest change renders (an older request is aborted or ignored). Without
+ * JS the form submits and every link is a real URL.
  * <price-range>: two number fields + a dual range slider kept in sync.
  */
+import { headerOffset, scrollBehavior } from '@ui/scroll';
+
 const cache = new Map();
 
 // Selector of a form field, to find it again after the form is replaced
@@ -43,8 +45,8 @@ function saveDensity(value) {
 
 class FacetFilters extends HTMLElement {
   #controller;
+  #request = 0;
   #timer;
-  #resizeObserver;
   #revealOnClose = false;
   #lastChanged = null;
 
@@ -60,25 +62,10 @@ class FacetFilters extends HTMLElement {
     this.addEventListener('toggle', this.#onToggle, true);
     document.addEventListener('click', this.#onOutsideClick);
     window.addEventListener('popstate', this.#onPopState);
-    // No #fitMore here: the observer's first call does it after layout (no forced reflow on load)
-    this.#applyDensity(readDensity(), false);
-    this.#resizeObserver = new ResizeObserver(() => this.#fitMore());
-    this.#resizeObserver.observe(this);
-  }
-
-  // "Load more" cell: span the columns left in the last row (all of them when the row is full)
-  #fitMore() {
-    const grid = this.querySelector('[data-facets-grid]');
-    const more = grid?.querySelector('[data-facets-more]');
-    if (!more) return;
-    const columns = getComputedStyle(grid).gridTemplateColumns.split(' ').length;
-    const used = grid.children.length - 1;
-    const left = columns - (used % columns);
-    more.style.gridColumn = `span ${left}`;
+    this.#applyDensity(readDensity());
   }
 
   disconnectedCallback() {
-    this.#resizeObserver?.disconnect();
     document.removeEventListener('click', this.#onOutsideClick);
     window.removeEventListener('popstate', this.#onPopState);
   }
@@ -115,12 +102,6 @@ class FacetFilters extends HTMLElement {
     if (link) {
       event.preventDefault();
       this.#apply(link.pathname + link.search);
-      return;
-    }
-    const more = event.target.closest('a[data-facets-load-more]');
-    if (more) {
-      event.preventDefault();
-      this.#loadMore(more);
       return;
     }
     const toggle = event.target.closest('[data-facet-more-toggle]');
@@ -165,28 +146,35 @@ class FacetFilters extends HTMLElement {
     button.textContent = expand ? button.dataset.labelLess : button.dataset.labelMore;
   }
 
-  #applyDensity(value, fit = true) {
+  // The column count changes: the "Load more" cell takes the new room left in its row
+  #applyDensity(value) {
     const grid = this.querySelector('[data-facets-grid]');
     if (grid) grid.dataset.density = value;
     this.querySelectorAll('button[data-density]').forEach((button) =>
       button.setAttribute('aria-pressed', String(button.dataset.density === value))
     );
-    if (fit) this.#fitMore();
+    this.querySelector('load-more')?.fit?.();
   }
 
   async #fetch(url) {
     const sectionUrl = new URL(url, location.origin);
     sectionUrl.searchParams.set('section_id', this.section);
     const key = sectionUrl.toString();
+    this.#controller?.abort();
     if (!cache.has(key)) {
-      this.#controller?.abort();
       this.#controller = new AbortController();
       cache.set(
         key,
-        fetch(key, { signal: this.#controller.signal }).then((response) => {
-          if (!response.ok) throw new Error(response.statusText);
-          return response.text();
-        })
+        fetch(key, { signal: this.#controller.signal })
+          .then((response) => {
+            if (!response.ok) throw new Error(response.statusText);
+            return response.text();
+          })
+          // An aborted or failed request leaves the cache, so the next try fetches again
+          .catch((error) => {
+            cache.delete(key);
+            throw error;
+          })
       );
     }
     try {
@@ -198,19 +186,22 @@ class FacetFilters extends HTMLElement {
   }
 
   async #apply(url, push = true) {
+    // A newer change wins: an older answer arriving later is ignored
+    const request = ++this.#request;
     this.setAttribute('aria-busy', 'true');
     try {
       const html = await this.#fetch(url);
+      if (request !== this.#request) return;
       const next = html.querySelector('facet-filters');
       if (!next) throw new Error('No facets markup');
       this.#replace(next);
       if (push && url !== location.pathname + location.search) history.pushState({ facets: true }, '', url);
       if (push) this.#revealResults();
     } catch (error) {
-      if (error.name === 'AbortError') return;
+      if (error.name === 'AbortError' || request !== this.#request) return;
       window.location.href = url;
     } finally {
-      this.removeAttribute('aria-busy');
+      if (request === this.#request) this.removeAttribute('aria-busy');
     }
   }
 
@@ -223,11 +214,8 @@ class FacetFilters extends HTMLElement {
       return;
     }
     const anchor = this.querySelector('.facets__toolbar') || this;
-    const headerBottom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-bottom')) || 0;
-    const top = anchor.getBoundingClientRect().top - headerBottom - 16;
-    if (top >= 0) return;
-    const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-    window.scrollBy({ top, behavior: smooth ? 'smooth' : 'auto' });
+    const top = anchor.getBoundingClientRect().top - headerOffset();
+    if (top < 0) window.scrollBy({ top, behavior: scrollBehavior() });
   }
 
   // Swap the changing parts; keep which groups are open and where "Show more" was expanded
@@ -298,28 +286,6 @@ class FacetFilters extends HTMLElement {
   // What the filters scroll in: the open drawer's body, otherwise the panel (the sticky sidebar)
   #scroller() {
     return this.querySelector('.facets__panel:popover-open [data-facets-body]') || this.querySelector('.facets__panel');
-  }
-
-  async #loadMore(link) {
-    link.setAttribute('aria-busy', 'true');
-    try {
-      const html = await this.#fetch(link.pathname + link.search);
-      const grid = this.querySelector('[data-facets-grid]');
-      const items = html.querySelectorAll('[data-facets-grid] > [data-facets-item]');
-      const more = this.querySelector('[data-facets-more]');
-      // The new products go before the "Load more" cell, which stays last in the grid
-      more.before(...[...items].map((item) => document.importNode(item, true)));
-      const incoming = html.querySelector('[data-facets-more]');
-      if (incoming) more.replaceWith(document.importNode(incoming, true));
-      else more.remove();
-      this.#fitMore();
-      grid
-        .querySelectorAll('[data-facets-item]')
-        [grid.querySelectorAll('[data-facets-item]').length - items.length]?.querySelector('a')
-        ?.focus({ preventScroll: true });
-    } catch {
-      window.location.href = link.href;
-    }
   }
 }
 

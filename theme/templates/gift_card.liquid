@@ -92,7 +92,7 @@
         {%- endif -%}
 
         <div class="gift-card__actions">
-          <a href="{{ shop.url }}" class="btn">{{ 'gift_card.shop_now' | t }}</a>
+          <a href="{{ routes.root_url }}" class="btn">{{ 'gift_card.shop_now' | t }}</a>
           <button type="button" class="btn btn--outline" data-print hidden>{{ 'gift_card.print' | t }}</button>
           {%- if gift_card.pass_url -%}
             <a href="{{ gift_card.pass_url }}" class="gift-card__wallet">
@@ -114,7 +114,11 @@
             if (!navigator.clipboard) return;
             button.hidden = false;
             button.addEventListener('click', async () => {
-              await navigator.clipboard.writeText(code.replace(/\s/g, ''));
+              try {
+                await navigator.clipboard.writeText(code.replace(/\s/g, ''));
+              } catch {
+                return; // Clipboard blocked: the code stays on screen to copy by hand
+              }
               const label = button.textContent;
               button.textContent = this.dataset.copied;
               setTimeout(() => (button.textContent = label), 2000);

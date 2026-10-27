@@ -20,6 +20,8 @@
       data-today="{{ 'delivery.today' | t | escape }}"
       data-lead-today="{{ 'delivery.lead_today' | t: time: '%time' | escape }}"
       data-lead-later="{{ 'delivery.lead_later' | t: date: '%date' | escape }}"
+      data-time-long="{{ 'delivery.time_long' | t | escape }}"
+      data-time-short="{{ 'delivery.time_short' | t | escape }}"
     >
       <div class="delivery-estimate__head">
         {%- if section.settings.eyebrow != blank -%}

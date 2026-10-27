@@ -18,7 +18,8 @@
           <input class="input" type="password" name="customer[password_confirmation]" autocomplete="new-password" required>
         </label>
         <button type="submit" class="btn btn--full">{{ 'customers.activate.submit' | t }}</button>
-        <button type="submit" name="decline" value="{{ 'customers.activate.decline' | t | escape }}" class="btn btn--link">{{ 'customers.activate.decline' | t }}</button>
+        {%- comment -%} formnovalidate: declining needs no password {%- endcomment -%}
+        <button type="submit" name="decline" value="{{ 'customers.activate.decline' | t | escape }}" class="btn btn--link" formnovalidate>{{ 'customers.activate.decline' | t }}</button>
       {%- endform -%}
     </div>
   </div>

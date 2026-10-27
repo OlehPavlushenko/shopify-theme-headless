@@ -11,27 +11,27 @@
 <nav class="account-nav" aria-label="{{ 'customers.account.nav' | t | escape }}">
   <ul class="account-nav__list" role="list">
     <li>
-      <a href="{{ routes.account_url }}" class="account-nav__link"{% if on_orders %} aria-current="page"{% endif %}>
+      <a href="{{ routes.account_url }}" class="chip account-nav__link"{% if on_orders %} aria-current="page"{% endif %}>
         {%- render 'icon', name: 'bag' -%}
         {{- 'customers.account.orders' | t -}}
       </a>
     </li>
     <li>
-      <a href="{{ routes.account_addresses_url }}" class="account-nav__link"{% if template.name == 'addresses' %} aria-current="page"{% endif %}>
+      <a href="{{ routes.account_addresses_url }}" class="chip account-nav__link"{% if template.name == 'addresses' %} aria-current="page"{% endif %}>
         {%- render 'icon', name: 'map-pin' -%}
         {{- 'customers.addresses.title' | t -}}
       </a>
     </li>
     {%- if settings.wishlist_enabled and pages['wishlist'] -%}
       <li>
-        <a href="{{ pages['wishlist'].url }}" class="account-nav__link">
+        <a href="{{ pages['wishlist'].url }}" class="chip account-nav__link">
           {%- render 'icon', name: 'heart' -%}
           {{- 'wishlist.title' | t -}}
         </a>
       </li>
     {%- endif -%}
     <li class="account-nav__logout">
-      <a href="{{ routes.account_logout_url }}" class="account-nav__link">
+      <a href="{{ routes.account_logout_url }}" class="chip account-nav__link">
         {%- render 'icon', name: 'arrow-right' -%}
         {{- 'customers.account.logout' | t -}}
       </a>

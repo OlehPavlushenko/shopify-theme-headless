@@ -16,7 +16,7 @@
           assign range_label = from | append: '–' | append: to
         -%}
         <li>
-          <a href="{{ filter.url_to_remove }}" class="chip chip--compact facets-active__chip" data-facets-link aria-label="{{ 'facets.remove' | t: filter: range_label | escape }}">
+          <a href="{{ filter.url_to_remove }}" class="chip chip--compact" data-facets-link aria-label="{{ 'facets.remove' | t: filter: range_label | escape }}">
             {{- range_label -}}
             {%- render 'icon', name: 'close' -%}
           </a>
@@ -25,20 +25,16 @@
     {%- else -%}
       {%- liquid
         assign is_swatch = false
-        if filter.presentation == 'swatch'
+        capture is_color
+          render 'option-is-color', option: filter
+        endcapture
+        if is_color contains 'true'
           assign is_swatch = true
-        else
-          capture is_color
-            render 'option-is-color', option: filter
-          endcapture
-          if is_color contains 'true'
-            assign is_swatch = true
-          endif
         endif
       -%}
       {%- for value in filter.active_values -%}
         <li>
-          <a href="{{ value.url_to_remove }}" class="chip chip--compact facets-active__chip" data-facets-link aria-label="{{ 'facets.remove' | t: filter: value.label | escape }}">
+          <a href="{{ value.url_to_remove }}" class="chip chip--compact" data-facets-link aria-label="{{ 'facets.remove' | t: filter: value.label | escape }}">
             {%- if is_swatch -%}
               {%- render 'swatch', value: value, class: 'facets-active__swatch' -%}
             {%- endif -%}

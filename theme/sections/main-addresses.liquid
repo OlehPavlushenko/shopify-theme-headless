@@ -31,7 +31,7 @@
         {%- for address in customer.addresses -%}
           <li class="account-address{% if address == customer.default_address %} account-address--default{% endif %}">
             {%- if address == customer.default_address -%}
-              <span class="account-pill account-pill--accent">{{ 'customers.addresses.default' | t }}</span>
+              <span class="pill">{{ 'customers.addresses.default' | t }}</span>
             {%- endif -%}
             <address class="account-address__text">{{ address | format_address }}</address>
             <div class="account-address__actions">
@@ -52,7 +52,7 @@
             </div>
           </li>
         {%- else -%}
-          <li class="account-empty">
+          <li class="empty-state">
             {%- render 'icon', name: 'map-pin' -%}
             <p>{{ 'customers.addresses.empty' | t }}</p>
           </li>

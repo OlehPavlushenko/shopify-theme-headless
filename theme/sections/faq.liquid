@@ -47,7 +47,7 @@
               <nav class="faq__nav" aria-label="{{ 'faq.topics' | t | escape }}">
                 <ul class="faq__nav-list" role="list">
                   {%- for topic in topics -%}
-                    <li><a href="#faq-{{ section.id }}-{{ topic.id }}" class="faq__nav-link" data-faq-topic-link>{{ topic.settings.title | escape }}</a></li>
+                    <li><a href="#faq-{{ section.id }}-{{ topic.id }}" class="chip faq__nav-link" data-faq-topic-link>{{ topic.settings.title | escape }}</a></li>
                   {%- endfor -%}
                 </ul>
               </nav>
@@ -70,7 +70,9 @@
         {%- case block.type -%}
           {%- when 'topic' -%}
             {%- assign topic_id = 'faq-' | append: section.id | append: '-' | append: block.id -%}
-            <h3 id="{{ topic_id }}" class="h5 faq__topic" data-faq-topic {{ block.shopify_attributes }}>{{ block.settings.title | escape }}</h3>
+            {%- comment -%} h2 when the section has no heading of its own (no jump from the page's h1 to h3) {%- endcomment -%}
+            {%- if section.settings.heading != blank -%}{%- assign topic_level = 'h3' -%}{%- else -%}{%- assign topic_level = 'h2' -%}{%- endif -%}
+            <{{ topic_level }} id="{{ topic_id }}" class="h5 faq__topic" data-faq-topic {{ block.shopify_attributes }}>{{ block.settings.title | escape }}</{{ topic_level }}>
           {%- when 'question' -%}
             <details
               class="accordion"

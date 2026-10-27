@@ -39,13 +39,14 @@
             <span class="account-form__label">{{ 'customers.fields.email' | t }}</span>
             <input class="input" type="email" name="customer[email]" autocomplete="email" autocapitalize="off" required>
           </label>
-          <label class="account-form__field">
+          {%- comment -%} The link sits beside the label, not inside it (it would join the field's name) {%- endcomment -%}
+          <div class="account-form__field">
             <span class="account-form__label">
-              {{- 'customers.fields.password' | t -}}
+              <label for="LoginPassword">{{ 'customers.fields.password' | t }}</label>
               <a href="#recover" class="account-form__aside-link">{{ 'customers.login.forgot' | t }}</a>
             </span>
-            <input class="input" type="password" name="customer[password]" autocomplete="current-password" required>
-          </label>
+            <input class="input" type="password" id="LoginPassword" name="customer[password]" autocomplete="current-password" required>
+          </div>
           <button type="submit" class="btn btn--full">{{ 'customers.login.submit' | t }}</button>
         {%- endform -%}
 
@@ -65,7 +66,8 @@
         <h2 class="h2">{{ 'customers.recover.title' | t }}</h2>
         <p class="account-card__lead">{{ 'customers.recover.lead' | t }}</p>
         {{ recover }}
-        <p class="account-card__switch"><a href="#login">{{ 'customers.recover.back' | t }}</a></p>
+        {%- comment -%} The login page itself: also leaves the "sent" / error state {%- endcomment -%}
+        <p class="account-card__switch"><a href="{{ routes.account_login_url }}">{{ 'customers.recover.back' | t }}</a></p>
       </div>
     </div>
 

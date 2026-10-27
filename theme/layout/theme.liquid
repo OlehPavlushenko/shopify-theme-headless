@@ -53,6 +53,7 @@
     {%- endcomment -%}
     {%- liquid
       assign deferred = 'ui-search.css,ui-cart.css,ui-promo.css,ui-footer.css'
+      # Elsewhere the recently viewed list (below the fold) uses it — whether or not the lists are on
       unless saved_page
         assign deferred = deferred | append: ',ui-saved.css'
       endunless

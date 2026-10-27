@@ -113,12 +113,12 @@ class StickyBuyBar extends HTMLElement {
 
 class DeliveryEstimate extends HTMLElement {
   connectedCallback() {
-    const { min, max, cutoff, template, templateToday, locale } = this.dataset;
+    const { min, max, cutoff, template, templateToday, locale, timeLong, timeShort } = this.dataset;
     const { shipsToday, from, to, minutesLeft } = deliveryDates({ min, max, cutoff });
     const format = new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short' });
     const dates = `${format.format(from)} – ${format.format(to)}`;
     const text = shipsToday
-      ? templateToday.replace('%time', formatLeft(minutesLeft)).replace('%dates', dates)
+      ? templateToday.replace('%time', formatLeft(minutesLeft, timeLong, timeShort)).replace('%dates', dates)
       : template.replace('%dates', dates);
     this.querySelector('[data-delivery-text]').textContent = text;
   }

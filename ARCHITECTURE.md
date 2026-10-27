@@ -30,7 +30,9 @@ scripts/
    storefront also needs go into metafields, metaobjects, Search & Discovery or Shopify Functions:
    FAQ, testimonials, size charts, badges, upsells, bundles, the free-shipping threshold
    (`shop.metafields.custom.free_shipping_threshold`). Theme settings only control presentation or
-   act as a fallback.
+   act as a fallback. Metafields the theme reads: collection `theme.hidden`, `theme.featured`,
+   `theme.subcollections`, `theme.seo_text`, `theme.seo_heading`; article `theme.products`
+   ("Shop this article"); product `reviews.rating`, `reviews.rating_count` (review apps).
 2. **One source of design tokens.** `packages/tokens/tokens.json` defines every token and its default.
    Names map 1:1 to CSS custom properties (`color.accent` -> `--color-accent`). The theme overrides
    them from Theme settings (`snippets/theme-tokens.liquid`, `snippets/color-schemes.liquid`); a

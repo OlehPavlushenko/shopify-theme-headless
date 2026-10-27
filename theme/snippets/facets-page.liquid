@@ -140,7 +140,7 @@
         >
           {%- for item in items -%}
             {%- if promo and paginate.current_page == 1 and forloop.index == promo.settings.position -%}
-              <li class="facets__promo" {{ promo.shopify_attributes }}>
+              <li class="facets__promo grid-promo" {{ promo.shopify_attributes }}>
                 {%- render 'promo-card',
                   url: promo.settings.link,
                   image: promo.settings.image,

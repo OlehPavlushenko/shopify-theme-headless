@@ -366,4 +366,19 @@
       object-fit: cover;
     }
   }
+
+  /* A promo card as a cell of a product or article grid (collection promo tile, blog): the image
+     fills the whole cell, as tall as the cards beside it */
+  .grid-promo .promo-card {
+    display: block;
+    height: 100%;
+    min-height: 32rem;
+  }
+
+  .grid-promo .promo-card__media {
+    position: absolute;
+    inset: 0;
+    aspect-ratio: auto;
+    height: 100%;
+  }
 }

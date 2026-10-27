@@ -687,20 +687,6 @@
     }
   }
 
-  /* Promo tile: the image fills the whole grid cell (as tall as the product cards next to it) */
-  .facets__promo .promo-card {
-    display: block;
-    height: 100%;
-    min-height: 32rem;
-  }
-
-  .facets__promo .promo-card__media {
-    position: absolute;
-    inset: 0;
-    aspect-ratio: auto;
-    height: 100%;
-  }
-
   .facets__empty {
     display: grid;
     justify-items: center;

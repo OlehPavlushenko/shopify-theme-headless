@@ -32,11 +32,40 @@
         "featured": true,
         "show_signup": false,
         "color_scheme": "scheme-1"
+      },
+      "blocks": {
+        "promo": {
+          "type": "promo",
+          "settings": {
+            "position": 3,
+            "image": "shopify://shop_images/di3.jpg",
+            "eyebrow": "Gift ideas",
+            "heading": "Ready-to-give sets",
+            "text": "Routines from our guides, packed in one box",
+            "link_label": "Shop sets",
+            "link": "shopify://collections/sets-programs"
+          }
+        }
+      },
+      "block_order": ["promo"]
+    },
+    "seo": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "Guides for natural everyday care",
+        "text": "<p>Our blog collects simple, practical guides for natural care at home: skin care routines that take five minutes, how to choose supplements such as collagen or omega-3, what superfoods really do and how to add them to your day, and easy swaps for eco-friendly cleaning that are safe for children and pets.</p><p>Every article is written by our team and checked against the products we use ourselves. Filter the guides by topic — skin care, health, nutrition, eco home, gift ideas — and combine topics to find exactly what you need. Articles link to the products they mention, so you can try a routine right away.</p><p>New guides appear every week. Have a question you would like us to answer? Write to us — the best questions become our next articles.</p>",
+        "source": "custom",
+        "collapse": true,
+        "lines": 3,
+        "alignment": "center",
+        "text_size": "small",
+        "color_scheme": "scheme-1"
       }
     }
   },
   "order": [
     "header",
-    "main"
+    "main",
+    "seo"
   ]
 }

@@ -579,13 +579,29 @@
       position: sticky;
       top: calc(var(--header-height, 0px) + var(--space-m));
       max-height: calc(100dvh - var(--header-height, 0px) - var(--space-xl));
+      /* Room for the scrollbar, so it never covers the counts; thin and quiet */
+      padding-inline-end: var(--space-xs);
       overflow-y: auto;
       overscroll-behavior: contain;
+      scrollbar-gutter: stable;
       scrollbar-width: thin;
+      scrollbar-color: var(--color-border) transparent;
     }
 
+    /* Sidebar: every group is a card of its own */
     .facets--sidebar .facets__form {
-      border-top: 0.1rem solid var(--color-border);
+      gap: var(--space-s);
+    }
+
+    .facets--sidebar .facet {
+      padding-inline: var(--space-m);
+      border: 0.1rem solid var(--color-border);
+      border-radius: var(--radius-card);
+      transition: border-color var(--duration-short) var(--ease);
+    }
+
+    .facets--sidebar .facet:has(.facet__badge) {
+      border-color: var(--color-heading);
     }
 
     /* Horizontal: the groups are pills in a row, each opening a floating panel */

@@ -27,14 +27,17 @@ async function fetchItem(handle, section) {
     cache.set(
       key,
       fetch(`${window.Shopify?.routes?.root ?? '/'}products/${encodeURIComponent(handle)}?section_id=${section}`).then((response) => {
+        // 404: deleted, archived or unpublished; other failures may pass (kept in the list, not cached)
+        if (response.status === 404) return '';
         if (!response.ok) throw new Error(response.statusText);
         return response.text();
       })
     );
+    cache.get(key).catch(() => cache.delete(key));
   }
-  // null: the section rendered no item — the product no longer exists
+  // null: no product page or the section rendered no item — the product no longer exists
   const html = await cache.get(key);
-  return new DOMParser().parseFromString(html, 'text/html').querySelector('[data-saved-item]');
+  return html ? new DOMParser().parseFromString(html, 'text/html').querySelector('[data-saved-item]') : null;
 }
 
 class SavedProducts extends HTMLElement {

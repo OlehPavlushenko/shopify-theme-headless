@@ -1,0 +1,62 @@
+{% comment %}
+  Timeline: the story in steps (blocks: year or label, title, text) on a line with a dot per step —
+  down the left side on phones, across from 990px. An ordered list, so the order reads the same to
+  assistive tech. Styles: packages/ui/css/sections.css.
+{% endcomment %}
+<div class="timeline color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width">
+    {%- if section.settings.eyebrow != blank or section.settings.heading != blank -%}
+      <div class="timeline__head">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="h3">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+    <ol class="timeline__list" role="list" style="--timeline-steps: {{ section.blocks.size | at_least: 1 }};">
+      {%- for block in section.blocks -%}
+        <li class="timeline__step" {{ block.shopify_attributes }}>
+          <span class="timeline__dot" aria-hidden="true"></span>
+          <p class="timeline__year">{{ block.settings.year | escape }}</p>
+          <h3 class="h5 timeline__title">{{ block.settings.title | escape }}</h3>
+          {%- if block.settings.text != blank -%}
+            <p class="timeline__text">{{ block.settings.text | escape }}</p>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.timeline.name",
+  "class": "timeline-section",
+  "disabled_on": { "groups": ["*"] },
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:sections.promo_popup.eyebrow", "default": "Our journey" },
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "How we got here" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "t:sections.timeline.step",
+      "settings": [
+        { "type": "text", "id": "year", "label": "t:sections.timeline.year", "default": "2019" },
+        { "type": "text", "id": "title", "label": "t:labels.heading", "default": "The first order" },
+        { "type": "textarea", "id": "text", "label": "t:labels.text", "default": "A few products we used ourselves, packed at the kitchen table." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.timeline.name",
+      "blocks": [{ "type": "step" }, { "type": "step" }, { "type": "step" }, { "type": "step" }]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,42 @@
+{% comment %}
+  Quote: one large quotation (a founder's word, a customer review) with the author, their role and
+  an optional round photo, centered on its color scheme. Styles: packages/ui/css/sections.css.
+{% endcomment %}
+{%- if section.settings.quote != blank -%}
+  <div class="quote color-{{ section.settings.color_scheme }} section-spacing">
+    <figure class="page-width page-width--narrow quote__inner">
+      <blockquote class="quote__text">
+        <p>{{ section.settings.quote | escape | newline_to_br }}</p>
+      </blockquote>
+      {%- if section.settings.author != blank -%}
+        <figcaption class="quote__author">
+          {%- if section.settings.image -%}
+            {{ section.settings.image | image_url: width: 112 | image_tag: loading: 'lazy', class: 'quote__photo', width: 56, height: 56, alt: '' }}
+          {%- endif -%}
+          <span>
+            <span class="quote__name">{{ section.settings.author | escape }}</span>
+            {%- if section.settings.role != blank -%}
+              <span class="quote__role">{{ section.settings.role | escape }}</span>
+            {%- endif -%}
+          </span>
+        </figcaption>
+      {%- endif -%}
+    </figure>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.quote.name",
+  "class": "quote-section",
+  "disabled_on": { "groups": ["*"] },
+  "settings": [
+    { "type": "textarea", "id": "quote", "label": "t:sections.quote.quote", "default": "Good care is the one you enjoy every day." },
+    { "type": "text", "id": "author", "label": "t:sections.quote.author", "default": "Olena" },
+    { "type": "text", "id": "role", "label": "t:sections.quote.role", "default": "Founder" },
+    { "type": "image_picker", "id": "image", "label": "t:sections.quote.image" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-3" }
+  ],
+  "presets": [{ "name": "t:sections.quote.name" }]
+}
+{% endschema %}

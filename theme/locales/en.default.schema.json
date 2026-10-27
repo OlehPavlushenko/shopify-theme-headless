@@ -450,6 +450,23 @@
       "icon_chat": "Support",
       "icon_heart": "Care"
     },
+    "stats": {
+      "name": "Stats",
+      "stat": "Figure",
+      "value": "Value"
+    },
+    "timeline": {
+      "name": "Timeline",
+      "step": "Step",
+      "year": "Year or label"
+    },
+    "quote": {
+      "name": "Quote",
+      "quote": "Quote",
+      "author": "Author",
+      "role": "Role",
+      "image": "Author photo"
+    },
     "faq": {
       "name": "FAQ",
       "layout": "Layout",

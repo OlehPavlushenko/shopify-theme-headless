@@ -119,7 +119,8 @@
         "color_scheme": "scheme-1",
         "show_policies": true,
         "show_payment_icons": true,
-        "show_powered_by": true
+        "show_powered_by": true,
+        "show_back_to_top": true
       }
     }
   },

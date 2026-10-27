@@ -318,6 +318,20 @@
         "color_scheme": "scheme-1"
       }
     },
+    "blog_posts_mNkTmG": {
+      "type": "blog-posts",
+      "name": "t:sections.blog_posts.name",
+      "settings": {
+        "heading": "From the blog",
+        "blog": "news",
+        "limit": 6,
+        "columns": 3,
+        "show_date": true,
+        "show_excerpt": true,
+        "link_label": "View all",
+        "color_scheme": ""
+      }
+    },
     "faq": {
       "type": "faq",
       "blocks": {
@@ -373,6 +387,7 @@
       "settings": {
         "heading": "Natural care, made simple",
         "text": "<p>Our store brings together natural skin care, wellness supplements, superfoods and eco-friendly home products in one place. Every product is chosen for its ingredients and tested before it reaches our shelves.</p><p>Free delivery on orders over the threshold, easy returns within 14 days and personal advice from our team make shopping simple. Explore best sellers, new arrivals and seasonal gift sets, or read our guides on the blog to find a routine that suits you.</p><p>We work directly with brands we trust, so prices stay fair and every order arrives fresh. Questions about an ingredient or a set? Write to us — we reply within a day.</p>",
+        "source": "custom",
         "collapse": true,
         "lines": 3,
         "alignment": "center",
@@ -391,6 +406,7 @@
     "new_arrivals",
     "brands",
     "faq",
+    "blog_posts_mNkTmG",
     "seo_text"
   ]
 }

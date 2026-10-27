@@ -1,0 +1,65 @@
+{% comment %}
+  Stats: a row of key figures ("2019 — founded", "175+ — products"…), each a big value with a label
+  and an optional note; an optional eyebrow, heading and text above. 2 per row on phones, all in one
+  row from 990px. Styles: packages/ui/css/sections.css.
+{% endcomment %}
+<div class="stats color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width">
+    {%- if section.settings.eyebrow != blank or section.settings.heading != blank or section.settings.text != blank -%}
+      <div class="stats__head">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="h3">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.text != blank -%}
+          <div class="rte stats__text">{{ section.settings.text }}</div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+    <ul class="stats__list" role="list" style="--stats-columns: {{ section.blocks.size | at_least: 1 | at_most: 4 }};">
+      {%- for block in section.blocks -%}
+        <li class="stats__item" {{ block.shopify_attributes }}>
+          <p class="stats__value">{{ block.settings.value | escape }}</p>
+          <p class="stats__label">{{ block.settings.label | escape }}</p>
+          {%- if block.settings.text != blank -%}
+            <p class="stats__note">{{ block.settings.text | escape }}</p>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.stats.name",
+  "class": "stats-section",
+  "disabled_on": { "groups": ["*"] },
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:sections.promo_popup.eyebrow", "default": "In numbers" },
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Small team, growing family" },
+    { "type": "richtext", "id": "text", "label": "t:labels.text" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "t:sections.stats.stat",
+      "settings": [
+        { "type": "text", "id": "value", "label": "t:sections.stats.value", "default": "175+" },
+        { "type": "text", "id": "label", "label": "t:labels.heading", "default": "Natural products" },
+        { "type": "text", "id": "text", "label": "t:labels.text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.stats.name",
+      "blocks": [{ "type": "stat" }, { "type": "stat" }, { "type": "stat" }, { "type": "stat" }]
+    }
+  ]
+}
+{% endschema %}

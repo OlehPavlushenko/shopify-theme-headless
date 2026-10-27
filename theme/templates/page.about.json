@@ -1,0 +1,120 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "heading": "",
+        "text": "<p>Natural care, chosen by people who use it every day. We bring skin care, wellness supplements, superfoods and eco-friendly home products together on one honest shelf.</p>",
+        "breadcrumbs": true,
+        "alignment": "left",
+        "image_layout": "split",
+        "image_source": "picked",
+        "image": "shopify://shop_images/slide_2_desktop.webp",
+        "tint": 45,
+        "color_scheme": "scheme-2"
+      }
+    },
+    "stats": {
+      "type": "stats",
+      "blocks": {
+        "s1": { "type": "stat", "settings": { "value": "2019", "label": "Founded in Kyiv", "text": "Started at a kitchen table" } },
+        "s2": { "type": "stat", "settings": { "value": "175+", "label": "Natural products", "text": "Each one tested by our team" } },
+        "s3": { "type": "stat", "settings": { "value": "7", "label": "Trusted brands", "text": "We know every maker personally" } },
+        "s4": { "type": "stat", "settings": { "value": "14", "label": "Days for free returns", "text": "No questions asked" } }
+      },
+      "block_order": ["s1", "s2", "s3", "s4"],
+      "settings": {
+        "eyebrow": "In numbers",
+        "heading": "Small team, growing family",
+        "text": "",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "story": {
+      "type": "image-text",
+      "settings": {
+        "image": "shopify://shop_images/MG_2269.jpg",
+        "image_position": "left",
+        "ratio": "4 / 5",
+        "eyebrow": "Our story",
+        "heading": "It started with a simple question",
+        "text": "<p>Why is it so hard to find everyday care that is natural, honest and easy to choose? We asked ourselves that in 2019 — and started with a few products we already trusted at home.</p><p>Today our shelves hold skin and body care, herbal complexes, sprouted-grain superfoods and eco-friendly cleaning products. The rule has not changed: if we would not use it ourselves, it does not go in the store.</p>",
+        "button_label": "Shop best sellers",
+        "button_link": "shopify://collections/best-sellers",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "timeline": {
+      "type": "timeline",
+      "blocks": {
+        "t1": { "type": "step", "settings": { "year": "2019", "title": "The first order", "text": "A few products we used ourselves, packed at the kitchen table and sent to friends." } },
+        "t2": { "type": "step", "settings": { "year": "2021", "title": "Our own warehouse", "text": "Orders ship within 1–2 business days, and every parcel is still packed by hand." } },
+        "t3": { "type": "step", "settings": { "year": "2023", "title": "Seven brands, one shelf", "text": "We started working with makers directly — fair prices without extra middlemen." } },
+        "t4": { "type": "step", "settings": { "year": "Today", "title": "175+ products", "text": "Care for skin, body, home and wellbeing, chosen and tested by a team of twelve." } }
+      },
+      "block_order": ["t1", "t2", "t3", "t4"],
+      "settings": {
+        "eyebrow": "Our journey",
+        "heading": "How we got here",
+        "color_scheme": "scheme-4"
+      }
+    },
+    "promise": {
+      "type": "trust-bar",
+      "blocks": {
+        "p1": { "type": "item", "settings": { "icon": "leaf", "title": "Ingredients first", "text": "No parabens or sulfates, full formulas listed" } },
+        "p2": { "type": "item", "settings": { "icon": "heart", "title": "Tested by us", "text": "We use every product before you do" } },
+        "p3": { "type": "item", "settings": { "icon": "truck", "title": "Fast delivery", "text": "Free on orders over $50" } },
+        "p4": { "type": "item", "settings": { "icon": "chat", "title": "Real advice", "text": "Write to us — we reply within a day" } }
+      },
+      "block_order": ["p1", "p2", "p3", "p4"],
+      "settings": {
+        "color_scheme": "scheme-1"
+      }
+    },
+    "quote": {
+      "type": "quote",
+      "settings": {
+        "quote": "Good care is the one you enjoy every day. Everything else is just a nice label.",
+        "author": "Olena Kovalenko",
+        "role": "Founder",
+        "color_scheme": "scheme-3"
+      }
+    },
+    "brands": {
+      "type": "brands",
+      "blocks": {
+        "b1": { "type": "brand", "settings": { "image": "shopify://shop_images/wm.svg", "name": "White Mandarin", "link": "/collections/vendors?q=White%20Mandarin" } },
+        "b2": { "type": "brand", "settings": { "image": "shopify://shop_images/izha.svg", "name": "Good Food", "link": "/collections/vendors?q=Good%20Food" } },
+        "b3": { "type": "brand", "settings": { "image": "shopify://shop_images/greenmax.svg", "name": "Green Max", "link": "/collections/vendors?q=Green%20Max" } },
+        "b4": { "type": "brand", "settings": { "image": "shopify://shop_images/prohealthy.svg", "name": "Pro Healthy", "link": "/collections/vendors?q=Pro%20Healthy" } },
+        "b5": { "type": "brand", "settings": { "image": "shopify://shop_images/biox.svg", "name": "Biox", "link": "/collections/vendors?q=Biox" } },
+        "b6": { "type": "brand", "settings": { "image": "shopify://shop_images/choicephyto.svg", "name": "Choice Phyto", "link": "/collections/vendors?q=Choice%20Phyto" } }
+      },
+      "block_order": ["b1", "b2", "b3", "b4", "b5", "b6"],
+      "settings": {
+        "heading": "Brands we work with",
+        "link_label": "",
+        "link": "",
+        "columns": 6,
+        "muted": true,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "contact": {
+      "type": "image-text",
+      "settings": {
+        "image": "shopify://shop_images/slide_4_desktop.webp",
+        "image_position": "right",
+        "ratio": "4 / 3",
+        "eyebrow": "We are here to help",
+        "heading": "Not sure what suits you?",
+        "text": "<p>Tell us what you are looking for — skin type, a goal, a gift — and we will suggest a few products that fit. Every message is read by a person, and we reply within a day.</p>",
+        "button_label": "Contact us",
+        "button_link": "shopify://pages/contact",
+        "color_scheme": "scheme-2"
+      }
+    }
+  },
+  "order": ["header", "stats", "story", "timeline", "promise", "quote", "brands", "contact"]
+}

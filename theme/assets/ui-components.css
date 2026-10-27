@@ -218,6 +218,14 @@
     display: none;
   }
 
+  /* A search field with its button (the search page, the blog's search) */
+  .search-form {
+    display: flex;
+    gap: var(--space-s);
+    width: 100%;
+    max-width: 64rem;
+  }
+
   /* A field with a search icon inside, at its start: <span class="search-field"> icon + .input */
   .search-field {
     position: relative;

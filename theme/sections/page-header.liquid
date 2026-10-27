@@ -8,9 +8,17 @@
     chips under the text (with a thumbnail and the product count).
   - On the wishlist / compare pages (template suffix) the list's counter ("4 products",
     @ui/saved-list) by itself.
+  - Blog search (setting): on the blog page and on its search results (templates/search.blog.json,
+    with the blog picked here) a search field for the articles (snippets/search-options). With JS it
+    re-renders the blog's section in place (<section-swap data-section-forms>, @ui/section-swap).
   Styles: packages/ui/css/sections.css.
 {% endcomment %}
 {%- liquid
+  # The blog: this one (the blog page) or the one picked (its search results, search.blog.json)
+  assign header_blog = blog
+  if template.name == 'search'
+    assign header_blog = section.settings.blog
+  endif
   assign heading = section.settings.heading
   if heading == blank
     case template.name
@@ -22,6 +30,9 @@
         assign heading = 'general.collections' | t
       when 'search'
         assign heading = 'search.title' | t
+        if header_blog != blank
+          assign heading = header_blog.title
+        endif
       else
         assign heading = page.title | default: page_title
     endcase
@@ -49,11 +60,30 @@
   <div class="page-header__inner page-width">
     <div class="page-header__text-col">
       {%- if section.settings.breadcrumbs -%}
-        {%- render 'breadcrumbs', class: 'page-header__breadcrumbs' -%}
+        {%- if template.name == 'search' and header_blog != blank -%}
+          {%- render 'breadcrumbs', class: 'page-header__breadcrumbs', parent_title: header_blog.title, parent_url: header_blog.url -%}
+        {%- else -%}
+          {%- render 'breadcrumbs', class: 'page-header__breadcrumbs' -%}
+        {%- endif -%}
       {%- endif -%}
       <h1 class="h1 page-header__heading">{{ heading }}</h1>
       {%- if text != blank -%}
         <div class="text-lead page-header__text">{{ text }}</div>
+      {%- endif -%}
+      {%- if section.settings.blog_search and header_blog != blank -%}
+        {%- comment -%} An empty field isn't sent: a hint under it instead (<form-validate>) {%- endcomment -%}
+        <form-validate class="page-header__search" data-message-required="{{ 'search.empty_query' | t }}">
+        <form action="{{ routes.search_url }}" method="get" role="search" class="search-form" data-section-form>
+          <label class="search-field">
+            <span class="visually-hidden">{{ 'blog.search_label' | t }}</span>
+            {%- render 'icon', name: 'search' -%}
+            <input class="input" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'blog.search_placeholder' | t | escape }}" enterkeyhint="search" autocomplete="off" required>
+          </label>
+          {%- render 'search-options', scope: 'articles' -%}
+          <button type="submit" class="btn">{{ 'search.submit' | t }}</button>
+        </form>
+        </form-validate>
+        <script type="module">import '@ui/form-validate';</script>
       {%- endif -%}
       {%- if template.suffix == 'wishlist' or template.suffix == 'compare' -%}
         {%- liquid
@@ -104,6 +134,8 @@
     { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "info": "t:sections.page_header.heading_info" },
     { "type": "richtext", "id": "text", "label": "t:labels.text", "info": "t:sections.page_header.text_info" },
     { "type": "checkbox", "id": "breadcrumbs", "label": "t:sections.page_header.breadcrumbs", "default": true },
+    { "type": "checkbox", "id": "blog_search", "label": "t:sections.page_header.blog_search", "info": "t:sections.page_header.blog_search_info", "default": true },
+    { "type": "blog", "id": "blog", "label": "t:sections.main_search.blog", "info": "t:sections.page_header.blog_info" },
     { "type": "checkbox", "id": "subcollections", "label": "t:sections.page_header.subcollections", "info": "t:sections.page_header.subcollections_info", "default": true },
     {
       "type": "select",

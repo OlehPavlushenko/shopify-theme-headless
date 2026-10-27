@@ -10,10 +10,10 @@ and the list of mistakes we already made once. Read both before adding code.
   variant picker, slider, drawer / popup, accordion, toast, skeleton, section head, page header,
   promo card (`.grid-promo` in a grid), `.btn` variants, `.pill` (statuses: `--soft`, `--success`,
   `--danger`), `.chip` (selected: `aria-pressed` / `aria-checked` / `aria-current`; `--compact` for
-  removable filters), `.tag` (topics), `.empty-state`, `.form-errors`, `.search-field` (icon inside a field), `.load-more` cell. Extend one
+  removable filters), `.tag` (topics), `.empty-state`, `.form-errors`, `.search-form` (a search field with its button), `.search-field` (icon inside a field), `.load-more` cell. Extend one
   with a parameter or modifier instead of writing a look-alike.
-- **Shared behavior already exists:** `<load-more>` (paginated grids), `<section-swap>` (links that
-  re-render a section), `<form-validate>` (field checks with messages under the fields, messages
+- **Shared behavior already exists:** `<load-more>` (paginated grids), `<section-swap>` (links and
+  GET forms that re-render a section, also from another template), `<form-validate>` (field checks with messages under the fields, messages
   from `snippets/form-validate-messages`), `@ui/scroll` (offset below the header, reduced motion),
   `@ui/delivery` (delivery dates). Sticky things below the header use `--sticky-top`, `--sticky-max-height` and
   `--sticky-transition` (header.css).

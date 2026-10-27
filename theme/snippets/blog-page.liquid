@@ -1,0 +1,136 @@
+{% doc %}
+  The body of the Blog posts section (sections/main-blog), rendered inside its paginate — once for
+  a blog's articles, once for the blog's search results (templates/search.blog.json):
+  - the chosen topics (blog) or the search terms (search) as removable chips, with the count;
+  - the cards (snippets/article-card): the newest large on a blog's first page (optional), a promo
+    tile and a sign-up card among them (blog only), then "Load more" or page numbers;
+  - an empty state.
+  <section-swap> re-renders it in place: topic links ([data-section-link]) and the blog search form
+  in the page header ([data-section-form], data-section-forms here).
+
+  @param {object} section - The Blog posts section
+  @param {object[]} articles - The paginated articles (or search results)
+  @param {object} paginate - The paginate object
+  @param {string} blog_url - The blog's URL (topic links, "Clear all", the way back from a search)
+  @param {string} [terms] - Search terms (the blog's search results)
+  @param {number} [count] - The number of search results
+{% enddoc %}
+{%- liquid
+  assign is_search = false
+  if terms != blank
+    assign is_search = true
+    assign shown_terms = terms | escape
+  endif
+-%}
+<section-swap class="main-blog color-{{ section.settings.color_scheme }} section-spacing" data-section="{{ section.id }}" data-section-forms tabindex="-1">
+  <load-more data-section="{{ section.id }}">
+    <div class="page-width">
+      {%- if is_search and count > 0 -%}
+        <div class="main-blog__active">
+          <span class="main-blog__active-label">{{ 'blog.results_for' | t }}</span>
+          <ul class="main-blog__active-list" role="list">
+            <li>
+              <a href="{{ blog_url }}" class="chip chip--compact" data-section-link aria-label="{{ 'blog.clear_search' | t: terms: terms | escape }}">
+                {{- shown_terms -}}
+                {%- render 'icon', name: 'close' -%}
+              </a>
+            </li>
+          </ul>
+          <span class="main-blog__count" role="status">{{ 'blog.articles_count' | t: count: count }}</span>
+        </div>
+      {%- elsif current_tags.size > 0 -%}
+        <div class="main-blog__active">
+          <span class="main-blog__active-label">{{ 'blog.filtering_by' | t }}</span>
+          <ul class="main-blog__active-list" role="list">
+            {%- for chosen in current_tags -%}
+              {%- capture remove_url -%}{% render 'blog-topic-url', blog_url: blog_url, tag: chosen %}{%- endcapture -%}
+              <li>
+                <a href="{{ remove_url | strip }}" class="chip chip--compact" data-section-link aria-label="{{ 'blog.remove_topic' | t: topic: chosen | escape }}">
+                  {{- chosen | escape -}}
+                  {%- render 'icon', name: 'close' -%}
+                </a>
+              </li>
+            {%- endfor -%}
+            <li><a href="{{ blog_url }}" class="main-blog__clear" data-section-link>{{ 'facets.clear_all' | t }}</a></li>
+          </ul>
+          <span class="main-blog__count" role="status">{{ 'blog.articles_count' | t: count: paginate.items }}</span>
+        </div>
+      {%- endif -%}
+
+      {%- if articles.size == 0 -%}
+        <div class="empty-state">
+          {%- if is_search -%}
+            {%- render 'icon', name: 'search' -%}
+            <p class="h5" role="status">{{ 'blog.search_none_html' | t: terms: shown_terms }}</p>
+            <a href="{{ blog_url }}" class="btn btn--outline" data-section-link>{{ 'blog.all_articles' | t }}</a>
+          {%- elsif current_tags.size > 0 -%}
+            <p class="h5">{{ 'blog.no_match' | t }}</p>
+            <a href="{{ blog_url }}" class="btn btn--outline" data-section-link>{{ 'facets.clear_all' | t }}</a>
+          {%- else -%}
+            <p>{{ 'blog.empty' | t }}</p>
+          {%- endif -%}
+        </div>
+      {%- else -%}
+        {%- liquid
+          assign promo = nil
+          assign featured = false
+          if is_search == false
+            assign promo = section.blocks | where: 'type', 'promo' | first
+            if section.settings.featured and paginate.current_page == 1 and current_tags == blank
+              assign featured = true
+            endif
+          endif
+        -%}
+        <ul class="grid main-blog__grid" role="list" style="--grid-columns: 3; --grid-columns-mobile: 1;" data-load-more-grid>
+          {%- for article in articles -%}
+            {%- comment -%} Search results: articles only (the search asks for them; this keeps it so) {%- endcomment -%}
+            {%- if article.object_type and article.object_type != 'article' -%}{%- continue -%}{%- endif -%}
+            <li data-load-more-item{% if featured and forloop.first %} class="main-blog__featured"{% endif %}>
+              {%- if featured and forloop.first -%}
+                {%- render 'article-card', article: article, layout: 'featured', heading_tag: 'h2', show_tags: section.settings.tags, blog_url: blog_url, sizes: '(min-width: 990px) 60vw, 100vw' -%}
+              {%- else -%}
+                {%- render 'article-card', article: article, heading_tag: 'h2', show_tags: section.settings.tags, blog_url: blog_url, sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw' -%}
+              {%- endif -%}
+            </li>
+            {%- comment -%} A promo tile among the articles (first page only; not a load-more item) {%- endcomment -%}
+            {%- if promo and paginate.current_page == 1 and forloop.index == promo.settings.position -%}
+              <li class="main-blog__promo grid-promo" {{ promo.shopify_attributes }}>
+                {%- render 'promo-card',
+                  url: promo.settings.link,
+                  image: promo.settings.image,
+                  eyebrow: promo.settings.eyebrow,
+                  heading: promo.settings.heading,
+                  text: promo.settings.text,
+                  link_label: promo.settings.link_label,
+                  layout: 'overlay',
+                  ratio: '4 / 5',
+                  sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw'
+                -%}
+              </li>
+            {%- endif -%}
+            {%- comment -%} The sign-up card among the articles (first page only; not a load-more item) {%- endcomment -%}
+            {%- if is_search == false and section.settings.show_signup and paginate.current_page == 1 and forloop.index == section.settings.signup_position -%}
+              <li class="main-blog__signup">
+                <div class="main-blog__signup-card">
+                  <span class="main-blog__signup-icon" aria-hidden="true">{%- render 'icon', name: 'mail' -%}</span>
+                  <h2 class="h4">{{ section.settings.signup_heading | escape }}</h2>
+                  {%- if section.settings.signup_text != blank -%}
+                    <p class="main-blog__signup-text">{{ section.settings.signup_text | escape }}</p>
+                  {%- endif -%}
+                  {%- render 'newsletter-form', id: section.id, button_label: section.settings.signup_button, note: section.settings.signup_note -%}
+                </div>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if section.settings.pagination == 'load_more' -%}
+            {%- assign shown = paginate.current_offset | plus: articles.size -%}
+            {%- render 'load-more-cell', paginate: paginate, shown: shown -%}
+          {%- endif -%}
+        </ul>
+        {%- if section.settings.pagination == 'pages' -%}
+          {%- render 'pagination', paginate: paginate -%}
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </load-more>
+</section-swap>

@@ -598,6 +598,11 @@
     color: var(--color-text-muted);
   }
 
+  /* The blog's search field (.search-form) under the text */
+  .page-header__search {
+    margin-top: var(--space-s);
+  }
+
   .page-header__counter {
     justify-self: start;
     padding: 0.2rem var(--space-s);
@@ -1752,12 +1757,6 @@
 
   /* Blog: the chosen topics (removable chips, Clear all, the article count at the end of the row),
      the featured article over the whole row, the grid of cards */
-  .main-blog__search {
-    display: flex;
-    max-width: 48rem;
-    margin: 0 0 var(--space-xl);
-  }
-
   .main-blog__active {
     display: flex;
     flex-wrap: wrap;

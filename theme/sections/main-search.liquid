@@ -1,89 +1,54 @@
 {% comment %}
-  Search header (templates/search.json and search.blog.json, above the results): breadcrumbs, the
-  h1 ("Results for “serum”" or "Search"), the search field with the current terms, and chips:
-  popular collections before a store search, the blog's topics on the blog's search.
-  Scope (setting): products — the store search, results in the Product grid section below
-  (sections/main-collection); articles — the blog's search (?view=blog), results in
-  sections/main-article-search. The form carries snippets/search-options for its scope.
-  Styles: .main-search in search.css.
+  Search header (templates/search.json, above the product grid section): breadcrumbs, the h1
+  ("Results for “serum”" or "Search"), the search field with the current terms, and — before a
+  search — a prompt with popular collections as chips. The results, filters and sort are the
+  Product grid section below it (sections/main-collection). Styles: .main-search in search.css.
 {% endcomment %}
-{%- liquid
-  assign terms = search.terms | escape
-  assign articles = false
-  if section.settings.scope == 'articles'
-    assign articles = true
-    assign search_blog = section.settings.blog
-  endif
--%}
+{%- assign terms = search.terms | escape -%}
 <div class="main-search color-{{ section.settings.color_scheme }} section-spacing">
   <div class="page-width main-search__inner">
-    {%- if articles and search_blog -%}
-      {%- render 'breadcrumbs', parent_title: search_blog.title, parent_url: search_blog.url -%}
-    {%- else -%}
-      {%- render 'breadcrumbs' -%}
-    {%- endif -%}
+    {%- render 'breadcrumbs' -%}
     <h1 class="h2 main-search__title">
       {%- if search.performed and terms != blank -%}
-        {%- if articles -%}
-          {{ 'blog.search_title_html' | t: terms: terms }}
-        {%- else -%}
-          {{ 'search.results_title_html' | t: terms: terms }}
-        {%- endif -%}
-      {%- elsif articles -%}
-        {{ 'blog.search_label' | t }}
+        {{ 'search.results_title_html' | t: terms: terms }}
       {%- else -%}
         {{ 'search.title' | t }}
       {%- endif -%}
     </h1>
-    <form action="{{ routes.search_url }}" method="get" role="search" class="main-search__form">
-      {%- if articles -%}
-        {%- assign placeholder = 'blog.search_placeholder' | t -%}
-      {%- else -%}
-        {%- assign placeholder = 'search.placeholder' | t -%}
-      {%- endif -%}
-      <label class="visually-hidden" for="MainSearchInput">{{ placeholder }}</label>
+    <form-validate data-message-required="{{ 'search.empty_query' | t }}">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
+      <label class="visually-hidden" for="MainSearchInput">{{ 'search.title' | t }}</label>
       <span class="search-field">
-      {%- render 'icon', name: 'search' -%}
-      <input
-        id="MainSearchInput"
-        class="input"
-        type="search"
-        name="q"
-        value="{{ terms }}"
-        placeholder="{{ placeholder | escape }}"
-        enterkeyhint="search"
-        autocomplete="off"
-      >
+        {%- render 'icon', name: 'search' -%}
+        <input
+          id="MainSearchInput"
+          class="input"
+          type="search"
+          name="q"
+          value="{{ terms }}"
+          placeholder="{{ 'search.placeholder' | t }}"
+          enterkeyhint="search"
+          autocomplete="off"
+          required
+        >
       </span>
-      {%- if articles -%}
-        {%- render 'search-options', scope: 'articles' -%}
-      {%- else -%}
-        {%- render 'search-options' -%}
-      {%- endif -%}
+      {%- render 'search-options' -%}
       <button type="submit" class="btn">{{ 'search.submit' | t }}</button>
     </form>
-    {%- if articles -%}
-      {%- if search_blog.all_tags.size > 0 -%}
+    </form-validate>
+    <script type="module">import '@ui/form-validate';</script>
+    {%- unless search.performed -%}
+      {%- if section.settings.collections.size > 0 -%}
         <div class="main-search__popular">
-          <p class="eyebrow">{{ 'blog.search_topics' | t }}</p>
+          <p class="eyebrow">{{ 'search.popular_collections' | t }}</p>
           <ul class="main-search__chips" role="list">
-            {%- for tag in search_blog.all_tags -%}
-              {%- capture topic_url -%}{% render 'blog-topic-url', blog_url: search_blog.url, tag: tag %}{%- endcapture -%}
-              <li><a href="{{ topic_url | strip }}" class="chip">{{ tag | escape }}</a></li>
+            {%- for item in section.settings.collections -%}
+              <li><a href="{{ item.url }}" class="chip">{{ item.title | escape }}</a></li>
             {%- endfor -%}
           </ul>
         </div>
       {%- endif -%}
-    {%- elsif search.performed == false and section.settings.collections.size > 0 -%}
-      <div class="main-search__popular">
-        <p class="eyebrow">{{ 'search.popular_collections' | t }}</p>
-        <ul class="main-search__chips" role="list">
-          {%- for item in section.settings.collections -%}
-            <li><a href="{{ item.url }}" class="chip">{{ item.title | escape }}</a></li>
-          {%- endfor -%}
-        </ul>
-      </div>
-    {%- endif -%}
+    {%- endunless -%}
   </div>
 </div>
 
@@ -92,18 +57,7 @@
   "name": "t:sections.main_search.name",
   "class": "main-search-section",
   "settings": [
-    {
-      "type": "select",
-      "id": "scope",
-      "label": "t:sections.main_search.scope",
-      "options": [
-        { "value": "products", "label": "t:sections.main_search.scope_products" },
-        { "value": "articles", "label": "t:sections.main_search.scope_articles" }
-      ],
-      "default": "products"
-    },
     { "type": "collection_list", "id": "collections", "label": "t:sections.main_search.collections", "info": "t:sections.main_search.collections_info", "limit": 8 },
-    { "type": "blog", "id": "blog", "label": "t:sections.main_search.blog", "info": "t:sections.main_search.blog_info" },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-2" }
   ]
 }

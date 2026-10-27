@@ -257,16 +257,15 @@
     margin: 0;
   }
 
-  .main-search__form {
-    display: flex;
-    gap: var(--space-s);
-    width: 100%;
-    max-width: 64rem;
+  /* The form (.search-form caps its width) takes the row; room under it for its hint (<form-validate>) */
+  .main-search__inner > form-validate {
+    justify-self: stretch;
   }
 
   .main-search__popular {
     display: grid;
     gap: var(--space-xs);
+    margin-top: var(--space-xs);
   }
 
   .main-search__chips {

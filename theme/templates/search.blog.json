@@ -1,22 +1,33 @@
 {
   "sections": {
     "header": {
-      "type": "main-search",
+      "type": "page-header",
       "settings": {
-        "scope": "articles",
+        "heading": "",
+        "text": "<p>Guides, routines and ideas for natural care at home.</p>",
+        "breadcrumbs": true,
+        "blog_search": true,
         "blog": "news",
+        "subcollections": false,
+        "alignment": "left",
+        "image_layout": "none",
+        "image_source": "collection",
+        "tint": 45,
         "color_scheme": "scheme-2"
       }
     },
-    "results": {
-      "type": "main-article-search",
+    "main": {
+      "type": "main-blog",
       "settings": {
-        "per_page": 9,
+        "per_page": 3,
+        "tags": true,
         "pagination": "load_more",
+        "featured": false,
+        "show_signup": false,
         "blog": "news",
         "color_scheme": "scheme-1"
       }
     }
   },
-  "order": ["header", "results"]
+  "order": ["header", "main"]
 }

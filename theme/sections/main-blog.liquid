@@ -1,115 +1,22 @@
 {% comment %}
-  Blog page (templates/blog.json, under the Page header): the topics are the tags on the article
-  cards — a click adds that topic to the filter (several: /blogs/<handle>/tagged/a+b, articles with
-  all of them; snippets/blog-topic-url) — the chosen topics as removable chips with "Clear all" and
-  the article count, the newest article large on the first page (optional), then the cards
-  (snippets/article-card) with "Load more" or page numbers. A search field (optional) searches the
-  articles only and opens the results on templates/search.blog.json. Topic links re-render the section in place (<section-swap>, @ui/section-swap).
-  Styles: .main-blog in sections.css.
+  Blog page (templates/blog.json, under the Page header) and the blog's search results
+  (templates/search.blog.json — the Page header's blog search field). The body is
+  snippets/blog-page: the topics are the tags on the article cards — a click adds that topic to the
+  filter (several: /blogs/<handle>/tagged/a+b, articles with all of them; snippets/blog-topic-url) —
+  the chosen topics (or the search terms) as removable chips with the count, the newest article
+  large on the first page (optional), then the cards (snippets/article-card) with "Load more" or
+  page numbers. Topic links and the search form re-render the section in place (<section-swap>,
+  @ui/section-swap). Styles: .main-blog in sections.css.
 {% endcomment %}
-{%- paginate blog.articles by section.settings.per_page -%}
-  <section-swap class="main-blog color-{{ section.settings.color_scheme }} section-spacing" data-section="{{ section.id }}" tabindex="-1">
-  <load-more data-section="{{ section.id }}">
-    <div class="page-width">
-      {%- comment -%} The blog's own search: articles only, results on search.blog.json (snippets/search-options) {%- endcomment -%}
-      {%- if section.settings.show_search -%}
-        <form action="{{ routes.search_url }}" method="get" role="search" class="main-blog__search">
-          <label class="search-field">
-            <span class="visually-hidden">{{ 'blog.search_label' | t }}</span>
-            {%- render 'icon', name: 'search' -%}
-            <input class="input" type="search" name="q" placeholder="{{ 'blog.search_placeholder' | t | escape }}" enterkeyhint="search" autocomplete="off">
-          </label>
-          {%- render 'search-options', scope: 'articles' -%}
-        </form>
-      {%- endif -%}
-      {%- if current_tags.size > 0 -%}
-        <div class="main-blog__active">
-          <span class="main-blog__active-label">{{ 'blog.filtering_by' | t }}</span>
-          <ul class="main-blog__active-list" role="list">
-            {%- for chosen in current_tags -%}
-              {%- capture remove_url -%}{% render 'blog-topic-url', blog_url: blog.url, tag: chosen %}{%- endcapture -%}
-              <li>
-                <a href="{{ remove_url | strip }}" class="chip chip--compact" data-section-link aria-label="{{ 'blog.remove_topic' | t: topic: chosen | escape }}">
-                  {{- chosen | escape -}}
-                  {%- render 'icon', name: 'close' -%}
-                </a>
-              </li>
-            {%- endfor -%}
-            <li><a href="{{ blog.url }}" class="main-blog__clear" data-section-link>{{ 'facets.clear_all' | t }}</a></li>
-          </ul>
-          <span class="main-blog__count" role="status">{{ 'blog.articles_count' | t: count: paginate.items }}</span>
-        </div>
-      {%- endif -%}
-
-      {%- if blog.articles.size == 0 -%}
-        <div class="empty-state">
-          {%- if current_tags.size > 0 -%}
-            <p class="h5">{{ 'blog.no_match' | t }}</p>
-            <a href="{{ blog.url }}" class="btn btn--outline" data-section-link>{{ 'facets.clear_all' | t }}</a>
-          {%- else -%}
-            <p>{{ 'blog.empty' | t }}</p>
-          {%- endif -%}
-        </div>
-      {%- else -%}
-        {%- liquid
-          assign promo = section.blocks | where: 'type', 'promo' | first
-          assign featured = false
-          if section.settings.featured and paginate.current_page == 1 and current_tags == blank
-            assign featured = true
-          endif
-        -%}
-        <ul class="grid main-blog__grid" role="list" style="--grid-columns: 3; --grid-columns-mobile: 1;" data-load-more-grid>
-          {%- for article in blog.articles -%}
-            <li data-load-more-item{% if featured and forloop.first %} class="main-blog__featured"{% endif %}>
-              {%- if featured and forloop.first -%}
-                {%- render 'article-card', article: article, layout: 'featured', heading_tag: 'h2', show_tags: section.settings.tags, blog_url: blog.url, sizes: '(min-width: 990px) 60vw, 100vw' -%}
-              {%- else -%}
-                {%- render 'article-card', article: article, heading_tag: 'h2', show_tags: section.settings.tags, blog_url: blog.url, sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw' -%}
-              {%- endif -%}
-            </li>
-            {%- comment -%} A promo tile among the articles (first page only; not a load-more item) {%- endcomment -%}
-            {%- if promo and paginate.current_page == 1 and forloop.index == promo.settings.position -%}
-              <li class="main-blog__promo grid-promo" {{ promo.shopify_attributes }}>
-                {%- render 'promo-card',
-                  url: promo.settings.link,
-                  image: promo.settings.image,
-                  eyebrow: promo.settings.eyebrow,
-                  heading: promo.settings.heading,
-                  text: promo.settings.text,
-                  link_label: promo.settings.link_label,
-                  layout: 'overlay',
-                  ratio: '4 / 5',
-                  sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw'
-                -%}
-              </li>
-            {%- endif -%}
-            {%- comment -%} The sign-up card among the articles (first page only; not a load-more item) {%- endcomment -%}
-            {%- if section.settings.show_signup and paginate.current_page == 1 and forloop.index == section.settings.signup_position -%}
-              <li class="main-blog__signup">
-                <div class="main-blog__signup-card">
-                  <span class="main-blog__signup-icon" aria-hidden="true">{%- render 'icon', name: 'mail' -%}</span>
-                  <h2 class="h4">{{ section.settings.signup_heading | escape }}</h2>
-                  {%- if section.settings.signup_text != blank -%}
-                    <p class="main-blog__signup-text">{{ section.settings.signup_text | escape }}</p>
-                  {%- endif -%}
-                  {%- render 'newsletter-form', id: section.id, button_label: section.settings.signup_button, note: section.settings.signup_note -%}
-                </div>
-              </li>
-            {%- endif -%}
-          {%- endfor -%}
-          {%- if section.settings.pagination == 'load_more' -%}
-            {%- assign shown = paginate.current_offset | plus: blog.articles.size -%}
-            {%- render 'load-more-cell', paginate: paginate, shown: shown -%}
-          {%- endif -%}
-        </ul>
-        {%- if section.settings.pagination == 'pages' -%}
-          {%- render 'pagination', paginate: paginate -%}
-        {%- endif -%}
-      {%- endif -%}
-    </div>
-  </load-more>
-  </section-swap>
-{%- endpaginate -%}
+{%- if template.name == 'search' -%}
+  {%- paginate search.results by section.settings.per_page -%}
+    {%- render 'blog-page', section: section, articles: search.results, paginate: paginate, blog_url: section.settings.blog.url, terms: search.terms, count: search.results_count -%}
+  {%- endpaginate -%}
+{%- else -%}
+  {%- paginate blog.articles by section.settings.per_page -%}
+    {%- render 'blog-page', section: section, articles: blog.articles, paginate: paginate, blog_url: blog.url -%}
+  {%- endpaginate -%}
+{%- endif -%}
 <script type="module">import '@ui/section-swap';</script>
 {%- if section.settings.pagination == 'load_more' -%}
   <script type="module">import '@ui/load-more';</script>
@@ -122,7 +29,7 @@
   "settings": [
     { "type": "range", "id": "per_page", "label": "t:sections.main_blog.per_page", "min": 3, "max": 24, "step": 3, "default": 9 },
     { "type": "checkbox", "id": "tags", "label": "t:sections.main_blog.tags", "info": "t:sections.main_blog.tags_info", "default": true },
-    { "type": "checkbox", "id": "show_search", "label": "t:sections.main_blog.show_search", "info": "t:sections.main_blog.show_search_info", "default": true },
+    { "type": "blog", "id": "blog", "label": "t:sections.main_search.blog", "info": "t:sections.main_blog.blog_info" },
     {
       "type": "select",
       "id": "pagination",

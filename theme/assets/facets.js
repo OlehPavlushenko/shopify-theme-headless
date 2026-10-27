@@ -54,9 +54,25 @@ class FacetFilters extends HTMLElement {
     document.addEventListener('click', this.#onOutsideClick);
     window.addEventListener('popstate', this.#onPopState);
     this.#applyDensity(readDensity());
+    this.#resizeObserver = new ResizeObserver(() => this.#fitMore());
+    this.#resizeObserver.observe(this);
+  }
+
+  #resizeObserver;
+
+  // "Load more" cell: span the columns left in the last row (all of them when the row is full)
+  #fitMore() {
+    const grid = this.querySelector('[data-facets-grid]');
+    const more = grid?.querySelector('[data-facets-more]');
+    if (!more) return;
+    const columns = getComputedStyle(grid).gridTemplateColumns.split(' ').length;
+    const used = grid.children.length - 1;
+    const left = columns - (used % columns);
+    more.style.gridColumn = `span ${left}`;
   }
 
   disconnectedCallback() {
+    this.#resizeObserver?.disconnect();
     document.removeEventListener('click', this.#onOutsideClick);
     window.removeEventListener('popstate', this.#onPopState);
   }
@@ -142,6 +158,7 @@ class FacetFilters extends HTMLElement {
     this.querySelectorAll('button[data-density]').forEach((button) =>
       button.setAttribute('aria-pressed', String(button.dataset.density === value))
     );
+    this.#fitMore();
   }
 
   async #fetch(url) {
@@ -233,12 +250,17 @@ class FacetFilters extends HTMLElement {
       const html = await this.#fetch(link.pathname + link.search);
       const grid = this.querySelector('[data-facets-grid]');
       const items = html.querySelectorAll('[data-facets-grid] > [data-facets-item]');
-      grid.append(...[...items].map((item) => document.importNode(item, true)));
       const more = this.querySelector('[data-facets-more]');
+      // The new products go before the "Load more" cell, which stays last in the grid
+      more.before(...[...items].map((item) => document.importNode(item, true)));
       const incoming = html.querySelector('[data-facets-more]');
       if (incoming) more.replaceWith(document.importNode(incoming, true));
       else more.remove();
-      items[0] && grid.querySelector(`[data-facets-item]:nth-last-child(${items.length}) a`)?.focus({ preventScroll: true });
+      this.#fitMore();
+      grid
+        .querySelectorAll('[data-facets-item]')
+        [grid.querySelectorAll('[data-facets-item]').length - items.length]?.querySelector('a')
+        ?.focus({ preventScroll: true });
     } catch {
       window.location.href = link.href;
     }

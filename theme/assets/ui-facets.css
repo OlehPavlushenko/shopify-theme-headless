@@ -607,12 +607,19 @@
     height: 100%;
   }
 
-  /* Load more: "24 of 86", a thin progress bar, the button */
+  /* Load more: the grid's last cell, spanning the columns left in the last row (a whole row when
+     the row before is full; facets.js sets the span) — "24 of 86", a progress bar, the button.
+     Without JS: a row of its own. */
   .facets__more {
     display: grid;
+    grid-column: 1 / -1;
+    place-content: center;
     justify-items: center;
     gap: var(--space-s);
-    margin-top: var(--space-2xl);
+    min-height: 16rem;
+    padding: var(--space-l);
+    border: 0.1rem dashed var(--color-border);
+    border-radius: var(--radius-card);
   }
 
   .facets__progress {

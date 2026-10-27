@@ -772,6 +772,127 @@
     }
   }
 
+  /* Topics and search (faq--nav): a search field and the topic links in the intro, topic headings
+     in the list. The field needs JS (<faq-search>), so it shows once enhanced */
+  .faq__search {
+    position: relative;
+    display: none;
+    width: 100%;
+  }
+
+  faq-search[data-ready] .faq__search {
+    display: block;
+  }
+
+  .faq__search .svg-icon {
+    --icon-size: var(--icon-sm);
+
+    position: absolute;
+    top: 50%;
+    left: var(--space-s);
+    color: var(--color-text-muted);
+    translate: 0 -50%;
+    pointer-events: none;
+  }
+
+  .faq__search .input {
+    padding-inline-start: 4rem;
+  }
+
+  .faq__nav {
+    width: 100%;
+  }
+
+  .faq__nav-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .faq__nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-height-sm);
+    padding: 0 var(--space-m);
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-medium);
+    color: var(--color-heading);
+    text-decoration: none;
+    border: 0.1rem solid var(--color-border);
+    border-radius: var(--radius-full);
+    transition: border-color var(--duration-short) var(--ease);
+  }
+
+  @media (hover: hover) {
+    .faq__nav-link:hover {
+      border-color: var(--color-heading);
+    }
+  }
+
+  /* The list starts with a topic: its own top spacing instead of the list's border */
+  .faq--nav .faq__list {
+    border-top: 0;
+  }
+
+  .faq__topic {
+    margin: 0;
+    padding-block: var(--space-xl) var(--space-s);
+    border-bottom: 0.1rem solid var(--color-border);
+    scroll-margin-top: calc(var(--header-height, 0px) + var(--space-l));
+  }
+
+  .faq__topic:first-child {
+    padding-top: 0;
+  }
+
+  :is(.faq__topic, [data-faq-item], .faq__nav-list > li)[hidden] {
+    display: none;
+  }
+
+  /* While searching, the first visible topic loses its top spacing too */
+  faq-search[data-searching] .faq__topic:not([hidden]) {
+    padding-top: var(--space-l);
+  }
+
+  .faq__empty {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-s);
+    padding-block: var(--space-xl);
+    color: var(--color-text-muted);
+  }
+
+  .faq__empty[hidden] {
+    display: none;
+  }
+
+  /* Desktop: the topics stack as a list in the sticky column */
+  @media (min-width: 990px) {
+    .faq--split .faq__nav-list {
+      display: grid;
+      gap: 0;
+      border-top: 0.1rem solid var(--color-border);
+    }
+
+    .faq--split .faq__nav-link {
+      display: flex;
+      min-height: auto;
+      padding: var(--space-s) 0;
+      border: 0;
+      border-bottom: 0.1rem solid var(--color-border);
+      border-radius: 0;
+    }
+
+    @media (hover: hover) {
+      .faq--split .faq__nav-link:hover {
+        color: var(--color-accent);
+      }
+    }
+  }
+
   /* ------------------------------------------------- template pages */
   /* Page content: the page's rich text, a reading column under the Page header */
   .main-page__content {

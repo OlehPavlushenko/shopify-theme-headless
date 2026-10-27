@@ -479,7 +479,10 @@
       "single_open": "One answer open at a time",
       "open_first": "First answer open",
       "question": "Question",
-      "answer": "Answer"
+      "answer": "Answer",
+      "topic": "Topic",
+      "show_nav": "Topics and search",
+      "show_nav_info": "Lists the Topic blocks as links and adds a field that filters the questions — for a page of its own (FAQ)"
     },
     "brands": {
       "name": "Brands",

@@ -238,6 +238,13 @@
     "address": "Address",
     "hours": "Opening hours"
   },
+  "faq": {
+    "search": "Search questions",
+    "topics": "Topics",
+    "results": "%n questions found",
+    "no_results_html": "No questions match “{{ terms }}”",
+    "no_results_text": "Try another word, or ask us directly — we reply within a day."
+  },
   "facets": {
     "filters": "Filters",
     "sort_by": "Sort by",

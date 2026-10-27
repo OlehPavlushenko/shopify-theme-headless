@@ -1,0 +1,118 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "heading": "Shipping & returns",
+        "text": "<p>Fast dispatch, free delivery over $50 and easy returns within 14 days. Here is exactly what happens after you order.</p>",
+        "breadcrumbs": true,
+        "alignment": "left",
+        "image_layout": "split",
+        "image_source": "picked",
+        "image": "shopify://shop_images/slide_3_desktop.webp",
+        "tint": 45,
+        "color_scheme": "scheme-2"
+      }
+    },
+    "estimate": {
+      "type": "delivery-estimate",
+      "settings": {
+        "eyebrow": "Delivery estimate",
+        "heading": "When will my order arrive?",
+        "text": "<p>Business days, Monday to Friday. You get a tracking link by email as soon as the parcel leaves our warehouse.</p>",
+        "cutoff": 14,
+        "min_days": 2,
+        "max_days": 4,
+        "order_label": "Order placed",
+        "ship_label": "Ships",
+        "arrive_label": "Delivered",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "highlights": {
+      "type": "stats",
+      "blocks": {
+        "h1": { "type": "stat", "settings": { "value": "1–2", "label": "Days to dispatch", "text": "Packed by hand in our warehouse" } },
+        "h2": { "type": "stat", "settings": { "value": "$50", "label": "Free delivery from", "text": "On every order over the threshold" } },
+        "h3": { "type": "stat", "settings": { "value": "14", "label": "Days to return", "text": "Unopened products, pickup is free" } },
+        "h4": { "type": "stat", "settings": { "value": "3–5", "label": "Days to refund", "text": "Back to the way you paid" } }
+      },
+      "block_order": ["h1", "h2", "h3", "h4"],
+      "settings": {
+        "eyebrow": "",
+        "heading": "",
+        "text": "",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "options": {
+      "type": "stats",
+      "blocks": {
+        "o1": { "type": "stat", "settings": { "value": "Free", "label": "Standard delivery", "text": "2–4 business days, on orders over $50" } },
+        "o2": { "type": "stat", "settings": { "value": "$4.99", "label": "Standard delivery", "text": "2–4 business days, under $50" } },
+        "o3": { "type": "stat", "settings": { "value": "$9.99", "label": "Express", "text": "1–2 business days, order before 14:00" } },
+        "o4": { "type": "stat", "settings": { "value": "$14.99", "label": "International", "text": "EU and US, 5–10 business days" } }
+      },
+      "block_order": ["o1", "o2", "o3", "o4"],
+      "settings": {
+        "eyebrow": "Delivery options",
+        "heading": "Choose at checkout",
+        "text": "<p>The exact price for your address shows at checkout before you pay.</p>",
+        "color_scheme": "scheme-4"
+      }
+    },
+    "returns": {
+      "type": "timeline",
+      "blocks": {
+        "r1": { "type": "step", "settings": { "year": "Step 1", "title": "Write to us", "text": "Send your order number and what you would like to return — within 14 days of delivery." } },
+        "r2": { "type": "step", "settings": { "year": "Step 2", "title": "We arrange the pickup", "text": "A courier collects the parcel from your door. The pickup is free." } },
+        "r3": { "type": "step", "settings": { "year": "Step 3", "title": "We check the parcel", "text": "Usually on the day it arrives. We let you know by email." } },
+        "r4": { "type": "step", "settings": { "year": "Step 4", "title": "Money back", "text": "Within 3–5 business days, to the card or account you paid with." } }
+      },
+      "block_order": ["r1", "r2", "r3", "r4"],
+      "settings": {
+        "eyebrow": "Returns",
+        "heading": "How returns work",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question", "settings": { "question": "Can I track my parcel?", "answer": "<p>Yes — the tracking link comes by email as soon as the parcel leaves our warehouse, and it is also in your account under the order.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "What if I am not at home?", "answer": "<p>The courier calls before delivery and can leave the parcel with a neighbour or bring it the next business day.</p>" } },
+        "q3": { "type": "question", "settings": { "question": "Which products can be returned?", "answer": "<p>Any product in its original, unopened packaging. Opened cosmetics and supplements cannot be returned for hygiene reasons — unless they arrived damaged.</p>" } },
+        "q4": { "type": "question", "settings": { "question": "What if a product arrives damaged?", "answer": "<p>Send us a photo within 48 hours of delivery and we will send a replacement or a refund — no need to return the damaged item.</p>" } },
+        "q5": { "type": "question", "settings": { "question": "Can I exchange a product?", "answer": "<p>Yes. Write to us which product you would like instead; we pick up the first one and send the new one in the same trip.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5"],
+      "settings": {
+        "layout": "split",
+        "eyebrow": "FAQ",
+        "heading": "Good to know",
+        "text": "<p>More answers are on our <a href=\"/pages/faq\">FAQ page</a>.</p>",
+        "button_label": "Contact us",
+        "button_link": "shopify://pages/contact",
+        "show_nav": false,
+        "single_open": true,
+        "open_first": true,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "contact": {
+      "type": "image-text",
+      "settings": {
+        "image": "shopify://shop_images/slide_4_desktop.webp",
+        "image_position": "right",
+        "ratio": "4 / 3",
+        "eyebrow": "Something went wrong?",
+        "heading": "We will sort it out within a day",
+        "text": "<p>Late parcel, wrong product, a question about a return — write to us with your order number and a person from our team will take care of it.</p>",
+        "button_label": "Contact us",
+        "button_link": "shopify://pages/contact",
+        "color_scheme": "scheme-2"
+      }
+    }
+  },
+  "order": ["header", "estimate", "highlights", "options", "returns", "faq", "contact"]
+}

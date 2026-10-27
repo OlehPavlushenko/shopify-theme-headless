@@ -16,6 +16,7 @@
  *   empty.
  * Records the product in the recently viewed list (@ui/saved-list).
  */
+import { deliveryDates, formatLeft } from '@ui/delivery';
 import { openDialog } from '@ui/dialog';
 import { recordView } from '@ui/saved-list';
 
@@ -113,27 +114,12 @@ class StickyBuyBar extends HTMLElement {
 class DeliveryEstimate extends HTMLElement {
   connectedCallback() {
     const { min, max, cutoff, template, templateToday, locale } = this.dataset;
-    const now = new Date();
-    const beforeCutoff = now.getHours() < Number(cutoff);
-    const addBusinessDays = (days) => {
-      const date = new Date(now);
-      if (!beforeCutoff) days += 1;
-      while (days > 0) {
-        date.setDate(date.getDate() + 1);
-        if (date.getDay() !== 0 && date.getDay() !== 6) days -= 1;
-      }
-      return date;
-    };
+    const { shipsToday, from, to, minutesLeft } = deliveryDates({ min, max, cutoff });
     const format = new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short' });
-    const dates = `${format.format(addBusinessDays(Number(min)))} – ${format.format(addBusinessDays(Number(max)))}`;
-    let text = template.replace('%dates', dates);
-    if (beforeCutoff && now.getDay() !== 0 && now.getDay() !== 6) {
-      const left = new Date(now);
-      left.setHours(Number(cutoff), 0, 0, 0);
-      const minutes = Math.round((left - now) / 60000);
-      const time = minutes >= 60 ? `${Math.floor(minutes / 60)} h ${minutes % 60} min` : `${minutes} min`;
-      text = templateToday.replace('%time', time).replace('%dates', dates);
-    }
+    const dates = `${format.format(from)} – ${format.format(to)}`;
+    const text = shipsToday
+      ? templateToday.replace('%time', formatLeft(minutesLeft)).replace('%dates', dates)
+      : template.replace('%dates', dates);
     this.querySelector('[data-delivery-text]').textContent = text;
   }
 }

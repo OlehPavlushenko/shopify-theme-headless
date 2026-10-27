@@ -238,6 +238,14 @@
     "address": "Address",
     "hours": "Opening hours"
   },
+  "delivery": {
+    "today": "Today",
+    "lead_today": "Order within %time — it ships today",
+    "lead_later": "Order now — it ships %date",
+    "lead_fallback": "Orders placed before {{ hour }}:00 on business days ship the same day",
+    "ship_fallback": "Within 1 business day",
+    "arrive_fallback": "In {{ range }} business days"
+  },
   "faq": {
     "search": "Search questions",
     "topics": "Topics",

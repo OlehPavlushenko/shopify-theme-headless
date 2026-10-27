@@ -1,0 +1,80 @@
+{% comment %}
+  Delivery estimate: "When will my order arrive?" — three steps on a line (order placed → ships →
+  delivered) with today's real dates and a live countdown to the cut-off hour (<delivery-steps>,
+  @ui/delivery-steps; the same date rule as the product page's delivery line, @ui/delivery).
+  Without JS the steps show the business-day ranges. Styles: packages/ui/css/sections.css.
+{% endcomment %}
+{%- liquid
+  assign min_days = section.settings.min_days
+  assign max_days = section.settings.max_days | at_least: min_days
+  assign range = min_days | append: '–' | append: max_days
+-%}
+<div class="delivery-estimate color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width">
+    <delivery-steps
+      class="delivery-estimate__card"
+      data-min="{{ min_days }}"
+      data-max="{{ max_days }}"
+      data-cutoff="{{ section.settings.cutoff }}"
+      data-locale="{{ request.locale.iso_code }}"
+      data-today="{{ 'delivery.today' | t | escape }}"
+      data-lead-today="{{ 'delivery.lead_today' | t: time: '%time' | escape }}"
+      data-lead-later="{{ 'delivery.lead_later' | t: date: '%date' | escape }}"
+    >
+      <div class="delivery-estimate__head">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="h3">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        <p class="delivery-estimate__lead">
+          {%- render 'icon', name: 'clock' -%}
+          <span data-delivery-lead>{{ 'delivery.lead_fallback' | t: hour: section.settings.cutoff }}</span>
+        </p>
+      </div>
+      <ol class="delivery-estimate__steps" role="list">
+        <li class="delivery-estimate__step delivery-estimate__step--done">
+          <span class="delivery-estimate__icon" aria-hidden="true">{%- render 'icon', name: 'cart' -%}</span>
+          <span class="delivery-estimate__label">{{ section.settings.order_label | escape }}</span>
+          <span class="delivery-estimate__date" data-delivery-date="order">{{ 'delivery.today' | t }}</span>
+        </li>
+        <li class="delivery-estimate__step">
+          <span class="delivery-estimate__icon" aria-hidden="true">{%- render 'icon', name: 'truck' -%}</span>
+          <span class="delivery-estimate__label">{{ section.settings.ship_label | escape }}</span>
+          <span class="delivery-estimate__date" data-delivery-date="ship">{{ 'delivery.ship_fallback' | t }}</span>
+        </li>
+        <li class="delivery-estimate__step">
+          <span class="delivery-estimate__icon" aria-hidden="true">{%- render 'icon', name: 'gift' -%}</span>
+          <span class="delivery-estimate__label">{{ section.settings.arrive_label | escape }}</span>
+          <span class="delivery-estimate__date" data-delivery-date="arrive">{{ 'delivery.arrive_fallback' | t: range: range }}</span>
+        </li>
+      </ol>
+      {%- if section.settings.text != blank -%}
+        <div class="rte delivery-estimate__note">{{ section.settings.text }}</div>
+      {%- endif -%}
+    </delivery-steps>
+  </div>
+</div>
+<script type="module">import '@ui/delivery-steps';</script>
+
+{% schema %}
+{
+  "name": "t:sections.delivery_estimate.name",
+  "class": "delivery-estimate-section",
+  "disabled_on": { "groups": ["*"] },
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:sections.promo_popup.eyebrow", "default": "Delivery estimate" },
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "When will my order arrive?" },
+    { "type": "richtext", "id": "text", "label": "t:labels.text", "default": "<p>Business days, Monday to Friday. Free delivery on orders over $50.</p>" },
+    { "type": "range", "id": "cutoff", "label": "t:sections.main_product.delivery_cutoff", "min": 8, "max": 22, "step": 1, "unit": "h", "default": 14 },
+    { "type": "range", "id": "min_days", "label": "t:sections.main_product.delivery_min", "min": 1, "max": 14, "step": 1, "default": 2 },
+    { "type": "range", "id": "max_days", "label": "t:sections.main_product.delivery_max", "min": 1, "max": 21, "step": 1, "default": 4 },
+    { "type": "text", "id": "order_label", "label": "t:sections.delivery_estimate.order_label", "default": "Order placed" },
+    { "type": "text", "id": "ship_label", "label": "t:sections.delivery_estimate.ship_label", "default": "Ships" },
+    { "type": "text", "id": "arrive_label", "label": "t:sections.delivery_estimate.arrive_label", "default": "Delivered" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "t:sections.delivery_estimate.name" }]
+}
+{% endschema %}

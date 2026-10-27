@@ -454,6 +454,12 @@
       "name": "Apps",
       "full_width": "Full width"
     },
+    "delivery_estimate": {
+      "name": "Delivery estimate",
+      "order_label": "Step 1 label",
+      "ship_label": "Step 2 label",
+      "arrive_label": "Step 3 label"
+    },
     "stats": {
       "name": "Stats",
       "stat": "Figure",

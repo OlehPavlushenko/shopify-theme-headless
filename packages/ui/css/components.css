@@ -217,14 +217,15 @@
     border-color: var(--color-danger);
   }
 
-  /* The message sits in the gap under the field (as the newsletter's), so nothing below moves */
+  /* The message sits in the gap under the field (as the newsletter's), so nothing below moves;
+     forms with these messages space their rows by --space-xl to fit it */
   :has(> .field-error) {
     position: relative;
   }
 
   .field-error {
     position: absolute;
-    top: 100%;
+    top: calc(100% + var(--space-2xs));
     left: 0;
     right: 0;
     font-size: var(--text-xs);

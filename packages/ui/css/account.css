@@ -167,14 +167,15 @@
   }
 
   /* ------------------------------------------------------------ forms */
+  /* Rows leave room for a field's error message (.field-error) */
   .account-form {
     display: grid;
-    gap: var(--space-m);
+    gap: var(--space-xl);
   }
 
   .account-form__row {
     display: grid;
-    gap: var(--space-m);
+    gap: var(--space-xl) var(--space-m);
   }
 
   @media (min-width: 750px) {

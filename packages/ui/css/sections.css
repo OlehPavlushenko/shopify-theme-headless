@@ -1121,6 +1121,189 @@
     color: var(--color-text-muted);
   }
 
+  /* ------------------------------------------------------ gift card */
+  /* templates/gift_card.liquid: centered column — logo, title, the card (a bank-card shape on the
+     accent color), message, code, QR code, actions */
+  .gift-card {
+    min-height: 100svh;
+    color: var(--color-foreground);
+    background: var(--color-background);
+  }
+
+  .gift-card__inner {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-l);
+    width: min(100%, 48rem);
+    margin-inline: auto;
+    padding: var(--space-xl) var(--gutter) var(--space-3xl);
+    text-align: center;
+  }
+
+  .gift-card__shop {
+    display: inline-block;
+    color: var(--color-heading);
+    text-decoration: none;
+  }
+
+  .gift-card__shop img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .gift-card__title {
+    margin: 0;
+  }
+
+  .gift-card__card {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    width: 100%;
+    aspect-ratio: 1.586;
+    padding: var(--space-l);
+    overflow: hidden;
+    color: var(--color-button-label);
+    text-align: start;
+    background: radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--color-button-label) 18%, transparent) 0 30%, transparent 30.5%),
+      radial-gradient(circle at 0% 100%, color-mix(in srgb, var(--color-button-label) 10%, transparent) 0 40%, transparent 40.5%),
+      linear-gradient(135deg, var(--color-accent), color-mix(in srgb, var(--color-accent) 55%, var(--color-heading)));
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+  }
+
+  .gift-card__card--inactive {
+    filter: grayscale(1);
+    opacity: 0.7;
+  }
+
+  .gift-card__card-top,
+  .gift-card__card-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xs);
+    font-size: var(--text-xs);
+    font-weight: var(--font-body-weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+
+  .gift-card__status {
+    padding: 0.2rem var(--space-xs);
+    color: var(--color-accent);
+    background: var(--color-button-label);
+    border-radius: var(--radius-badge);
+  }
+
+  .gift-card__balance {
+    align-self: center;
+    font-family: var(--font-heading-family);
+    font-size: clamp(var(--text-4xl), 3rem + 4vw, var(--text-6xl));
+    font-weight: var(--font-heading-weight);
+    line-height: 1;
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .gift-card__initial {
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .gift-card__message {
+    margin: 0;
+    padding: var(--space-m) var(--space-l);
+    background: var(--color-surface);
+    border-radius: var(--radius-card);
+  }
+
+  .gift-card__message blockquote {
+    margin: 0;
+    font-size: var(--text-lg);
+    color: var(--color-heading);
+  }
+
+  .gift-card__message figcaption {
+    margin-top: var(--space-xs);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .gift-card__code-block {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-xs);
+    width: 100%;
+  }
+
+  .gift-card__code {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-s);
+    width: 100%;
+    padding: var(--space-s) var(--space-m);
+    border: 0.1rem dashed var(--color-border);
+    border-radius: var(--radius-card);
+  }
+
+  .gift-card__code code {
+    font-size: var(--text-xl);
+    font-weight: var(--font-body-weight-semibold);
+    letter-spacing: 0.08em;
+    color: var(--color-heading);
+  }
+
+  .gift-card__hint {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .gift-card__qr {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-xs);
+  }
+
+  /* White behind the code on every scheme: scanners need the contrast */
+  .gift-card__qr-code {
+    padding: var(--space-s);
+    background: #fff;
+    border-radius: var(--radius-card);
+  }
+
+  .gift-card__qr-code:empty {
+    display: none;
+  }
+
+  .gift-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-s);
+  }
+
+  .gift-card__wallet img {
+    display: block;
+    width: auto;
+    height: var(--control-height-lg);
+  }
+
+  @media print {
+    .gift-card__actions {
+      display: none;
+    }
+
+    .gift-card__card {
+      print-color-adjust: exact;
+      box-shadow: none;
+    }
+  }
+
   /* ------------------------------------------------------- policies */
   /* /policies/* pages are rendered by Shopify into the layout (no sections): .shopify-policy__*
      markup, styled as a reading column like the page content */

@@ -127,7 +127,17 @@
     "card": "Gift card",
     "expired": "This gift card has expired",
     "expires_on": "Expires on {{ expires_on }}",
-    "use_at_checkout": "Use this gift card at checkout"
+    "use_at_checkout": "Use this gift card at checkout",
+    "title": "A gift for you from {{ shop }}",
+    "expired_badge": "Expired",
+    "disabled": "Disabled",
+    "initial_html": "Initial value <strong>{{ value }}</strong>",
+    "copy": "Copy code",
+    "copied": "Copied!",
+    "qr_alt": "QR code — scan to redeem the gift card",
+    "qr_hint": "Paying in a shop? Show this QR code at the till.",
+    "shop_now": "Shop now",
+    "print": "Print"
   },
   "password": {
     "title": "This shop is private",

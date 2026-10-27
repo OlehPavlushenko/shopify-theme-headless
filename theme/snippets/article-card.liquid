@@ -53,6 +53,7 @@
             <a
               href="{{ topic_url | strip }}"
               class="article-card__tag"
+              data-section-link
               {% if current_tags contains article_tag %}
                 aria-current="true"
               {% endif %}

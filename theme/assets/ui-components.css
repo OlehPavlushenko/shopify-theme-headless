@@ -1180,4 +1180,20 @@
     opacity: 0.6;
     pointer-events: none;
   }
+
+  /* -------------------------------------------------- section swap */
+  /* A section whose links re-render it in place (@ui/section-swap): block (a custom element is
+     inline), and the content fades while the next state loads */
+  section-swap {
+    display: block;
+  }
+
+  section-swap > * {
+    transition: opacity var(--duration-default) var(--ease);
+  }
+
+  section-swap[aria-busy="true"] > * {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }

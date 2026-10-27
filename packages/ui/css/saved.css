@@ -29,6 +29,11 @@
     gap: var(--space-s);
   }
 
+  /* Placeholders past the number of saved products (saved-pages.js) */
+  .saved-skeleton__item[hidden] {
+    display: none;
+  }
+
   /* Compare: placeholder columns where the product columns will be (after the label column) */
   .saved-skeleton--columns {
     --label-width: 11rem;

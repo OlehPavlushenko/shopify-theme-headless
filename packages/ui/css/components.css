@@ -202,9 +202,17 @@
     border-color: color-mix(in srgb, var(--color-heading) 40%, var(--color-border));
   }
 
+  /* Focus: the border plus a ring of the same radius (an outline's corners don't follow it evenly);
+     the transparent outline stays for forced-colors mode */
   .input:focus-visible {
-    outline-offset: 0;
+    outline-color: transparent;
     border-color: var(--color-focus);
+    box-shadow: 0 0 0 0.1rem var(--color-focus);
+  }
+
+  /* The browser's own clear button (blue in Chrome); Esc clears a search field */
+  .input[type="search"]::-webkit-search-cancel-button {
+    display: none;
   }
 
   textarea.input {

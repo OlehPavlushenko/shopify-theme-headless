@@ -924,32 +924,32 @@
       justify-content: center;
     }
 
+    /* A plain list here (not chips), as the article contents: a line on the left, the current
+       topic marked by a bar on it */
     .faq--split .faq__nav-list {
       display: grid;
       gap: 0;
-      border-top: 0.1rem solid var(--color-border);
+      border-left: 0.1rem solid var(--color-border);
     }
 
-    /* A plain list here (not chips): the current topic marked by a bar, as in the article contents */
     .faq--split .faq__nav-link {
       display: flex;
       justify-content: flex-start;
       min-height: auto;
-      padding: var(--space-s);
+      margin-left: -0.1rem;
+      padding: var(--space-xs) 0 var(--space-xs) var(--space-s);
       color: var(--color-text-muted);
       white-space: normal;
       background: none;
       border: 0;
-      border-bottom: 0.1rem solid var(--color-border);
+      border-left: 0.2rem solid transparent;
       border-radius: 0;
-      box-shadow: inset 0.2rem 0 0 transparent;
     }
 
     .faq--split .faq__nav-link[aria-current] {
       color: var(--color-heading);
       background: none;
-      border-color: var(--color-border);
-      box-shadow: inset 0.2rem 0 0 var(--color-accent);
+      border-color: var(--color-accent);
     }
 
     @media (hover: hover) {

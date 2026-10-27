@@ -43,7 +43,9 @@
 </script>
 
 {%- if request.page_type == 'index' -%}
-  {%- assign search_target = request.origin | append: routes.search_url | append: '?q={search_term_string}' -%}
+  {%- capture search_query -%}{% render 'search-options', format: 'query' %}{%- endcapture -%}
+  {%- assign search_query = search_query | strip -%}
+  {%- assign search_target = request.origin | append: routes.search_url | append: '?q={search_term_string}' | append: search_query -%}
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",

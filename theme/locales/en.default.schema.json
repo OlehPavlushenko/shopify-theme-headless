@@ -231,12 +231,21 @@
       "articles_heading_info": "Empty: the blog name.",
       "blog": "Blog"
     },
+    "main_article_search": {
+      "name": "Article results",
+      "per_page": "Articles per page"
+    },
     "main_search": {
       "name": "Search header",
       "results_per_page": "Results per page",
       "show_vendor": "Show vendor",
       "collections": "Popular collections",
-      "collections_info": "Shown as links before a search"
+      "collections_info": "Shown as links before a search",
+      "scope": "Searches",
+      "scope_products": "Products (store search)",
+      "scope_articles": "Articles (the blog search, ?view=blog)",
+      "blog": "Blog",
+      "blog_info": "Articles search: its topics show as links"
     },
     "main_collection": {
       "products_per_page": "Products per page",
@@ -568,6 +577,8 @@
       "grid_header": "Grid layout"
     },
     "main_blog": {
+      "show_search": "Search field",
+      "show_search_info": "Searches the articles only; results open on the search page template search.blog",
       "name": "Blog posts",
       "per_page": "Articles per page",
       "tags": "Topics on the cards",

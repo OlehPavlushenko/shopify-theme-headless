@@ -38,7 +38,7 @@
         {%- if show_nav -%}
           {%- comment -%} Search + topics: sticky — in the intro column from 990px, a bar under the header on phones {%- endcomment -%}
           <div class="faq__tools" data-faq-tools>
-            <label class="faq__search">
+            <label class="faq__search search-field">
               <span class="visually-hidden">{{ 'faq.search' | t }}</span>
               {%- render 'icon', name: 'search' -%}
               <input type="search" class="input" placeholder="{{ 'faq.search' | t | escape }}" autocomplete="off" data-faq-input>

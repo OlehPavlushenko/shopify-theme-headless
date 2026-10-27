@@ -15,7 +15,11 @@
     <div class="text-lead main-404__text">{{ section.settings.text }}</div>
     <form action="{{ routes.search_url }}" method="get" role="search" class="main-404__search">
       <label class="visually-hidden" for="NotFoundSearch">{{ 'search.title' | t }}</label>
-      <input id="NotFoundSearch" class="input" type="search" name="q" placeholder="{{ 'search.placeholder' | t }}" autocomplete="off">
+      <span class="search-field">
+        {%- render 'icon', name: 'search' -%}
+        <input id="NotFoundSearch" class="input" type="search" name="q" placeholder="{{ 'search.placeholder' | t }}" autocomplete="off">
+      </span>
+      {%- render 'search-options' -%}
       <button type="submit" class="btn">{{ 'search.submit' | t }}</button>
     </form>
     <div class="main-404__actions">

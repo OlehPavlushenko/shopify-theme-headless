@@ -8,17 +8,19 @@
   through the Section Rendering API on every change and keeps the URL in sync; without JS the form
   and the links still work. Styles: packages/ui/css/facets.css.
 {% endcomment %}
+{%- capture search_query -%}{% render 'search-options', format: 'query' %}{%- endcapture -%}
 {%- liquid
   assign per_page = section.settings.products_per_page
   assign is_search = false
   if template.name == 'search'
+    assign search_query = search_query | strip
     assign is_search = true
     assign filters = search.filters
     assign sort_by = search.sort_by | default: search.default_sort_by
     assign terms = search.terms | escape
     # The terms encoded on their own (a filter at the end of the chain would encode the whole URL)
     assign q = search.terms | url_encode
-    assign clear_url = routes.search_url | append: '?q=' | append: q | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by
+    assign clear_url = routes.search_url | append: '?q=' | append: q | append: search_query | append: '&sort_by=' | append: sort_by
     assign count = search.results_count
     assign count_label = 'search.results_count' | t: count: count
   else

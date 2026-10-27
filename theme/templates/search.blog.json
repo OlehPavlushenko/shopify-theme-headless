@@ -1,0 +1,22 @@
+{
+  "sections": {
+    "header": {
+      "type": "main-search",
+      "settings": {
+        "scope": "articles",
+        "blog": "news",
+        "color_scheme": "scheme-2"
+      }
+    },
+    "results": {
+      "type": "main-article-search",
+      "settings": {
+        "per_page": 9,
+        "pagination": "load_more",
+        "blog": "news",
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": ["header", "results"]
+}

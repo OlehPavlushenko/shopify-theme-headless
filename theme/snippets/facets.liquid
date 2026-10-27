@@ -20,7 +20,7 @@
 <form id="{{ form_id }}" class="facets__form" data-facets-form>
   {%- if terms -%}
     <input type="hidden" name="q" value="{{ terms | escape }}">
-    <input type="hidden" name="options[prefix]" value="last">
+    {%- render 'search-options' -%}
   {%- endif -%}
   {%- for filter in filters -%}
     {%- liquid

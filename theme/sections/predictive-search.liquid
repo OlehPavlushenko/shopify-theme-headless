@@ -2,10 +2,14 @@
   Predictive search results, fetched by @ui/predictive-search through the Section Rendering API:
   {{ routes.predictive_search_url }}?q=<terms>&section_id=predictive-search&resources[...]
   Not added through the theme editor (no presets). The client reads [data-predictive-results].
+  Products, collections and query suggestions (pages and articles are left out: the blog has its
+  own search); links to the search page carry snippets/search-options.
 {% endcomment %}
+{%- capture search_query -%}{% render 'search-options', format: 'query' %}{%- endcapture -%}
 {%- liquid
+  assign search_query = search_query | strip
   assign resources = predictive_search.resources
-  assign total = resources.products.size | plus: resources.collections.size | plus: resources.pages.size | plus: resources.articles.size | plus: resources.queries.size
+  assign total = resources.products.size | plus: resources.collections.size | plus: resources.queries.size
   assign terms = predictive_search.terms | escape
 -%}
 <div data-predictive-results data-count="{{ total }}">
@@ -21,7 +25,7 @@
               <ul class="link-list" role="list">
                 {%- for query in resources.queries limit: 5 -%}
                   <li>
-                    <a href="{{ query.url }}" class="link-list__link">
+                    <a href="{{ routes.search_url }}?q={{ query.text | url_encode }}{{ search_query }}" class="link-list__link">
                       {%- render 'icon', name: 'search' -%}
                       <span class="link-list__text">{{- query.styled_text -}}</span>
                     </a>
@@ -37,20 +41,6 @@
               <ul class="link-list" role="list">
                 {%- for collection in resources.collections limit: 5 -%}
                   <li><a href="{{ collection.url }}" class="link-list__link"><span class="link-list__text">{{ collection.title | escape }}</span></a></li>
-                {%- endfor -%}
-              </ul>
-            </section>
-          {%- endif -%}
-
-          {%- if resources.pages.size > 0 or resources.articles.size > 0 -%}
-            <section class="search-results__group" aria-labelledby="PredictivePages">
-              <h2 id="PredictivePages" class="eyebrow search-results__heading">{{ 'search.pages' | t }}</h2>
-              <ul class="link-list" role="list">
-                {%- for page in resources.pages limit: 3 -%}
-                  <li><a href="{{ page.url }}" class="link-list__link"><span class="link-list__text">{{ page.title | escape }}</span></a></li>
-                {%- endfor -%}
-                {%- for article in resources.articles limit: 3 -%}
-                  <li><a href="{{ article.url }}" class="link-list__link"><span class="link-list__text">{{ article.title | escape }}</span></a></li>
                 {%- endfor -%}
               </ul>
             </section>
@@ -86,7 +76,7 @@
 
     {%- if total > 0 -%}
       <div class="search-results__footer">
-        <a href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}&options%5Bprefix%5D=last" class="btn btn--outline btn--sm">
+        <a href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}{{ search_query }}" class="btn btn--outline btn--sm">
           {{- 'search.view_all_html' | t: terms: terms -}}
           {%- render 'icon', name: 'arrow-right' -%}
         </a>

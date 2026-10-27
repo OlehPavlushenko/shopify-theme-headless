@@ -10,7 +10,7 @@ and the list of mistakes we already made once. Read both before adding code.
   variant picker, slider, drawer / popup, accordion, toast, skeleton, section head, page header,
   promo card (`.grid-promo` in a grid), `.btn` variants, `.pill` (statuses: `--soft`, `--success`,
   `--danger`), `.chip` (selected: `aria-pressed` / `aria-checked` / `aria-current`; `--compact` for
-  removable filters), `.tag` (topics), `.empty-state`, `.form-errors`, `.load-more` cell. Extend one
+  removable filters), `.tag` (topics), `.empty-state`, `.form-errors`, `.search-field` (icon inside a field), `.load-more` cell. Extend one
   with a parameter or modifier instead of writing a look-alike.
 - **Shared behavior already exists:** `<load-more>` (paginated grids), `<section-swap>` (links that
   re-render a section), `<form-validate>` (field checks with messages under the fields, messages
@@ -56,7 +56,7 @@ and the list of mistakes we already made once. Read both before adding code.
   ```
 - One rule, one place: color-option detection is `option-is-color`, discount math is
   `discount-percent` (JS: `discountPercent` in `@ui/money`), color dots are `swatch`, breadcrumbs
-  are `breadcrumbs`. Don't copy their logic.
+  are `breadcrumbs`, the options of every search form and link are `search-options`. Don't copy their logic.
 
 ## CSS
 

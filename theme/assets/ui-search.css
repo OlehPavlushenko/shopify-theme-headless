@@ -204,6 +204,12 @@
     --slider-columns-mobile: 2.2;
   }
 
+  /* Products alone (no suggestions or collections beside them): the full width, so more columns —
+     a single result stays card-sized instead of filling a quarter of the screen */
+  .search-panel--top .search-results__layout:not(:has(> .search-results__aside > *)) .search-slider {
+    --slider-columns: 6;
+  }
+
   .search-panel--drawer .search-slider {
     --slider-columns: 2;
     --slider-columns-mobile: 1.6;
@@ -253,27 +259,10 @@
   }
 
   .main-search__form {
-    position: relative;
     display: flex;
     gap: var(--space-s);
     width: 100%;
     max-width: 64rem;
-  }
-
-  .main-search__form > .svg-icon {
-    --icon-size: var(--icon-sm);
-
-    position: absolute;
-    top: 50%;
-    left: var(--space-m);
-    color: var(--color-text-muted);
-    translate: 0 -50%;
-    pointer-events: none;
-  }
-
-  .main-search__form .input {
-    flex: 1;
-    padding-inline-start: 4.4rem;
   }
 
   .main-search__popular {

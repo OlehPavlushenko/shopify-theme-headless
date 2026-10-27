@@ -2,10 +2,12 @@
   Breadcrumbs: Home / … / the current page, plus their BreadcrumbList structured data (SEO).
   Trail: page — Home / page; collection — Home / Collections / collection; blog — Home / blog;
   article — Home / blog / article; product — Home / collection (when opened from one) / product;
-  search — Home / Search. The current page is the last item, not a link (aria-current).
+  search — Home / Search (the blog's search: Home / blog / Search, through parent_*). The current page is the last item, not a link (aria-current).
   Styles: .breadcrumbs in packages/ui/css/components.css.
 
   @param {string} [class] - Extra classes
+  @param {string} [parent_title] - A level between Home and the current page (with parent_url)
+  @param {string} [parent_url] - Its URL
 {% enddoc %}
 {%- liquid
   assign titles = ''
@@ -36,6 +38,10 @@
     else
       assign current = page_title
   endcase
+  if parent_title != blank
+    assign titles = parent_title
+    assign urls = parent_url
+  endif
   assign home = 'general.home' | t
   assign origin = request.origin
 -%}

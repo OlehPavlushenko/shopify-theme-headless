@@ -3,13 +3,25 @@
   cards — a click adds that topic to the filter (several: /blogs/<handle>/tagged/a+b, articles with
   all of them; snippets/blog-topic-url) — the chosen topics as removable chips with "Clear all" and
   the article count, the newest article large on the first page (optional), then the cards
-  (snippets/article-card) with "Load more" or page numbers. Topic links re-render the section in place (<section-swap>, @ui/section-swap).
+  (snippets/article-card) with "Load more" or page numbers. A search field (optional) searches the
+  articles only and opens the results on templates/search.blog.json. Topic links re-render the section in place (<section-swap>, @ui/section-swap).
   Styles: .main-blog in sections.css.
 {% endcomment %}
 {%- paginate blog.articles by section.settings.per_page -%}
   <section-swap class="main-blog color-{{ section.settings.color_scheme }} section-spacing" data-section="{{ section.id }}" tabindex="-1">
   <load-more data-section="{{ section.id }}">
     <div class="page-width">
+      {%- comment -%} The blog's own search: articles only, results on search.blog.json (snippets/search-options) {%- endcomment -%}
+      {%- if section.settings.show_search -%}
+        <form action="{{ routes.search_url }}" method="get" role="search" class="main-blog__search">
+          <label class="search-field">
+            <span class="visually-hidden">{{ 'blog.search_label' | t }}</span>
+            {%- render 'icon', name: 'search' -%}
+            <input class="input" type="search" name="q" placeholder="{{ 'blog.search_placeholder' | t | escape }}" enterkeyhint="search" autocomplete="off">
+          </label>
+          {%- render 'search-options', scope: 'articles' -%}
+        </form>
+      {%- endif -%}
       {%- if current_tags.size > 0 -%}
         <div class="main-blog__active">
           <span class="main-blog__active-label">{{ 'blog.filtering_by' | t }}</span>
@@ -110,6 +122,7 @@
   "settings": [
     { "type": "range", "id": "per_page", "label": "t:sections.main_blog.per_page", "min": 3, "max": 24, "step": 3, "default": 9 },
     { "type": "checkbox", "id": "tags", "label": "t:sections.main_blog.tags", "info": "t:sections.main_blog.tags_info", "default": true },
+    { "type": "checkbox", "id": "show_search", "label": "t:sections.main_blog.show_search", "info": "t:sections.main_blog.show_search_info", "default": true },
     {
       "type": "select",
       "id": "pagination",

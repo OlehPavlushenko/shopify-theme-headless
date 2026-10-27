@@ -14,9 +14,11 @@
   @param {object[]} blocks - Header blocks
 {% enddoc %}
 {%- capture predictive_params -%}
-  section_id=predictive-search&resources%5Btype%5D=product,collection,page,article,query&resources%5Blimit%5D=10&resources%5Blimit_scope%5D=each&resources%5Boptions%5D%5Bunavailable_products%5D=last
+  section_id=predictive-search&resources%5Btype%5D=product,collection,query&resources%5Blimit%5D=10&resources%5Blimit_scope%5D=each&resources%5Boptions%5D%5Bunavailable_products%5D=last&resources%5Boptions%5D%5Bfields%5D=title,product_type,variants.title,vendor,tag,variants.sku
 {%- endcapture -%}
+{%- capture search_query -%}{% render 'search-options', format: 'query' %}{%- endcapture -%}
 {%- liquid
+  assign search_query = search_query | strip
   assign panel_style = style | default: 'top'
   if panel_style == 'drawer'
     assign card_sizes = '(min-width: 750px) 180px, 45vw'
@@ -48,7 +50,7 @@
         aria-controls="{{ id }}-results"
         autofocus
       >
-      <input type="hidden" name="options[prefix]" value="last">
+      {%- render 'search-options' -%}
       <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">
         {%- render 'icon', name: 'close' -%}
       </button>
@@ -81,7 +83,7 @@
                 {%- endif -%}
                 {%- if block.settings.term != blank -%}
                   <li {{ block.shopify_attributes }}>
-                    <a href="{{ routes.search_url }}?q={{ block.settings.term | url_encode }}" class="link-list__link">
+                    <a href="{{ routes.search_url }}?q={{ block.settings.term | url_encode }}{{ search_query }}" class="link-list__link">
                       {%- render 'icon', name: 'search' -%}
                       <span class="link-list__text">{{- block.settings.term | escape -}}</span>
                     </a>

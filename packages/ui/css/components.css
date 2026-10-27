@@ -217,6 +217,29 @@
     display: none;
   }
 
+  /* A field with a search icon inside, at its start: <span class="search-field"> icon + .input */
+  .search-field {
+    position: relative;
+    display: block;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .search-field > .svg-icon {
+    --icon-size: var(--icon-sm);
+
+    position: absolute;
+    top: 50%;
+    left: var(--space-s);
+    color: var(--color-text-muted);
+    translate: 0 -50%;
+    pointer-events: none;
+  }
+
+  .search-field > .input {
+    padding-inline-start: 4rem;
+  }
+
   textarea.input {
     min-height: 9.6rem;
     resize: vertical;

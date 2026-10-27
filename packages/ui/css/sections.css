@@ -790,29 +790,9 @@
     width: 100%;
   }
 
-  .faq__search {
-    position: relative;
+  /* The field needs JS: hidden until <faq-search> is ready */
+  faq-search:not([data-ready]) .faq__search {
     display: none;
-    width: 100%;
-  }
-
-  faq-search[data-ready] .faq__search {
-    display: block;
-  }
-
-  .faq__search .svg-icon {
-    --icon-size: var(--icon-sm);
-
-    position: absolute;
-    top: 50%;
-    left: var(--space-s);
-    color: var(--color-text-muted);
-    translate: 0 -50%;
-    pointer-events: none;
-  }
-
-  .faq__search .input {
-    padding-inline-start: 4rem;
   }
 
   .faq__nav {
@@ -1771,6 +1751,12 @@
 
   /* Blog: the chosen topics (removable chips, Clear all, the article count at the end of the row),
      the featured article over the whole row, the grid of cards */
+  .main-blog__search {
+    display: flex;
+    max-width: 48rem;
+    margin: 0 0 var(--space-xl);
+  }
+
   .main-blog__active {
     display: flex;
     flex-wrap: wrap;
@@ -1801,7 +1787,7 @@
     color: var(--color-heading);
   }
 
-  .main-blog__count {
+  .main-blog__active-list + .main-blog__count {
     margin-inline-start: auto;
   }
 

@@ -116,9 +116,17 @@
             </price-range>
           {%- else -%}
             {%- liquid
+              # Swatches: set so in Search & Discovery, or a color filter (same rule as product options)
               assign is_swatch = false
               if filter.presentation == 'swatch'
                 assign is_swatch = true
+              else
+                capture is_color
+                  render 'option-is-color', option: filter
+                endcapture
+                if is_color contains 'true'
+                  assign is_swatch = true
+                endif
               endif
             -%}
             <ul class="facet__values{% if is_swatch %} facet__values--swatch{% endif %}" role="list">

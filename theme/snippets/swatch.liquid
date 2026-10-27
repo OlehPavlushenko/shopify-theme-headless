@@ -1,20 +1,21 @@
 {% doc %}
-  Color swatch of an option value: the swatch set in Shopify (color or image); without one, the
-  value's name as a CSS color ("Black", "Magenta"…). The name is kept for assistive tech.
-  Styles: .swatch in packages/ui/css/components.css.
+  Color swatch of an option value or a filter value: the swatch set in Shopify (color or image);
+  without one, the value's name as a CSS color ("Black", "Magenta"…). The name is kept for
+  assistive tech. Styles: .swatch in packages/ui/css/components.css.
 
-  @param {object} value - Product option value
+  @param {object} value - Product option value or storefront filter value (label instead of name)
   @param {string} [class] - Extra classes
 {% enddoc %}
 {%- liquid
+  assign swatch_label = value.label | default: value.name | default: value
   if value.swatch.image
     assign background = value.swatch.image | image_url: width: 64 | prepend: 'url(' | append: ')'
   elsif value.swatch.color
     assign background = value.swatch.color
   else
-    assign background = value.name | default: value | handle | remove: '-'
+    assign background = swatch_label | handle | remove: '-'
   endif
 -%}
-<span class="swatch {{ class }}" style="--swatch: {{ background }};" title="{{ value | escape }}">
-  <span class="visually-hidden">{{ value | escape }}</span>
+<span class="swatch {{ class }}" style="--swatch: {{ background }};" title="{{ swatch_label | escape }}">
+  <span class="visually-hidden">{{ swatch_label | escape }}</span>
 </span>

@@ -23,10 +23,23 @@
         </li>
       {%- endif -%}
     {%- else -%}
+      {%- liquid
+        assign is_swatch = false
+        if filter.presentation == 'swatch'
+          assign is_swatch = true
+        else
+          capture is_color
+            render 'option-is-color', option: filter
+          endcapture
+          if is_color contains 'true'
+            assign is_swatch = true
+          endif
+        endif
+      -%}
       {%- for value in filter.active_values -%}
         <li>
           <a href="{{ value.url_to_remove }}" class="chip facets-active__chip" data-facets-link aria-label="{{ 'facets.remove' | t: filter: value.label | escape }}">
-            {%- if filter.presentation == 'swatch' -%}
+            {%- if is_swatch -%}
               {%- render 'swatch', value: value, class: 'facets-active__swatch' -%}
             {%- endif -%}
             {{- value.label | escape -}}

@@ -92,7 +92,7 @@
 /* ----------------------------------------------------------------- base */
 @layer base {
   :root {
-    --focus-ring: 0.2rem solid var(--color-focus);
+    --focus-ring: 0.15rem solid var(--color-focus);
   }
 
   body {
@@ -250,7 +250,7 @@
 
   :focus-visible {
     outline: var(--focus-ring);
-    outline-offset: 0.3rem;
+    outline-offset: 0.2rem;
   }
 
   ::selection {

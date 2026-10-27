@@ -772,6 +772,8 @@
       top: var(--sticky-top);
       align-self: start;
       max-height: var(--sticky-max-height);
+      margin: calc(-1 * var(--sticky-focus-room));
+      padding: var(--sticky-focus-room);
       overflow-y: auto;
       overscroll-behavior: contain;
       scrollbar-width: thin;
@@ -1979,6 +1981,8 @@
       position: sticky;
       top: var(--sticky-top);
       max-height: var(--sticky-max-height);
+      margin: calc(-1 * var(--sticky-focus-room));
+      padding: var(--sticky-focus-room);
       overflow-y: auto;
       overscroll-behavior: contain;
       scrollbar-width: thin;

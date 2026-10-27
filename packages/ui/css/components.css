@@ -195,19 +195,21 @@
     background: var(--color-input-background);
     border: 0.1rem solid var(--color-border);
     border-radius: var(--radius-input);
-    transition: border-color var(--duration-short) var(--ease);
+    transition:
+      border-color var(--duration-short) var(--ease),
+      box-shadow var(--duration-short) var(--ease);
   }
 
   .input:hover {
     border-color: color-mix(in srgb, var(--color-heading) 40%, var(--color-border));
   }
 
-  /* Focus: the border plus a ring of the same radius (an outline's corners don't follow it evenly);
-     the transparent outline stays for forced-colors mode */
+  /* Focus: the border takes the focus color, with a soft ring around it (shadcn); the transparent
+     outline stays for forced-colors mode */
   .input:focus-visible {
     outline-color: transparent;
     border-color: var(--color-focus);
-    box-shadow: 0 0 0 0.1rem var(--color-focus);
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--color-focus) 18%, transparent);
   }
 
   /* The browser's own clear button (blue in Chrome); Esc clears a search field */
@@ -223,6 +225,10 @@
   /* A field that failed the check (<form-validate>, or the server) and its message under it */
   .input[aria-invalid="true"] {
     border-color: var(--color-danger);
+  }
+
+  .input[aria-invalid="true"]:focus-visible {
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--color-danger) 18%, transparent);
   }
 
   /* The message sits in the gap under the field (as the newsletter's), so nothing below moves;

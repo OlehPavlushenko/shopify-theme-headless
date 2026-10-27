@@ -569,9 +569,10 @@
       position: sticky;
       top: var(--sticky-top);
       transition: var(--sticky-transition);
+      margin: calc(-1 * var(--sticky-focus-room));
       max-height: var(--sticky-max-height);
       /* Room for the scrollbar, so it never covers the counts; thin and quiet */
-      padding-inline-end: var(--space-xs);
+      padding: var(--sticky-focus-room) var(--space-xs) var(--sticky-focus-room) var(--sticky-focus-room);
       overflow-y: auto;
       overscroll-behavior: contain;
       scrollbar-gutter: stable;

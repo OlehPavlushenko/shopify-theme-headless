@@ -12,6 +12,9 @@
     --sticky-top: calc(var(--header-bottom, 0px) + var(--space-l));
     --sticky-max-height: calc(100dvh - var(--header-bottom, 0px) - var(--space-xl));
     --sticky-transition: top var(--duration-long) var(--ease-out);
+    /* A sticky column that scrolls inside clips focus rings at its edges: it pads itself by this
+       much and takes it back with a negative margin */
+    --sticky-focus-room: 0.4rem;
   }
 
   /* --------------------------------------------- section wrapper modes */

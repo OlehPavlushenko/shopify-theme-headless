@@ -212,6 +212,16 @@
     color: var(--color-text-muted);
   }
 
+  /* A field's error message (<form-validate>) takes the hint's place */
+  .field-error:has(+ .account-form__hint) {
+    top: auto;
+    bottom: 0;
+  }
+
+  .field-error + .account-form__hint {
+    visibility: hidden;
+  }
+
   .account-form__check {
     display: flex;
     align-items: flex-start;

@@ -218,9 +218,18 @@
     border-color: var(--color-danger);
   }
 
+  /* The message sits in the gap under the field (as the newsletter's), so nothing below moves */
+  :has(> .field-error) {
+    position: relative;
+  }
+
   .field-error {
-    font-size: var(--text-sm);
-    line-height: var(--leading-sm);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    font-size: var(--text-xs);
+    line-height: var(--leading-xs);
     color: var(--color-danger);
   }
 

@@ -581,7 +581,13 @@
       "show_share": "Show share buttons",
       "image_layout": "Image",
       "image_wide": "Wide, under the title",
-      "image_none": "Hide"
+      "image_none": "Hide",
+      "show_toc": "Table of contents and reading progress",
+      "show_toc_info": "Built from the article's H2 headings (two or more).",
+      "show_products": "Shop this article",
+      "show_products_info": "The products in the article's metafield \"Products in this article\".",
+      "show_related": "Read next",
+      "show_related_info": "Three articles that share the most tags with this one."
     },
     "main_product": {
       "name": "Product information",

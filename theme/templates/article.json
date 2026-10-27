@@ -1,7 +1,20 @@
 {
   "sections": {
-    "main": { "type": "main-article", "settings": { "image_layout": "wide", "show_author": true, "show_reading_time": true, "show_share": true, "color_scheme": "scheme-1" } },
-    "more": { "type": "blog-posts", "settings": { "heading": "More articles", "blog": "", "limit": 3, "columns": 3, "show_date": true, "show_excerpt": false, "link_label": "View all", "color_scheme": "scheme-2" } }
+    "main": {
+      "type": "main-article",
+      "settings": {
+        "image_layout": "wide",
+        "show_author": true,
+        "show_reading_time": true,
+        "show_share": true,
+        "color_scheme": "scheme-1",
+        "show_toc": true,
+        "show_products": true,
+        "show_related": true
+      }
+    }
   },
-  "order": ["main", "more"]
+  "order": [
+    "main"
+  ]
 }

@@ -13,6 +13,10 @@
     "submenu": "Show {{ title }} menu"
   },
   "blog": {
+    "on_this_page": "On this page",
+    "shop_article": "Shop this article",
+    "read_next": "Read next",
+    "all_articles": "All articles",
     "filtering_by": "Filtering by",
     "remove_topic": "Remove topic {{ topic }}",
     "articles_count": {

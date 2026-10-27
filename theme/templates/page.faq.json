@@ -64,7 +64,20 @@
         "button_link": "shopify://pages/contact",
         "color_scheme": "scheme-2"
       }
+    },
+    "seo": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "Natural care, explained simply",
+        "text": "<p>Shopping for natural skin care, wellness supplements, superfoods and eco-friendly home products raises questions — about ingredients, about how a product works, about delivery and returns. This page collects the answers our customers ask for most often, so you can order with confidence and get the most out of every product.</p><p>Orders ship within 1–2 business days and usually arrive in 2–4 days, with free delivery on orders over $50. Unopened products can be returned within 14 days, and the pickup is free. Every product page lists its full formula, so you always know what goes on your skin, into your body and into your home.</p><p>Looking for something specific? Browse our best sellers, explore ready-made sets and programs that combine products that work well together, or read the guides on our blog. And if your question is not here, write to us — every message is read by a person from our team, and we reply within a day.</p>",
+        "source": "custom",
+        "collapse": true,
+        "lines": 3,
+        "alignment": "center",
+        "text_size": "small",
+        "color_scheme": "scheme-1"
+      }
     }
   },
-  "order": ["header", "faq", "contact"]
+  "order": ["header", "faq", "contact", "seo"]
 }

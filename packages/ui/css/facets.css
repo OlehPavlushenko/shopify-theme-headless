@@ -385,30 +385,25 @@
   }
 
   /* Swatches: rows like the checkboxes — the color dot in the checkbox's place, the label, the
-     count; checked gets a ring */
+     count. Hover and checked rings are drawn inside the dot (inset), so nothing outside it can clip
+     them: an edge in the text color, a gap in the background color, then the color */
   .facet__swatch {
-    --swatch-size: 2rem;
+    --swatch-size: 2.2rem;
+    --swatch-edge: color-mix(in srgb, var(--color-foreground) 18%, transparent);
 
     flex-shrink: 0;
-    box-shadow:
-      inset 0 0 0 0.1rem color-mix(in srgb, var(--color-foreground) 18%, transparent),
-      0 0 0 0.2rem var(--color-background),
-      0 0 0 0.3rem transparent;
+    box-shadow: inset 0 0 0 0.1rem var(--swatch-edge);
     transition: box-shadow var(--duration-short) var(--ease);
   }
 
   .facet__value:hover .facet__swatch {
-    box-shadow:
-      inset 0 0 0 0.1rem color-mix(in srgb, var(--color-foreground) 18%, transparent),
-      0 0 0 0.2rem var(--color-background),
-      0 0 0 0.3rem var(--color-border);
+    --swatch-edge: var(--color-text-muted);
   }
 
   .facet__checkbox:checked + .facet__swatch {
     box-shadow:
-      inset 0 0 0 0.1rem color-mix(in srgb, var(--color-foreground) 18%, transparent),
-      0 0 0 0.2rem var(--color-background),
-      0 0 0 0.35rem var(--color-heading);
+      inset 0 0 0 0.2rem var(--color-heading),
+      inset 0 0 0 0.4rem var(--color-background);
   }
 
   .facet__more {

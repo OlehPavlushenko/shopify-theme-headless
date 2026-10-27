@@ -551,6 +551,7 @@
     "main_contact": {
       "name": "Contact form",
       "form_heading": "Form heading",
+      "show_phone": "Phone field (optional for the shopper)",
       "info": "Phone, email, address and hours come from Theme settings > Store details. The page text shows above them. Messages go to the store sender email (Settings > Notifications)."
     },
     "main_list_collections": {

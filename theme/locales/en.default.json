@@ -354,6 +354,12 @@
     "invalid_email": "Please enter a valid email address.",
     "error": "Something went wrong. Please try again in a moment."
   },
+  "forms": {
+    "required": "Please fill in this field",
+    "email": "Enter an email like name@example.com",
+    "invalid": "Please check this field",
+    "phone": "Enter a phone number: digits, spaces and + only"
+  },
   "contact": {
     "name": "Name",
     "email": "Email",

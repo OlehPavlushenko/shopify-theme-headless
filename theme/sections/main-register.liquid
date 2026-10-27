@@ -7,7 +7,8 @@
     <div class="account-card">
       <h1 class="h2">{{ 'customers.register.title' | t }}</h1>
       <p class="account-card__lead">{{ 'customers.register.lead' | t }}</p>
-      {%- form 'create_customer', class: 'account-form', novalidate: 'novalidate' -%}
+      <form-validate {% render 'form-validate-messages' %}>
+      {%- form 'create_customer', class: 'account-form' -%}
         {%- render 'form-errors', errors: form.errors -%}
         <div class="account-form__row">
           <label class="account-form__field">
@@ -36,6 +37,7 @@
         {%- endif -%}
         <button type="submit" class="btn btn--full">{{ 'customers.register.submit' | t }}</button>
       {%- endform -%}
+      </form-validate>
       <p class="account-card__switch">
         {{ 'customers.register.have_account_html' | t: link: routes.account_login_url }}
       </p>
@@ -44,6 +46,9 @@
     {%- render 'account-aside', aside: section.settings -%}
   </div>
 </div>
+<script type="module">
+  import '@ui/form-validate';
+</script>
 
 {% schema %}
 {

@@ -1,8 +1,10 @@
 {% comment %}
   Contact page body (templates/page.contact.json, under the Page header): the store's contacts
   (Theme settings > Store details — the same source as the footer and the Organization data) with
-  social links, the page text, and Shopify's contact form (name, email, phone, message; the message
-  goes to the store's sender email). Success and errors come back from the form post — no JS.
+  social links, the page text, and Shopify's contact form (name, email, an optional phone, message;
+  the message goes to the store's sender email). The form posts as usual (Shopify may show its
+  captcha page, so no AJAX); success and errors come back from the post. @ui/form-validate checks
+  the fields first, with messages under them.
   Styles: .main-contact in sections.css.
 {% endcomment %}
 <div class="main-contact color-{{ section.settings.color_scheme }} section-spacing">
@@ -52,7 +54,7 @@
       {%- render 'social-links' -%}
     </div>
 
-    <div class="main-contact__form-card">
+    <form-validate class="main-contact__form-card" {% render 'form-validate-messages' %}>
       <h2 class="h4">{{ section.settings.form_heading | escape }}</h2>
       {%- form 'contact', id: 'ContactForm', class: 'main-contact__form' -%}
         {%- if form.posted_successfully? -%}
@@ -73,19 +75,25 @@
             <input class="input" type="email" id="ContactForm-email" name="contact[email]" value="{{ form.email | default: customer.email }}" autocomplete="email" spellcheck="false" required>
           </div>
         </div>
-        <div class="field">
-          <label class="field__label" for="ContactForm-phone">{{ 'contact.phone' | t }}</label>
-          <input class="input" type="tel" id="ContactForm-phone" name="contact[{{ 'contact.phone' | t }}]" value="{{ form.phone }}" autocomplete="tel" pattern="[0-9\-\+\s\(\)]*">
-        </div>
+        {%- if section.settings.show_phone -%}
+          <div class="field">
+            <label class="field__label" for="ContactForm-phone">{{ 'contact.phone' | t }}</label>
+            {%- comment -%} No mask: numbers are written differently in every country; a light check only {%- endcomment -%}
+            <input class="input" type="tel" id="ContactForm-phone" name="contact[{{ 'contact.phone' | t }}]" value="{{ form.phone }}" autocomplete="tel" pattern="\+?[0-9\s\(\)\-\.]{7,20}" data-message-invalid="{{ 'forms.phone' | t | escape }}">
+          </div>
+        {%- endif -%}
         <div class="field">
           <label class="field__label" for="ContactForm-body">{{ 'contact.message' | t }} *</label>
           <textarea class="input" id="ContactForm-body" name="contact[body]" rows="6" required>{{ form.body }}</textarea>
         </div>
         <button type="submit" class="btn btn--full">{{ 'contact.send' | t }}</button>
       {%- endform -%}
-    </div>
+    </form-validate>
   </div>
 </div>
+<script type="module">
+  import '@ui/form-validate';
+</script>
 
 {% schema %}
 {
@@ -93,6 +101,7 @@
   "class": "main-contact-section",
   "settings": [
     { "type": "text", "id": "form_heading", "label": "t:sections.main_contact.form_heading", "default": "Send us a message" },
+    { "type": "checkbox", "id": "show_phone", "label": "t:sections.main_contact.show_phone", "default": false },
     { "type": "paragraph", "content": "t:sections.main_contact.info" },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
   ]

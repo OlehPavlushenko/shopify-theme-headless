@@ -1,0 +1,5 @@
+{% doc %}
+  The messages of <form-validate> (@ui/form-validate), as its attributes:
+  <form-validate {% render 'form-validate-messages' %}> <form> … </form> </form-validate>
+{% enddoc %}
+data-message-required="{{ 'forms.required' | t | escape }}" data-message-email="{{ 'forms.email' | t | escape }}" data-message-invalid="{{ 'forms.invalid' | t | escape }}"

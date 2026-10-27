@@ -8,6 +8,7 @@
   assign recover_open = false
 -%}
 {%- capture recover -%}
+  <form-validate {% render 'form-validate-messages' %}>
   {%- form 'recover_customer_password', class: 'account-form' -%}
     {%- if form.posted_successfully? -%}
       {%- assign recover_open = true -%}
@@ -25,6 +26,7 @@
       <button type="submit" class="btn btn--full">{{ 'customers.recover.submit' | t }}</button>
     {%- endif -%}
   {%- endform -%}
+  </form-validate>
 {%- endcapture -%}
 
 <div class="account-auth color-{{ section.settings.color_scheme }} section-spacing">
@@ -33,7 +35,8 @@
       <div class="account-card__view account-card__view--login">
         <h1 class="h2">{{ 'customers.login.title' | t }}</h1>
         <p class="account-card__lead">{{ 'customers.login.lead' | t }}</p>
-        {%- form 'customer_login', class: 'account-form', novalidate: 'novalidate' -%}
+        <form-validate {% render 'form-validate-messages' %}>
+        {%- form 'customer_login', class: 'account-form' -%}
           {%- render 'form-errors', errors: form.errors -%}
           <label class="account-form__field">
             <span class="account-form__label">{{ 'customers.fields.email' | t }}</span>
@@ -49,6 +52,7 @@
           </div>
           <button type="submit" class="btn btn--full">{{ 'customers.login.submit' | t }}</button>
         {%- endform -%}
+        </form-validate>
 
         {%- if shop.checkout.guest_login -%}
           <div class="account-card__divider"><span>{{ 'customers.login.or' | t }}</span></div>
@@ -74,6 +78,9 @@
     {%- render 'account-aside', aside: section.settings -%}
   </div>
 </div>
+<script type="module">
+  import '@ui/form-validate';
+</script>
 
 {% schema %}
 {

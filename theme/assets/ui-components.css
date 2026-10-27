@@ -213,6 +213,21 @@
     resize: vertical;
   }
 
+  /* A field that failed the check (<form-validate>, or the server) and its message under it */
+  .input[aria-invalid="true"] {
+    border-color: var(--color-danger);
+  }
+
+  .field-error {
+    font-size: var(--text-sm);
+    line-height: var(--leading-sm);
+    color: var(--color-danger);
+  }
+
+  form-validate {
+    display: block;
+  }
+
   .form-error {
     font-size: var(--text-sm);
     color: var(--color-danger);

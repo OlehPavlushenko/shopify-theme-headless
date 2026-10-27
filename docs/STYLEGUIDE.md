@@ -13,8 +13,9 @@ and the list of mistakes we already made once. Read both before adding code.
   removable filters), `.tag` (topics), `.empty-state`, `.form-errors`, `.load-more` cell. Extend one
   with a parameter or modifier instead of writing a look-alike.
 - **Shared behavior already exists:** `<load-more>` (paginated grids), `<section-swap>` (links that
-  re-render a section), `@ui/scroll` (offset below the header, reduced motion), `@ui/delivery`
-  (delivery dates). Sticky things below the header use `--sticky-top`, `--sticky-max-height` and
+  re-render a section), `<form-validate>` (field checks with messages under the fields, messages
+  from `snippets/form-validate-messages`), `@ui/scroll` (offset below the header, reduced motion),
+  `@ui/delivery` (delivery dates). Sticky things below the header use `--sticky-top`, `--sticky-max-height` and
   `--sticky-transition` (header.css).
 - **Data lives in Shopify.** Content a headless storefront would also need goes into metafields,
   metaobjects or Shopify settings, not into theme settings or code (example: "Hide from collection

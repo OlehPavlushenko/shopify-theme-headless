@@ -63,10 +63,11 @@
           {%- if section.settings.show_density -%}
             <div class="facets__density" role="group" aria-label="{{ 'facets.density' | t }}">
               <button type="button" class="facets__density-button facets__density-button--few" data-density="few" aria-label="{{ 'facets.density_few' | t }}" aria-pressed="false">
-                <span class="facets__density-icon facets__density-icon--2" aria-hidden="true"></span>
+                {%- assign few_columns = columns | minus: 1 | at_least: 2 -%}
+                <span class="facets__density-icon" aria-hidden="true">{% for i in (1..few_columns) %}<span></span>{% endfor %}</span>
               </button>
               <button type="button" class="facets__density-button facets__density-button--many" data-density="many" aria-label="{{ 'facets.density_many' | t }}" aria-pressed="true">
-                <span class="facets__density-icon facets__density-icon--4" aria-hidden="true"></span>
+                <span class="facets__density-icon" aria-hidden="true">{% for i in (1..columns) %}<span></span>{% endfor %}</span>
               </button>
             </div>
           {%- endif -%}

@@ -8,6 +8,11 @@
  * from 990px), .facets--drawer (a drawer everywhere). Below 990px the panel is always a drawer.
  */
 @layer components {
+  /* A custom element is inline by default: block, so the section padding applies */
+  facet-filters {
+    display: block;
+  }
+
   /* --------------------------------------------------------- toolbar */
   .facets__toolbar {
     display: flex;
@@ -117,27 +122,17 @@
     background: var(--color-button);
   }
 
+  /* The icon shows the columns the button gives: one bar per column */
   .facets__density-icon {
-    display: grid;
+    display: flex;
     gap: 0.2rem;
-    width: 1.4rem;
     height: 1.4rem;
   }
 
-  .facets__density-icon--2 {
-    grid-template-columns: repeat(2, 1fr);
-    background:
-      linear-gradient(currentColor 0 0) left / calc(50% - 0.1rem) 100% no-repeat,
-      linear-gradient(currentColor 0 0) right / calc(50% - 0.1rem) 100% no-repeat;
-    border-radius: 0.2rem;
-  }
-
-  .facets__density-icon--4 {
-    background:
-      linear-gradient(currentColor 0 0) 0 0 / calc(50% - 0.1rem) calc(50% - 0.1rem) no-repeat,
-      linear-gradient(currentColor 0 0) 100% 0 / calc(50% - 0.1rem) calc(50% - 0.1rem) no-repeat,
-      linear-gradient(currentColor 0 0) 0 100% / calc(50% - 0.1rem) calc(50% - 0.1rem) no-repeat,
-      linear-gradient(currentColor 0 0) 100% 100% / calc(50% - 0.1rem) calc(50% - 0.1rem) no-repeat;
+  .facets__density-icon > span {
+    width: 0.3rem;
+    background: currentColor;
+    border-radius: 0.1rem;
   }
 
   @media (min-width: 750px) {
@@ -598,11 +593,17 @@
     }
   }
 
+  /* Promo tile: the image fills the whole grid cell (as tall as the product cards next to it) */
   .facets__promo .promo-card {
+    display: block;
     height: 100%;
+    min-height: 32rem;
   }
 
   .facets__promo .promo-card__media {
+    position: absolute;
+    inset: 0;
+    aspect-ratio: auto;
     height: 100%;
   }
 

@@ -3,7 +3,7 @@
  *
  *   <facet-filters data-section="<section id>">
  *     [data-facets-form] (snippets/facets) — the filter groups; the toolbar's sort select joins it
- *     [data-facets-body] [data-facets-active] [data-facets-count] [data-facets-results]
+ *     [data-facets-body] [data-facets-clear] [data-facets-active] [data-facets-count] [data-facets-results]
  *     [data-facets-active-count] [data-facets-show] — parts replaced after every change
  *     [data-facets-link] — chip / "Clear all" links, fetched instead of followed
  *     [data-facets-load-more] — "Load more": the next page's products are appended
@@ -215,6 +215,7 @@ class FacetFilters extends HTMLElement {
     );
     for (const selector of [
       '[data-facets-body]',
+      '[data-facets-clear]',
       '[data-facets-active]',
       '[data-facets-count]',
       '[data-facets-results]',

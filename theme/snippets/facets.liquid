@@ -58,6 +58,8 @@
               assign min_value = filter.min_value.value | divided_by: 100.0 | floor
               assign max_value = filter.max_value.value | divided_by: 100.0 | ceil
             -%}
+            {%- assign highest = filter.range_max | money_without_trailing_zeros -%}
+            <p class="facet__hint">{{ 'facets.highest_price' | t: price: highest }}</p>
             <price-range class="facet__price" data-max="{{ range_max }}">
               <div class="facet__price-fields">
                 <label class="facet__price-field">

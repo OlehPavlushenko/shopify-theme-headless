@@ -193,6 +193,37 @@
     }
   }
 
+  .facets__panel-title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-heading);
+  }
+
+  .facets__panel-title .svg-icon {
+    --icon-size: 1.8rem;
+  }
+
+  .facets__panel-clear {
+    margin-inline-start: auto;
+  }
+
+  .facets__panel-clear .btn {
+    min-height: auto;
+    padding: 0;
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+  }
+
+  .facet__hint {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
   .facets__panel-footer {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -482,8 +513,56 @@
       transition: none;
     }
 
-    :is(.facets--sidebar, .facets--horizontal) :is(.facets__toggle, .facets__panel-header, .facets__panel-footer) {
+    :is(.facets--sidebar, .facets--horizontal) :is(.facets__toggle, .facets__panel-footer, .facets__panel-close) {
       display: none;
+    }
+
+    .facets--horizontal .facets__panel-header {
+      display: none;
+    }
+
+    /* Sidebar: one grid — the panel (title + "Clear all", then the groups) in the first column from
+       the top, the toolbar, active chips and products in the second, so the title row lines up
+       with the product count */
+    .facets--sidebar > .page-width {
+      display: grid;
+      grid-template-columns: 26rem minmax(0, 1fr);
+      align-items: start;
+      column-gap: var(--space-2xl);
+    }
+
+    .facets--sidebar .facets__layout {
+      display: contents;
+    }
+
+    .facets--sidebar .facets__toolbar {
+      grid-area: 1 / 2;
+      min-height: var(--control-height-sm);
+    }
+
+    .facets--sidebar .facets__active {
+      grid-area: 2 / 2;
+    }
+
+    .facets--sidebar .facets__panel {
+      grid-area: 1 / 1 / span 3;
+    }
+
+    .facets--sidebar .facets__results {
+      grid-area: 3 / 2;
+    }
+
+    /* "Clear all" sits beside the panel title, not after the chips */
+    .facets--sidebar .facets-active li:has(.facets-active__clear) {
+      display: none;
+    }
+
+    .facets--sidebar .facets__panel-header {
+      display: flex;
+      min-height: var(--control-height-sm);
+      margin-bottom: var(--space-m);
+      padding: 0;
+      border: 0;
     }
 
     :is(.facets--sidebar, .facets--horizontal) .facets__panel-inner {
@@ -493,11 +572,6 @@
     :is(.facets--sidebar, .facets--horizontal) .facets__panel-body {
       padding: 0;
       overflow: visible;
-    }
-
-    .facets--sidebar .facets__layout {
-      grid-template-columns: 26rem minmax(0, 1fr);
-      align-items: start;
     }
 
     .facets--sidebar .facets__panel {

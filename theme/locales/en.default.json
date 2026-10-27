@@ -259,6 +259,7 @@
     "load_more": "Load more",
     "no_results": "No products match these filters",
     "no_results_text": "Try removing a filter or two.",
-    "products_heading": "Products"
+    "products_heading": "Products",
+    "highest_price": "The highest price is {{ price }}"
   }
 }

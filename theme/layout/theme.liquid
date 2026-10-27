@@ -31,6 +31,9 @@
     {%- if template.name == 'collection' or template.name == 'search' -%}
       {{ 'ui-facets.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
+    {%- if template.directory == 'customers' -%}
+      {{ 'ui-account.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
     {%- liquid
       # Wishlist / compare pages: their styles block; elsewhere only the recently viewed list
       # (below the fold) uses them, so they join the deferred files

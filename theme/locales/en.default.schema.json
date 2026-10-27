@@ -453,6 +453,18 @@
       "icon_chat": "Support",
       "icon_heart": "Care"
     },
+    "account": {
+      "login": "Log in",
+      "register": "Create account",
+      "account": "Account",
+      "order": "Order",
+      "addresses": "Addresses",
+      "activate": "Activate account",
+      "reset": "Reset password",
+      "aside": "Side panel",
+      "benefit": "Benefit",
+      "show_marketing": "Show the newsletter checkbox"
+    },
     "apps": {
       "name": "Apps",
       "full_width": "Full width"

@@ -1,0 +1,90 @@
+{% comment %}
+  Log in (templates/customers/login.json): a card with the login form — and, in the same card, the
+  password recovery form, switched by the #recover anchor (CSS :target, no JS) and shown by itself
+  after it was sent — beside a panel of reasons to have an account (snippets/account-aside).
+  Guest checkout appears when the shopper came from checkout. Styles: packages/ui/css/account.css.
+{% endcomment %}
+{%- liquid
+  assign recover_open = false
+-%}
+{%- capture recover -%}
+  {%- form 'recover_customer_password', class: 'account-form' -%}
+    {%- if form.posted_successfully? -%}
+      {%- assign recover_open = true -%}
+      <p class="account-form__success" role="status" tabindex="-1" autofocus>
+        {%- render 'icon', name: 'check' -%}
+        {{- 'customers.recover.success' | t -}}
+      </p>
+    {%- else -%}
+      {%- if form.errors -%}{%- assign recover_open = true -%}{%- endif -%}
+      {%- render 'form-errors', errors: form.errors -%}
+      <label class="account-form__field">
+        <span class="account-form__label">{{ 'customers.fields.email' | t }}</span>
+        <input class="input" type="email" name="email" autocomplete="email" autocapitalize="off" required>
+      </label>
+      <button type="submit" class="btn btn--full">{{ 'customers.recover.submit' | t }}</button>
+    {%- endif -%}
+  {%- endform -%}
+{%- endcapture -%}
+
+<div class="account-auth color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width account-auth__inner">
+    <div class="account-card{% if recover_open %} account-card--recover{% endif %}">
+      <div class="account-card__view account-card__view--login">
+        <h1 class="h2">{{ 'customers.login.title' | t }}</h1>
+        <p class="account-card__lead">{{ 'customers.login.lead' | t }}</p>
+        {%- form 'customer_login', class: 'account-form', novalidate: 'novalidate' -%}
+          {%- render 'form-errors', errors: form.errors -%}
+          <label class="account-form__field">
+            <span class="account-form__label">{{ 'customers.fields.email' | t }}</span>
+            <input class="input" type="email" name="customer[email]" autocomplete="email" autocapitalize="off" required>
+          </label>
+          <label class="account-form__field">
+            <span class="account-form__label">
+              {{- 'customers.fields.password' | t -}}
+              <a href="#recover" class="account-form__aside-link">{{ 'customers.login.forgot' | t }}</a>
+            </span>
+            <input class="input" type="password" name="customer[password]" autocomplete="current-password" required>
+          </label>
+          <button type="submit" class="btn btn--full">{{ 'customers.login.submit' | t }}</button>
+        {%- endform -%}
+
+        {%- if shop.checkout.guest_login -%}
+          <div class="account-card__divider"><span>{{ 'customers.login.or' | t }}</span></div>
+          {%- form 'guest_login' -%}
+            <button type="submit" class="btn btn--outline btn--full">{{ 'customers.login.guest' | t }}</button>
+          {%- endform -%}
+        {%- endif -%}
+
+        <p class="account-card__switch">
+          {{ 'customers.login.new_html' | t: link: routes.account_register_url }}
+        </p>
+      </div>
+
+      <div id="recover" class="account-card__view account-card__view--recover">
+        <h2 class="h2">{{ 'customers.recover.title' | t }}</h2>
+        <p class="account-card__lead">{{ 'customers.recover.lead' | t }}</p>
+        {{ recover }}
+        <p class="account-card__switch"><a href="#login">{{ 'customers.recover.back' | t }}</a></p>
+      </div>
+    </div>
+
+    {%- render 'account-aside', aside: section.settings -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.account.login",
+  "class": "main-login-section",
+  "settings": [
+    { "type": "header", "content": "t:sections.account.aside" },
+    { "type": "image_picker", "id": "aside_image", "label": "t:sections.hero.image" },
+    { "type": "text", "id": "aside_heading", "label": "t:labels.heading", "default": "Why have an account?" },
+    { "type": "text", "id": "benefit_1", "label": "t:sections.account.benefit", "default": "Track your orders and reorder in one click" },
+    { "type": "text", "id": "benefit_2", "label": "t:sections.account.benefit", "default": "Keep your wishlist on every device" },
+    { "type": "text", "id": "benefit_3", "label": "t:sections.account.benefit", "default": "Members-only offers and early access to sales" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ]
+}
+{% endschema %}

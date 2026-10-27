@@ -1,0 +1,64 @@
+{% comment %}
+  Create account (templates/customers/register.json): the register form in a card beside the panel
+  of reasons to have an account (snippets/account-aside). Styles: packages/ui/css/account.css.
+{% endcomment %}
+<div class="account-auth color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="page-width account-auth__inner">
+    <div class="account-card">
+      <h1 class="h2">{{ 'customers.register.title' | t }}</h1>
+      <p class="account-card__lead">{{ 'customers.register.lead' | t }}</p>
+      {%- form 'create_customer', class: 'account-form', novalidate: 'novalidate' -%}
+        {%- render 'form-errors', errors: form.errors -%}
+        <div class="account-form__row">
+          <label class="account-form__field">
+            <span class="account-form__label">{{ 'customers.fields.first_name' | t }}</span>
+            <input class="input" type="text" name="customer[first_name]" autocomplete="given-name" value="{{ form.first_name | escape }}">
+          </label>
+          <label class="account-form__field">
+            <span class="account-form__label">{{ 'customers.fields.last_name' | t }}</span>
+            <input class="input" type="text" name="customer[last_name]" autocomplete="family-name" value="{{ form.last_name | escape }}">
+          </label>
+        </div>
+        <label class="account-form__field">
+          <span class="account-form__label">{{ 'customers.fields.email' | t }}</span>
+          <input class="input" type="email" name="customer[email]" autocomplete="email" autocapitalize="off" value="{{ form.email | escape }}" required>
+        </label>
+        <label class="account-form__field">
+          <span class="account-form__label">{{ 'customers.fields.password' | t }}</span>
+          <input class="input" type="password" name="customer[password]" autocomplete="new-password" minlength="5" required aria-describedby="RegisterPasswordHint">
+          <span id="RegisterPasswordHint" class="account-form__hint">{{ 'customers.register.password_hint' | t }}</span>
+        </label>
+        {%- if section.settings.show_marketing -%}
+          <label class="account-form__check">
+            <input type="checkbox" name="customer[accepts_marketing]" value="true" checked>
+            <span>{{ section.settings.marketing_label | escape }}</span>
+          </label>
+        {%- endif -%}
+        <button type="submit" class="btn btn--full">{{ 'customers.register.submit' | t }}</button>
+      {%- endform -%}
+      <p class="account-card__switch">
+        {{ 'customers.register.have_account_html' | t: link: routes.account_login_url }}
+      </p>
+    </div>
+
+    {%- render 'account-aside', aside: section.settings -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.account.register",
+  "class": "main-register-section",
+  "settings": [
+    { "type": "checkbox", "id": "show_marketing", "label": "t:sections.account.show_marketing", "default": true },
+    { "type": "text", "id": "marketing_label", "label": "t:labels.text", "default": "Email me news and offers (10% off your first order)" },
+    { "type": "header", "content": "t:sections.account.aside" },
+    { "type": "image_picker", "id": "aside_image", "label": "t:sections.hero.image" },
+    { "type": "text", "id": "aside_heading", "label": "t:labels.heading", "default": "Why have an account?" },
+    { "type": "text", "id": "benefit_1", "label": "t:sections.account.benefit", "default": "Track your orders and reorder in one click" },
+    { "type": "text", "id": "benefit_2", "label": "t:sections.account.benefit", "default": "Keep your wishlist on every device" },
+    { "type": "text", "id": "benefit_3", "label": "t:sections.account.benefit", "default": "Members-only offers and early access to sales" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ]
+}
+{% endschema %}

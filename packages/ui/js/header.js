@@ -25,9 +25,8 @@ class SiteHeader extends HTMLElement {
     // force a layout while the page is still rendering
     this.#resizeObserver = new ResizeObserver(() => this.#syncHeight());
     this.#resizeObserver.observe(this);
-    // No layout reads here: scrolled state from scrollY only (the observer measures the rest)
-    this.#lastY = window.scrollY;
-    this.toggleAttribute('data-scrolled', this.#lastY > 4);
+    // No layout reads here — not even scrollY, which lays the page out while it is still
+    // rendering: the observer's first call reads it (#syncHeight)
     // Scroll-up mode slides the header with a transition: --header-bottom is measured again once
     // the slide ends (or after a moment, if no transitionend comes)
     this.#section = this.closest('.site-header-section');
@@ -48,6 +47,11 @@ class SiteHeader extends HTMLElement {
 
   #syncHeight() {
     const rect = this.getBoundingClientRect();
+    if (!this.#height) {
+      // First call, after layout: the scroll position the page opened at
+      this.#lastY = window.scrollY;
+      this.toggleAttribute('data-scrolled', this.#lastY > 4);
+    }
     this.#height = Math.round(rect.height);
     document.documentElement.style.setProperty('--header-height', `${this.#height}px`);
     this.#syncBottom(rect);

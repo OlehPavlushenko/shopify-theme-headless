@@ -1,0 +1,32 @@
+{% doc %}
+  Outputs the blog URL with one topic toggled against the chosen ones (current_tags): added when it
+  isn't chosen, removed when it is — /blogs/news/tagged/a+b, or the blog itself when nothing is left.
+  Topics combine (articles with all of them). The one place this rule lives — capture and strip it:
+    {%- capture url -%}{% render 'blog-topic-url', blog_url: url, tag: tag %}{%- endcapture -%}
+    <a href="{{ url | strip }}">
+
+  @param {string} blog_url - The blog's URL without a trailing slash (/blogs/news)
+  @param {string} tag - The topic
+{% enddoc %}
+{%- liquid
+  assign handles = ''
+  assign chosen_already = false
+  for chosen in current_tags
+    if chosen == tag
+      assign chosen_already = true
+    else
+      assign one = chosen | handleize
+      assign handles = handles | append: '+' | append: one
+    endif
+  endfor
+  unless chosen_already
+    assign one = tag | handleize
+    assign handles = handles | append: '+' | append: one
+  endunless
+  assign handles = handles | remove_first: '+'
+  if handles == blank
+    echo blog_url
+  else
+    echo blog_url | append: '/tagged/' | append: handles
+  endif
+-%}

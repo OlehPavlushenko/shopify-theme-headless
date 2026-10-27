@@ -1,78 +1,21 @@
 {% comment %}
-  Blog page (templates/blog.json, under the Page header): topic filter — the blog's tags as chips
-  that add or remove themselves (several topics: /blogs/<handle>/tagged/a+b, articles with all of
-  them), the chosen topics as removable chips with "Clear all" and the article count — the newest
-  article large on the first page (optional), then the articles as cards (snippets/article-card,
-  their tags link to the topic) with pagination. Styles: .main-blog in sections.css.
+  Blog page (templates/blog.json, under the Page header): the topics are the tags on the article
+  cards — a click adds that topic to the filter (several: /blogs/<handle>/tagged/a+b, articles with
+  all of them; snippets/blog-topic-url) — the chosen topics as removable chips with "Clear all" and
+  the article count, the newest article large on the first page (optional), then the cards
+  (snippets/article-card) with "Load more" or page numbers. Styles: .main-blog in sections.css.
 {% endcomment %}
 {%- paginate blog.articles by section.settings.per_page -%}
   <load-more class="main-blog color-{{ section.settings.color_scheme }} section-spacing" data-section="{{ section.id }}">
     <div class="page-width">
-      {%- if section.settings.tags and blog.all_tags.size > 0 -%}
-        <nav class="main-blog__tags" aria-label="{{ 'blog.filter_label' | t }}">
-          <a href="{{ blog.url }}" class="chip"{% unless current_tags %} aria-current="page"{% endunless %}>{{ 'blog.all' | t }}</a>
-          {%- comment -%}
-            Topics combine (articles with all of them): once one is chosen, only the topics the
-            remaining articles still have (blog.tags) are offered, so a choice never leads to nothing
-          {%- endcomment -%}
-          {%- liquid
-            assign topic_list = blog.all_tags
-            if current_tags.size > 0
-              assign topic_list = blog.tags
-            endif
-          -%}
-          {%- for tag in topic_list -%}
-            {%- liquid
-              # The URL with this topic toggled: the chosen topics plus it, or without it
-              assign active = false
-              if current_tags contains tag
-                assign active = true
-              endif
-              assign handles = ''
-              for chosen in current_tags
-                unless chosen == tag
-                  assign one = chosen | handleize
-                  assign handles = handles | append: '+' | append: one
-                endunless
-              endfor
-              unless active
-                assign one = tag | handleize
-                assign handles = handles | append: '+' | append: one
-              endunless
-              assign handles = handles | remove_first: '+'
-              assign tag_url = blog.url
-              if handles != blank
-                assign tag_url = blog.url | append: '/tagged/' | append: handles
-              endif
-            -%}
-            <a href="{{ tag_url }}" class="chip"{% if active %} aria-current="true"{% endif %}>
-              {{- tag | escape -}}
-            </a>
-          {%- endfor -%}
-        </nav>
-      {%- endif -%}
-
       {%- if current_tags.size > 0 -%}
         <div class="main-blog__active">
           <span class="main-blog__active-label">{{ 'blog.filtering_by' | t }}</span>
           <ul class="main-blog__active-list" role="list">
             {%- for chosen in current_tags -%}
-              {%- liquid
-                assign handles = ''
-                for other in current_tags
-                  unless other == chosen
-                    assign one = other | handleize
-                    assign handles = handles | append: '+' | append: one
-                  endunless
-                endfor
-                assign handles = handles | remove_first: '+'
-                assign remove_url = blog.url
-                if handles != blank
-                  assign remove_url = blog.url | append: '/tagged/' | append: handles
-                endif
-              -%}
+              {%- capture remove_url -%}{% render 'blog-topic-url', blog_url: blog.url, tag: chosen %}{%- endcapture -%}
               <li>
-                <a href="{{ remove_url }}" class="chip chip--compact" aria-label="{{ 'blog.remove_topic' | t: topic: chosen | escape }}">
+                <a href="{{ remove_url | strip }}" class="chip chip--compact" aria-label="{{ 'blog.remove_topic' | t: topic: chosen | escape }}">
                   {{- chosen | escape -}}
                   {%- render 'icon', name: 'close' -%}
                 </a>

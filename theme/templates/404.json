@@ -23,7 +23,7 @@
         "heading": "Popular right now",
         "collection": "best-sellers",
         "products": [],
-        "limit": 4,
+        "limit": 6,
         "layout": "slider",
         "columns": 5,
         "quick_add": false,

@@ -569,8 +569,8 @@
     "main_blog": {
       "name": "Blog posts",
       "per_page": "Articles per page",
-      "tags": "Show topic filter",
-      "tags_info": "Article tags as filter buttons.",
+      "tags": "Topics on the cards",
+      "tags_info": "The article tags on each card; a click filters the blog by that topic (several combine).",
       "featured": "Feature the latest article",
       "featured_info": "The newest article is shown large on the first page."
     },

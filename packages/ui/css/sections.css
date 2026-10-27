@@ -1785,27 +1785,14 @@
     }
   }
 
-  /* Blog: topic chips, the featured article over the whole row, the grid of cards */
-  .main-blog__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-xs);
-    margin-bottom: var(--space-xl);
-  }
-
-  .main-blog__tags .chip[aria-current] {
-    color: var(--color-button-label);
-    background: var(--color-button);
-    border-color: var(--color-button);
-  }
-
-  /* The chosen topics as removable chips, Clear all, the article count at the end of the row */
+  /* Blog: the chosen topics (removable chips, Clear all, the article count at the end of the row),
+     the featured article over the whole row, the grid of cards */
   .main-blog__active {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-xs) var(--space-s);
-    margin: calc(var(--space-l) * -1) 0 var(--space-xl);
+    margin: 0 0 var(--space-xl);
   }
 
   .main-blog__active-label,
@@ -2020,8 +2007,14 @@
       background-color var(--duration-short) var(--ease);
   }
 
+  /* A topic already in the filter (click removes it) */
+  .article-card__tag[aria-current] {
+    color: var(--color-button-label);
+    background: var(--color-button);
+  }
+
   @media (hover: hover) {
-    .article-card__tag:hover {
+    .article-card__tag:not([aria-current]):hover {
       color: var(--color-heading);
       background: color-mix(in srgb, var(--color-surface) 70%, var(--color-heading) 12%);
     }

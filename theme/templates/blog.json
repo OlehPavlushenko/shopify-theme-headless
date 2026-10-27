@@ -28,6 +28,7 @@
       "settings": {
         "per_page": 3,
         "tags": true,
+        "pagination": "load_more",
         "featured": true,
         "color_scheme": "scheme-1"
       }

@@ -7,7 +7,8 @@
   @param {object} article - Article
   @param {boolean} [show_date] - Show the publish date and reading time (default true)
   @param {boolean} [show_excerpt] - Show the excerpt (default true)
-  @param {boolean} [show_tags] - Show up to three tags, each linking to its topic (default false)
+  @param {boolean} [show_tags] - Show up to three tags; each adds its topic to the blog filter (a
+    chosen one is marked and removes itself) — snippets/blog-topic-url (default false)
   @param {string} [layout] - 'featured': image beside the text, bigger title (the blog's newest article)
   @param {string} [heading_tag] - Title element (default h3; h2 on the blog page)
   @param {string} [sizes] - Image sizes attribute
@@ -18,8 +19,10 @@
   # Reading time at ~200 words a minute
   assign words = article.content | strip_html | split: ' ' | size
   assign minutes = words | divided_by: 200 | at_least: 1
-  # The blog's URL from the article's (keeps a locale prefix): /blogs/news/
-  assign blog_url = article.url | remove_last: article.handle
+  # The blog's URL from the article's (keeps a locale prefix): article.handle is "news/<article>",
+  # so the URL without it is "/blogs/", plus the blog's handle → /blogs/news
+  assign blog_handle = article.handle | split: '/' | first
+  assign blog_root = article.url | remove_last: article.handle | append: blog_handle
 -%}
 <article class="article-card{% if layout == 'featured' %} article-card--featured{% endif %}">
   <div class="frame article-card__media" style="--frame-ratio: 3 / 2;">
@@ -43,9 +46,19 @@
     {%- endunless -%}
     {%- if show_tags and article.tags.size > 0 -%}
       <ul class="article-card__tags" role="list">
+
         {%- for article_tag in article.tags limit: 3 -%}
+          {%- capture topic_url -%}{% render 'blog-topic-url', blog_url: blog_root, tag: article_tag %}{%- endcapture -%}
           <li>
-            <a href="{{ blog_url }}tagged/{{ article_tag | handleize }}" class="article-card__tag">{{ article_tag | escape }}</a>
+            <a
+              href="{{ topic_url | strip }}"
+              class="article-card__tag"
+              {% if current_tags contains article_tag %}
+                aria-current="true"
+              {% endif %}
+            >
+              {{- article_tag | escape -}}
+            </a>
           </li>
         {%- endfor -%}
       </ul>

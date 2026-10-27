@@ -2540,3 +2540,9 @@
     }
   }
 }
+
+/* Unlayered on purpose: Shopify's policy-page CSS is unlayered and would beat @layer rules.
+   Titles start-aligned like every other page heading of the theme. */
+.shopify-policy__container .shopify-policy__title {
+  text-align: start;
+}

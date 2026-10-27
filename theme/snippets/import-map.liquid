@@ -1,0 +1,37 @@
+{% doc %}
+  The import map of the theme's ES modules (no bundler), shared by both layouts (theme, password).
+  @ui/* are shared packages (packages/ui/js), the rest is theme-only. A headless storefront maps the
+  same @ui/* specifiers to packages/ui/js. A new module gets its line here.
+{% enddoc %}
+<script type="importmap">
+  {
+    "imports": {
+      "@ui/dialog": "{{ 'ui-dialog.js' | asset_url }}",
+      "@ui/money": "{{ 'ui-money.js' | asset_url }}",
+      "@ui/header": "{{ 'ui-header.js' | asset_url }}",
+      "@ui/nav-menu": "{{ 'ui-nav-menu.js' | asset_url }}",
+      "@ui/drill-menu": "{{ 'ui-drill-menu.js' | asset_url }}",
+      "@ui/predictive-search": "{{ 'ui-predictive-search.js' | asset_url }}",
+      "@ui/slider": "{{ 'ui-slider.js' | asset_url }}",
+      "@ui/countdown": "{{ 'ui-countdown.js' | asset_url }}",
+      "@ui/newsletter": "{{ 'ui-newsletter.js' | asset_url }}",
+      "@ui/promo-popup": "{{ 'ui-promo-popup.js' | asset_url }}",
+      "@ui/footer": "{{ 'ui-footer.js' | asset_url }}",
+      "@ui/background-video": "{{ 'ui-background-video.js' | asset_url }}",
+      "@ui/show-more": "{{ 'ui-show-more.js' | asset_url }}",
+      "@ui/variant-picker": "{{ 'ui-variant-picker.js' | asset_url }}",
+      "@ui/saved-list": "{{ 'ui-saved-list.js' | asset_url }}",
+      "@ui/toast": "{{ 'ui-toast.js' | asset_url }}",
+      "@ui/read-more": "{{ 'ui-read-more.js' | asset_url }}",
+      "@ui/faq-search": "{{ 'ui-faq-search.js' | asset_url }}",
+      "@ui/delivery": "{{ 'ui-delivery.js' | asset_url }}",
+      "@ui/delivery-steps": "{{ 'ui-delivery-steps.js' | asset_url }}",
+      "saved-pages": "{{ 'saved-pages.js' | asset_url }}",
+      "facets": "{{ 'facets.js' | asset_url }}",
+      "product": "{{ 'product.js' | asset_url }}",
+      "liquid-ajax-cart": "{{ 'liquid-ajax-cart-v2.2.0.js' | asset_url }}",
+      "cart": "{{ 'cart.js' | asset_url }}",
+      "quick-view": "{{ 'quick-view.js' | asset_url }}"
+    }
+  }
+</script>

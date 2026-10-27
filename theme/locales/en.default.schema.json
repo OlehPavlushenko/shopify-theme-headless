@@ -454,6 +454,18 @@
       "name": "Apps",
       "full_width": "Full width"
     },
+    "password": {
+      "layout": "Layout",
+      "layout_split": "Image beside the text",
+      "layout_cover": "Image behind the text",
+      "text_info": "Empty: the password message from Online Store > Preferences.",
+      "launch": "Launch date",
+      "launch_info": "Shows a countdown until then, e.g. 2026-12-01 10:00 (store time zone). Empty or past: no countdown.",
+      "signup_header": "Sign-up",
+      "show_newsletter": "Show the sign-up form",
+      "newsletter_note": "Note under the field",
+      "newsletter_success": "Text after signing up"
+    },
     "delivery_estimate": {
       "name": "Delivery estimate",
       "order_label": "Step 1 label",

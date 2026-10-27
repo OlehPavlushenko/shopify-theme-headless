@@ -534,6 +534,11 @@
     display: none;
   }
 
+  /* The row scrolls: chips keep their width (shrunk, the count spilled over the border) */
+  .subcollections > li {
+    flex-shrink: 0;
+  }
+
   .subcollection {
     display: inline-flex;
     align-items: center;

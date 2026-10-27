@@ -36,20 +36,23 @@
           <div class="rte faq__text">{{ section.settings.text }}</div>
         {%- endif -%}
         {%- if show_nav -%}
-          <label class="faq__search">
-            <span class="visually-hidden">{{ 'faq.search' | t }}</span>
-            {%- render 'icon', name: 'search' -%}
-            <input type="search" class="input" placeholder="{{ 'faq.search' | t | escape }}" autocomplete="off" data-faq-input>
-          </label>
-          {%- if topics.size > 0 -%}
-            <nav class="faq__nav" aria-label="{{ 'faq.topics' | t | escape }}">
-              <ul class="faq__nav-list" role="list">
-                {%- for topic in topics -%}
-                  <li><a href="#faq-{{ section.id }}-{{ topic.id }}" class="faq__nav-link" data-faq-topic-link>{{ topic.settings.title | escape }}</a></li>
-                {%- endfor -%}
-              </ul>
-            </nav>
-          {%- endif -%}
+          {%- comment -%} Search + topics: sticky — in the intro column from 990px, a bar under the header on phones {%- endcomment -%}
+          <div class="faq__tools" data-faq-tools>
+            <label class="faq__search">
+              <span class="visually-hidden">{{ 'faq.search' | t }}</span>
+              {%- render 'icon', name: 'search' -%}
+              <input type="search" class="input" placeholder="{{ 'faq.search' | t | escape }}" autocomplete="off" data-faq-input>
+            </label>
+            {%- if topics.size > 0 -%}
+              <nav class="faq__nav" aria-label="{{ 'faq.topics' | t | escape }}">
+                <ul class="faq__nav-list" role="list">
+                  {%- for topic in topics -%}
+                    <li><a href="#faq-{{ section.id }}-{{ topic.id }}" class="faq__nav-link" data-faq-topic-link>{{ topic.settings.title | escape }}</a></li>
+                  {%- endfor -%}
+                </ul>
+              </nav>
+            {%- endif -%}
+          </div>
         {%- endif -%}
         {%- if section.settings.button_label != blank -%}
           <a href="{{ contact_url }}" class="btn btn--outline">

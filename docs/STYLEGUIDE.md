@@ -114,6 +114,8 @@ and the list of mistakes we already made once. Read both before adding code.
 | Copying colors or gradients from a reference | References are for ideas; use the theme's schemes and tokens |
 | A custom element (`<facet-filters>`, `<product-info>`…) used as a section wrapper — it is inline by default, so `section-spacing` padding doesn't apply | Give every wrapping custom element `display: block` (or grid) |
 | Writing Liquid through a shell one-liner (`node -e '…'`) — single quotes inside get eaten (`== 'search'` became `== search`, silently false) | Edit files with the editor tools; scripts that write code go in a file |
+| A one-line scrolling row (chips, tabs) inside a grid with an `auto` column — the column grows to the row's full width and the page scrolls sideways (page header subcollections, FAQ topics) | `grid-template-columns: minmax(0, 1fr)` on that grid |
+| `display: contents` on a wrapper so a child can be sticky over a longer sibling — the grid gets new items with its own (larger) gap | Set the grid's gap for that case too |
 | "Failed to resolve module specifier @ui/…" on every module | The page loaded while theme dev was uploading — reload once edits settle |
 
 ## Verifying

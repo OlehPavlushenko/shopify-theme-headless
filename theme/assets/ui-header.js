@@ -26,6 +26,9 @@ class SiteHeader extends HTMLElement {
       this.#lastY = window.scrollY;
       this.#update();
     });
+    // Scroll-up mode slides the header with a transition: measured on scroll it is still moving,
+    // so --header-bottom is set again once the slide ends
+    this.closest('.site-header-section')?.addEventListener('transitionend', () => this.#syncBottom());
     window.addEventListener('scroll', this.#onScroll, { passive: true });
   }
 

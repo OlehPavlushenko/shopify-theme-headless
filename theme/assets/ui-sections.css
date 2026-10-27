@@ -766,14 +766,24 @@
       gap: var(--space-3xl);
     }
 
+    /* align-self: a grid item stretches to its row — sticky needs room to move in */
     .faq--split .faq__intro {
       position: sticky;
       top: calc(var(--header-height, 0px) + var(--space-l));
+      align-self: start;
     }
   }
 
-  /* Topics and search (faq--nav): a search field and the topic links in the intro, topic headings
-     in the list. The field needs JS (<faq-search>), so it shows once enhanced */
+  /* Topics and search (faq--nav): the tools (a search field and the topic links) in the intro,
+     topic headings in the list. The field needs JS (<faq-search>), so it shows once enhanced */
+  /* minmax(0, 1fr): the topics row may scroll sideways, it must not widen the tools */
+  .faq__tools {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-s);
+    width: 100%;
+  }
+
   .faq__search {
     position: relative;
     display: none;
@@ -805,7 +815,6 @@
 
   .faq__nav-list {
     display: flex;
-    flex-wrap: wrap;
     gap: var(--space-2xs);
     margin: 0;
     padding: 0;
@@ -820,15 +829,69 @@
     font-size: var(--text-sm);
     font-weight: var(--font-body-weight-medium);
     color: var(--color-heading);
+    white-space: nowrap;
     text-decoration: none;
     border: 0.1rem solid var(--color-border);
     border-radius: var(--radius-full);
-    transition: border-color var(--duration-short) var(--ease);
+    transition:
+      color var(--duration-short) var(--ease),
+      background-color var(--duration-short) var(--ease),
+      border-color var(--duration-short) var(--ease);
   }
 
   @media (hover: hover) {
     .faq__nav-link:hover {
       border-color: var(--color-heading);
+    }
+  }
+
+  /* The topic being read */
+  .faq__nav-link[aria-current] {
+    color: var(--color-button-label);
+    background: var(--color-button);
+    border-color: var(--color-button);
+  }
+
+  /* Phones and tablets: the intro's children join the section grid, so the tools can stick under
+     the header as a bar over the whole list; the topics are one row that scrolls sideways */
+  @media (max-width: 989px) {
+    .faq--nav .faq__inner {
+      gap: var(--space-m);
+    }
+
+    /* minmax(0, 1fr): the topics row (one line, wider than the screen) must not widen the column */
+    .faq--nav .faq__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .faq--nav .faq__intro {
+      display: contents;
+    }
+
+    .faq--nav .faq__tools {
+      position: sticky;
+      top: var(--header-height, 0px);
+      z-index: 2;
+      width: auto;
+      margin-inline: calc(var(--gutter) * -1);
+      padding: var(--space-s) var(--gutter);
+      background: var(--color-background);
+      border-bottom: 0.1rem solid var(--color-border);
+    }
+
+    .faq--nav .faq__nav-list {
+      margin-inline: calc(var(--gutter) * -1);
+      padding-inline: var(--gutter);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .faq--nav .faq__nav-list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .faq--nav .faq__intro > .btn {
+      justify-self: start;
     }
   }
 
@@ -841,7 +904,6 @@
     margin: 0;
     padding-block: var(--space-xl) var(--space-s);
     border-bottom: 0.1rem solid var(--color-border);
-    scroll-margin-top: calc(var(--header-height, 0px) + var(--space-l));
   }
 
   .faq__topic:first-child {
@@ -857,6 +919,14 @@
     padding-top: var(--space-l);
   }
 
+  /* Search matches */
+  mark[data-faq-mark] {
+    padding: 0 0.1em;
+    color: inherit;
+    background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+    border-radius: 0.3rem;
+  }
+
   .faq__empty {
     display: grid;
     justify-items: start;
@@ -869,7 +939,7 @@
     display: none;
   }
 
-  /* Desktop: the topics stack as a list in the sticky column */
+  /* Desktop: the topics stack as a list in the sticky column, the current one marked by a bar */
   @media (min-width: 990px) {
     .faq--split .faq__nav-list {
       display: grid;
@@ -880,10 +950,18 @@
     .faq--split .faq__nav-link {
       display: flex;
       min-height: auto;
-      padding: var(--space-s) 0;
+      padding: var(--space-s) var(--space-s);
       border: 0;
       border-bottom: 0.1rem solid var(--color-border);
       border-radius: 0;
+      box-shadow: inset 0.2rem 0 0 transparent;
+    }
+
+    .faq--split .faq__nav-link[aria-current] {
+      color: var(--color-accent);
+      background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+      border-color: var(--color-border);
+      box-shadow: inset 0.2rem 0 0 var(--color-accent);
     }
 
     @media (hover: hover) {

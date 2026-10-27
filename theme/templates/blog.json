@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "header": {
@@ -6,14 +15,18 @@
         "heading": "",
         "text": "<p>Guides, routines and ideas for natural care at home.</p>",
         "breadcrumbs": true,
+        "subcollections": true,
         "alignment": "left",
+        "image_layout": "none",
+        "image_source": "collection",
+        "tint": 45,
         "color_scheme": "scheme-2"
       }
     },
     "main": {
       "type": "main-blog",
       "settings": {
-        "per_page": 9,
+        "per_page": 3,
         "tags": true,
         "featured": true,
         "color_scheme": "scheme-1"

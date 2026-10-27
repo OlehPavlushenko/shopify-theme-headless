@@ -711,6 +711,33 @@
   .chip:hover {
     border-color: var(--color-heading);
   }
+  /* Compact: a soft tag rather than a button-sized pill — removable active filters and topics
+     (facets, blog), with a muted × that darkens on hover */
+  .chip--compact {
+    gap: 0.4rem;
+    min-height: 2.8rem;
+    padding: 0 0.8rem 0 var(--space-s);
+    font-size: var(--text-xs);
+    background: var(--color-surface);
+    border-color: transparent;
+  }
+
+  .chip--compact .svg-icon {
+    --icon-size: 1.2rem;
+
+    color: var(--color-text-muted);
+    transition: color var(--duration-short) var(--ease);
+  }
+
+  @media (hover: hover) {
+    .chip--compact:hover {
+      border-color: var(--color-border);
+    }
+
+    .chip--compact:hover .svg-icon {
+      color: var(--color-heading);
+    }
+  }
 
   .chip[aria-pressed="true"],
   .chip[aria-checked="true"] {
@@ -1112,5 +1139,45 @@
 
   .social-links__link .svg-icon {
     --icon-size: 1.8rem;
+  }
+
+  /* ---------------------------------------------------- load more cell */
+  /* "Load more" as a grid's last cell (snippets/load-more-cell): spans the columns left in the last
+     row (a whole row when the row before is full; the script sets the span) — "24 of 86", a
+     progress bar, the button. Without JS: a row of its own. Collection / search grid, blog. */
+  /* The wrapping element is inline by default: block, so a section's padding applies */
+  load-more {
+    display: block;
+  }
+
+  .load-more {
+    display: grid;
+    grid-column: 1 / -1;
+    place-content: center;
+    justify-items: center;
+    gap: var(--space-s);
+    min-height: 16rem;
+    padding: var(--space-l);
+    border: 0.1rem dashed var(--color-border);
+    border-radius: var(--radius-card);
+  }
+
+  .load-more__progress {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .load-more__bar {
+    width: min(100%, 24rem);
+    height: 0.3rem;
+    background:
+      linear-gradient(var(--color-heading) 0 0) 0 / var(--progress) 100% no-repeat,
+      var(--color-border);
+    border-radius: var(--radius-full);
+  }
+
+  .load-more [aria-busy="true"] {
+    opacity: 0.6;
+    pointer-events: none;
   }
 }

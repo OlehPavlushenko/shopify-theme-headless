@@ -152,33 +152,6 @@
     list-style: none;
   }
 
-  /* Compact .chip: a soft tag rather than a button-sized pill */
-  .facets-active__chip {
-    gap: 0.4rem;
-    min-height: 2.8rem;
-    padding: 0 0.8rem 0 var(--space-s);
-    font-size: var(--text-xs);
-    background: var(--color-surface);
-    border-color: transparent;
-  }
-
-  .facets-active__chip .svg-icon {
-    --icon-size: 1.2rem;
-
-    color: var(--color-text-muted);
-    transition: color var(--duration-short) var(--ease);
-  }
-
-  @media (hover: hover) {
-    .facets-active__chip:hover {
-      border-color: var(--color-border);
-    }
-
-    .facets-active__chip:hover .svg-icon {
-      color: var(--color-heading);
-    }
-  }
-
   .facets-active__swatch {
     --swatch-size: 1.2rem;
   }
@@ -727,40 +700,6 @@
     inset: 0;
     aspect-ratio: auto;
     height: 100%;
-  }
-
-  /* Load more: the grid's last cell, spanning the columns left in the last row (a whole row when
-     the row before is full; facets.js sets the span) — "24 of 86", a progress bar, the button.
-     Without JS: a row of its own. */
-  .facets__more {
-    display: grid;
-    grid-column: 1 / -1;
-    place-content: center;
-    justify-items: center;
-    gap: var(--space-s);
-    min-height: 16rem;
-    padding: var(--space-l);
-    border: 0.1rem dashed var(--color-border);
-    border-radius: var(--radius-card);
-  }
-
-  .facets__progress {
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-  }
-
-  .facets__progress-bar {
-    width: min(100%, 24rem);
-    height: 0.3rem;
-    background:
-      linear-gradient(var(--color-heading) 0 0) 0 / var(--progress) 100% no-repeat,
-      var(--color-border);
-    border-radius: var(--radius-full);
-  }
-
-  .facets__more [aria-busy="true"] {
-    opacity: 0.6;
-    pointer-events: none;
   }
 
   .facets__empty {

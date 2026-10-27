@@ -1,10 +1,13 @@
 {% doc %}
-  Article card: cover image, date and reading time, title and an optional excerpt; the whole card is
-  one link. Used by the Blog posts section and the blog page. Styles: packages/ui/css/sections.css.
+  Article card: cover image, date and reading time, title, an optional excerpt and topic tags. The
+  title's link covers the whole card (::after), so the tags can be links of their own above it
+  (no link inside a link). Used by the Blog posts section and the blog page.
+  Styles: packages/ui/css/sections.css.
 
   @param {object} article - Article
   @param {boolean} [show_date] - Show the publish date and reading time (default true)
   @param {boolean} [show_excerpt] - Show the excerpt (default true)
+  @param {boolean} [show_tags] - Show up to three tags, each linking to its topic (default false)
   @param {string} [layout] - 'featured': image beside the text, bigger title (the blog's newest article)
   @param {string} [heading_tag] - Title element (default h3; h2 on the blog page)
   @param {string} [sizes] - Image sizes attribute
@@ -15,28 +18,41 @@
   # Reading time at ~200 words a minute
   assign words = article.content | strip_html | split: ' ' | size
   assign minutes = words | divided_by: 200 | at_least: 1
+  # The blog's URL from the article's (keeps a locale prefix): /blogs/news/
+  assign blog_url = article.url | remove_last: article.handle
 -%}
-<a href="{{ article.url }}" class="article-card{% if layout == 'featured' %} article-card--featured{% endif %}">
-  <span class="frame article-card__media" style="--frame-ratio: 3 / 2;">
+<article class="article-card{% if layout == 'featured' %} article-card--featured{% endif %}">
+  <div class="frame article-card__media" style="--frame-ratio: 3 / 2;">
     {%- if article.image -%}
       {{ article.image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: sizes, widths: '450, 600, 900, 1200', alt: image_alt }}
     {%- else -%}
       {{ 'image' | placeholder_svg_tag }}
     {%- endif -%}
-  </span>
-  <span class="article-card__body">
+  </div>
+  <div class="article-card__body">
     {%- unless show_date == false -%}
       <span class="article-card__date">
         {{- article.published_at | time_tag: format: 'date' }} · {{ 'blog.reading_time' | t: count: minutes -}}
       </span>
     {%- endunless -%}
-    <{{ tag }} class="{% if layout == 'featured' %}h3{% else %}h5{% endif %} article-card__title">{{ article.title | escape }}</{{ tag }}>
+    <{{ tag }} class="{% if layout == 'featured' %}h3{% else %}h5{% endif %} article-card__title">
+      <a href="{{ article.url }}" class="article-card__link">{{ article.title | escape }}</a>
+    </{{ tag }}>
     {%- unless show_excerpt == false -%}
-      <span class="article-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 30 }}</span>
+      <p class="article-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 30 }}</p>
     {%- endunless -%}
-    <span class="article-card__more">
+    {%- if show_tags and article.tags.size > 0 -%}
+      <ul class="article-card__tags" role="list">
+        {%- for article_tag in article.tags limit: 3 -%}
+          <li>
+            <a href="{{ blog_url }}tagged/{{ article_tag | handleize }}" class="article-card__tag">{{ article_tag | escape }}</a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+    <span class="article-card__more" aria-hidden="true">
       {{- 'blog.read_more' | t -}}
       {%- render 'icon', name: 'arrow-right' -%}
     </span>
-  </span>
-</a>
+  </div>
+</article>

@@ -13,6 +13,13 @@
     "submenu": "Show {{ title }} menu"
   },
   "blog": {
+    "filtering_by": "Filtering by",
+    "remove_topic": "Remove topic {{ topic }}",
+    "articles_count": {
+      "one": "{{ count }} article",
+      "other": "{{ count }} articles"
+    },
+    "no_match": "No articles cover all of these topics yet",
     "comment_form_body": "Comment",
     "comment_form_email": "Email",
     "comment_form_name": "Name",

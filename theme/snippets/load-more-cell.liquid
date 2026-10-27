@@ -1,0 +1,18 @@
+{% doc %}
+  "Load more" as the last cell of a paginated grid: "Showing 24 of 86", a progress bar, the link to
+  the next page (a real URL: without JS it opens the next page). Renders nothing on the last page.
+  The script of the grid (facets.js, @ui/load-more) appends the next page and sets the cell's span.
+  Styles: .load-more in packages/ui/css/components.css.
+
+  @param {object} paginate - The paginate object
+  @param {number} shown - Items shown so far (offset + items on this page)
+  @param {string} cell_attr - Data attribute of the cell for the script (e.g. data-facets-more)
+  @param {string} link_attr - Data attribute of the link for the script (e.g. data-facets-load-more)
+{% enddoc %}
+{%- if paginate.next -%}
+  <li class="load-more" {{ cell_attr }}>
+    <p class="load-more__progress">{{ 'facets.progress' | t: shown: shown, total: paginate.items }}</p>
+    <span class="load-more__bar" style="--progress: {{ shown | times: 100 | divided_by: paginate.items }}%;" aria-hidden="true"></span>
+    <a href="{{ paginate.next.url }}" class="btn btn--outline" {{ link_attr }}>{{ 'facets.load_more' | t }}</a>
+  </li>
+{%- endif -%}

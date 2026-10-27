@@ -1,31 +1,98 @@
 {% comment %}
-  Blog page (templates/blog.json, under the Page header): topic filter (the blog's tags as chips,
-  /blogs/<handle>/tagged/<tag>), the newest article large on the first page (optional), then the
-  articles as cards (snippets/article-card) with pagination. Styles: .main-blog in sections.css.
+  Blog page (templates/blog.json, under the Page header): topic filter — the blog's tags as chips
+  that add or remove themselves (several topics: /blogs/<handle>/tagged/a+b, articles with all of
+  them), the chosen topics as removable chips with "Clear all" and the article count — the newest
+  article large on the first page (optional), then the articles as cards (snippets/article-card,
+  their tags link to the topic) with pagination. Styles: .main-blog in sections.css.
 {% endcomment %}
 {%- paginate blog.articles by section.settings.per_page -%}
-  <div class="main-blog color-{{ section.settings.color_scheme }} section-spacing">
+  <load-more class="main-blog color-{{ section.settings.color_scheme }} section-spacing" data-section="{{ section.id }}">
     <div class="page-width">
       {%- if section.settings.tags and blog.all_tags.size > 0 -%}
         <nav class="main-blog__tags" aria-label="{{ 'blog.filter_label' | t }}">
           <a href="{{ blog.url }}" class="chip"{% unless current_tags %} aria-current="page"{% endunless %}>{{ 'blog.all' | t }}</a>
-          {%- for tag in blog.all_tags -%}
-            {%- assign tag_handle = tag | handleize -%}
-            <a
-              href="{{ blog.url }}/tagged/{{ tag_handle }}"
-              class="chip"
-              {% if current_tags contains tag %}
-                aria-current="page"
-              {% endif %}
-            >
+          {%- comment -%}
+            Topics combine (articles with all of them): once one is chosen, only the topics the
+            remaining articles still have (blog.tags) are offered, so a choice never leads to nothing
+          {%- endcomment -%}
+          {%- liquid
+            assign topic_list = blog.all_tags
+            if current_tags.size > 0
+              assign topic_list = blog.tags
+            endif
+          -%}
+          {%- for tag in topic_list -%}
+            {%- liquid
+              # The URL with this topic toggled: the chosen topics plus it, or without it
+              assign active = false
+              if current_tags contains tag
+                assign active = true
+              endif
+              assign handles = ''
+              for chosen in current_tags
+                unless chosen == tag
+                  assign one = chosen | handleize
+                  assign handles = handles | append: '+' | append: one
+                endunless
+              endfor
+              unless active
+                assign one = tag | handleize
+                assign handles = handles | append: '+' | append: one
+              endunless
+              assign handles = handles | remove_first: '+'
+              assign tag_url = blog.url
+              if handles != blank
+                assign tag_url = blog.url | append: '/tagged/' | append: handles
+              endif
+            -%}
+            <a href="{{ tag_url }}" class="chip"{% if active %} aria-current="true"{% endif %}>
               {{- tag | escape -}}
             </a>
           {%- endfor -%}
         </nav>
       {%- endif -%}
 
+      {%- if current_tags.size > 0 -%}
+        <div class="main-blog__active">
+          <span class="main-blog__active-label">{{ 'blog.filtering_by' | t }}</span>
+          <ul class="main-blog__active-list" role="list">
+            {%- for chosen in current_tags -%}
+              {%- liquid
+                assign handles = ''
+                for other in current_tags
+                  unless other == chosen
+                    assign one = other | handleize
+                    assign handles = handles | append: '+' | append: one
+                  endunless
+                endfor
+                assign handles = handles | remove_first: '+'
+                assign remove_url = blog.url
+                if handles != blank
+                  assign remove_url = blog.url | append: '/tagged/' | append: handles
+                endif
+              -%}
+              <li>
+                <a href="{{ remove_url }}" class="chip chip--compact" aria-label="{{ 'blog.remove_topic' | t: topic: chosen | escape }}">
+                  {{- chosen | escape -}}
+                  {%- render 'icon', name: 'close' -%}
+                </a>
+              </li>
+            {%- endfor -%}
+            <li><a href="{{ blog.url }}" class="main-blog__clear">{{ 'facets.clear_all' | t }}</a></li>
+          </ul>
+          <span class="main-blog__count" role="status">{{ 'blog.articles_count' | t: count: paginate.items }}</span>
+        </div>
+      {%- endif -%}
+
       {%- if blog.articles.size == 0 -%}
-        <p class="main-blog__empty">{{ 'blog.empty' | t }}</p>
+        <div class="main-blog__empty">
+          {%- if current_tags.size > 0 -%}
+            <p class="h5">{{ 'blog.no_match' | t }}</p>
+            <a href="{{ blog.url }}" class="btn btn--outline">{{ 'facets.clear_all' | t }}</a>
+          {%- else -%}
+            <p>{{ 'blog.empty' | t }}</p>
+          {%- endif -%}
+        </div>
       {%- else -%}
         {%- liquid
           assign featured = false
@@ -33,22 +100,31 @@
             assign featured = true
           endif
         -%}
-        <ul class="grid main-blog__grid" role="list" style="--grid-columns: 3; --grid-columns-mobile: 1;">
+        <ul class="grid main-blog__grid" role="list" style="--grid-columns: 3; --grid-columns-mobile: 1;" data-load-more-grid>
           {%- for article in blog.articles -%}
-            <li{% if featured and forloop.first %} class="main-blog__featured"{% endif %}>
+            <li data-load-more-item{% if featured and forloop.first %} class="main-blog__featured"{% endif %}>
               {%- if featured and forloop.first -%}
-                {%- render 'article-card', article: article, layout: 'featured', heading_tag: 'h2', sizes: '(min-width: 990px) 60vw, 100vw' -%}
+                {%- render 'article-card', article: article, layout: 'featured', heading_tag: 'h2', show_tags: section.settings.tags, sizes: '(min-width: 990px) 60vw, 100vw' -%}
               {%- else -%}
-                {%- render 'article-card', article: article, heading_tag: 'h2', sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw' -%}
+                {%- render 'article-card', article: article, heading_tag: 'h2', show_tags: section.settings.tags, sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw' -%}
               {%- endif -%}
             </li>
           {%- endfor -%}
+          {%- if section.settings.pagination == 'load_more' -%}
+            {%- assign shown = paginate.current_offset | plus: blog.articles.size -%}
+            {%- render 'load-more-cell', paginate: paginate, shown: shown, cell_attr: 'data-load-more-cell', link_attr: 'data-load-more-link' -%}
+          {%- endif -%}
         </ul>
-        {%- render 'pagination', paginate: paginate -%}
+        {%- if section.settings.pagination == 'pages' -%}
+          {%- render 'pagination', paginate: paginate -%}
+        {%- endif -%}
       {%- endif -%}
     </div>
-  </div>
+  </load-more>
 {%- endpaginate -%}
+{%- if section.settings.pagination == 'load_more' -%}
+  <script type="module">import '@ui/load-more';</script>
+{%- endif -%}
 
 {% schema %}
 {
@@ -57,6 +133,16 @@
   "settings": [
     { "type": "range", "id": "per_page", "label": "t:sections.main_blog.per_page", "min": 3, "max": 24, "step": 3, "default": 9 },
     { "type": "checkbox", "id": "tags", "label": "t:sections.main_blog.tags", "info": "t:sections.main_blog.tags_info", "default": true },
+    {
+      "type": "select",
+      "id": "pagination",
+      "label": "t:sections.main_collection.pagination",
+      "options": [
+        { "value": "load_more", "label": "t:sections.main_collection.pagination_load_more" },
+        { "value": "pages", "label": "t:sections.main_collection.pagination_pages" }
+      ],
+      "default": "load_more"
+    },
     { "type": "checkbox", "id": "featured", "label": "t:sections.main_blog.featured", "info": "t:sections.main_blog.featured_info", "default": true },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
   ]

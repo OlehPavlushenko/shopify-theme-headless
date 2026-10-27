@@ -186,13 +186,9 @@
             "Load more" is the grid's last cell: it fills whatever is left of an incomplete last row
             (no lonely card with empty space beside it), or takes a row of its own
           {%- endcomment -%}
-          {%- if paginate.next and section.settings.pagination == 'load_more' -%}
+          {%- if section.settings.pagination == 'load_more' -%}
             {%- assign shown = paginate.current_offset | plus: items.size -%}
-            <li class="facets__more" data-facets-more>
-              <p class="facets__progress">{{ 'facets.progress' | t: shown: shown, total: paginate.items }}</p>
-              <span class="facets__progress-bar" style="--progress: {{ shown | times: 100 | divided_by: paginate.items }}%;" aria-hidden="true"></span>
-              <a href="{{ paginate.next.url }}" class="btn btn--outline" data-facets-load-more>{{ 'facets.load_more' | t }}</a>
-            </li>
+            {%- render 'load-more-cell', paginate: paginate, shown: shown, cell_attr: 'data-facets-more', link_attr: 'data-facets-load-more' -%}
           {%- endif -%}
         </ul>
 

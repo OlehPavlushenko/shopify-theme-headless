@@ -1799,6 +1799,41 @@
     border-color: var(--color-button);
   }
 
+  /* The chosen topics as removable chips, Clear all, the article count at the end of the row */
+  .main-blog__active {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs) var(--space-s);
+    margin: calc(var(--space-l) * -1) 0 var(--space-xl);
+  }
+
+  .main-blog__active-label,
+  .main-blog__count {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .main-blog__active-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .main-blog__clear {
+    padding-inline: var(--space-xs);
+    font-size: var(--text-xs);
+    color: var(--color-heading);
+  }
+
+  .main-blog__count {
+    margin-inline-start: auto;
+  }
+
   .main-blog__grid {
     --grid-gap: var(--space-2xl) var(--space-l);
 
@@ -1819,7 +1854,14 @@
   }
 
   .main-blog__empty {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-s);
+    padding: var(--space-2xl) var(--space-l);
     color: var(--color-text-muted);
+    text-align: center;
+    background: var(--color-surface);
+    border-radius: var(--radius-card);
   }
 
   /* Article: header and text in a reading column, the cover wide between them */
@@ -1921,13 +1963,68 @@
   }
 
   /* ----------------------------------------------------- article card */
+  /* The title's link covers the card (::after); the tags sit above it as links of their own */
   .article-card {
+    position: relative;
     display: grid;
     align-content: start;
     gap: var(--space-xs);
     height: 100%;
     color: var(--color-foreground);
+  }
+
+  .article-card__link {
+    color: inherit;
     text-decoration: none;
+  }
+
+  .article-card__link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .article-card__link:focus-visible {
+    outline: none;
+  }
+
+  .article-card:has(.article-card__link:focus-visible) {
+    outline: 0.2rem solid var(--color-focus);
+    outline-offset: 0.4rem;
+    border-radius: var(--radius-card);
+  }
+
+  .article-card__tags {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .article-card__tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.4rem;
+    padding: 0 var(--space-xs);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    background: var(--color-surface);
+    border-radius: var(--radius-badge);
+    transition:
+      color var(--duration-short) var(--ease),
+      background-color var(--duration-short) var(--ease);
+  }
+
+  @media (hover: hover) {
+    .article-card__tag:hover {
+      color: var(--color-heading);
+      background: color-mix(in srgb, var(--color-surface) 70%, var(--color-heading) 12%);
+    }
   }
 
   .article-card__media {
@@ -1975,6 +2072,7 @@
   }
 
   .article-card__title {
+    margin: 0;
     color: var(--color-heading);
     transition: color var(--duration-default) var(--ease);
   }
@@ -1985,6 +2083,7 @@
 
   .article-card__excerpt {
     display: -webkit-box;
+    margin: 0;
     overflow: hidden;
     font-size: var(--text-sm);
     line-height: var(--leading-sm);

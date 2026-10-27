@@ -16,7 +16,7 @@
           assign range_label = from | append: '–' | append: to
         -%}
         <li>
-          <a href="{{ filter.url_to_remove }}" class="chip facets-active__chip" data-facets-link aria-label="{{ 'facets.remove' | t: filter: range_label | escape }}">
+          <a href="{{ filter.url_to_remove }}" class="chip chip--compact facets-active__chip" data-facets-link aria-label="{{ 'facets.remove' | t: filter: range_label | escape }}">
             {{- range_label -}}
             {%- render 'icon', name: 'close' -%}
           </a>
@@ -38,7 +38,7 @@
       -%}
       {%- for value in filter.active_values -%}
         <li>
-          <a href="{{ value.url_to_remove }}" class="chip facets-active__chip" data-facets-link aria-label="{{ 'facets.remove' | t: filter: value.label | escape }}">
+          <a href="{{ value.url_to_remove }}" class="chip chip--compact facets-active__chip" data-facets-link aria-label="{{ 'facets.remove' | t: filter: value.label | escape }}">
             {%- if is_swatch -%}
               {%- render 'swatch', value: value, class: 'facets-active__swatch' -%}
             {%- endif -%}

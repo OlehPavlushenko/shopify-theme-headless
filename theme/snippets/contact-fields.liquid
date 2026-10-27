@@ -1,0 +1,46 @@
+{% doc %}
+  The contact form's fields and its button (sections/main-contact), in either form: Shopify's contact
+  form (field names contact[…], the values kept after a failed post) or the plain form sent to
+  project-server (names name, email, phone, message).
+
+  @param {object} [form] - Shopify's form object (inside {% form 'contact' %}); none for the API form
+  @param {boolean} [api] - Field names for project-server
+  @param {boolean} [show_phone] - The optional phone field
+{% enddoc %}
+{%- liquid
+  assign name_label = 'contact.name' | t
+  assign phone_label = 'contact.phone' | t
+  if api
+    assign name_field = 'name'
+    assign email_field = 'email'
+    assign phone_field = 'phone'
+    assign body_field = 'message'
+  else
+    assign name_field = 'contact[' | append: name_label | append: ']'
+    assign email_field = 'contact[email]'
+    assign phone_field = 'contact[' | append: phone_label | append: ']'
+    assign body_field = 'contact[body]'
+  endif
+-%}
+<div class="main-contact__row">
+  <div class="field">
+    <label class="field__label" for="ContactForm-name">{{ name_label }}</label>
+    <input class="input" type="text" id="ContactForm-name" name="{{ name_field }}" value="{{ form.name | default: customer.name }}" autocomplete="name" maxlength="100">
+  </div>
+  <div class="field">
+    <label class="field__label" for="ContactForm-email">{{ 'contact.email' | t }} *</label>
+    <input class="input" type="email" id="ContactForm-email" name="{{ email_field }}" value="{{ form.email | default: customer.email }}" autocomplete="email" spellcheck="false" required>
+  </div>
+</div>
+{%- if show_phone -%}
+  <div class="field">
+    <label class="field__label" for="ContactForm-phone">{{ phone_label }}</label>
+    {%- comment -%} No mask: numbers are written differently in every country; a light check only {%- endcomment -%}
+    <input class="input" type="tel" id="ContactForm-phone" name="{{ phone_field }}" value="{{ form.phone }}" autocomplete="tel" pattern="\+?[0-9\s\(\)\-\.]{7,20}" data-message-invalid="{{ 'forms.phone' | t | escape }}">
+  </div>
+{%- endif -%}
+<div class="field">
+  <label class="field__label" for="ContactForm-body">{{ 'contact.message' | t }} *</label>
+  <textarea class="input" id="ContactForm-body" name="{{ body_field }}" rows="6" maxlength="5000" required>{{ form.body }}</textarea>
+</div>
+<button type="submit" class="btn btn--full">{{ 'contact.send' | t }}</button>

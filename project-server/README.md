@@ -1,8 +1,8 @@
 # project-server
 
-Small API next to the theme. One job for now: **newsletter sign-up** straight into Shopify
-customers (email marketing consent + `newsletter` tag), so the theme can subscribe without a page
-reload. Other endpoints (the old custom checkout with WayForPay) were removed; they are in git
+Small API next to the theme: **newsletter sign-up** straight into Shopify customers (email
+marketing consent + `newsletter` tag) and **contact form messages** (kept on the customer: note +
+`contact` tag), so the theme sends both without a page reload. Other endpoints (the old custom checkout with WayForPay) were removed; they are in git
 history (commit "project-server: snapshot …") if they are needed again.
 
 ## Run
@@ -26,6 +26,18 @@ npm run server               # from the repo root: http://localhost:5000, restar
 | `403 { ok: false, error: "forbidden_origin" }` | the request is not from an origin in `ALLOWED_ORIGINS` |
 | `429` | more than 10 requests a minute from one IP |
 | `502 { ok: false, error: "server_error" }` | Shopify refused or is unreachable (details in the server log) |
+
+`POST /contact` — JSON `{ "name": "...", "email": "...", "phone": "...", "message": "...", "token": "<reCAPTCHA v3 token, action contact>" }`
+(name and phone optional). The sender is found by email or created (no marketing consent); the
+message goes on top of the customer's note with the date, phone and name, and the customer gets the
+tag `contact`. In the admin: Customers → filter by the tag `contact`. An email to the team: a
+Shopify Flow workflow "Customer tags added" (tag `contact`) → "Send internal email".
+
+| Answer | Meaning |
+|---|---|
+| `200 { ok: true }` | saved |
+| `400 { ok: false, error: "invalid_email" \| "invalid_phone" \| "invalid_message" }` | message empty or over 5000 characters |
+| `403`, `429`, `502` | as for `/newsletter` (`captcha_failed`, `forbidden_origin`, `server_error`) |
 
 `GET /health` — `{ ok: true }`.
 

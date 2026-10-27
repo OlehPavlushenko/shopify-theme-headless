@@ -1,10 +1,13 @@
 {% comment %}
   Contact page body (templates/page.contact.json, under the Page header): the store's contacts
   (Theme settings > Store details — the same source as the footer and the Organization data) with
-  social links, the page text, and Shopify's contact form (name, email, an optional phone, message;
-  the message goes to the store's sender email). The form posts as usual (Shopify may show its
-  captcha page, so no AJAX); success and errors come back from the post. @ui/form-validate checks
-  the fields first, with messages under them.
+  social links, the page text, and the contact form (name, email, an optional phone, message).
+  @ui/form-validate checks the fields first, with messages under them. Then:
+  - With Theme settings > Integrations > "API URL": <contact-form> (@ui/contact-form) sends it to
+    project-server (POST /contact, reCAPTCHA v3 when a site key is set) without a reload — the
+    message lands on the customer in the admin (note + tag "contact").
+  - Without it: Shopify's contact form, posted as usual (to the store's sender email; Shopify may
+    show its captcha page); success and errors come back from the post.
   Styles: .main-contact in sections.css.
 {% endcomment %}
 <div class="main-contact color-{{ section.settings.color_scheme }} section-spacing">
@@ -54,45 +57,58 @@
       {%- render 'social-links' -%}
     </div>
 
-    <form-validate class="main-contact__form-card" {% render 'form-validate-messages' %}>
+    {%- liquid
+      # With Theme settings > Integrations > "API URL": the message goes to project-server (POST /contact)
+      assign api = settings.api_url | strip
+      assign api_end = api | slice: -1
+      if api_end == '/'
+        assign api = api | remove_last: '/'
+      endif
+    -%}
+    {%- capture success -%}
+      <p class="main-contact__notice main-contact__notice--success" role="status" tabindex="-1">
+        {%- render 'icon', name: 'check' -%}
+        {{ 'contact.success' | t }}
+      </p>
+    {%- endcapture -%}
+
+    <contact-form
+      class="main-contact__form-card"
+      {% if api != blank %}
+        data-endpoint="{{ api }}/contact"
+      {% endif %}
+      {% if settings.recaptcha_site_key != blank %}
+        data-recaptcha="{{ settings.recaptcha_site_key | escape }}"
+      {% endif %}
+      data-message-error="{{ 'contact.error' | t | escape }}"
+      data-message-email="{{ 'forms.email' | t | escape }}"
+      data-message-phone="{{ 'forms.phone' | t | escape }}"
+    >
       <h2 class="h4">{{ section.settings.form_heading | escape }}</h2>
-      {%- form 'contact', id: 'ContactForm', class: 'main-contact__form' -%}
-        {%- if form.posted_successfully? -%}
-          <p class="main-contact__notice main-contact__notice--success" role="status" tabindex="-1" autofocus>
-            {%- render 'icon', name: 'check' -%}
-            {{ 'contact.success' | t }}
-          </p>
-        {%- elsif form.errors -%}
-          <p class="form-error" role="alert" tabindex="-1" autofocus>{{ form.errors | default_errors }}</p>
+      <form-validate {% render 'form-validate-messages' %}>
+        {%- if api != blank -%}
+          <form id="ContactForm" class="main-contact__form">
+            <p class="form-errors" role="alert" data-contact-message></p>
+            {%- render 'contact-fields', api: true, show_phone: section.settings.show_phone -%}
+          </form>
+        {%- else -%}
+          {%- form 'contact', id: 'ContactForm', class: 'main-contact__form' -%}
+            {%- if form.posted_successfully? -%}
+              {{ success | replace: 'tabindex="-1"', 'tabindex="-1" autofocus' }}
+            {%- elsif form.errors -%}
+              <p class="form-error" role="alert" tabindex="-1" autofocus>{{ form.errors | default_errors }}</p>
+            {%- endif -%}
+            {%- render 'contact-fields', form: form, show_phone: section.settings.show_phone -%}
+          {%- endform -%}
         {%- endif -%}
-        <div class="main-contact__row">
-          <div class="field">
-            <label class="field__label" for="ContactForm-name">{{ 'contact.name' | t }}</label>
-            <input class="input" type="text" id="ContactForm-name" name="contact[{{ 'contact.name' | t }}]" value="{{ form.name | default: customer.name }}" autocomplete="name">
-          </div>
-          <div class="field">
-            <label class="field__label" for="ContactForm-email">{{ 'contact.email' | t }} *</label>
-            <input class="input" type="email" id="ContactForm-email" name="contact[email]" value="{{ form.email | default: customer.email }}" autocomplete="email" spellcheck="false" required>
-          </div>
-        </div>
-        {%- if section.settings.show_phone -%}
-          <div class="field">
-            <label class="field__label" for="ContactForm-phone">{{ 'contact.phone' | t }}</label>
-            {%- comment -%} No mask: numbers are written differently in every country; a light check only {%- endcomment -%}
-            <input class="input" type="tel" id="ContactForm-phone" name="contact[{{ 'contact.phone' | t }}]" value="{{ form.phone }}" autocomplete="tel" pattern="\+?[0-9\s\(\)\-\.]{7,20}" data-message-invalid="{{ 'forms.phone' | t | escape }}">
-          </div>
-        {%- endif -%}
-        <div class="field">
-          <label class="field__label" for="ContactForm-body">{{ 'contact.message' | t }} *</label>
-          <textarea class="input" id="ContactForm-body" name="contact[body]" rows="6" required>{{ form.body }}</textarea>
-        </div>
-        <button type="submit" class="btn btn--full">{{ 'contact.send' | t }}</button>
-      {%- endform -%}
-    </form-validate>
+      </form-validate>
+      <template data-contact-success>{{ success }}</template>
+    </contact-form>
   </div>
 </div>
 <script type="module">
   import '@ui/form-validate';
+  import '@ui/contact-form';
 </script>
 
 {% schema %}

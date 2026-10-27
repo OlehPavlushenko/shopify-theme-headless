@@ -374,6 +374,7 @@
     "message": "Message",
     "send": "Send message",
     "success": "Thanks! We've got your message and will reply within a day.",
+    "error": "We couldn't send your message. Please try again in a minute or write to us by email.",
     "address": "Address",
     "hours": "Opening hours"
   },

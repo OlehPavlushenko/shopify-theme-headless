@@ -2,7 +2,7 @@
   "name": "bioharmony-api",
   "private": true,
   "type": "module",
-  "description": "Small API next to the theme: newsletter sign-up into Shopify customers",
+  "description": "Small API next to the theme: newsletter sign-up and contact form messages into Shopify customers",
   "engines": {
     "node": ">=22"
   },

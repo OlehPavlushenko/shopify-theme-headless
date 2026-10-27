@@ -25,19 +25,11 @@
     },
     "main": {
       "type": "main-blog",
-      "settings": {
-        "per_page": 3,
-        "tags": true,
-        "pagination": "load_more",
-        "featured": true,
-        "show_signup": false,
-        "color_scheme": "scheme-1"
-      },
       "blocks": {
         "promo": {
           "type": "promo",
           "settings": {
-            "position": 3,
+            "position": 2,
             "image": "shopify://shop_images/di3.jpg",
             "eyebrow": "Gift ideas",
             "heading": "Ready-to-give sets",
@@ -47,7 +39,22 @@
           }
         }
       },
-      "block_order": ["promo"]
+      "block_order": [
+        "promo"
+      ],
+      "settings": {
+        "per_page": 3,
+        "tags": true,
+        "pagination": "load_more",
+        "featured": true,
+        "show_signup": false,
+        "signup_position": 1,
+        "signup_heading": "One guide a week, straight to your inbox",
+        "signup_text": "Routines, ingredient explainers and early access to new sets. No spam.",
+        "signup_button": "Subscribe",
+        "signup_note": "Unsubscribe any time.",
+        "color_scheme": "scheme-1"
+      }
     },
     "seo": {
       "type": "rich-text",

@@ -21,7 +21,8 @@
     {%- if article.tags.size > 0 -%}
       <ul class="main-article__tags" role="list">
         {%- for tag in article.tags -%}
-          <li><a href="{{ blog.url }}/tagged/{{ tag | handleize }}" class="pill pill--soft">{{ tag | escape }}</a></li>
+          {%- capture topic_url -%}{% render 'blog-topic-url', blog_url: blog.url, tag: tag %}{%- endcapture -%}
+          <li><a href="{{ topic_url | strip }}" class="tag">{{ tag | escape }}</a></li>
         {%- endfor -%}
       </ul>
     {%- endif -%}

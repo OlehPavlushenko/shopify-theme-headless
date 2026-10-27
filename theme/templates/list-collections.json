@@ -27,10 +27,24 @@
         "ratio": "1",
         "color_scheme": "scheme-1"
       }
+    },
+    "seo": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "Natural products for body, home and wellbeing",
+        "text": "<p>Our catalog brings together everything for a natural everyday routine: skin, body and hair care with gentle plant-based formulas, herbal complexes and supplements for digestion, immunity and energy, sprouted-grain superfoods, and eco-friendly cleaning products that are safe for children and pets.</p><p>Each collection is organised by need, so you can start from what matters to you — face care or oral care, detox or nutrition, laundry or kitchen. Ready-made sets and programs combine products that work well together and cost less than buying them one by one.</p><p>Every product is chosen for its ingredients and checked before it reaches our shelves. Orders ship within 1–2 business days, delivery is free from $50, and unopened products can be returned within 14 days. Not sure where to start? Browse our best sellers or write to us — we reply within a day.</p>",
+        "source": "custom",
+        "collapse": true,
+        "lines": 3,
+        "alignment": "center",
+        "text_size": "small",
+        "color_scheme": "scheme-1"
+      }
     }
   },
   "order": [
     "header",
-    "main"
+    "main",
+    "seo"
   ]
 }

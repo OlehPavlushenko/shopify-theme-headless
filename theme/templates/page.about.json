@@ -114,7 +114,59 @@
         "button_link": "shopify://pages/contact",
         "color_scheme": "scheme-2"
       }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Where do your products come from?",
+            "answer": "<p>We work directly with seven makers, most of them family brands we know personally. Every product comes straight from the maker to our warehouse — no resellers in between.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "How do you choose what to sell?",
+            "answer": "<p>Ingredients come first: no parabens or sulfates, and the full formula is always listed. Then we use the product ourselves for a few weeks. If we would not buy it again, it does not go in the store.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Are the products safe for children and pets?",
+            "answer": "<p>Our eco cleaning products are made to be safe around children and pets, and the kids range is marked separately. Each product page lists who it is for — and if in doubt, write to us before you order.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "How fast do you deliver?",
+            "answer": "<p>Orders ship within 1–2 business days and usually arrive in 2–4 days. Delivery is free on orders over $50.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Can I return a product?",
+            "answer": "<p>Yes — unopened products can be returned within 14 days, free of charge. Write to us and we will arrange the pickup.</p>"
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5"],
+      "settings": {
+        "layout": "split",
+        "eyebrow": "FAQ",
+        "heading": "Questions about us",
+        "text": "<p>What people ask most often about who we are and how we work.</p>",
+        "button_label": "Ask a question",
+        "button_link": "shopify://pages/contact",
+        "single_open": true,
+        "open_first": true,
+        "color_scheme": "scheme-1"
+      }
     }
   },
-  "order": ["header", "stats", "story", "timeline", "promise", "quote", "brands", "contact"]
+  "order": ["header", "stats", "story", "timeline", "promise", "quote", "brands", "contact", "faq"]
 }

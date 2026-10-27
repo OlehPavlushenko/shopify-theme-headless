@@ -300,6 +300,10 @@
                   <span data-share-label>{{ 'blog.share' | t }}</span>
                 </button>
               </share-button>
+
+            {%- when '@app' -%}
+              {%- comment -%} App blocks (star rating, reviews summary, subscriptions…) {%- endcomment -%}
+              <div class="main-product__app">{% render block %}</div>
           {%- endcase -%}
         {%- endfor -%}
       </div>
@@ -393,6 +397,7 @@
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
   ],
   "blocks": [
+    { "type": "@app" },
     { "type": "vendor", "name": "t:sections.main_product.block_vendor", "limit": 1 },
     { "type": "title", "name": "t:sections.main_product.block_title", "limit": 1 },
     {

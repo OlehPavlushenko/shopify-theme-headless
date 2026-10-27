@@ -1,0 +1,25 @@
+{% comment %}
+  Apps: a section for app blocks (a reviews widget or carousel, a loyalty banner, an Instagram
+  feed…) on any page, in the page width on its color scheme; optional full width. The app draws its
+  own content and styles.
+{% endcomment %}
+<div class="apps color-{{ section.settings.color_scheme }} section-spacing">
+  <div class="{% unless section.settings.full_width %}page-width{% endunless %}">
+    {%- for block in section.blocks -%}
+      {% render block %}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.apps.name",
+  "class": "apps-section",
+  "settings": [
+    { "type": "checkbox", "id": "full_width", "label": "t:sections.apps.full_width", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ],
+  "blocks": [{ "type": "@app" }],
+  "presets": [{ "name": "t:sections.apps.name" }]
+}
+{% endschema %}

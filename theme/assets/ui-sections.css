@@ -2412,7 +2412,9 @@
     color: var(--color-heading);
   }
 
+  /* .rte caps the width (72ch): the box itself is centered in the card, not only its lines */
   .delivery-estimate__note {
+    justify-self: center;
     font-size: var(--text-sm);
     color: var(--color-text-muted);
     text-align: center;

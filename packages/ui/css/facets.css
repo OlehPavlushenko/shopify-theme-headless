@@ -596,11 +596,6 @@
       padding-inline: var(--space-m);
       border: 0.1rem solid var(--color-border);
       border-radius: var(--radius-card);
-      transition: border-color var(--duration-short) var(--ease);
-    }
-
-    .facets--sidebar .facet:has(.facet__badge) {
-      border-color: var(--color-heading);
     }
 
     /* Horizontal: the groups are pills in a row, each opening a floating panel */

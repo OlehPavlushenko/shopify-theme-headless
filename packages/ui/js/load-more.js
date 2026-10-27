@@ -28,18 +28,25 @@ class LoadMore extends HTMLElement {
     return this.querySelector('[data-load-more-grid]');
   }
 
+  // From the layout, not from CSS values (they differ between browsers): the column where the last
+  // item ends tells how many are left in its row. Never more than the grid has — a wider span
+  // would add an implicit column and push the page sideways.
   #fit() {
     const grid = this.#grid;
     const cell = grid?.querySelector('[data-load-more-cell]');
     if (!cell) return;
-    const columns = getComputedStyle(grid).gridTemplateColumns.split(' ').length;
-    let used = 0;
-    for (const child of grid.children) {
-      if (child === cell) continue;
-      const wide = getComputedStyle(child).gridColumnEnd === '-1';
-      used = wide ? Math.ceil(used / columns) * columns + columns : used + 1;
+    const style = getComputedStyle(grid);
+    const columns = style.gridTemplateColumns.split(' ').filter(Boolean).length || 1;
+    const last = cell.previousElementSibling;
+    let left = columns;
+    if (last) {
+      const gap = parseFloat(style.columnGap) || 0;
+      const box = grid.getBoundingClientRect();
+      const track = (box.width - gap * (columns - 1)) / columns;
+      const endColumn = Math.round((last.getBoundingClientRect().right - box.left + gap) / (track + gap));
+      left = columns - Math.min(Math.max(endColumn, 1), columns) || columns;
     }
-    cell.style.gridColumn = `span ${columns - (used % columns)}`;
+    cell.style.gridColumn = `span ${left}`;
   }
 
   #onClick = async (event) => {

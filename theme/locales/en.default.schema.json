@@ -572,7 +572,10 @@
       "tags": "Topics on the cards",
       "tags_info": "The article tags on each card; a click filters the blog by that topic (several combine).",
       "featured": "Feature the latest article",
-      "featured_info": "The newest article is shown large on the first page."
+      "featured_info": "The newest article is shown large on the first page.",
+      "signup_header": "Sign-up card",
+      "show_signup": "Show a sign-up card among the articles",
+      "signup_position": "After article"
     },
     "main_article": {
       "name": "Article",

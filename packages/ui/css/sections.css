@@ -1833,6 +1833,46 @@
     grid-column: 1 / -1;
   }
 
+  /* Sign-up card among the articles: as tall as the cards beside it, on the surface color */
+  .main-blog__signup-card {
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: var(--space-s);
+    height: 100%;
+    min-height: 32rem;
+    padding: var(--space-xl) var(--space-l);
+    background: radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--color-accent) 14%, transparent) 0 28%, transparent 28.5%),
+      var(--color-surface);
+    border-radius: var(--radius-card);
+  }
+
+  .main-blog__signup-card h2 {
+    margin: 0;
+  }
+
+  .main-blog__signup-icon {
+    display: grid;
+    place-items: center;
+    width: 4.8rem;
+    height: 4.8rem;
+    color: var(--color-accent);
+    background: var(--color-background);
+    border-radius: var(--radius-full);
+  }
+
+  .main-blog__signup-icon .svg-icon {
+    --icon-size: 2.2rem;
+  }
+
+  .main-blog__signup-text {
+    color: var(--color-text-muted);
+  }
+
+  .main-blog__signup .newsletter-form {
+    width: 100%;
+  }
+
   @media (min-width: 750px) {
     .main-blog__featured {
       padding-bottom: var(--space-2xl);

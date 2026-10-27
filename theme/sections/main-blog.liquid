@@ -54,6 +54,19 @@
                 {%- render 'article-card', article: article, heading_tag: 'h2', show_tags: section.settings.tags, sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw' -%}
               {%- endif -%}
             </li>
+            {%- comment -%} The sign-up card among the articles (first page only; not a load-more item) {%- endcomment -%}
+            {%- if section.settings.show_signup and paginate.current_page == 1 and forloop.index == section.settings.signup_position -%}
+              <li class="main-blog__signup">
+                <div class="main-blog__signup-card">
+                  <span class="main-blog__signup-icon" aria-hidden="true">{%- render 'icon', name: 'mail' -%}</span>
+                  <h2 class="h4">{{ section.settings.signup_heading | escape }}</h2>
+                  {%- if section.settings.signup_text != blank -%}
+                    <p class="main-blog__signup-text">{{ section.settings.signup_text | escape }}</p>
+                  {%- endif -%}
+                  {%- render 'newsletter-form', id: section.id, button_label: section.settings.signup_button, note: section.settings.signup_note -%}
+                </div>
+              </li>
+            {%- endif -%}
           {%- endfor -%}
           {%- if section.settings.pagination == 'load_more' -%}
             {%- assign shown = paginate.current_offset | plus: blog.articles.size -%}
@@ -91,6 +104,13 @@
       "default": "load_more"
     },
     { "type": "checkbox", "id": "featured", "label": "t:sections.main_blog.featured", "info": "t:sections.main_blog.featured_info", "default": true },
+    { "type": "header", "content": "t:sections.main_blog.signup_header" },
+    { "type": "checkbox", "id": "show_signup", "label": "t:sections.main_blog.show_signup", "default": true },
+    { "type": "range", "id": "signup_position", "label": "t:sections.main_blog.signup_position", "min": 1, "max": 12, "step": 1, "default": 3 },
+    { "type": "text", "id": "signup_heading", "label": "t:labels.heading", "default": "One guide a week, straight to your inbox" },
+    { "type": "text", "id": "signup_text", "label": "t:labels.text", "default": "Routines, ingredient explainers and early access to new sets. No spam." },
+    { "type": "text", "id": "signup_button", "label": "t:labels.button_label", "default": "Subscribe" },
+    { "type": "text", "id": "signup_note", "label": "t:sections.password.newsletter_note", "default": "Unsubscribe any time." },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
   ]
 }

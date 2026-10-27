@@ -575,6 +575,7 @@
       "featured_info": "The newest article is shown large on the first page.",
       "signup_header": "Sign-up card",
       "show_signup": "Show a sign-up card among the articles",
+      "show_signup_info": "Off when the footer already has the newsletter sign-up.",
       "signup_position": "After article"
     },
     "main_article": {

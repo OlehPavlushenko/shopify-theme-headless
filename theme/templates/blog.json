@@ -30,6 +30,7 @@
         "tags": true,
         "pagination": "load_more",
         "featured": true,
+        "show_signup": false,
         "color_scheme": "scheme-1"
       }
     }

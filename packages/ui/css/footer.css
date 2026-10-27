@@ -105,12 +105,15 @@
     }
   }
 
-  /* Desktop: the brand column a bit wider, then one column per block (--footer-columns from Liquid) */
+  /* Desktop: one column per block (--footer-columns from Liquid); the brand column keeps a row of
+     its own until 1200px (five columns in 990px squeeze product names), then sits first, a bit wider */
   @media (min-width: 990px) {
     .site-footer__columns {
       grid-template-columns: repeat(var(--footer-columns, 3), minmax(0, 1fr));
     }
+  }
 
+  @media (min-width: 1200px) {
     .site-footer__columns--brand {
       grid-template-columns: minmax(0, 1.4fr) repeat(var(--footer-columns, 3), minmax(0, 1fr));
     }
@@ -120,7 +123,6 @@
     }
   }
 
-  /* --------------------------------------------------------- contacts */
   /* --------------------------------------------------------- articles */
   .site-footer__articles {
     display: grid;

@@ -1,7 +1,8 @@
 // Site header: the same markup and classes as theme/sections/header.liquid (styles: packages/ui/css/header.css).
-// First version: logo, top-level menu links, search and cart links; dropdowns, the mobile menu and the
-// search panel come next.
+// First version: logo, top-level menu links, search and cart links (with the count); dropdowns, the
+// mobile menu and the search panel come next.
 import Link from 'next/link';
+import CartCount from './CartCount.js';
 import Icon from './Icon.js';
 import { localPath } from '@/lib/shopify.js';
 
@@ -33,8 +34,9 @@ export default function Header({ shopName, menu }) {
           <Link href="/search" className="btn btn--icon" aria-label="Search">
             <Icon name="search" />
           </Link>
-          <Link href="/cart" className="btn btn--icon" aria-label="Cart">
+          <Link href="/cart" className="btn btn--icon site-header__cart" aria-label="Cart">
             <Icon name="bag" />
+            <CartCount />
           </Link>
         </div>
       </div>

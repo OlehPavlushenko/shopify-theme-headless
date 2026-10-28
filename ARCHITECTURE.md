@@ -22,6 +22,7 @@ reference/
   loyalty-theme/     the previous theme, kept as a working reference for behavior and features
 scripts/
   sync-ui.mjs        copies packages/ui/{css,js}/<file> -> theme/assets/ui-<file>
+                     and joins the always-loaded CSS (CORE) into theme/assets/ui-core.css
 ```
 
 ## Principles

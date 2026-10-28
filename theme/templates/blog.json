@@ -13,7 +13,7 @@
       "type": "page-header",
       "settings": {
         "heading": "",
-        "text": "<p>Guides, routines and ideas for natural care at home.</p>",
+        "text": "<p>Guides, ideas and news from our team.</p>",
         "breadcrumbs": true,
         "subcollections": true,
         "alignment": "left",
@@ -33,7 +33,7 @@
             "image": "shopify://shop_images/di3.jpg",
             "eyebrow": "Gift ideas",
             "heading": "Ready-to-give sets",
-            "text": "Routines from our guides, packed in one box",
+            "text": "Our favourite picks from the guides, packed in one box",
             "link_label": "Shop sets",
             "link": "shopify://collections/sets-programs"
           }
@@ -50,7 +50,7 @@
         "show_signup": false,
         "signup_position": 1,
         "signup_heading": "One guide a week, straight to your inbox",
-        "signup_text": "Routines, ingredient explainers and early access to new sets. No spam.",
+        "signup_text": "Guides, product news and early access to new arrivals. No spam.",
         "signup_button": "Subscribe",
         "signup_note": "Unsubscribe any time.",
         "color_scheme": "scheme-1"
@@ -59,8 +59,8 @@
     "seo": {
       "type": "rich-text",
       "settings": {
-        "heading": "Guides for natural everyday care",
-        "text": "<p>Our blog collects simple, practical guides for natural care at home: skin care routines that take five minutes, how to choose supplements such as collagen or omega-3, what superfoods really do and how to add them to your day, and easy swaps for eco-friendly cleaning that are safe for children and pets.</p><p>Every article is written by our team and checked against the products we use ourselves. Filter the guides by topic — skin care, health, nutrition, eco home, gift ideas — and combine topics to find exactly what you need. Articles link to the products they mention, so you can try a routine right away.</p><p>New guides appear every week. Have a question you would like us to answer? Write to us — the best questions become our next articles.</p>",
+        "heading": "Guides for everyday shopping",
+        "text": "<p>Our blog collects short, practical guides: how to choose the right product, how to get the most out of it and what is new in the store. Every article is written by our team and updated when something changes.</p><p>Browse by topic, search for a question, or subscribe to get new guides first.</p>",
         "source": "custom",
         "collapse": true,
         "lines": 3,

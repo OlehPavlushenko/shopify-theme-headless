@@ -25,7 +25,7 @@
             "tint_color": "#100f0f",
             "overlay": 60,
             "eyebrow": "Gift guide",
-            "heading": "Gifts that care",
+            "heading": "Gifts made easy",
             "text": "<p>Ready-to-give sets with free gift wrapping on every order.</p>",
             "button_label": "Shop gifts",
             "button_link": "/collections/all",
@@ -44,12 +44,12 @@
             "caption": "overlay",
             "tint_color": "#000000",
             "overlay": 10,
-            "eyebrow": "BioHarmony",
-            "heading": "Wellness rooted in nature",
-            "text": "<p>Phyto complexes, superfoods and clean beauty for every day.</p>",
+            "eyebrow": "New season",
+            "heading": "Everything for every day",
+            "text": "<p>New arrivals, best sellers and ready-made sets in one place.</p>",
             "button_label": "Top sale",
             "button_link": "shopify://collections/best-sellers",
-            "button_label_2": "Explore health",
+            "button_label_2": "Explore more",
             "button_link_2": "shopify://collections/health"
           }
         },
@@ -66,8 +66,8 @@
             "tint_color": "#000000",
             "overlay": 20,
             "eyebrow": "Christmas collection",
-            "heading": "Natural care, every day",
-            "text": "<p>Gentle formulas and honest ingredients for skin, body and wellbeing.</p>",
+            "heading": "Chosen with care",
+            "text": "<p>Quality products, fair prices and delivery in 2–4 days.</p>",
             "button_label": "Shop gifts",
             "button_link": "/collections/all",
             "button_label_2": "Best sellers",
@@ -101,8 +101,8 @@
           "type": "item",
           "settings": {
             "icon": "leaf",
-            "title": "Natural ingredients",
-            "text": "No parabens or sulfates"
+            "title": "Quality checked",
+            "text": "Every product tried by our team"
           }
         },
         "t3": {
@@ -168,8 +168,8 @@
           "type": "promo",
           "settings": {
             "image": "shopify://shop_images/greenmax3.png",
-            "eyebrow": "Skin care",
-            "heading": "Winter routine",
+            "eyebrow": "Seasonal",
+            "heading": "Winter picks",
             "text": "Hydration for cold days",
             "link_label": "Discover",
             "link": "/collections/all"
@@ -179,9 +179,9 @@
           "type": "promo",
           "settings": {
             "image": "shopify://shop_images/di3.jpg",
-            "eyebrow": "Wellness",
+            "eyebrow": "Best sellers",
             "heading": "Daily balance",
-            "text": "Supplements that work",
+            "text": "What our customers love",
             "link_label": "Shop now",
             "link": "/collections/all"
           }
@@ -225,7 +225,7 @@
         "ratio": "4 / 3",
         "eyebrow": "Our story",
         "heading": "Made with care for you",
-        "text": "<p>We choose every ingredient for a reason and test every formula before it reaches you. Natural, honest and made in small batches.</p>",
+        "text": "<p>We choose every product for a reason and check it before it reaches you. Honest descriptions, fair prices and a team that answers within a day.</p>",
         "button_label": "About us",
         "button_link": "/pages/about",
         "color_scheme": "scheme-2"
@@ -352,8 +352,8 @@
         "q3": {
           "type": "question",
           "settings": {
-            "question": "Are your products natural?",
-            "answer": "<p>We choose formulas without parabens and sulfates, and every product lists its full ingredients on its page.</p>"
+            "question": "How do you choose your products?",
+            "answer": "<p>We try every product ourselves before it goes in the store, and each product page lists its full details.</p>"
           }
         },
         "q4": {
@@ -385,8 +385,8 @@
     "seo_text": {
       "type": "rich-text",
       "settings": {
-        "heading": "Natural care, made simple",
-        "text": "<p>Our store brings together natural skin care, wellness supplements, superfoods and eco-friendly home products in one place. Every product is chosen for its ingredients and tested before it reaches our shelves.</p><p>Free delivery on orders over the threshold, easy returns within 14 days and personal advice from our team make shopping simple. Explore best sellers, new arrivals and seasonal gift sets, or read our guides on the blog to find a routine that suits you.</p><p>We work directly with brands we trust, so prices stay fair and every order arrives fresh. Questions about an ingredient or a set? Write to us — we reply within a day.</p>",
+        "heading": "Shopping, made simple",
+        "text": "<p>Our store brings together carefully chosen products for everyday life in one place. Every product is checked before it reaches our shelves, and every page lists its full details, photos and reviews.</p><p>Free delivery on orders over $50, easy returns within 14 days and personal advice from our team make shopping simple. Explore best sellers, new arrivals and seasonal gift sets.</p>",
         "source": "custom",
         "collapse": true,
         "lines": 3,

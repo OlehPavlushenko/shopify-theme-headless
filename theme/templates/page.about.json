@@ -4,7 +4,7 @@
       "type": "page-header",
       "settings": {
         "heading": "",
-        "text": "<p>Natural care, chosen by people who use it every day. We bring skin care, wellness supplements, superfoods and eco-friendly home products together on one honest shelf.</p>",
+        "text": "<p>Carefully chosen products for everyday life, from people who use them every day.</p>",
         "breadcrumbs": true,
         "alignment": "left",
         "image_layout": "split",
@@ -17,8 +17,8 @@
     "stats": {
       "type": "stats",
       "blocks": {
-        "s1": { "type": "stat", "settings": { "value": "2019", "label": "Founded in Kyiv", "text": "Started at a kitchen table" } },
-        "s2": { "type": "stat", "settings": { "value": "175+", "label": "Natural products", "text": "Each one tested by our team" } },
+        "s1": { "type": "stat", "settings": { "value": "2019", "label": "Year founded", "text": "Started at a kitchen table" } },
+        "s2": { "type": "stat", "settings": { "value": "175+", "label": "Products in stock", "text": "Each one tested by our team" } },
         "s3": { "type": "stat", "settings": { "value": "7", "label": "Trusted brands", "text": "We know every maker personally" } },
         "s4": { "type": "stat", "settings": { "value": "14", "label": "Days for free returns", "text": "No questions asked" } }
       },
@@ -38,7 +38,7 @@
         "ratio": "4 / 5",
         "eyebrow": "Our story",
         "heading": "It started with a simple question",
-        "text": "<p>Why is it so hard to find everyday care that is natural, honest and easy to choose? We asked ourselves that in 2019 — and started with a few products we already trusted at home.</p><p>Today our shelves hold skin and body care, herbal complexes, sprouted-grain superfoods and eco-friendly cleaning products. The rule has not changed: if we would not use it ourselves, it does not go in the store.</p>",
+        "text": "<p>Why is it so hard to find everyday products that are good, honest and easy to choose? We asked ourselves that in 2019 — and started with a few products we already trusted at home.</p><p>Today our shelves hold hundreds of products across several categories. The rule has not changed: if we would not use it ourselves, it does not go in the store.</p>",
         "button_label": "Shop best sellers",
         "button_link": "shopify://collections/best-sellers",
         "color_scheme": "scheme-1"
@@ -50,7 +50,7 @@
         "t1": { "type": "step", "settings": { "year": "2019", "title": "The first order", "text": "A few products we used ourselves, packed at the kitchen table and sent to friends." } },
         "t2": { "type": "step", "settings": { "year": "2021", "title": "Our own warehouse", "text": "Orders ship within 1–2 business days, and every parcel is still packed by hand." } },
         "t3": { "type": "step", "settings": { "year": "2023", "title": "Seven brands, one shelf", "text": "We started working with makers directly — fair prices without extra middlemen." } },
-        "t4": { "type": "step", "settings": { "year": "Today", "title": "175+ products", "text": "Care for skin, body, home and wellbeing, chosen and tested by a team of twelve." } }
+        "t4": { "type": "step", "settings": { "year": "Today", "title": "175+ products", "text": "Hundreds of products across the catalog, chosen and tested by a team of twelve." } }
       },
       "block_order": ["t1", "t2", "t3", "t4"],
       "settings": {
@@ -62,7 +62,7 @@
     "promise": {
       "type": "trust-bar",
       "blocks": {
-        "p1": { "type": "item", "settings": { "icon": "leaf", "title": "Ingredients first", "text": "No parabens or sulfates, full formulas listed" } },
+        "p1": { "type": "item", "settings": { "icon": "leaf", "title": "Tested first", "text": "Every product tried by our team" } },
         "p2": { "type": "item", "settings": { "icon": "heart", "title": "Tested by us", "text": "We use every product before you do" } },
         "p3": { "type": "item", "settings": { "icon": "truck", "title": "Fast delivery", "text": "Free on orders over $50" } },
         "p4": { "type": "item", "settings": { "icon": "chat", "title": "Real advice", "text": "Write to us — we reply within a day" } }
@@ -75,7 +75,7 @@
     "quote": {
       "type": "quote",
       "settings": {
-        "quote": "Good care is the one you enjoy every day. Everything else is just a nice label.",
+        "quote": "The best things are the ones you use every day. Everything else is just a nice label.",
         "author": "Olena Kovalenko",
         "role": "Founder",
         "color_scheme": "scheme-3"
@@ -109,7 +109,7 @@
         "ratio": "4 / 3",
         "eyebrow": "We are here to help",
         "heading": "Not sure what suits you?",
-        "text": "<p>Tell us what you are looking for — skin type, a goal, a gift — and we will suggest a few products that fit. Every message is read by a person, and we reply within a day.</p>",
+        "text": "<p>Tell us what you are looking for — a goal, a budget, a gift — and we will suggest a few products that fit. Every message is read by a person, and we reply within a day.</p>",
         "button_label": "Contact us",
         "button_link": "shopify://pages/contact",
         "color_scheme": "scheme-2"
@@ -129,14 +129,14 @@
           "type": "question",
           "settings": {
             "question": "How do you choose what to sell?",
-            "answer": "<p>Ingredients come first: no parabens or sulfates, and the full formula is always listed. Then we use the product ourselves for a few weeks. If we would not buy it again, it does not go in the store.</p>"
+            "answer": "<p>We read every detail first, then use the product ourselves for a few weeks. If we would not buy it again, it does not go in the store.</p>"
           }
         },
         "q3": {
           "type": "question",
           "settings": {
-            "question": "Are the products safe for children and pets?",
-            "answer": "<p>Our eco cleaning products are made to be safe around children and pets, and the kids range is marked separately. Each product page lists who it is for — and if in doubt, write to us before you order.</p>"
+            "question": "Can I see more than the photos?",
+            "answer": "<p>Every product page lists its full details and customer reviews. If something is still unclear, write to us before you order — we reply within a day.</p>"
           }
         },
         "q4": {

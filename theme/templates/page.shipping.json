@@ -220,7 +220,7 @@
           "type": "question",
           "settings": {
             "question": "Which products can be returned?",
-            "answer": "<p>Any product in its original, unopened packaging. Opened cosmetics and supplements cannot be returned for hygiene reasons — unless they arrived damaged.</p>"
+            "answer": "<p>Any product in its original, unopened packaging. Items with a broken hygiene seal cannot be returned — unless they arrived damaged.</p>"
           }
         },
         "q4": {

@@ -636,26 +636,27 @@
   {%- comment -%}
     Sticky bar: what the main form adds — the variant ("Size / Color"), the quantity (a stepper kept
     in step with the main one from 750px; "× 2" in the text line on phones), the price and the add
-    button, which submits the main form. The title and variant are a button back up to the options
-    (to change the variant). <sticky-buy-bar> in assets/product.js.
+    button, which submits the main form. A round up-arrow button first takes you back up to the
+    options (to change the variant). <sticky-buy-bar> in assets/product.js.
   {%- endcomment -%}
   {%- if section.settings.sticky_bar -%}
     {%- assign buy_block = section.blocks | where: 'type', 'buy_buttons' | first -%}
     <sticky-buy-bar class="sticky-buy" data-form="{{ form_id }}" hidden>
       <div class="page-width sticky-buy__inner">
+        {%- assign back_label = 'products.back_to_options' | t -%}
+        <button type="button" class="btn btn--icon sticky-buy__top" data-sticky-top aria-label="{{ back_label | escape }}" title="{{ back_label | escape }}">
+          {%- render 'icon', name: 'arrow-right' -%}
+        </button>
         {%- if product.featured_media -%}
           {{ product.featured_media | image_url: width: 120 | image_tag: loading: 'lazy', class: 'sticky-buy__image', width: 48, height: 48, alt: '' }}
         {%- endif -%}
-        <button type="button" class="sticky-buy__text" data-sticky-top aria-label="{{ 'products.back_to_options' | t | escape }}">
-          <span class="sticky-buy__title">
-            <span class="sticky-buy__name">{{ product.title | escape }}</span>
-            {%- render 'icon', name: 'chevron-down' -%}
-          </span>
+        <div class="sticky-buy__text">
+          <span class="sticky-buy__title">{{ product.title | escape }}</span>
           <span class="sticky-buy__meta">
             {%- unless product.has_only_default_variant -%}<span data-sticky-variant>{{ variant.title | escape }}</span>{%- endunless -%}
             <span class="sticky-buy__count" data-sticky-count hidden></span>
           </span>
-        </button>
+        </div>
         {%- if buy_block.settings.show_quantity -%}
           <quantity-input class="qty sticky-buy__qty">
             <button type="button" class="qty__btn" data-qty="-1" aria-label="{{ 'cart.decrease' | t: product: product.title | escape }}">{%- render 'icon', name: 'minus' -%}</button>

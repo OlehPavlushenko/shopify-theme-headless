@@ -13,6 +13,7 @@ import '@ui-css/footer.css';
 import { Bricolage_Grotesque, DM_Sans } from 'next/font/google';
 import Header from '@/components/Header.js';
 import Footer from '@/components/Footer.js';
+import UiScripts from '@/components/UiScripts.js';
 import { getShell } from '@/lib/queries.js';
 
 const body = DM_Sans({ subsets: ['latin'], display: 'swap' });
@@ -33,6 +34,7 @@ export default async function RootLayout({ children }) {
         <Header shopName={shop.name} menu={header} />
         <main id="MainContent">{children}</main>
         <Footer shopName={shop.name} menu={footer} policies={policies} />
+        <UiScripts />
       </body>
     </html>
   );

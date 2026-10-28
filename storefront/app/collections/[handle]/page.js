@@ -4,7 +4,7 @@
 import '@ui-css/facets.css';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import Breadcrumbs from '@/components/Breadcrumbs.js';
+import PageHeader from '@/components/PageHeader.js';
 import ProductCard from '@/components/ProductCard.js';
 import SortSelect from '@/components/SortSelect.js';
 import { getCollection } from '@/lib/queries.js';
@@ -37,17 +37,11 @@ export default async function CollectionPage({ params, searchParams }) {
 
   return (
     <>
-      <div className="page-header page-header--left page-header--media-none">
-        <div className="page-header__inner page-width">
-          <div className="page-header__text-col">
-            <Breadcrumbs current={collection.title} />
-            <h1 className="h1 page-header__heading">{collection.title}</h1>
-            {collection.descriptionHtml && (
-              <div className="text-lead page-header__text" dangerouslySetInnerHTML={{ __html: collection.descriptionHtml }} />
-            )}
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        heading={collection.title}
+        textHtml={collection.descriptionHtml}
+        trail={handle === 'all' ? [] : [{ title: 'Collections', url: '/collections' }]}
+      />
 
       <div className="main-collection section-spacing">
         <div className="page-width">

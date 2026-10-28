@@ -18,6 +18,8 @@ const PATHS = {
   plus: <path d="M12 5v14M5 12h14" />,
   minus: <path d="M5 12h14" />,
   check: <path d="M5 12.5l4.5 4.5L19 7.5" />,
+  'chevron-right': <path d="M9 6l6 6-6 6" />,
+  'chevron-left': <path d="M15 6l-6 6 6 6" />,
   trash: <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />,
 };
 

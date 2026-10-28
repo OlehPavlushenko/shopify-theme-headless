@@ -94,6 +94,13 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
   `discount-percent` helpers, Prettier + editorconfig, unused locale keys removed.
 - [STYLEGUIDE.md](STYLEGUIDE.md): checklist and pitfalls.
 
+### Headless storefront (2026-10-28)
+- `storefront/`: Next.js 16 (App Router, JS) on the Storefront API, same `packages/ui` CSS and web
+  components, same markup and classes as the theme. Header (sticky, mobile menu), footer, home, product
+  (variant links, add to cart), collection (sort, pages), collections, search, cart (server actions,
+  Shopify checkout), 404, sitemap, robots, structured data. Runs on mock.shop until the store's token is
+  set. Details: [storefront/README.md](../storefront/README.md).
+
 ## Next
 
 0. **Go live**: publish the theme; project-server on a public https host (its URL in Theme settings >
@@ -108,7 +115,9 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
 3. **Spin to win, next step**: the prize is picked on the server once per email (done); a personal
    one-time code per email (needs the discounts scope), a teaser tab to reopen the popup.
 4. Wishlist / compare synced to the customer account through project-server.
-5. The store's own texts in the admin: home meta title / description (Online Store → Preferences),
+5. **Headless, next**: the store's Storefront API token (Headless channel), desktop dropdowns, search
+   panel, filters, home sections from metaobjects, deploy on Vercel (free Hobby plan), Lighthouse vs the theme.
+6. The store's own texts in the admin: home meta title / description (Online Store → Preferences),
    the logo.
 
 ## Decisions

@@ -148,6 +148,54 @@ export async function getCollection(
   return data?.collection ?? null;
 }
 
+// Search results (products), 24 at most
+export async function searchProducts(query) {
+  const data = await storefront(
+    `#graphql
+    query Search($query: String!) {
+      search(query: $query, first: 24, types: PRODUCT) {
+        totalCount
+        nodes { ... on Product { ...ProductCard } }
+      }
+    }
+    ${PRODUCT_CARD}`,
+    { query }
+  );
+  return data?.search ?? { totalCount: 0, nodes: [] };
+}
+
+// Collections page: every collection with its image (or its first product's) and product count
+export async function getCollections() {
+  const data = await storefront(
+    `#graphql
+    query Collections {
+      collections(first: 100, sortKey: TITLE) {
+        nodes {
+          handle
+          title
+          image { ${IMAGE} }
+          products(first: 1) { nodes { featuredImage { ${IMAGE} } } }
+        }
+      }
+    }`
+  );
+  return data?.collections.nodes ?? [];
+}
+
+// Every product and collection URL with its last update, for sitemap.xml (250 each, the API's page size)
+export async function getSitemapEntries() {
+  const data = await storefront(
+    `#graphql
+    query Sitemap {
+      products(first: 250) { nodes { handle updatedAt } }
+      collections(first: 250) { nodes { handle updatedAt } }
+    }`,
+    {},
+    { revalidate: 3600 }
+  );
+  return { products: data?.products.nodes ?? [], collections: data?.collections.nodes ?? [] };
+}
+
 // The cart (per visitor: never cached)
 export const CART = `#graphql
   fragment Cart on Cart {

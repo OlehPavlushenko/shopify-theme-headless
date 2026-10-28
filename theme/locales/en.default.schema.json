@@ -603,6 +603,14 @@
       "show_related": "Read next",
       "show_related_info": "Three articles that share the most tags with this one."
     },
+    "product_story": {
+      "name": "Product story",
+      "info": "Filled from the product's metafields: Key ingredients (custom.key_ingredients, one per line as \"Name — what it does\") and How to use (custom.how_to_use, one step per line). Hidden on products without them.",
+      "ingredients_eyebrow": "Ingredients: small heading",
+      "ingredients_heading": "Ingredients: heading",
+      "steps_eyebrow": "Steps: small heading",
+      "steps_heading": "Steps: heading"
+    },
     "main_product": {
       "show_notify": "\"Notify me when it's back\" for sold-out variants",
       "show_notify_info": "An email field instead of the button; requests land on the customer in the admin (tag back-in-stock). Needs the API URL in Theme settings > Integrations.",

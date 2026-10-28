@@ -1,0 +1,69 @@
+{% comment %}
+  Product story (templates/product.json, under the product): the product's key ingredients as cards
+  and how to use it as numbered steps, side by side from 990px. Both come from the product's
+  metafields, so each product tells its own:
+  - custom.key_ingredients — list of single-line texts, "Name — what it does" (the part before " — "
+    is the card's title);
+  - custom.how_to_use — list of single-line texts, one step each.
+  A part without its metafield is left out; without both the section renders nothing.
+  Styles: .product-story in sections.css.
+{% endcomment %}
+{%- liquid
+  assign ingredients = product.metafields.custom.key_ingredients.value
+  assign steps = product.metafields.custom.how_to_use.value
+-%}
+{%- if ingredients.size > 0 or steps.size > 0 -%}
+  <div class="product-story color-{{ section.settings.color_scheme }} section-spacing">
+    <div class="page-width product-story__inner">
+      {%- if ingredients.size > 0 -%}
+        <section class="product-story__part" aria-labelledby="StoryIngredients-{{ section.id }}">
+          <p class="eyebrow">{{ section.settings.ingredients_eyebrow | escape }}</p>
+          <h2 id="StoryIngredients-{{ section.id }}" class="h3">{{ section.settings.ingredients_heading | escape }}</h2>
+          <ul class="product-story__ingredients" role="list">
+            {%- for item in ingredients -%}
+              {%- assign parts = item | split: ' — ' -%}
+              <li class="product-story__ingredient">
+                {%- render 'icon', name: 'leaf' -%}
+                <p class="product-story__ingredient-name">{{ parts.first | escape }}</p>
+                {%- if parts.size > 1 -%}
+                  <p class="product-story__ingredient-text">{{ item | remove_first: parts.first | remove_first: ' — ' | escape }}</p>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </section>
+      {%- endif -%}
+      {%- if steps.size > 0 -%}
+        <section class="product-story__part product-story__part--steps" aria-labelledby="StorySteps-{{ section.id }}">
+          <p class="eyebrow">{{ section.settings.steps_eyebrow | escape }}</p>
+          <h2 id="StorySteps-{{ section.id }}" class="h3">{{ section.settings.steps_heading | escape }}</h2>
+          <ol class="product-story__steps" role="list">
+            {%- for step in steps -%}
+              <li class="product-story__step">
+                <span class="product-story__step-number" aria-hidden="true">{{ forloop.index }}</span>
+                <p>{{ step | escape }}</p>
+              </li>
+            {%- endfor -%}
+          </ol>
+        </section>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.product_story.name",
+  "class": "product-story-section",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.product_story.info" },
+    { "type": "text", "id": "ingredients_eyebrow", "label": "t:sections.product_story.ingredients_eyebrow", "default": "What's inside" },
+    { "type": "text", "id": "ingredients_heading", "label": "t:sections.product_story.ingredients_heading", "default": "Key ingredients" },
+    { "type": "text", "id": "steps_eyebrow", "label": "t:sections.product_story.steps_eyebrow", "default": "Routine" },
+    { "type": "text", "id": "steps_heading", "label": "t:sections.product_story.steps_heading", "default": "How to use" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "t:sections.product_story.name" }]
+}
+{% endschema %}

@@ -195,7 +195,17 @@
         "columns": 5,
         "color_scheme": "scheme-1"
       }
+    },
+    "story": {
+      "type": "product-story",
+      "settings": {
+        "ingredients_eyebrow": "What's inside",
+        "ingredients_heading": "Key ingredients",
+        "steps_eyebrow": "Routine",
+        "steps_heading": "How to use",
+        "color_scheme": "scheme-1"
+      }
     }
   },
-  "order": ["main", "related", "faq", "recent"]
+  "order": ["main", "story", "related", "faq", "recent"]
 }

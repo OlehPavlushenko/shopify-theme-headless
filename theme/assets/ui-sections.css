@@ -2819,6 +2819,103 @@
       font-size: var(--text-md);
     }
   }
+  /* ------------------------------------------------------ product story */
+  /* Key ingredients (cards) and how to use (numbered steps), side by side from 990px */
+  .product-story__inner {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+
+  .product-story__part {
+    display: grid;
+    align-content: start;
+    gap: var(--space-xs);
+  }
+
+  .product-story__part > :is(.eyebrow, h2) {
+    margin: 0;
+  }
+
+  .product-story__ingredients,
+  .product-story__steps {
+    display: grid;
+    gap: var(--space-s);
+    margin: var(--space-m) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .product-story__ingredients {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  }
+
+  .product-story__ingredient {
+    display: grid;
+    align-content: start;
+    gap: var(--space-2xs);
+    padding: var(--space-l);
+    background: var(--color-surface);
+    border-radius: var(--radius-card);
+  }
+
+  .product-story__ingredient > .svg-icon {
+    --icon-size: 2.4rem;
+
+    margin-bottom: var(--space-xs);
+    color: var(--color-accent);
+  }
+
+  .product-story__ingredient > p {
+    margin: 0;
+  }
+
+  .product-story__ingredient-name {
+    font-family: var(--font-heading-family);
+    font-size: var(--text-lg);
+    color: var(--color-heading);
+  }
+
+  .product-story__ingredient-text {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .product-story__step {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-m);
+    padding-bottom: var(--space-s);
+    border-bottom: 0.1rem solid var(--color-border);
+  }
+
+  .product-story__step:last-child {
+    border-bottom: 0;
+  }
+
+  .product-story__step p {
+    margin: 0;
+    padding-top: 0.6rem;
+    color: var(--color-heading);
+  }
+
+  .product-story__step-number {
+    display: grid;
+    place-items: center;
+    width: 3.6rem;
+    height: 3.6rem;
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-background);
+    background: var(--color-accent);
+    border-radius: 50%;
+  }
+
+  @media (min-width: 990px) {
+    .product-story__inner:has(> .product-story__part + .product-story__part) {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: var(--space-3xl);
+    }
+  }
 }
 
 /* Unlayered on purpose: Shopify's policy-page CSS is unlayered and would beat @layer rules —

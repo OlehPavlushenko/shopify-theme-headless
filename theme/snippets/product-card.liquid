@@ -1,12 +1,14 @@
 {% doc %}
   Product card used across the theme: collection grids, search, product lists, mega menu.
-  Shows the featured image (second image on hover), "−X%" / sale / sold-out badge, vendor, title,
-  price and the first option's values on one line: color swatches (5 at most, then "+N") or text
-  ("50 ml · 100 ml", cut with an ellipsis), sold-out ones faded / struck through.
+  Shows the featured image (second image on hover), a sold-out / "Offer" / "−X%" / sale badge (else
+  the product's label, metafield custom.label), vendor, title, rating, price, an offer timer and the
+  first option's values on one line: color swatches (5 at most, then "+N") or text ("50 ml · 100 ml",
+  cut with an ellipsis), sold-out ones faded / struck through. Theme settings > Product cards: image
+  shape and fit, second image, label, vendor, rating, values, timer.
   Styles: packages/ui/css/product-card.css.
 
   @param {object} product - Product
-  @param {boolean} [show_vendor] - Show the vendor above the title
+  @param {boolean} [show_vendor] - Show the vendor above the title (also on with Theme settings)
   @param {boolean} [show_secondary_image] - Swap to the second image on hover (default true)
   @param {string} [sizes] - sizes attribute for the image (default: grid of 2 / 4 columns)
   @param {boolean} [eager] - Load the image eagerly (first row above the fold)
@@ -24,7 +26,7 @@
   comment
     Not `| default: true`: Liquid's default also replaces an explicit false.
   endcomment
-  if show_secondary_image == false or second == blank or second.media_type != 'image'
+  if show_secondary_image == false or settings.card_secondary_image == false or second == blank or second.media_type != 'image'
     assign second = null
   endif
   assign image_sizes = sizes | default: '(min-width: 990px) calc((100vw - 10rem) / 4), (min-width: 750px) calc((100vw - 6rem) / 3), calc((100vw - 4rem) / 2)'
@@ -55,9 +57,14 @@
     endfor
   endif
   assign in_cart_label = 'products.in_cart' | t: count: '%n'
+  # Image shape: a ratio, or the first image's own
+  assign ratio = settings.card_image_ratio | default: '1'
+  if ratio == 'natural'
+    assign ratio = media.preview_image.aspect_ratio | default: 1
+  endif
 -%}
 <article class="product-card{% if second %} product-card--hover{% endif %}">
-  <div class="product-card__media frame" style="--frame-ratio: 1;">
+  <div class="product-card__media frame" style="--frame-ratio: {{ ratio }};{% if settings.card_image_fit == 'contain' %} --frame-fit: contain;{% endif %}">
     {%- if media -%}
       {{
         media.preview_image
@@ -106,17 +113,19 @@
     <span class="pill product-card__badge">−{{ discount }}%</span>
   {%- elsif on_sale -%}
     <span class="pill product-card__badge">{{ 'products.sale' | t }}</span>
+  {%- elsif settings.card_show_label and product.metafields.custom.label.value != blank -%}
+    <span class="pill pill--soft product-card__badge">{{ product.metafields.custom.label.value | escape }}</span>
   {%- endif -%}
 
   <div class="product-card__info">
-    {%- if show_vendor and product.vendor != blank -%}
+    {%- if show_vendor or settings.card_show_vendor -%}{%- if product.vendor != blank -%}
       <p class="product-card__vendor">{{ product.vendor | escape }}</p>
-    {%- endif -%}
+    {%- endif -%}{%- endif -%}
     <{{ tag }} class="product-card__title">{{ product.title | escape }}</{{ tag }}>
-    {%- render 'rating', product: product, class: 'product-card__rating' -%}
+    {%- if settings.card_show_rating -%}{%- render 'rating', product: product, class: 'product-card__rating' -%}{%- endif -%}
     {%- render 'price', product: product -%}
-    {%- if product.available -%}{%- render 'offer-timer', product: product, class: 'product-card__offer' -%}{%- endif -%}
-    {%- unless product.has_only_default_variant -%}
+    {%- if product.available and settings.card_show_timer -%}{%- render 'offer-timer', product: product, class: 'product-card__offer' -%}{%- endif -%}
+    {%- unless product.has_only_default_variant or settings.card_show_options == false -%}
       {%- liquid
         assign option = product.options_with_values.first
         capture is_color

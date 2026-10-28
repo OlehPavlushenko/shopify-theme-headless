@@ -100,6 +100,28 @@
       "body_font": "Body font",
       "body_scale": "Body size"
     },
+    "cards": {
+      "name": "Product cards",
+      "image_ratio": "Image shape",
+      "ratio_square": "Square",
+      "ratio_portrait": "Portrait (4:5)",
+      "ratio_landscape": "Landscape (4:3)",
+      "ratio_natural": "As the first image",
+      "image_fit": "Image fit",
+      "fit_cover": "Fill the frame (crop)",
+      "fit_contain": "Whole image",
+      "secondary_image": "Second image on hover",
+      "info_header": "Under the image",
+      "show_label": "Label badge",
+      "show_label_info": "The product's Label metafield (custom.label, e.g. \"Bestseller\") when there's no sale or sold-out badge.",
+      "show_vendor": "Vendor",
+      "show_rating": "Rating stars",
+      "show_rating_info": "From the reviews app (reviews.rating). Only on products with reviews.",
+      "show_options": "Variant values",
+      "show_options_info": "Color swatches or sizes of the first option.",
+      "show_timer": "Offer timer",
+      "show_timer_info": "Products whose Offer ends metafield (custom.offer_ends) is ahead."
+    },
     "layout": {
       "name": "Layout",
       "page_width": "Page width",

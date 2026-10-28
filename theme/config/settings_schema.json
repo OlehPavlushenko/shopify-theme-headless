@@ -343,6 +343,40 @@
     ]
   },
   {
+    "name": "t:settings.cards.name",
+    "settings": [
+      {
+        "type": "select",
+        "id": "card_image_ratio",
+        "label": "t:settings.cards.image_ratio",
+        "options": [
+          { "value": "1", "label": "t:settings.cards.ratio_square" },
+          { "value": "0.8", "label": "t:settings.cards.ratio_portrait" },
+          { "value": "1.333", "label": "t:settings.cards.ratio_landscape" },
+          { "value": "natural", "label": "t:settings.cards.ratio_natural" }
+        ],
+        "default": "1"
+      },
+      {
+        "type": "select",
+        "id": "card_image_fit",
+        "label": "t:settings.cards.image_fit",
+        "options": [
+          { "value": "cover", "label": "t:settings.cards.fit_cover" },
+          { "value": "contain", "label": "t:settings.cards.fit_contain" }
+        ],
+        "default": "cover"
+      },
+      { "type": "checkbox", "id": "card_secondary_image", "label": "t:settings.cards.secondary_image", "default": true },
+      { "type": "header", "content": "t:settings.cards.info_header" },
+      { "type": "checkbox", "id": "card_show_label", "label": "t:settings.cards.show_label", "info": "t:settings.cards.show_label_info", "default": true },
+      { "type": "checkbox", "id": "card_show_vendor", "label": "t:settings.cards.show_vendor", "default": false },
+      { "type": "checkbox", "id": "card_show_rating", "label": "t:settings.cards.show_rating", "info": "t:settings.cards.show_rating_info", "default": true },
+      { "type": "checkbox", "id": "card_show_options", "label": "t:settings.cards.show_options", "info": "t:settings.cards.show_options_info", "default": true },
+      { "type": "checkbox", "id": "card_show_timer", "label": "t:settings.cards.show_timer", "info": "t:settings.cards.show_timer_info", "default": true }
+    ]
+  },
+  {
     "name": "t:settings.cart.name",
     "settings": [
       {

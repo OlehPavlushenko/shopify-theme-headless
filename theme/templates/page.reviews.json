@@ -1,0 +1,29 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "heading": "",
+        "text": "",
+        "breadcrumbs": true,
+        "alignment": "left",
+        "color_scheme": "scheme-2"
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "width": "narrow",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "reviews": {
+      "type": "apps",
+      "settings": {
+        "full_width": false,
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": ["header", "main", "reviews"]
+}

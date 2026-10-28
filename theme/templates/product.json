@@ -108,6 +108,19 @@
         "share": {
           "type": "share",
           "settings": {}
+        },
+        "quantity_breaks": {
+          "type": "quantity_breaks",
+          "settings": {
+            "heading": "Bundle & save",
+            "qty_1": 1,
+            "discount_1": 0,
+            "qty_2": 2,
+            "discount_2": 10,
+            "qty_3": 3,
+            "discount_3": 15,
+            "popular": "2"
+          }
         }
       },
       "block_order": [
@@ -116,6 +129,7 @@
         "rating",
         "price",
         "picker",
+        "quantity_breaks",
         "buy",
         "delivery",
         "highlights",
@@ -160,10 +174,7 @@
           }
         }
       },
-      "block_order": [
-        "q1",
-        "q2"
-      ],
+      "block_order": ["q1", "q2"],
       "settings": {
         "layout": "split",
         "eyebrow": "FAQ",
@@ -186,10 +197,5 @@
       }
     }
   },
-  "order": [
-    "main",
-    "related",
-    "faq",
-    "recent"
-  ]
+  "order": ["main", "related", "faq", "recent"]
 }

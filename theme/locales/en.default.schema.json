@@ -604,6 +604,14 @@
       "show_related_info": "Three articles that share the most tags with this one."
     },
     "main_product": {
+      "block_quantity_breaks": "Bundle & save",
+      "quantity_breaks_info": "Cards for buying more at once. The cards only show the discount: create an automatic discount in Discounts with the same quantities and percentages (Amount off products, minimum quantity).",
+      "break_qty_1": "First card: quantity",
+      "break_qty_2": "Second card: quantity (0 hides it)",
+      "break_qty_3": "Third card: quantity (0 hides it)",
+      "break_discount": "Discount",
+      "break_popular": "\"Most popular\" badge on card",
+      "break_popular_none": "None",
       "name": "Product information",
       "gallery_layout": "Gallery",
       "gallery_layout_info": "On phones the images are always a swipe slider.",

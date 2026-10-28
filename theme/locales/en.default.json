@@ -94,6 +94,14 @@
     }
   },
   "products": {
+    "quantity_breaks": {
+      "items": {
+        "one": "{{ count }} item",
+        "other": "{{ count }} items"
+      },
+      "popular": "Most popular",
+      "save": "Save {{ percent }}%"
+    },
     "add_to_cart": "Add to cart",
     "in_cart": "{{ count }} in cart",
     "in_cart_short": "In cart",

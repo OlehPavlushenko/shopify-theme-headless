@@ -259,6 +259,19 @@
     flex: 1;
   }
 
+  /* Phones: a narrower stepper and button padding, so "Add to cart" stays on one line beside the
+     wishlist / compare buttons */
+  @media (max-width: 749px) {
+    .main-product__qty {
+      grid-template-columns: 3.2rem 3.6rem 3.2rem;
+    }
+
+    .main-product__add {
+      padding-inline: var(--space-s);
+      white-space: nowrap;
+    }
+  }
+
   /* Wishlist / compare next to the button: in a row, as tall as it, outlined */
   .main-product__actions .main-product__saved {
     display: flex;
@@ -303,6 +316,96 @@
     margin-inline-start: var(--space-2xs);
     color: var(--color-heading);
     text-underline-offset: var(--underline-offset);
+  }
+
+  /* Bundle & save: cards as radio buttons, the picked one in the accent border */
+  quantity-breaks {
+    display: block;
+  }
+
+  .quantity-breaks__group {
+    display: grid;
+    gap: var(--space-xs);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .quantity-breaks__legend {
+    margin-bottom: var(--space-xs);
+    padding: 0;
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-heading);
+  }
+
+  .quantity-breaks__option {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-s);
+    padding: var(--space-s) var(--space-m);
+    cursor: pointer;
+    background: var(--color-background);
+    border: 0.1rem solid var(--color-border);
+    border-radius: var(--radius-input);
+    transition:
+      border-color var(--duration-default) var(--ease),
+      box-shadow var(--duration-default) var(--ease);
+  }
+
+  .quantity-breaks__option:hover {
+    border-color: var(--color-heading);
+  }
+
+  .quantity-breaks__option:has(:checked) {
+    background: color-mix(in srgb, var(--color-accent) 6%, var(--color-background));
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 0.1rem var(--color-accent);
+  }
+
+  .quantity-breaks__input {
+    width: 1.8rem;
+    height: 1.8rem;
+    margin: 0;
+    accent-color: var(--color-accent);
+  }
+
+  .quantity-breaks__text {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .quantity-breaks__title {
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-heading);
+  }
+
+  /* "Most popular" sits on the top edge of its card */
+  .quantity-breaks__badge {
+    position: absolute;
+    top: 0;
+    right: var(--space-m);
+    translate: 0 -50%;
+  }
+
+  .quantity-breaks__save {
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+  }
+
+  .quantity-breaks__price {
+    display: grid;
+    justify-items: end;
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-heading);
+  }
+
+  .quantity-breaks__compare {
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight);
+    color: var(--color-text-muted);
   }
 
   .main-product__delivery {
@@ -456,6 +559,11 @@
 
     /* The first image of the grid spans both columns */
     .main-product--grid .product-gallery__item:first-child {
+      grid-column: 1 / -1;
+    }
+
+    /* A last image left alone in its row takes the row too (no empty cell beside it) */
+    .main-product--grid .product-gallery__item:last-child:nth-child(even) {
       grid-column: 1 / -1;
     }
 

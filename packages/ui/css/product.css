@@ -663,8 +663,14 @@
     border-radius: var(--radius-card);
   }
 
+  /* Until loaded: no height, but still in the layout — the loader waits for it to near the screen
+     (IntersectionObserver), which never happens to display: none */
   .main-product__complementary:not([data-loaded]) {
-    display: none;
+    display: block;
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
   }
 
   .main-product__share {

@@ -209,7 +209,7 @@
     "submit": "Search",
     "empty_query": "Type what you're looking for",
     "start_title": "What are you looking for?",
-    "start_text": "Type a product, an ingredient or a brand above, or start from a popular collection.",
+    "start_text": "Type a product, a category or a brand above, or start from a popular collection.",
     "no_results_html": "No results for “{{ terms }}”. Check the spelling or try a different word.",
     "results_for_html": "{{ count }} results for “{{ terms }}”",
     "products": "Products",

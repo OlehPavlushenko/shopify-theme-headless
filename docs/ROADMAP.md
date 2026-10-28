@@ -125,3 +125,5 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
 | No persistent compare bar; toasts + a link in the utility menu | A fixed bar covered content and the footer and looked heavy |
 | Off-screen CSS loads without blocking render | First paint needs only what is visible; layers keep the cascade stable |
 | Secondary text through one token at 80% | 72% and lower failed AA contrast on 12–14 px text |
+| No legacy account pages in the theme (customers/* templates removed) | The store uses Shopify's new customer accounts (hosted by Shopify, legacy ones are being retired); the header's account link goes there through `routes.account_url` |
+| Contact form and back-in-stock requests through project-server, kept on the customer (note + tag) | No email service to send from; the admin shows them under Customers, Flow / Shopify Email can notify |

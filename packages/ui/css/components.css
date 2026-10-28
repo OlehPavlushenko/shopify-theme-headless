@@ -1340,7 +1340,7 @@
   }
 
   /* ------------------------------------------------------ form errors */
-  /* A form's errors as one alert above its fields (snippets/form-errors) */
+  /* A form's errors as one alert above its fields (the contact and back-in-stock forms) */
   .form-errors {
     padding: var(--space-s) var(--space-m);
     font-size: var(--text-sm);

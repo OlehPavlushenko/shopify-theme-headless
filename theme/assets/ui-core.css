@@ -1084,7 +1084,8 @@
   }
 
   /* --------------------------------------------------- variant picker */
-  /* snippets/variant-picker + @ui/variant-picker: chips (or swatches) per option.
+  /* snippets/variant-picker + @ui/variant-picker: chips (or swatches) per option (radios in the theme;
+     links with aria-current on the picked value in the headless storefront).
      Unavailable value — its combination with the other picks is sold out ([data-sold-out]) or
      doesn't exist ([data-missing]) — looks the same, as in Shopify's own themes: a chip is faded and
      struck through, a swatch keeps its color with a diagonal line. It stays clickable: a missing
@@ -1127,7 +1128,7 @@
     cursor: pointer;
   }
 
-  .variant-picker__chip:has(input:checked) {
+  .variant-picker__chip:is(:has(input:checked), [aria-current]) {
     color: var(--color-button-label);
     background: var(--color-button);
     border-color: var(--color-button);
@@ -1135,7 +1136,7 @@
 
   /* The picked chip isn't struck: the button already says "Sold out" / "Unavailable" */
   /* Muted (not disabled-light): these values stay clickable, so they keep AA contrast */
-  .variant-picker__chip:is([data-sold-out], [data-missing]):not(:has(input:checked)) {
+  .variant-picker__chip:is([data-sold-out], [data-missing]):not(:has(input:checked), [aria-current]) {
     color: var(--color-text-muted);
     text-decoration: line-through;
   }
@@ -1158,7 +1159,7 @@
     }
   }
 
-  .variant-picker__swatch:has(input:checked) {
+  .variant-picker__swatch:is(:has(input:checked), [aria-current]) {
     border-color: var(--color-heading);
   }
 

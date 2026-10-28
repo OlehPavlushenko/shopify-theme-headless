@@ -37,6 +37,8 @@ rollback. Edit code only here, never in the admin's code editor: the next releas
 | Path | What it is |
 |---|---|
 | `theme/` | The Shopify theme being built |
+| `storefront/` | Headless storefront (Next.js) on the same packages — see its README |
+| `project-server/` | Small API: newsletter, contact, back in stock, Spin to win |
 | `packages/tokens/` | Design tokens (single source of defaults) |
 | `packages/ui/` | Shared CSS and JS used by the theme and a future headless storefront |
 | `reference/loyalty-theme/` | Previous theme, kept for reference |

@@ -1,0 +1,19 @@
+{
+  "name": "storefront",
+  "private": true,
+  "type": "module",
+  "description": "Headless storefront (Next.js) on the Shopify Storefront API; shares packages/tokens and packages/ui with the theme.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  }
+}

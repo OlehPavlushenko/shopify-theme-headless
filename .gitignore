@@ -3,6 +3,8 @@ node_modules/
 Thumbs.db
 .shopify/
 *.log
+.next/
+next-env.d.ts
 
 # Server secrets
 .env

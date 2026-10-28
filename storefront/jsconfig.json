@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@ui/*": ["../packages/ui/js/*"],
+      "@ui-css/*": ["../packages/ui/css/*"]
+    }
+  }
+}

@@ -1,6 +1,7 @@
 {% doc %}
   Document head meta: charset, viewport, title (with tags and page number), canonical, meta
-  description (store description as fallback), Open Graph and Twitter cards. Rendered first in the
+  description (store description as fallback), robots (noindex for search / filtered lists /
+  personal pages, large image previews elsewhere), Open Graph (with locale) and Twitter cards. Rendered first in the
   layouts head; structured data lives in snippets/structured-data.
 {% enddoc %}
 <meta charset="utf-8">
@@ -38,6 +39,10 @@
 <meta
   property="og:type"
   content="{{ og_type }}"
+>
+<meta
+  property="og:locale"
+  content="{{ request.locale.iso_code | replace: '-', '_' }}"
 >
 <meta
   property="og:description"
@@ -123,6 +128,9 @@
     endfor
   endif
 -%}
+{%- comment -%} Indexed pages allow large image previews (Google Images, Discover) {%- endcomment -%}
 {%- if noindex -%}
   <meta name="robots" content="noindex, follow">
+{%- else -%}
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 {%- endif -%}

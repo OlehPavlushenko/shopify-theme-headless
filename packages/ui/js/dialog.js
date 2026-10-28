@@ -41,17 +41,31 @@ function transitionTime(element) {
 }
 
 // Plays the leaving transition ([data-closing]), then runs close()
+const closing = new WeakMap();
 function closeAnimated(element, close) {
   if (element.hasAttribute('data-closing')) return;
   element.setAttribute('data-closing', '');
-  setTimeout(() => {
-    close();
-    element.removeAttribute('data-closing');
-  }, transitionTime(element));
+  closing.set(
+    element,
+    setTimeout(() => {
+      closing.delete(element);
+      close();
+      element.removeAttribute('data-closing');
+    }, transitionTime(element))
+  );
+}
+
+// Opened again while its leaving transition plays: stays open. True when that happened.
+function cancelClose(element) {
+  if (!closing.has(element)) return false;
+  clearTimeout(closing.get(element));
+  closing.delete(element);
+  element.removeAttribute('data-closing');
+  return true;
 }
 
 export function openDialog(dialog, opener = document.activeElement) {
-  if (!(dialog instanceof HTMLDialogElement) || dialog.open) return;
+  if (!(dialog instanceof HTMLDialogElement) || cancelClose(dialog) || dialog.open) return;
   measureScrollbar();
   openers.set(dialog, opener);
   dialog.showModal();
@@ -66,7 +80,7 @@ export function closeDialog(dialog) {
 const openPanels = () => [...document.querySelectorAll('[popover="manual"]:popover-open')];
 
 export function openPanel(panel) {
-  if (panel.matches(':popover-open')) return;
+  if (cancelClose(panel) || panel.matches(':popover-open')) return;
   for (const other of openPanels()) closePanel(other);
   measureScrollbar();
   panel.showPopover();

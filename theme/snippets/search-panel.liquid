@@ -39,7 +39,7 @@
     data-products-params="{{ products_params | escape }}"
   >
     {%- comment -%} An empty field isn't sent: a hint under it instead (<form-validate>) {%- endcomment -%}
-    <form-validate data-message-required="{{ 'search.empty_query' | t }}">
+    <form-validate data-message-required="{{ 'search.empty_query' | t | escape }}">
     <form action="{{ routes.search_url }}" method="get" role="search" class="search-panel__form">
       <label class="visually-hidden" for="{{ id }}-input">{{ 'search.title' | t }}</label>
       {%- render 'icon', name: 'search', class: 'search-panel__icon' -%}
@@ -48,7 +48,7 @@
         class="search-panel__input"
         type="search"
         name="q"
-        placeholder="{{ 'search.placeholder' | t }}"
+        placeholder="{{ 'search.placeholder' | t | escape }}"
         autocomplete="off"
         autocorrect="off"
         autocapitalize="off"

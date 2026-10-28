@@ -1,5 +1,6 @@
 {% doc %}
-  Inline timer "Ends in 6d 19h 05m 01s" (<ui-countdown>, @ui/countdown). Styles: announcements.css.
+  Inline timer "Ends in 6d 19h 05m 01s" (<ui-countdown>, @ui/countdown — imported by the layouts).
+  Styles: announcements.css.
   When it reaches zero it hides its closest [data-countdown-section].
 
   @param {string} end - End date and time as typed in the editor, e.g. "2026-12-24 23:59"
@@ -20,4 +21,3 @@
     <span class="countdown__part"><span class="countdown__value" data-unit="seconds">00</span>{{ 'sections.countdown.seconds' | t }}</span>
   </ui-countdown>
 </span>
-<script type="module">import '@ui/countdown';</script>

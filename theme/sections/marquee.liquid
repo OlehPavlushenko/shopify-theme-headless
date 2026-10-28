@@ -8,12 +8,29 @@
   {%- render 'schedule-active', from: section.settings.show_from, until: section.settings.show_until -%}
 {%- endcapture -%}
 {%- if active contains 'true' and section.blocks.size > 0 -%}
+  {%- comment -%} The first copy carries the editor attributes; the repeats are hidden from screen readers {%- endcomment -%}
   {%- capture phrases -%}
     {%- for block in section.blocks -%}
       <li class="marquee__item" {{ block.shopify_attributes }}>
         <span>{{ block.settings.text }}</span>
         {%- if section.settings.separator != 'none' -%}
           <span class="marquee__separator" aria-hidden="true">
+            {%- case section.settings.separator -%}
+              {%- when 'dot' -%}•
+              {%- when 'star' -%}✦
+              {%- when 'slash' -%}/
+            {%- endcase -%}
+          </span>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- capture repeats -%}
+    {%- for block in section.blocks -%}
+      <li class="marquee__item" aria-hidden="true">
+        <span>{{ block.settings.text }}</span>
+        {%- if section.settings.separator != 'none' -%}
+          <span class="marquee__separator">
             {%- case section.settings.separator -%}
               {%- when 'dot' -%}•
               {%- when 'star' -%}✦
@@ -32,7 +49,9 @@
       {%- comment -%} Two identical halves, each repeated 3×: the track moves by one half and loops {%- endcomment -%}
       {%- for half in (1..2) -%}
         <ul class="marquee__group" role="list"{% if half == 2 %} aria-hidden="true"{% endif %}>
-          {%- for copy in (1..3) -%}{{ phrases }}{%- endfor -%}
+          {%- for copy in (1..3) -%}
+            {%- if half == 1 and copy == 1 -%}{{ phrases }}{%- else -%}{{ repeats }}{%- endif -%}
+          {%- endfor -%}
         </ul>
       {%- endfor -%}
     </div>

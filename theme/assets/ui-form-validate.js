@@ -16,6 +16,8 @@
  *   </form-validate>
  */
 const FIELDS = 'input:not([type="hidden"], [type="submit"], [type="button"]), textarea, select';
+// Message ids for fields without an id of their own (unique on the page)
+let uid = 0;
 
 class FormValidate extends HTMLElement {
   connectedCallback() {
@@ -74,7 +76,7 @@ class FormValidate extends HTMLElement {
       error = document.createElement('span');
       error.className = 'field-error';
       error.dataset.fieldError = '';
-      error.id = `${field.id || `${this.form.id}-${field.name}`.replace(/\W+/g, '-')}-error`;
+      error.id = `${field.id || `field-${++uid}`}-error`;
       field.after(error);
       field.setAttribute('aria-describedby', [field.getAttribute('aria-describedby'), error.id].filter(Boolean).join(' '));
     }

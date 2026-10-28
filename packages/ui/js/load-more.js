@@ -54,6 +54,7 @@ class LoadMore extends HTMLElement {
     const link = event.target.closest('[data-load-more-link]');
     if (!link) return;
     event.preventDefault();
+    if (link.hasAttribute('aria-busy')) return;
     link.setAttribute('aria-busy', 'true');
     try {
       const url = new URL(link.href, location.origin);

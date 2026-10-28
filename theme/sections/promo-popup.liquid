@@ -25,10 +25,20 @@
   endif
 -%}
 {%- if active contains 'true' and on_page and section.blocks.size > 0 -%}
-  {%- assign title_id = 'PromoPopup-title-' | append: section.id -%}
+  {%- liquid
+    assign title_id = 'PromoPopup-title-' | append: section.id
+    assign titled = section.blocks | where: 'type', 'text' | map: 'settings' | map: 'heading' | compact | first
+    # Delay: when set, or as the only trigger when the others are off
+    assign use_delay = false
+    if section.settings.delay > 0
+      assign use_delay = true
+    elsif section.settings.scroll == 0 and section.settings.exit_intent == false
+      assign use_delay = true
+    endif
+  -%}
   <promo-popup
     data-id="{{ section.id }}"
-    {% if section.settings.delay > 0 or section.settings.scroll == 0 and section.settings.exit_intent == false %}
+    {% if use_delay %}
       data-delay="{{ section.settings.delay }}"
     {% endif %}
     data-scroll="{{ section.settings.scroll }}"
@@ -39,7 +49,11 @@
   >
     <dialog
       class="popup promo-popup color-{{ section.settings.color_scheme }}{% if section.settings.image %} promo-popup--media{% endif %}"
-      aria-labelledby="{{ title_id }}"
+      {% if titled != blank %}
+        aria-labelledby="{{ title_id }}"
+      {% else %}
+        aria-label="{{ 'accessibility.promo' | t | escape }}"
+      {% endif %}
     >
       <div class="promo-popup__inner">
         {%- if section.settings.image -%}

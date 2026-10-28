@@ -95,7 +95,6 @@ export const remove = (list, handle) =>
     list,
     getItems(list).filter((item) => item.handle !== handle)
   );
-export const clear = (list) => save(list, []);
 
 class SavedToggle extends HTMLElement {
   connectedCallback() {

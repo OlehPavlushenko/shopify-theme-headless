@@ -49,12 +49,8 @@
   # Already in the cart: single-variant products get a quantity control instead of the add button,
   # products with options a dark "✓ In cart" button (any of their variants in the cart)
   assign in_cart = 0
-  if quick_add
-    for item in cart.items
-      if item.product_id == product.id
-        assign in_cart = in_cart | plus: item.quantity
-      endif
-    endfor
+  if quick_add and cart.item_count > 0
+    assign in_cart = cart.items | where: 'product_id', product.id | map: 'quantity' | sum
   endif
   assign in_cart_label = 'products.in_cart' | t: count: '%n'
   # Image shape: a ratio, or the first image's own

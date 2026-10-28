@@ -62,7 +62,7 @@
                 <label class="cart-extras__note-field">
                   <span class="cart-attribute__label">{{ 'cart.note' | t }}</span>
                   <textarea class="input cart-extras__note" name="note" rows="2" data-ajax-cart-property-input>
-                    {{- cart.note -}}
+                    {{- cart.note | escape -}}
                   </textarea>
                 </label>
               {%- endif -%}

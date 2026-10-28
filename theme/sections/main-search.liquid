@@ -15,7 +15,7 @@
         {{ 'search.title' | t }}
       {%- endif -%}
     </h1>
-    <form-validate data-message-required="{{ 'search.empty_query' | t }}">
+    <form-validate data-message-required="{{ 'search.empty_query' | t | escape }}">
     <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
       <label class="visually-hidden" for="MainSearchInput">{{ 'search.title' | t }}</label>
       <span class="search-field">
@@ -26,7 +26,7 @@
           type="search"
           name="q"
           value="{{ terms }}"
-          placeholder="{{ 'search.placeholder' | t }}"
+          placeholder="{{ 'search.placeholder' | t | escape }}"
           enterkeyhint="search"
           autocomplete="off"
           required
@@ -36,7 +36,6 @@
       <button type="submit" class="btn">{{ 'search.submit' | t }}</button>
     </form>
     </form-validate>
-    <script type="module">import '@ui/form-validate';</script>
     {%- unless search.performed -%}
       {%- if section.settings.collections.size > 0 -%}
         <div class="main-search__popular">

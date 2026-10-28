@@ -42,7 +42,6 @@ class DeliverySteps extends HTMLElement {
       lead.textContent = shipsToday
         ? leadToday.replace('%time', formatLeft(minutesLeft, timeLong, timeShort))
         : leadLater.replace('%date', day.format(ship));
-    this.toggleAttribute('data-ships-today', shipsToday);
   }
 }
 

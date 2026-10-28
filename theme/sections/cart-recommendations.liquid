@@ -4,7 +4,7 @@
   /recommendations/products?product_id=…&intent=related&section_id=cart-recommendations,
   and takes the [data-product-id] rows (compact item: image, title, price, add).
 {% endcomment %}
-{%- if recommendations.performed and recommendations.products_count > 0 -%}
+{%- if recommendations.performed? and recommendations.products_count > 0 -%}
   <ul role="list">
     {%- for product in recommendations.products -%}
       {%- if product.available -%}

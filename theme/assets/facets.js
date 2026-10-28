@@ -135,7 +135,9 @@ class FacetFilters extends HTMLElement {
     return this.classList.contains('facets--horizontal') && matchMedia('(min-width: 990px)').matches;
   }
 
-  #onPopState = () => this.#apply(location.pathname + location.search, false);
+  #onPopState = (event) => {
+    if (event.state?.facets) this.#apply(location.pathname + location.search, false);
+  };
 
   #toggleValues(button) {
     const group = button.closest('.facet__body');
@@ -195,7 +197,11 @@ class FacetFilters extends HTMLElement {
       const next = html.querySelector('facet-filters');
       if (!next) throw new Error('No facets markup');
       this.#replace(next);
-      if (push && url !== location.pathname + location.search) history.pushState({ facets: true }, '', url);
+      if (push && url !== location.pathname + location.search) {
+        // The entry the page started on gets the mark too, so going back to it re-renders
+        if (!history.state?.facets) history.replaceState({ facets: true }, '');
+        history.pushState({ facets: true }, '', url);
+      }
       if (push) this.#revealResults();
     } catch (error) {
       if (error.name === 'AbortError' || request !== this.#request) return;
@@ -245,7 +251,6 @@ class FacetFilters extends HTMLElement {
       '[data-facets-body]',
       '[data-facets-clear]',
       '[data-facets-active]',
-      '[data-facets-count]',
       '[data-facets-results]',
       '[data-facets-show]',
     ]) {
@@ -253,6 +258,9 @@ class FacetFilters extends HTMLElement {
       const incoming = next.querySelector(selector);
       if (current && incoming) current.replaceWith(document.importNode(incoming, true));
     }
+    const count = this.querySelector('[data-facets-count]');
+    const incomingCount = next.querySelector('[data-facets-count]');
+    if (count && incomingCount) count.textContent = incomingCount.textContent;
     const badge = this.querySelector('[data-facets-active-count]');
     const incomingBadge = next.querySelector('[data-facets-active-count]');
     if (badge && incomingBadge) {

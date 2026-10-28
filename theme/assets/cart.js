@@ -105,7 +105,8 @@ if (!customElements.get('cart-discount')) customElements.define('cart-discount',
 // a code the cart doesn't take is dropped with the usual error, as one typed in by hand.
 const requested = new Set();
 function applyCode(code) {
-  if (!code || !window.liquidAjaxCart) return;
+  if (!code) return;
+  if (!window.liquidAjaxCart) return report({ code, applicable: false });
   const current = window.liquidAjaxCart.cart?.discount_codes ?? [];
   const found = current.find((c) => c.code.toLowerCase() === code.toLowerCase());
   if (found) return report(found);

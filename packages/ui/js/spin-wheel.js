@@ -86,11 +86,15 @@ class SpinWheel extends HTMLElement {
     const say = (state) => note && (note.textContent = note.dataset[state] ?? '');
     if (!apply || !prize.code) return say('saved');
     say('applying');
-    const onResult = (event) => {
-      if (event.detail.code.toLowerCase() !== prize.code.toLowerCase()) return;
+    const done = (state) => {
+      clearTimeout(timer);
       document.removeEventListener('discount:result', onResult);
-      say(event.detail.applicable ? 'applied' : 'failed');
+      say(state);
     };
+    const onResult = (event) => {
+      if (event.detail.code.toLowerCase() === prize.code.toLowerCase()) done(event.detail.applicable ? 'applied' : 'failed');
+    };
+    const timer = setTimeout(() => done('saved'), 8000);
     document.addEventListener('discount:result', onResult);
     result.focus?.();
     this.dispatchEvent(new CustomEvent('discount:apply', { bubbles: true, detail: { code: prize.code } }));

@@ -27,7 +27,7 @@
     <h1 class="h1 main-article__title">{{ article.title | escape }}</h1>
     <p class="main-article__meta">
       {%- if section.settings.show_author and article.author != blank -%}
-        <span>{{ 'blog.by' | t: author: article.author }}</span>
+        <span>{%- assign author = article.author | escape -%}{{ 'blog.by' | t: author: author }}</span>
       {%- endif -%}
       <span>{{ article.published_at | time_tag: format: 'date' }}</span>
       {%- if section.settings.show_reading_time -%}
@@ -132,16 +132,16 @@
           <div class="main-contact__row">
             <div class="field">
               <label class="field__label" for="CommentAuthor">{{ 'blog.comment_form_name' | t }} *</label>
-              <input class="input" type="text" name="comment[author]" id="CommentAuthor" value="{{ form.author }}" autocomplete="name" required>
+              <input class="input" type="text" name="comment[author]" id="CommentAuthor" value="{{ form.author | escape }}" autocomplete="name" required>
             </div>
             <div class="field">
               <label class="field__label" for="CommentEmail">{{ 'blog.comment_form_email' | t }} *</label>
-              <input class="input" type="email" name="comment[email]" id="CommentEmail" value="{{ form.email }}" autocomplete="email" spellcheck="false" required>
+              <input class="input" type="email" name="comment[email]" id="CommentEmail" value="{{ form.email | escape }}" autocomplete="email" spellcheck="false" required>
             </div>
           </div>
           <div class="field">
             <label class="field__label" for="CommentBody">{{ 'blog.comment_form_body' | t }} *</label>
-            <textarea class="input" name="comment[body]" id="CommentBody" rows="5" required>{{ form.body }}</textarea>
+            <textarea class="input" name="comment[body]" id="CommentBody" rows="5" required>{{ form.body | escape }}</textarea>
           </div>
           <button type="submit" class="btn">{{ 'blog.comment_form_submit' | t }}</button>
         {%- endform -%}

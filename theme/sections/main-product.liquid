@@ -14,6 +14,8 @@
   assign gallery = section.settings.gallery_layout
   assign media_list = product.media
   assign form_id = 'ProductForm-' | append: section.id
+  # Bundle & save and the sticky bar work on the buy buttons' form: nothing of them without it
+  assign buy_block = section.blocks | where: 'type', 'buy_buttons' | first
   assign label_add = 'products.add_to_cart' | t
   assign label_sold_out = 'products.sold_out' | t
   assign label_unavailable = 'products.unavailable' | t
@@ -143,7 +145,7 @@
 
             {%- when 'rating' -%}
               {%- if product.metafields.reviews.rating.value -%}
-                <a href="#{{ block.settings.anchor | default: 'judgeme_product_reviews' }}" class="main-product__rating" {{ block.shopify_attributes }}>
+                <a href="#{{ block.settings.anchor | default: 'judgeme_product_reviews' | escape }}" class="main-product__rating" {{ block.shopify_attributes }}>
                   {%- render 'rating', product: product, full: true -%}
                 </a>
               {%- endif -%}
@@ -169,7 +171,7 @@
               {%- if product.available -%}{%- render 'offer-timer', product: product, class: 'main-product__offer' -%}{%- endif -%}
 
             {%- when 'quantity_breaks' -%}
-              {%- unless product.metafields.custom.bundle_offer.value == true -%}{%- continue -%}{%- endunless -%}
+              {%- unless product.metafields.custom.bundle_offer.value == true and buy_block -%}{%- continue -%}{%- endunless -%}
               {%- comment -%}
                 Shown only on products with the metafield custom.bundle_offer ("Bundle & save") on.
                 Bundle & save: up to three tiles in a row (1 item, 2 items −10%, … with the price per
@@ -179,7 +181,6 @@
                 the variant and the card in step with the quantity stepper.
               {%- endcomment -%}
               {%- liquid
-                assign buy_block = section.blocks | where: 'type', 'buy_buttons' | first
                 assign has_stepper = buy_block.settings.show_quantity
                 assign popular = block.settings.popular | plus: 0
               -%}
@@ -322,7 +323,7 @@
                           <p class="form-errors" role="alert" data-contact-message></p>
                           <div class="search-form stock-notify__row">
                             <label class="visually-hidden" for="Notify-{{ section.id }}">{{ 'contact.email' | t }}</label>
-                            <input class="input" type="email" id="Notify-{{ section.id }}" name="email" value="{{ customer.email }}" autocomplete="email" spellcheck="false" placeholder="{{ 'newsletter.placeholder' | t }}" required>
+                            <input class="input" type="email" id="Notify-{{ section.id }}" name="email" value="{{ customer.email | escape }}" autocomplete="email" spellcheck="false" placeholder="{{ 'newsletter.placeholder' | t | escape }}" required>
                             <button type="submit" class="btn">{{ 'products.notify.submit' | t }}</button>
                           </div>
                         </form>
@@ -336,7 +337,6 @@
                     </contact-form>
                   </stock-notify>
                   <script type="module">
-                    import '@ui/form-validate';
                     import '@ui/contact-form';
                   </script>
                 {%- endif -%}
@@ -435,19 +435,19 @@
                   {%- capture ask_fields -%}
                     <variant-fields data-product="{{ product.title | escape }}">
                       <p class="ask-form__about">{{ 'products.ask.about' | t }} <strong data-variant-title>{{ ask_product | escape }}</strong></p>
-                      <input type="hidden" name="{{ product_field }}" value="{{ ask_product | escape }}" data-variant-title>
+                      <input type="hidden" name="{{ product_field | escape }}" value="{{ ask_product | escape }}" data-variant-title>
                     </variant-fields>
                     <div class="field">
                       <label class="field__label" for="{{ ask_id }}-name">{{ name_label }}</label>
-                      <input class="input" type="text" id="{{ ask_id }}-name" name="{{ name_field }}" value="{{ customer.name }}" autocomplete="name" maxlength="100">
+                      <input class="input" type="text" id="{{ ask_id }}-name" name="{{ name_field | escape }}" value="{{ customer.name | escape }}" autocomplete="name" maxlength="100">
                     </div>
                     <div class="field">
                       <label class="field__label" for="{{ ask_id }}-email">{{ 'contact.email' | t }} *</label>
-                      <input class="input" type="email" id="{{ ask_id }}-email" name="{{ email_field }}" value="{{ customer.email }}" autocomplete="email" spellcheck="false" required>
+                      <input class="input" type="email" id="{{ ask_id }}-email" name="{{ email_field | escape }}" value="{{ customer.email | escape }}" autocomplete="email" spellcheck="false" required>
                     </div>
                     <div class="field">
                       <label class="field__label" for="{{ ask_id }}-message">{{ 'products.ask.question' | t }} *</label>
-                      <textarea class="input" id="{{ ask_id }}-message" name="{{ body_field }}" rows="5" maxlength="5000" required></textarea>
+                      <textarea class="input" id="{{ ask_id }}-message" name="{{ body_field | escape }}" rows="5" maxlength="5000" required></textarea>
                     </div>
                     <button type="submit" class="btn btn--full">{{ 'contact.send' | t }}</button>
                   {%- endcapture -%}
@@ -496,7 +496,6 @@
                     </div>
                   </dialog>
                   <script type="module">
-                    import '@ui/form-validate';
                     import '@ui/contact-form';
                   </script>
                   {%- if ask_reopen -%}
@@ -642,8 +641,7 @@
     button, which submits the main form. A round up-arrow button first takes you back up to the
     options (to change the variant). <sticky-buy-bar> in assets/product.js.
   {%- endcomment -%}
-  {%- if section.settings.sticky_bar -%}
-    {%- assign buy_block = section.blocks | where: 'type', 'buy_buttons' | first -%}
+  {%- if section.settings.sticky_bar and buy_block -%}
     <sticky-buy-bar class="sticky-buy" data-form="{{ form_id }}" hidden>
       <div class="page-width sticky-buy__inner">
         {%- assign back_label = 'products.back_to_options' | t -%}

@@ -43,7 +43,7 @@
                     {%- if settings.show_cart_note -%}
                         <label class="field">
                             <span class="field__label">{{ 'cart.note' | t }}</span>
-                            <textarea class="input" name="note" data-ajax-cart-property-input>{{ cart.note }}</textarea>
+                            <textarea class="input" name="note" data-ajax-cart-property-input>{{ cart.note | escape }}</textarea>
                         </label>
                     {%- endif -%}
                     {%- for block in section.blocks -%}

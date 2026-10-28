@@ -25,18 +25,18 @@
 <div class="main-contact__row">
   <div class="field">
     <label class="field__label" for="ContactForm-name">{{ name_label }}</label>
-    <input class="input" type="text" id="ContactForm-name" name="{{ name_field }}" value="{{ form.name | default: customer.name }}" autocomplete="name" maxlength="100">
+    <input class="input" type="text" id="ContactForm-name" name="{{ name_field | escape }}" value="{{ form.name | default: customer.name | escape }}" autocomplete="name" maxlength="100">
   </div>
   <div class="field">
     <label class="field__label" for="ContactForm-email">{{ 'contact.email' | t }} *</label>
-    <input class="input" type="email" id="ContactForm-email" name="{{ email_field }}" value="{{ form.email | default: customer.email }}" autocomplete="email" spellcheck="false" required>
+    <input class="input" type="email" id="ContactForm-email" name="{{ email_field }}" value="{{ form.email | default: customer.email | escape }}" autocomplete="email" spellcheck="false" required>
   </div>
 </div>
 {%- if show_phone -%}
   <div class="field">
     <label class="field__label" for="ContactForm-phone">{{ phone_label }}</label>
     {%- comment -%} No mask: numbers are written differently in every country; a light check only {%- endcomment -%}
-    <input class="input" type="tel" id="ContactForm-phone" name="{{ phone_field }}" value="{{ form.phone }}" autocomplete="tel" pattern="\+?[0-9\s\(\)\-\.]{7,20}" data-message-invalid="{{ 'forms.phone' | t | escape }}">
+    <input class="input" type="tel" id="ContactForm-phone" name="{{ phone_field | escape }}" value="{{ form.phone | escape }}" autocomplete="tel" pattern="\+?[0-9\s\(\)\-\.]{7,20}" data-message-invalid="{{ 'forms.phone' | t | escape }}">
   </div>
 {%- endif -%}
 <div class="field">

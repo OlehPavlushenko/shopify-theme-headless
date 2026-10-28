@@ -83,7 +83,7 @@
           }}
         {%- endif -%}
       {%- else -%}
-        <span class="site-header__shop-name">{{ shop.name }}</span>
+        <span class="site-header__shop-name">{{ shop.name | escape }}</span>
       {%- endif -%}
     </a>
     {%- if template.name == 'index' -%}</h1>{%- endif -%}

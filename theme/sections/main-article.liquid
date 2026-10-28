@@ -95,7 +95,7 @@
       </div>
     {%- endif -%}
 
-    <a href="{{ blog.url }}" class="section-head__link main-article__back">
+    <a href="{{ blog.url }}" class="link-arrow main-article__back">
       {%- render 'icon', name: 'arrow-left' -%}
       {{- 'blog.back' | t: blog: blog.title -}}
     </a>
@@ -185,7 +185,7 @@
         {%- assign related_heading = 'blog.read_next' | t -%}
         <div class="section-head">
           <h2 id="ReadNext-{{ section.id }}" class="h3 section-head__title">{{ related_heading }}</h2>
-          <a href="{{ blog.url }}" class="section-head__link">{{ 'blog.all_articles' | t }}{%- render 'icon', name: 'arrow-right' -%}</a>
+          <a href="{{ blog.url }}" class="link-arrow section-head__link">{{ 'blog.all_articles' | t }}{%- render 'icon', name: 'arrow-right' -%}</a>
         </div>
         <ul class="grid main-article__related-grid" role="list" style="--grid-columns: 3; --grid-columns-mobile: 1;">{{ related_cards }}</ul>
       </section>

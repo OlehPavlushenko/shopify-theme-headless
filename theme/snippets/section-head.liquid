@@ -14,7 +14,7 @@
       <h2 class="h3 section-head__title">{{ heading }}</h2>
     {%- endif -%}
     {%- if link_label != blank and link != blank -%}
-      <a href="{{ link }}" class="section-head__link">
+      <a href="{{ link }}" class="link-arrow section-head__link">
         {{- link_label | escape -}}
         {%- render 'icon', name: 'arrow-right' -%}
       </a>

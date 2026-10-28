@@ -131,7 +131,7 @@
                       </a>
                       <div class="site-footer__article-info">
                         <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'date' }}</time>
-                        <a href="{{ article.url }}" class="site-footer__article-title">{{ article.title | escape }}</a>
+                        <a href="{{ article.url }}" class="site-footer__article-title line-clamp">{{ article.title | escape }}</a>
                       </div>
                     </li>
                   {%- endfor -%}

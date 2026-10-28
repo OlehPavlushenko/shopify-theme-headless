@@ -813,7 +813,7 @@
       width: 100%;
       padding: 0;
       border: 0.2rem solid transparent;
-      border-radius: calc(var(--radius-media) * 0.6);
+      border-radius: var(--radius-thumb);
       cursor: pointer;
       transition: border-color var(--duration-short) var(--ease);
     }
@@ -886,7 +886,7 @@
   /* -------------------------------------------------------- sticky bar */
   .sticky-buy {
     position: fixed;
-    z-index: 15;
+    z-index: var(--z-sticky);
     inset: auto 0 0;
     display: block;
     color: var(--color-foreground);

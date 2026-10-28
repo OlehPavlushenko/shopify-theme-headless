@@ -42,7 +42,7 @@
   }
 
   .cart-line__media {
-    border-radius: calc(var(--radius-media) * 0.6);
+    border-radius: var(--radius-thumb);
   }
 
   .cart-line__sku {
@@ -68,16 +68,11 @@
 
   /* Same title style as the product card: 14px medium, two lines at most */
   .cart-line__title {
-    display: -webkit-box;
-    overflow: hidden;
     font-size: var(--text-sm);
     font-weight: var(--font-body-weight-medium);
     line-height: var(--leading-sm);
     text-decoration: none;
     color: var(--color-heading);
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
   }
 
   .cart-line__title:hover {
@@ -650,7 +645,7 @@
     width: 8rem;
     height: 8rem;
     object-fit: cover;
-    border-radius: calc(var(--radius-media) * 0.6);
+    border-radius: var(--radius-thumb);
   }
 
   .cart-added__actions > * {

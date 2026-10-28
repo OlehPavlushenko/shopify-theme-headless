@@ -193,8 +193,7 @@
     color: var(--color-text-muted);
   }
 
-  .text-sm,
-  .small {
+  .text-sm {
     font-size: var(--text-sm);
     line-height: var(--leading-sm);
   }
@@ -388,6 +387,15 @@
 
 /* ------------------------------------------------------------ utilities */
 @layer utilities {
+  /* Text cut to --lines lines (2 by default) with an ellipsis: titles in cards and rows, excerpts */
+  .line-clamp {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--lines, 2);
+    line-clamp: var(--lines, 2);
+  }
+
   .visually-hidden {
     position: absolute !important;
     width: 1px !important;
@@ -402,7 +410,7 @@
 
   .skip-link:focus {
     position: fixed !important;
-    z-index: 1000;
+    z-index: var(--z-skip);
     top: var(--space-s);
     left: var(--space-s);
     width: auto !important;
@@ -414,16 +422,6 @@
     background: var(--color-background);
     border-radius: var(--radius-input);
     box-shadow: var(--shadow-md);
-  }
-
-  .text-start {
-    text-align: start;
-  }
-  .text-center {
-    text-align: center;
-  }
-  .text-end {
-    text-align: end;
   }
 
   .muted {

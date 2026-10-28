@@ -140,7 +140,7 @@
   }
 
   .site-footer__article-media {
-    border-radius: calc(var(--radius-media) * 0.6);
+    border-radius: var(--radius-thumb);
   }
 
   .site-footer__article-info {
@@ -156,15 +156,10 @@
   }
 
   .site-footer__article-title {
-    display: -webkit-box;
-    overflow: hidden;
     font-size: var(--text-sm);
     line-height: var(--leading-sm);
     color: var(--color-heading);
     text-decoration: none;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
   }
 
   .site-footer__article-title:hover {

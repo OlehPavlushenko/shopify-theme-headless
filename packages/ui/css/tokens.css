@@ -28,6 +28,8 @@
     --color-danger: #b3261e;
     --color-focus: #2f6b4f;
     --color-rating: #c9772b;
+    --color-offer: color-mix(in srgb, var(--color-warning) 70%, #000);
+    --color-offer-label: #ffffff;
     --font-body-family: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --font-body-style: normal;
     --font-body-weight: 400;
@@ -63,6 +65,7 @@
     --tracking-tight: -0.025em;
     --tracking-normal: 0;
     --tracking-wide: 0.06em;
+    --tracking-wider: 0.08em;
     --page-width: 144rem;
     --page-width-narrow: 86rem;
     --gutter: clamp(1.6rem, 4vw, 4.8rem);
@@ -86,6 +89,7 @@
     --radius-media: 20px;
     --radius-badge: 40px;
     --radius-full: 99rem;
+    --radius-thumb: calc(var(--radius-media) * 0.6);
     --shadow-sm: 0 1px 2px rgb(27 42 35 / 0.06), 0 1px 1px rgb(27 42 35 / 0.04);
     --shadow-md: 0 8px 24px rgb(27 42 35 / 0.08);
     --shadow-overlay: 0 24px 64px rgb(27 42 35 / 0.18);
@@ -95,13 +99,15 @@
     --ease: cubic-bezier(0.2, 0, 0, 1);
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-    --weight-regular: 400;
-    --weight-medium: 500;
-    --weight-semibold: 600;
-    --weight-bold: 700;
     --drawer-width: min(42rem, 100vw);
     --backdrop-color: rgb(15 23 19 / 0.4);
     --icon-sm: 1.4rem;
     --underline-offset: 0.3rem;
+    --z-dropdown: 10;
+    --z-sticky: 15;
+    --z-header: 20;
+    --z-banner: 25;
+    --z-toast: 30;
+    --z-skip: 1000;
   }
 }

@@ -33,7 +33,7 @@
             {{- 'cart.continue_shopping' | t -}}
           </a>
           {%- if shop.customer_accounts_enabled and customer == null -%}
-            <p class="small">{{ 'cart.login_html' | t: link: routes.account_login_url }}</p>
+            <p class="text-sm">{{ 'cart.login_html' | t: link: routes.account_login_url }}</p>
           {%- endif -%}
         </div>
       {%- else -%}
@@ -131,10 +131,10 @@
     <div class="cart-added__item">
       <img data-notification="image" class="cart-added__image" width="80" height="80" alt="" hidden>
       <div class="stack" style="--stack-gap: var(--space-2xs);">
-        <p class="cart-line__title" data-notification="title"></p>
-        <p class="small muted" data-notification="variant"></p>
+        <p class="cart-line__title line-clamp" data-notification="title"></p>
+        <p class="text-sm muted" data-notification="variant"></p>
         <p class="price-tag" data-notification="price"></p>
-        <p class="small muted" data-notification="quantity"></p>
+        <p class="text-sm muted" data-notification="quantity"></p>
       </div>
     </div>
     <div class="cluster cart-added__actions">
@@ -146,7 +146,7 @@
         <button type="submit" name="checkout" class="btn">{{ 'cart.checkout' | t }}</button>
       </form>
     </div>
-    <button type="button" class="btn btn--link small" data-dialog-close>
+    <button type="button" class="btn btn--link text-sm" data-dialog-close>
       {{- 'cart.continue_shopping' | t -}}
     </button>
   </div>

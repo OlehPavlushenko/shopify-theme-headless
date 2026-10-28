@@ -55,7 +55,7 @@
       <button type="button" class="btn btn--outline btn--sm facets__toggle" popovertarget="{{ panel_id }}">
         {%- render 'icon', name: 'sliders' -%}
         {{- 'facets.filters' | t -}}
-        <span class="facets__toggle-count" data-facets-active-count{% if active_filters == 0 %} hidden{% endif %}>{{ active_filters }}</span>
+        <span class="count-badge facets__toggle-count" data-facets-active-count{% if active_filters == 0 %} hidden{% endif %}>{{ active_filters }}</span>
       </button>
     {%- endif -%}
     <p class="facets__count" data-facets-count role="status">{{ count_label }}</p>
@@ -183,7 +183,7 @@
                   </span>
                   <span class="text-card__title">{{ item.title | escape }}</span>
                   <span class="text-card__excerpt">{{ item.content | strip_html | truncatewords: 22 }}</span>
-                  <span class="text-card__more">{{ 'blog.read_more' | t }}{%- render 'icon', name: 'arrow-right' -%}</span>
+                  <span class="link-arrow text-card__more">{{ 'blog.read_more' | t }}{%- render 'icon', name: 'arrow-right' -%}</span>
                 </a>
               {%- endif -%}
             </li>

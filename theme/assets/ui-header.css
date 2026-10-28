@@ -23,7 +23,7 @@
     --header-row: 6.8rem;
 
     position: relative;
-    z-index: 20;
+    z-index: var(--z-header);
     transition: translate var(--duration-long) var(--ease-out);
   }
 
@@ -128,10 +128,6 @@
     position: absolute;
     top: 0.2rem;
     right: 0;
-    min-width: 1.9rem;
-    height: 1.9rem;
-    padding-inline: 0.5rem;
-    font-size: 1.1rem;
   }
 
   /* Empty cart: hidden before Liquid Ajax Cart init (data-empty from Liquid) and after it */
@@ -404,10 +400,7 @@
     border: 0; /* the header border above is the only line */
     opacity: 0;
     /* The panel itself never moves (moving it would cover the header line); only its content slides */
-    transition:
-      opacity var(--duration-default) var(--ease),
-      overlay var(--duration-default) allow-discrete,
-      display var(--duration-default) allow-discrete;
+    transition: opacity var(--duration-default) var(--ease);
   }
 
   .menu-panel:popover-open:not([data-closing]) {

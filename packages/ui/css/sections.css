@@ -21,24 +21,6 @@
     margin-inline-start: auto;
   }
 
-  .section-head__link {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2xs);
-    font-size: var(--text-sm);
-    font-weight: var(--font-body-weight-semibold);
-    color: var(--color-heading);
-    text-decoration: none;
-  }
-
-  .section-head__link .svg-icon {
-    --icon-size: var(--icon-sm);
-  }
-
-  .section-head__link:hover {
-    color: var(--color-link-hover);
-  }
-
   /* Phones swipe sliders: no arrows, so the link stays on the heading's row */
   @media (max-width: 749px) {
     .section-head__end {
@@ -1344,7 +1326,7 @@
   .gift-card__code code {
     font-size: var(--text-xl);
     font-weight: var(--font-body-weight-semibold);
-    letter-spacing: 0.08em;
+    letter-spacing: var(--tracking-wider);
     color: var(--color-heading);
   }
 
@@ -1626,7 +1608,7 @@
   }
 
   .collection-row__thumb {
-    border-radius: calc(var(--radius-media) * 0.6);
+    border-radius: var(--radius-thumb);
   }
 
   .collection-row__thumb img {
@@ -1635,33 +1617,15 @@
 
   /* "Shop collection →": a text link, not a round button (that read as a slider arrow) */
   .collection-row__cta {
-    display: inline-flex;
     grid-row: 1;
     grid-column: 3;
     align-self: start;
-    align-items: center;
-    gap: var(--space-2xs);
-    font-size: var(--text-sm);
-    font-weight: var(--font-body-weight-semibold);
-    color: var(--color-heading);
     white-space: nowrap;
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    text-underline-offset: var(--underline-offset);
-    transition: text-decoration-color var(--duration-short) var(--ease);
-  }
-
-  .collection-row__cta .svg-icon {
-    --icon-size: var(--icon-sm);
   }
 
   @media (hover: hover) {
     .collection-row:hover .collection-row__title {
       color: var(--color-link-hover);
-    }
-
-    .collection-row:hover .collection-row__cta {
-      text-decoration-color: currentColor;
     }
 
     .collection-row:hover .collection-row__thumb img {
@@ -1730,7 +1694,6 @@
     padding: var(--space-s) var(--space-m);
     background: color-mix(in srgb, var(--color-background) 88%, transparent);
     border-radius: calc(var(--radius-card) - var(--space-s) / 2);
-    backdrop-filter: blur(0.8rem);
   }
 
   /* Small tiles: a compact label, the image stays visible */
@@ -2067,7 +2030,7 @@
 
     .article-toc {
       position: fixed;
-      z-index: 14;
+      z-index: var(--z-sticky);
       right: var(--gutter);
       bottom: calc(var(--space-s) + env(safe-area-inset-bottom, 0px));
       left: var(--gutter);
@@ -2185,7 +2148,7 @@
   /* Reading progress: a thin bar under the header, filled by @ui/article-toc (--progress 0–1) */
   .reading-progress {
     position: fixed;
-    z-index: 15;
+    z-index: var(--z-sticky);
     top: var(--header-bottom, 0px);
     left: 0;
     width: 100%;
@@ -2296,7 +2259,7 @@
   }
 
   .article-card:has(.article-card__link:focus-visible) {
-    outline: 0.2rem solid var(--color-focus);
+    outline: var(--focus-ring);
     outline-offset: 0.4rem;
     border-radius: var(--radius-card);
   }
@@ -2335,8 +2298,8 @@
     }
 
     .article-card--featured .article-card__excerpt {
-      -webkit-line-clamp: 4;
-      line-clamp: 4;
+      --lines: 4;
+
       font-size: var(--text-md);
       line-height: var(--leading-md);
     }
@@ -2367,28 +2330,13 @@
   }
 
   .article-card__excerpt {
-    display: -webkit-box;
     margin: 0;
-    overflow: hidden;
     font-size: var(--text-sm);
     line-height: var(--leading-sm);
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
   }
 
   .article-card__more {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2xs);
     margin-top: var(--space-2xs);
-    font-size: var(--text-sm);
-    font-weight: var(--font-body-weight-semibold);
-    color: var(--color-heading);
-  }
-
-  .article-card__more .svg-icon {
-    --icon-size: var(--icon-sm);
   }
 
   /* ------------------------------------------------------- promo grid */
@@ -3095,7 +3043,12 @@
 }
 
 /* Next (also "Submit review") and the other filled buttons as .btn */
-.jdgm-write-review-modal :is(.jdgm-write-review-modal__nav-btn-next, .jdgm-write-review-modal__btn--contact-us, .jdgm-write-review-modal__btn--repeat-write-another) {
+.jdgm-write-review-modal
+  :is(
+    .jdgm-write-review-modal__nav-btn-next,
+    .jdgm-write-review-modal__btn--contact-us,
+    .jdgm-write-review-modal__btn--repeat-write-another
+  ) {
   min-height: var(--control-height);
   padding-block: 0;
   font-size: var(--text-sm);

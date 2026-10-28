@@ -44,7 +44,7 @@
       <span class="promo-card__text">{{ text | escape }}</span>
     {%- endif -%}
     {%- if link_label != blank -%}
-      <span class="promo-card__cta">
+      <span class="link-arrow promo-card__cta">
         {{- link_label | escape -}}
         {%- render 'icon', name: 'arrow-right' -%}
       </span>

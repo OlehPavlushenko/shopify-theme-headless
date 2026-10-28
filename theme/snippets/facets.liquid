@@ -67,7 +67,7 @@
       <summary class="facet__summary">
         <span class="facet__label">{{ filter.label | escape }}</span>
         {%- if active_count > 0 -%}
-          <span class="facet__badge">{{ active_count }}</span>
+          <span class="count-badge count-badge--sm facet__badge">{{ active_count }}</span>
         {%- endif -%}
         {%- render 'icon', name: 'chevron-down' -%}
       </summary>

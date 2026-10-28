@@ -117,7 +117,7 @@
     {%- if show_vendor or settings.card_show_vendor -%}{%- if product.vendor != blank -%}
       <p class="product-card__vendor">{{ product.vendor | escape }}</p>
     {%- endif -%}{%- endif -%}
-    <{{ tag }} class="product-card__title">{{ product.title | escape }}</{{ tag }}>
+    <{{ tag }} class="product-card__title line-clamp">{{ product.title | escape }}</{{ tag }}>
     {%- if settings.card_show_rating -%}{%- render 'rating', product: product, class: 'product-card__rating' -%}{%- endif -%}
     {%- render 'price', product: product -%}
     {%- if product.available and settings.card_show_timer -%}{%- render 'offer-timer', product: product, class: 'product-card__offer' -%}{%- endif -%}

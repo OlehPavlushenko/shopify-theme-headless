@@ -50,7 +50,7 @@
       <a href="{{ article.url }}" class="article-card__link">{{ article.title | escape }}</a>
     </{{ tag }}>
     {%- unless show_excerpt == false -%}
-      <p class="article-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 30 }}</p>
+      <p class="article-card__excerpt line-clamp">{{ article.excerpt_or_content | strip_html | truncatewords: 30 }}</p>
     {%- endunless -%}
     {%- if show_tags and article.tags.size > 0 -%}
       {%- comment -%} The chosen topics as handles (current_tags may hold names or handles) {%- endcomment -%}
@@ -79,7 +79,7 @@
         {%- endfor -%}
       </ul>
     {%- endif -%}
-    <span class="article-card__more" aria-hidden="true">
+    <span class="link-arrow article-card__more" aria-hidden="true">
       {{- 'blog.read_more' | t -}}
       {%- render 'icon', name: 'arrow-right' -%}
     </span>

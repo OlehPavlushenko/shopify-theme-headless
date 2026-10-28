@@ -589,8 +589,6 @@
     "main_article": {
       "name": "Article",
       "show_author": "Show author",
-      "show_author_box": "About the author",
-      "show_author_box_info": "Under the article: the author's photo and bio from their staff account (Settings > Users). Hidden without a bio.",
       "show_reading_time": "Show reading time",
       "show_share": "Show share buttons",
       "image_layout": "Image",

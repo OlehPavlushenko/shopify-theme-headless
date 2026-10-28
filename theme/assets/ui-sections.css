@@ -2200,46 +2200,6 @@
     color: var(--color-heading);
   }
 
-  /* About the author: photo (or initials) beside the name and bio, on a surface */
-  .main-article__author {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: start;
-    gap: var(--space-m);
-    margin-top: var(--space-l);
-    padding: var(--space-l);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
-  }
-
-  .main-article__author-image {
-    display: grid;
-    place-items: center;
-    width: 6.4rem;
-    height: 6.4rem;
-    object-fit: cover;
-    font-family: var(--font-heading-family);
-    font-size: var(--text-xl);
-    color: var(--color-background);
-    background: var(--color-accent);
-    border-radius: 50%;
-  }
-
-  .main-article__author-text {
-    display: grid;
-    gap: var(--space-2xs);
-  }
-
-  .main-article__author-text > * {
-    margin: 0;
-  }
-
-  .main-article__author-bio {
-    margin-top: var(--space-2xs);
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-  }
-
   .main-article__back {
     margin-top: var(--space-l);
   }

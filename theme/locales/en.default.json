@@ -42,8 +42,6 @@
       "other": "{{ count }} min read"
     },
     "by": "By {{ author }}",
-    "written_by": "Written by",
-    "about_author": "About the author",
     "share": "Share",
     "back": "Back to {{ blog }}",
     "comments_count": {

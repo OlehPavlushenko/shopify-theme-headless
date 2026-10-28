@@ -95,22 +95,6 @@
       </div>
     {%- endif -%}
 
-    {%- comment -%} About the author: the staff account's name, photo and bio (Settings > Users in the admin); only with a bio {%- endcomment -%}
-    {%- if section.settings.show_author_box and article.user.bio != blank -%}
-      <aside class="main-article__author" aria-label="{{ 'blog.about_author' | t }}">
-        {%- if article.user.image -%}
-          {{ article.user.image | image_url: width: 160 | image_tag: loading: 'lazy', class: 'main-article__author-image', width: 80, height: 80, alt: '' }}
-        {%- else -%}
-          <span class="main-article__author-image" aria-hidden="true">{{ article.user.first_name | slice: 0 }}{{ article.user.last_name | slice: 0 }}</span>
-        {%- endif -%}
-        <div class="main-article__author-text">
-          <p class="eyebrow">{{ 'blog.written_by' | t }}</p>
-          <p class="h5 main-article__author-name">{{ article.author | escape }}</p>
-          <p class="main-article__author-bio">{{ article.user.bio | escape }}</p>
-        </div>
-      </aside>
-    {%- endif -%}
-
     <a href="{{ blog.url }}" class="section-head__link main-article__back">
       {%- render 'icon', name: 'arrow-left' -%}
       {{- 'blog.back' | t: blog: blog.title -}}
@@ -228,7 +212,6 @@
       "default": "wide"
     },
     { "type": "checkbox", "id": "show_author", "label": "t:sections.main_article.show_author", "default": true },
-    { "type": "checkbox", "id": "show_author_box", "label": "t:sections.main_article.show_author_box", "info": "t:sections.main_article.show_author_box_info", "default": true },
     { "type": "checkbox", "id": "show_reading_time", "label": "t:sections.main_article.show_reading_time", "default": true },
     { "type": "checkbox", "id": "show_share", "label": "t:sections.main_article.show_share", "default": true },
     { "type": "checkbox", "id": "show_toc", "label": "t:sections.main_article.show_toc", "info": "t:sections.main_article.show_toc_info", "default": true },

@@ -350,9 +350,14 @@
       "discount_code": "Discount code to apply",
       "discount_code_info": "Added to the cart right after signing up, so the shopper doesn't need to copy it. Create the code in Discounts.",
       "wheel": "Spin to win",
-      "wheel_info": "A prize wheel: with Integrations > API URL the newsletter sign-up spins it, else a button. It spins once per shopper and applies the code it lands on to the cart. Create the codes in Discounts.",
-      "wheel_prizes": "Prizes",
-      "wheel_prizes_info": "One per line: Label | CODE | weight. A higher weight lands more often (e.g. 20 vs 2). 2–12 lines."
+      "wheel_info": "A prize wheel. Its segments are this popup's Prize blocks (2–12, in their order). With Integrations > API URL the newsletter sign-up spins it, else a button. It spins once per shopper and applies the code it lands on to the cart.",
+      "prize": "Prize",
+      "prize_label": "Label on the wheel",
+      "prize_label_info": "Short: e.g. 5% off, Free shipping.",
+      "prize_code": "Discount code",
+      "prize_code_info": "Create it in Discounts first (same spelling).",
+      "prize_chance": "Chance",
+      "prize_chance_info": "Relative weight: the chance is this ÷ the sum of all prizes' chances (with a sum of 100 these are percents). Give the smallest discount the biggest chance. The same prize may take several segments."
     },
     "hero": {
       "name": "Hero",

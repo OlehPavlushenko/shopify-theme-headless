@@ -83,15 +83,86 @@
         "wheel": {
           "type": "wheel",
           "settings": {
-            "prizes": "5% off | SPIN5 | 20\nFree shipping | FREESHIP | 15\n10% off | SPIN10 | 15\n15% off | SPIN15 | 5\n5% off | SPIN5 | 20\nFree shipping | FREESHIP | 15\n10% off | SPIN10 | 8\n20% off | SPIN20 | 2",
             "button_label": "Spin the wheel",
             "note": "One spin per person. No spam."
+          }
+        },
+        "prize_1": {
+          "type": "prize",
+          "settings": {
+            "label": "5% off",
+            "code": "SPIN5",
+            "chance": 30
+          }
+        },
+        "prize_2": {
+          "type": "prize",
+          "settings": {
+            "label": "Free shipping",
+            "code": "FREESHIP",
+            "chance": 10
+          }
+        },
+        "prize_3": {
+          "type": "prize",
+          "settings": {
+            "label": "10% off",
+            "code": "SPIN10",
+            "chance": 8
+          }
+        },
+        "prize_4": {
+          "type": "prize",
+          "settings": {
+            "label": "15% off",
+            "code": "SPIN15",
+            "chance": 5
+          }
+        },
+        "prize_5": {
+          "type": "prize",
+          "settings": {
+            "label": "5% off",
+            "code": "SPIN5",
+            "chance": 30
+          }
+        },
+        "prize_6": {
+          "type": "prize",
+          "settings": {
+            "label": "Free shipping",
+            "code": "FREESHIP",
+            "chance": 10
+          }
+        },
+        "prize_7": {
+          "type": "prize",
+          "settings": {
+            "label": "10% off",
+            "code": "SPIN10",
+            "chance": 5
+          }
+        },
+        "prize_8": {
+          "type": "prize",
+          "settings": {
+            "label": "20% off",
+            "code": "SPIN20",
+            "chance": 2
           }
         }
       },
       "block_order": [
         "text",
-        "wheel"
+        "wheel",
+        "prize_1",
+        "prize_2",
+        "prize_3",
+        "prize_4",
+        "prize_5",
+        "prize_6",
+        "prize_7",
+        "prize_8"
       ],
       "settings": {
         "delay": 0,

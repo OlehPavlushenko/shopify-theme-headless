@@ -312,7 +312,8 @@
       0 0 0 0.6rem var(--color-border),
       var(--shadow-md);
     rotate: var(--turn, 0deg);
-    transition: rotate 5s cubic-bezier(0.12, 0.8, 0.18, 1);
+    /* A fast start and a long, soft stop */
+    transition: rotate 8s cubic-bezier(0.1, 0.65, 0.12, 1);
   }
 
   /* A label along its segment's middle, from near the hub to near the rim */

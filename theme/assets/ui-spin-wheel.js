@@ -67,7 +67,7 @@ class SpinWheel extends HTMLElement {
     } catch {}
     this.setAttribute('data-spinning', '');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    this.#turn(index, reduced ? 1 : 6);
+    this.#turn(index, reduced ? 1 : 7);
     const done = () => {
       this.removeAttribute('data-spinning');
       this.#show(index, true);

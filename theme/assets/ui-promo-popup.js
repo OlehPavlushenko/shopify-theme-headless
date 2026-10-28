@@ -9,7 +9,9 @@
  * - data-scroll   percent of the page scrolled (0 = off)
  * - data-exit     present: when the pointer leaves the window at the top (desktop exit intent)
  * - data-days     after closing, don't show again for this many days (0 = until the browser session ends)
- * After a newsletter sign-up inside it (newsletter:subscribed) it stays away for a year.
+ * After a newsletter sign-up inside it (newsletter:subscribed) it stays away for a year. It doesn't
+ * show at all once what it asks for is done on this device: its wheel spun, or (a sign-up popup) the
+ * newsletter signed up in any form.
  * One promo popup per page view: once one has opened, the others' triggers are ignored.
  * In the theme editor it opens while its section is selected instead of on the triggers.
  * Opening and closing go through @ui/dialog (animated, focus handling).
@@ -51,7 +53,7 @@ class PromoPopup extends HTMLElement {
     this.addEventListener('newsletter:subscribed', this.#onSubscribed, { signal });
 
     if (window.Shopify?.designMode) return this.#editorMode(signal);
-    if (read(this.#key) > Date.now()) return;
+    if (read(this.#key) > Date.now() || this.#done()) return;
     this.#arm();
   }
 
@@ -65,6 +67,14 @@ class PromoPopup extends HTMLElement {
   };
 
   #onSubscribed = () => remember(this.#key, YEAR_DAYS);
+
+  // What it asks for is done on this device: its wheel spun (spin-wheel:<key>), or — a sign-up popup
+  // without a wheel — the newsletter signed up in any form (newsletter:subscribed)
+  #done() {
+    const wheel = this.querySelector('spin-wheel');
+    if (wheel) return Boolean(storage.get(`spin-wheel:${wheel.dataset.key}`));
+    return Boolean(this.querySelector('newsletter-form') && storage.get('newsletter:subscribed'));
+  }
 
   #open = () => {
     this.#disarm();

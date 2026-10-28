@@ -496,6 +496,12 @@
         "info": "t:settings.integrations.recaptcha_site_key_info"
       },
       {
+        "type": "text",
+        "id": "api_secret",
+        "label": "t:settings.integrations.api_secret",
+        "info": "t:settings.integrations.api_secret_info"
+      },
+      {
         "type": "html",
         "id": "deferred_scripts",
         "label": "t:settings.integrations.deferred_scripts",

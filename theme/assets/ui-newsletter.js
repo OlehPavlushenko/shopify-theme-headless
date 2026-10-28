@@ -15,6 +15,7 @@
  * Sending and reCAPTCHA (action "newsletter"): @ui/api.
  */
 import { postJSON } from '@ui/api';
+import * as storage from '@ui/storage';
 
 class NewsletterForm extends HTMLElement {
   #abort;
@@ -68,6 +69,8 @@ class NewsletterForm extends HTMLElement {
     done.setAttribute('role', 'status');
     done.append(template.content.cloneNode(true));
     this.#form.replaceChildren(done);
+    // Remembered on this device: popups asking to sign up don't show again (@ui/promo-popup)
+    storage.set('newsletter:subscribed', '1');
     this.dispatchEvent(new CustomEvent('newsletter:subscribed', { bubbles: true, detail: { status, discount: this.dataset.discount } }));
   }
 }

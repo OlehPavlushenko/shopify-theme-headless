@@ -1,21 +1,29 @@
 /**
- * <spin-wheel> — "Spin to win": a prize wheel that spins once and gives a discount code.
+ * <spin-wheel> — "Spin to win": a prize wheel that gives a discount code, once.
  *
  * Markup contract (theme: the wheel block of sections/promo-popup.liquid):
- *   <spin-wheel data-key="<storage key>">
+ *   <spin-wheel data-key="<storage key>"
+ *               [data-endpoint="https://api…/spin" data-signature="<HMAC of the prize list>"
+ *                data-recaptcha="<v3 site key>" data-message-email="…" data-message-error="…"]>
  *     [data-wheel-disc] the disc (CSS rotates it by --turn), labels inside
  *     <script type="application/json" data-wheel-prizes>[{ "label", "code", "weight" }]</script>
- *     a <newsletter-form> (the spin starts on newsletter:subscribed) or [data-wheel-spin] (a button)
+ *     with an endpoint: form[data-wheel-form] (an email field, [data-wheel-message]);
+ *     without: [data-wheel-spin] (a button)
  *     [data-wheel-result hidden] > [data-wheel-prize] [data-wheel-code] [data-wheel-copy data-copied="…"]
- *       [data-wheel-note data-applying data-applied data-failed data-saved] (texts for each state)
+ *       [data-wheel-note data-applying data-applied data-failed data-saved data-already]
  *   </spin-wheel>
- * The prize is picked here by weight, the disc stops on it, the result shows the code and
- * discount:apply ({ detail: { code } }, bubbles) asks the cart to apply it; the note follows the
- * cart's discount:result (applied, or not taken — e.g. no such code in Discounts). The prize is kept in
- * localStorage (@ui/storage): the wheel spins once per browser and shows the same prize when it comes
- * back. Copy puts the code on the clipboard and says so on the button for a moment.
- * The codes are ordinary codes from Shopify Discounts (no app): anyone could read them in the page.
+ *
+ * With an endpoint the server decides (project-server POST /spin): it gets the email and the prize
+ * list exactly as printed with its signature (so the chances can't be changed here), signs the
+ * email up, picks the prize and keeps it on the customer — the same email always gets the same
+ * prize back ("already_spun": shown at once, without a spin). Without one the prize is picked here
+ * (a demo; anyone could pick again in another browser).
+ * Either way the disc stops on the prize, the result shows the code, discount:apply asks the cart
+ * to apply it (the note follows the cart's discount:result), and the prize is kept in storage: the
+ * popup doesn't come back on this device (@ui/promo-popup reads the same key). A sign-up also sets
+ * "newsletter:subscribed" in storage and dispatches newsletter:subscribed (bubbles).
  */
+import { postJSON } from '@ui/api';
 import { copyText, flashLabel } from '@ui/clipboard';
 import { reducedMotion } from '@ui/scroll';
 import * as storage from '@ui/storage';
@@ -23,26 +31,28 @@ import * as storage from '@ui/storage';
 class SpinWheel extends HTMLElement {
   #abort;
   #noteTimer;
+  #raw = '[]';
   #prizes = [];
   #disc;
   #key;
 
   connectedCallback() {
-    this.#prizes = JSON.parse(this.querySelector('[data-wheel-prizes]')?.textContent || '[]');
+    this.#raw = this.querySelector('[data-wheel-prizes]')?.textContent.trim() || '[]';
+    this.#prizes = JSON.parse(this.#raw);
     this.#disc = this.querySelector('[data-wheel-disc]');
     this.#key = `spin-wheel:${this.dataset.key}`;
     if (!this.#prizes.length || !this.#disc) return;
     const { signal } = (this.#abort = new AbortController());
     this.querySelector('[data-wheel-copy]')?.addEventListener('click', this.#onCopy, { signal });
 
-    // Spun before: the disc stays on that prize and the result shows
-    const saved = storage.get(this.#key);
-    if (saved !== null && this.#prizes[Number(saved)]) {
-      this.#turn(Number(saved), 0);
-      return this.#show(Number(saved), false);
+    // Spun before on this device: the disc stays on that prize and the result shows
+    const saved = storage.getJSON(this.#key);
+    if (saved?.code) {
+      this.#turn(this.#indexOf(saved), 0);
+      return this.#show(saved, 'saved');
     }
-    this.addEventListener('newsletter:subscribed', this.#onSpin, { signal });
-    this.querySelector('[data-wheel-spin]')?.addEventListener('click', this.#onSpin, { signal });
+    this.querySelector('[data-wheel-form]')?.addEventListener('submit', this.#onSubmit, { signal });
+    this.querySelector('[data-wheel-spin]')?.addEventListener('click', this.#onSpinHere, { signal });
   }
 
   disconnectedCallback() {
@@ -50,13 +60,10 @@ class SpinWheel extends HTMLElement {
     clearTimeout(this.#noteTimer);
   }
 
-  // A prize by weight
-  #pick() {
-    const total = this.#prizes.reduce((sum, prize) => sum + prize.weight, 0);
-    let roll = Math.random() * total;
+  #indexOf(prize) {
     return Math.max(
       0,
-      this.#prizes.findIndex((prize) => (roll -= prize.weight) < 0)
+      this.#prizes.findIndex((p) => p.code === prize.code && p.label === prize.label)
     );
   }
 
@@ -67,23 +74,72 @@ class SpinWheel extends HTMLElement {
     this.#disc.style.setProperty('--turn', `${spins * 360 - (index + 0.5) * segment + jitter}deg`);
   }
 
-  #onSpin = () => {
-    if (this.hasAttribute('data-spinning') || this.hasAttribute('data-spun')) return;
-    const index = this.#pick();
-    storage.set(this.#key, index);
+  // Spins to the prize, then shows it and applies its code
+  #spinTo(prize) {
+    storage.setJSON(this.#key, prize);
     this.setAttribute('data-spinning', '');
     const reduced = reducedMotion();
-    this.#turn(index, reduced ? 1 : 7);
+    this.#turn(this.#indexOf(prize), reduced ? 1 : 7);
     const done = () => {
       this.removeAttribute('data-spinning');
-      this.#show(index, true);
+      this.#show(prize, 'apply');
     };
     if (reduced || getComputedStyle(this.#disc).transitionDuration === '0s') return done();
     this.#disc.addEventListener('transitionend', done, { once: true, signal: this.#abort.signal });
+  }
+
+  // Without an endpoint: a prize by weight, picked here
+  #onSpinHere = () => {
+    if (this.hasAttribute('data-spinning') || this.hasAttribute('data-spun')) return;
+    const total = this.#prizes.reduce((sum, prize) => sum + prize.weight, 0);
+    let roll = Math.random() * total;
+    this.#spinTo(this.#prizes.find((prize) => (roll -= prize.weight) < 0) ?? this.#prizes[0]);
   };
 
-  #show(index, apply) {
-    const prize = this.#prizes[index];
+  // With an endpoint: the server signs the email up and picks (or returns the email's prize)
+  #onSubmit = async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const input = form.querySelector('input[type="email"]');
+    const button = form.querySelector('[type="submit"]');
+    if (button.hasAttribute('aria-busy') || this.hasAttribute('data-spun')) return;
+    const email = input.value.trim();
+    if (!email || !input.checkValidity()) return this.#error(this.dataset.messageEmail);
+    this.#error('');
+    button.setAttribute('aria-busy', 'true');
+    button.disabled = true;
+    try {
+      const result = await postJSON(
+        this.dataset.endpoint,
+        { email, prizes: this.#raw, signature: this.dataset.signature },
+        { recaptcha: this.dataset.recaptcha, action: 'spin' }
+      );
+      if (!result.ok || !result.prize) {
+        return this.#error(result.error === 'invalid_email' ? this.dataset.messageEmail : this.dataset.messageError);
+      }
+      storage.set('newsletter:subscribed', '1');
+      this.dispatchEvent(new CustomEvent('newsletter:subscribed', { bubbles: true, detail: { status: result.subscribed } }));
+      if (result.status === 'already_spun') {
+        storage.setJSON(this.#key, result.prize);
+        this.#turn(this.#indexOf(result.prize), 0);
+        return this.#show(result.prize, 'already');
+      }
+      this.#spinTo(result.prize);
+    } catch {
+      this.#error(this.dataset.messageError);
+    } finally {
+      button.removeAttribute('aria-busy');
+      button.disabled = false;
+    }
+  };
+
+  #error(text) {
+    const message = this.querySelector('[data-wheel-message]');
+    if (message) message.textContent = text ?? '';
+  }
+
+  // mode: 'apply' (just won: apply the code), 'already' (this email spun before), 'saved' (this device)
+  #show(prize, mode) {
     this.setAttribute('data-spun', '');
     const result = this.querySelector('[data-wheel-result]');
     result.querySelector('[data-wheel-prize]').textContent = prize.label;
@@ -91,7 +147,7 @@ class SpinWheel extends HTMLElement {
     result.hidden = false;
     const note = result.querySelector('[data-wheel-note]');
     const say = (state) => note && (note.textContent = note.dataset[state] ?? '');
-    if (!apply || !prize.code) return say('saved');
+    if (mode !== 'apply' || !prize.code) return say(mode === 'already' ? 'already' : 'saved');
     say('applying');
     // The cart's answer for this code (or none within 8 s: the code stays to copy)
     const done = (state) => {

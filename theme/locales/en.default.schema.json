@@ -192,6 +192,8 @@
       "api_url_info": "Base URL of project-server, e.g. https://api.example.com. Empty: the newsletter uses the standard Shopify form.",
       "recaptcha_site_key": "reCAPTCHA v3 site key",
       "recaptcha_site_key_info": "Protects the newsletter from bots. Its secret key goes into the server settings.",
+      "api_secret": "API secret",
+      "api_secret_info": "The same value as THEME_SECRET on the server. Signs the Spin to win prizes, so their chances can't be changed in the browser. Any long random string.",
       "deferred_scripts": "Third-party scripts",
       "deferred_scripts_info": "Code of widgets that have no app or pixel (a chat, a heatmap recorder…). It starts after the visitor’s first interaction or 6 seconds, not during the page load. Analytics and ad pixels (Google, Meta, Tag Manager) go to Settings > Customer events instead."
     },

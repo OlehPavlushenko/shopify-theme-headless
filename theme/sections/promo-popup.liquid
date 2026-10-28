@@ -20,6 +20,17 @@
         assign on_page = false
       endif
   endcase
+  # A logged-in customer doesn't get what they've already done: the wheel once spun (tag spin-wheel,
+  # project-server /spin), a newsletter sign-up once subscribed. Anonymous visitors: @ui/promo-popup.
+  if customer
+    assign has_wheel = section.blocks | where: 'type', 'wheel' | size
+    assign has_newsletter = section.blocks | where: 'type', 'newsletter' | size
+    if has_wheel > 0 and customer.tags contains 'spin-wheel'
+      assign on_page = false
+    elsif has_wheel == 0 and has_newsletter > 0 and customer.accepts_marketing
+      assign on_page = false
+    endif
+  endif
   if request.design_mode
     assign on_page = true
   endif
@@ -164,7 +175,23 @@
                       assign stops = stops | append: color | append: ' ' | append: from | append: '% ' | append: to | append: '%'
                     endfor
                   -%}
-                  <spin-wheel class="spin-wheel" data-key="{{ section.id }}" {{ block.shopify_attributes }}>
+                  {%- assign prizes_raw = '[' | append: prizes_json | append: ']' -%}
+                  <spin-wheel
+                    class="spin-wheel"
+                    data-key="{{ section.id }}"
+                    {% if api != blank %}
+                      data-endpoint="{{ api }}/spin"
+                      {% if settings.api_secret != blank %}
+                        data-signature="{{ prizes_raw | hmac_sha256: settings.api_secret }}"
+                      {% endif %}
+                      {% if settings.recaptcha_site_key != blank %}
+                        data-recaptcha="{{ settings.recaptcha_site_key | escape }}"
+                      {% endif %}
+                      data-message-email="{{ 'newsletter.invalid_email' | t | escape }}"
+                      data-message-error="{{ 'newsletter.error' | t | escape }}"
+                    {% endif %}
+                    {{ block.shopify_attributes }}
+                  >
                     <div class="spin-wheel__stage" aria-hidden="true">
                       <span class="spin-wheel__pointer"></span>
                       <div class="spin-wheel__disc" data-wheel-disc style="--segments: {{ count }}; background: conic-gradient({{ stops }});">
@@ -186,18 +213,35 @@
                       <span class="spin-wheel__hub">{%- render 'icon', name: 'gift' -%}</span>
                     </div>
                     <p class="visually-hidden">{{ 'wheel.prizes' | t }}: {{ prize_names | escape }}</p>
-                    <script type="application/json" data-wheel-prizes>[{{ prizes_json }}]</script>
+                    <script type="application/json" data-wheel-prizes>{{ prizes_raw }}</script>
 
                     <div class="spin-wheel__action">
                       {%- if api != blank -%}
-                        {%- assign spinning = 'wheel.spinning' | t | prepend: '<p>' | append: '</p>' -%}
-                        {%- render 'newsletter-form',
-                          id: block.id,
-                          button_label: block.settings.button_label,
-                          success_text: spinning,
-                          already_text: spinning,
-                          note: block.settings.note
-                        -%}
+                        {%- comment -%} The email goes to /spin with the signed prize list: the server signs it up and picks {%- endcomment -%}
+                        {%- assign wheel_message_id = 'Wheel-' | append: block.id | append: '-message' -%}
+                        <form class="newsletter-form__form" data-wheel-form novalidate>
+                          <div class="newsletter-form__row">
+                            <span class="newsletter-form__field">
+                              {%- render 'icon', name: 'mail' -%}
+                              <input
+                                class="input"
+                                type="email"
+                                name="email"
+                                value="{{ customer.email | escape }}"
+                                autocomplete="email"
+                                required
+                                placeholder="{{ 'newsletter.placeholder' | t | escape }}"
+                                aria-label="{{ 'newsletter.placeholder' | t | escape }}"
+                                aria-describedby="{{ wheel_message_id }}"
+                              >
+                            </span>
+                            <button type="submit" class="btn">{{ block.settings.button_label | escape }}</button>
+                          </div>
+                          <p class="form-error newsletter-form__message" id="{{ wheel_message_id }}" data-wheel-message aria-live="polite"></p>
+                        </form>
+                        {%- if block.settings.note != blank -%}
+                          <p class="newsletter-form__note">{{ block.settings.note }}</p>
+                        {%- endif -%}
                       {%- else -%}
                         <button type="button" class="btn btn--full" data-wheel-spin>{{ block.settings.button_label | escape }}</button>
                         {%- if block.settings.note != blank -%}
@@ -222,6 +266,7 @@
                         data-applied="{{ 'wheel.applied' | t | escape }}"
                         data-failed="{{ 'wheel.failed' | t | escape }}"
                         data-saved="{{ 'wheel.saved' | t | escape }}"
+                        data-already="{{ 'wheel.already' | t | escape }}"
                       ></p>
                     </div>
                   </spin-wheel>

@@ -1,0 +1,30 @@
+{% doc %}
+  Star rating from the product's standard reviews metafields (reviews.rating, reviews.rating_count —
+  written by review apps such as Judge.me): five stars filled to the average and the count, "(12)"
+  or, with full, "4.8 · 12 reviews". Nothing when the product has no reviews. Rendered on product
+  cards and in the product info. Styles: .rating-line / .rating in components.css.
+
+  @param {object} product - The product
+  @param {boolean} [full] - The average and "N reviews" instead of "(N)"
+  @param {string} [class] - Extra classes
+{% enddoc %}
+{%- assign rating = product.metafields.reviews.rating.value -%}
+{%- if rating -%}
+  {%- liquid
+    assign rating_percent = rating.rating | divided_by: rating.scale_max | times: 100
+    assign rating_count = product.metafields.reviews.rating_count.value | default: 0
+  -%}
+  <span class="rating-line{% if class != blank %} {{ class }}{% endif %}">
+    <span class="rating" style="--rating: {{ rating_percent }}%;" aria-hidden="true"></span>
+    <span class="visually-hidden">
+      {{- 'products.rating' | t: rating: rating.rating, max: rating.scale_max }}, {{ 'products.reviews_count' | t: count: rating_count -}}
+    </span>
+    <span class="rating-line__count" aria-hidden="true">
+      {%- if full -%}
+        {{ rating.rating | round: 1 }} · {{ 'products.reviews_count' | t: count: rating_count }}
+      {%- else -%}
+        ({{ rating_count }})
+      {%- endif -%}
+    </span>
+  </span>
+{%- endif -%}

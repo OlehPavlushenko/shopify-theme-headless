@@ -113,6 +113,7 @@
       <p class="product-card__vendor">{{ product.vendor | escape }}</p>
     {%- endif -%}
     <{{ tag }} class="product-card__title">{{ product.title | escape }}</{{ tag }}>
+    {%- render 'rating', product: product, class: 'product-card__rating' -%}
     {%- render 'price', product: product -%}
     {%- if product.available -%}{%- render 'offer-timer', product: product, class: 'product-card__offer' -%}{%- endif -%}
     {%- unless product.has_only_default_variant -%}

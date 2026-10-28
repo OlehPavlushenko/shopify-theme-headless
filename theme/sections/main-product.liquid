@@ -139,16 +139,9 @@
               {%- comment -%} Rendered above, in the head (before the gallery) {%- endcomment -%}
 
             {%- when 'rating' -%}
-              {%- assign rating = product.metafields.reviews.rating.value -%}
-              {%- if rating -%}
-                {%- liquid
-                  assign rating_percent = rating.rating | divided_by: rating.scale_max | times: 100
-                  assign rating_count = product.metafields.reviews.rating_count.value | default: 0
-                -%}
-                <a href="#{{ block.settings.anchor | default: 'Reviews' }}" class="main-product__rating" {{ block.shopify_attributes }}>
-                  <span class="rating" style="--rating: {{ rating_percent }}%;" aria-hidden="true"></span>
-                  <span class="visually-hidden">{{ 'products.rating' | t: rating: rating.rating, max: rating.scale_max }}</span>
-                  <span class="main-product__rating-count">{{ rating.rating | round: 1 }} · {{ 'products.reviews_count' | t: count: rating_count }}</span>
+              {%- if product.metafields.reviews.rating.value -%}
+                <a href="#{{ block.settings.anchor | default: 'judgeme_product_reviews' }}" class="main-product__rating" {{ block.shopify_attributes }}>
+                  {%- render 'rating', product: product, full: true -%}
                 </a>
               {%- endif -%}
 
@@ -716,7 +709,7 @@
       "limit": 1,
       "settings": [
         { "type": "paragraph", "content": "t:sections.main_product.rating_info" },
-        { "type": "text", "id": "anchor", "label": "t:sections.main_product.rating_anchor", "default": "Reviews" }
+        { "type": "text", "id": "anchor", "label": "t:sections.main_product.rating_anchor", "default": "judgeme_product_reviews" }
       ]
     },
     { "type": "price", "name": "t:sections.main_product.block_price", "limit": 1 },

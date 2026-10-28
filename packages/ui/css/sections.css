@@ -2901,3 +2901,164 @@
 .shopify-policy__container .shopify-policy__title {
   text-align: start;
 }
+
+/*
+ * Judge.me review widget (app block, usually in the Apps section of the product template) in the
+ * theme's look. Unlayered on purpose: the app's CSS is unlayered and would beat @layer rules. Mostly
+ * its own CSS variables — the app sets some inline from its settings, hence !important — plus the
+ * title, the average and the outer width / spacing so it lines up with the other sections.
+ */
+.jdgm-review-widget {
+  max-width: none !important;
+}
+
+.jdgm-review-widget .jm-review-widget {
+  --jm-review-widget-text-color: var(--color-foreground) !important;
+  --jm-review-widget-lighter-text-color: var(--color-text-muted) !important;
+  --jm-review-widget-star-and-histogram-color: var(--color-accent-2) !important;
+  --jm-review-widget-button-color: var(--color-button) !important;
+  --jm-review-widget-button-text-color: var(--color-button-label) !important;
+  --jm-widget-primary-color: var(--color-accent) !important;
+  --jm-review-widget-form-background-color: var(--color-background) !important;
+  --jm-review-widget-form-text-color: var(--color-foreground) !important;
+  --jm-review-widget-form-button-color: var(--color-button) !important;
+  --jm-review-widget-form-button-text-color: var(--color-button-label) !important;
+  --jm-review-widget-form-field-background-color: var(--color-background) !important;
+  --jm-review-widget-form-border-radius: var(--radius-card) !important;
+  --jm-widget-border-radius: var(--radius-input) !important;
+  --jm-btn-border-radius: var(--radius-button);
+  --jm-btn-padding-inline: var(--space-l);
+  --jm-btn-padding-block: 0;
+  --jm-tabs-active-border-color: var(--color-heading);
+  --jm-tabs-text-active-color: var(--color-heading);
+  --jm-tabs-item-text-color: var(--color-text-muted);
+
+  padding-block: 0;
+}
+
+/* Buttons as .btn: control height, the body font at the small step */
+.jdgm-review-widget .jm-review-widget .jm-button {
+  min-height: var(--control-height);
+  font-size: var(--text-sm);
+  font-weight: var(--font-body-weight-medium);
+}
+
+.jdgm-review-widget .jm-review-widget .jm-button--secondary {
+  --jm-btn-border: var(--color-border);
+  --jm-btn-hover-bg: var(--color-surface);
+}
+
+/* Filters and sort: the quiet border of the theme's inputs */
+.jdgm-review-widget .jm-review-widget .jm-sort-filter__select {
+  border-color: var(--color-border);
+}
+
+/* Stars in the theme's star color (the app colors them inline), a step smaller */
+.jdgm-review-widget .jm-star-rating__font-icon {
+  font-size: 1.8rem;
+  color: var(--color-accent-2) !important;
+}
+
+.jdgm-review-widget .jm-star-rating svg path {
+  stroke: var(--color-accent-2) !important;
+}
+
+.jdgm-review-widget .jm-star-rating__filled svg path {
+  fill: var(--color-accent-2) !important;
+}
+
+/* "Customer reviews" as a section heading (.h2), the average in the heading font; .jm-text gets its
+   size and weight inline, hence !important */
+.jdgm-review-widget .jm-review-widget-minimal-header__title {
+  font-family: var(--font-heading-family);
+  font-style: var(--font-heading-style);
+  font-weight: var(--font-heading-weight) !important;
+  font-size: calc(var(--font-heading-scale) * clamp(var(--text-3xl), 2.4rem + 1.4vw, var(--text-4xl))) !important;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-heading);
+}
+
+.jdgm-review-widget .jm-average-rating-display .jm-text:first-child {
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight) !important;
+  color: var(--color-heading);
+}
+
+.jdgm-review-widget .jm-reviewer-info__name {
+  font-weight: var(--font-body-weight-semibold);
+  color: var(--color-heading);
+}
+
+/* Judge.me "Write a review" form: a modal of its own outside the widget. The app styles it from its
+   settings with a <style> of its own that comes after ours (same specificity), hence !important —
+   the theme's colors, a card on wide screens, .btn buttons, the theme's inputs */
+.jdgm-write-review-modal {
+  --jdgm-primary-color: var(--color-accent);
+  --jdgm-secondary-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  --jdgm-star-color: var(--color-accent-2);
+}
+
+.jdgm-write-review-modal .jdgm-write-review-modal__content {
+  color: var(--color-foreground);
+  background: var(--color-background) !important;
+}
+
+@media (min-width: 768px) and (min-height: 641px) {
+  .jdgm-write-review-modal .jdgm-write-review-modal__content {
+    border-radius: var(--radius-card) !important;
+    box-shadow: var(--shadow-overlay);
+  }
+}
+
+.jdgm-write-review-modal :is(.jdgm-write-review-modal__title, .jdgm-write-review-modal__product-title) {
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-heading) !important;
+}
+
+.jdgm-write-review-modal :is(.jdgm-write-review-modal__text, .jdgm-write-review-modal__intro, .jdgm-write-review-modal__field-label) {
+  color: var(--color-foreground) !important;
+}
+
+.jdgm-write-review-modal :is(.jdgm-write-review-modal__stars, .jdgm-write-review-modal__other-product-stars) .jdgm-star {
+  color: var(--color-accent-2) !important;
+}
+
+/* Next (also "Submit review") and the other filled buttons as .btn */
+.jdgm-write-review-modal :is(.jdgm-write-review-modal__nav-btn-next, .jdgm-write-review-modal__btn--contact-us, .jdgm-write-review-modal__btn--repeat-write-another) {
+  min-height: var(--control-height);
+  padding-block: 0;
+  font-size: var(--text-sm);
+  color: var(--color-button-label) !important;
+  background-color: var(--color-button) !important;
+  border-radius: var(--radius-button) !important;
+}
+
+.jdgm-write-review-modal :is(.jdgm-write-review-modal__btn--leave-review, .jdgm-write-review-modal__btn--repeat-not-now) {
+  color: var(--color-heading) !important;
+  border: 0.1rem solid var(--color-border) !important;
+  border-radius: var(--radius-button) !important;
+}
+
+.jdgm-write-review-modal .jdgm-write-review-modal__field-input {
+  background-color: var(--color-background) !important;
+  border-color: var(--color-border);
+  border-radius: var(--radius-input) !important;
+}
+
+.jdgm-write-review-modal .jdgm-write-review-modal__field-input:focus {
+  border-color: var(--color-heading) !important;
+}
+
+.jdgm-write-review-modal .jdgm-write-review-modal__chip-input:checked + .jdgm-write-review-modal__chip-label,
+.jdgm-write-review-modal .jdgm-write-review-modal__checkbox-input:checked + .jdgm-write-review-modal__checkbox-custom {
+  border-color: var(--color-accent) !important;
+  background-color: var(--color-accent) !important;
+}
+
+.jdgm-write-review-modal .jdgm-write-review-modal__field-group--media-upload {
+  border-radius: var(--radius-input) !important;
+}

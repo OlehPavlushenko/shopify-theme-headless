@@ -9,6 +9,8 @@
     "watch": "node scripts/sync-ui.mjs --watch",
     "dev": "npm run sync && shopify theme dev --path theme --store education-checkout-extensibility --theme-editor-sync",
     "check": "shopify theme check --path theme",
+    "release": "npm run sync && npm run lint && shopify theme push --path theme --store education-checkout-extensibility --unpublished",
+    "pull:live": "shopify theme pull --path theme --store education-checkout-extensibility --live --only config/settings_data.json --only \"templates/*.json\" --only \"sections/*.json\"",
     "dev:reference": "shopify theme dev --path reference/loyalty-theme --store education-checkout-extensibility",
     "server": "npm --prefix project-server run dev",
     "server:install": "npm --prefix project-server install",

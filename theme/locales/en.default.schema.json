@@ -172,6 +172,27 @@
       "show_cart_recommendations": "Show recommended products next to the cart drawer",
       "show_cart_recommendations_info": "Related products Shopify picks for the items in the cart. Loaded only when the cart opens, shown beside the drawer on desktop and as a closable sheet on phones."
     },
+    "seo": {
+      "name": "Search engines",
+      "info": "Shipping and returns as structured data: Google can show them next to your products. Only the main country you ship to; settings in Google Merchant Center win over these.",
+      "country": "Country",
+      "country_info": "Two-letter code, e.g. US, GB, DE. Empty: nothing is output.",
+      "returns": "Returns",
+      "return_policy": "Return policy",
+      "return_window": "Within a number of days",
+      "return_unlimited": "Any time",
+      "return_none": "No returns",
+      "return_days": "Days to return",
+      "free_returns": "Returns are free",
+      "shipping": "Shipping",
+      "shipping_rate": "Shipping price",
+      "shipping_rate_info": "In the store currency. 0 for free shipping.",
+      "free_shipping_from": "Free shipping from",
+      "free_shipping_from_info": "Order total in the store currency. 0: no threshold.",
+      "handling_days": "Days to dispatch",
+      "transit_min": "Delivery days, from",
+      "transit_max": "Delivery days, up to"
+    },
     "saved": {
       "name": "Wishlist & compare",
       "wishlist_enabled": "Wishlist",

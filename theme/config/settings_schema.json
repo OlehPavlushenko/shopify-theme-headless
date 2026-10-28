@@ -510,6 +510,33 @@
     ]
   },
   {
+    "name": "t:settings.seo.name",
+    "settings": [
+      { "type": "paragraph", "content": "t:settings.seo.info" },
+      { "type": "text", "id": "seo_country", "label": "t:settings.seo.country", "info": "t:settings.seo.country_info" },
+      { "type": "header", "content": "t:settings.seo.returns" },
+      {
+        "type": "select",
+        "id": "seo_return_policy",
+        "label": "t:settings.seo.return_policy",
+        "options": [
+          { "value": "window", "label": "t:settings.seo.return_window" },
+          { "value": "unlimited", "label": "t:settings.seo.return_unlimited" },
+          { "value": "none", "label": "t:settings.seo.return_none" }
+        ],
+        "default": "window"
+      },
+      { "type": "range", "id": "seo_return_days", "label": "t:settings.seo.return_days", "min": 1, "max": 90, "step": 1, "unit": "d", "default": 14 },
+      { "type": "checkbox", "id": "seo_free_returns", "label": "t:settings.seo.free_returns", "default": true },
+      { "type": "header", "content": "t:settings.seo.shipping" },
+      { "type": "number", "id": "seo_shipping_rate", "label": "t:settings.seo.shipping_rate", "info": "t:settings.seo.shipping_rate_info", "default": 5 },
+      { "type": "number", "id": "seo_free_shipping_from", "label": "t:settings.seo.free_shipping_from", "info": "t:settings.seo.free_shipping_from_info", "default": 50 },
+      { "type": "range", "id": "seo_handling_days", "label": "t:settings.seo.handling_days", "min": 0, "max": 10, "step": 1, "unit": "d", "default": 2 },
+      { "type": "range", "id": "seo_transit_min", "label": "t:settings.seo.transit_min", "min": 0, "max": 30, "step": 1, "unit": "d", "default": 2 },
+      { "type": "range", "id": "seo_transit_max", "label": "t:settings.seo.transit_max", "min": 0, "max": 30, "step": 1, "unit": "d", "default": 5 }
+    ]
+  },
+  {
     "name": "t:settings.saved.name",
     "settings": [
       { "type": "paragraph", "content": "t:settings.saved.info" },

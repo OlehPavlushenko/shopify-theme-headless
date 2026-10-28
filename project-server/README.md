@@ -72,3 +72,11 @@ the list isn't checked (local development only).
 - The token is an Admin API token of a custom app with `read_customers` and `write_customers`.
   Use a token of the store the theme runs on: the development store while developing.
 - Production needs hosting with HTTPS (any Node 22 host); its URL goes into the theme settings.
+
+## Deploy on Render
+
+`render.yaml` in the repository root is a Blueprint: Render > New > Blueprint, pick the repository,
+fill in the values it asks for (from `.env.local`; `ALLOWED_ORIGINS` = the store's domain only, PORT is
+set by Render). Then Theme settings > Integrations: API URL = `https://<service>.onrender.com`,
+API secret = `THEME_SECRET`. The free plan sleeps after 15 minutes idle; the first request wakes it
+in up to a minute.

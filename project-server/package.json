@@ -1,5 +1,5 @@
 {
-  "name": "bioharmony-api",
+  "name": "project-server",
   "private": true,
   "type": "module",
   "description": "Small API next to the theme: newsletter sign-up and contact form messages into Shopify customers",

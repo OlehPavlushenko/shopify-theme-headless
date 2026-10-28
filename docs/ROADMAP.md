@@ -96,20 +96,16 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
 
 ## Next
 
-1. **Store reviews page** (`page.reviews`, `/pages/reviews`): add the Judge.me "All reviews" block
-   in the editor, then style it like the product widget.
-2. **Notifications** for new contact / back-in-stock requests (Shopify Flow on the customer tags),
-   when the user asks for it.
-3. **SEO pass** over all templates: one h1 everywhere (main section or Page header), breadcrumbs,
-   meta, structured data per template; the store description in Online Store → Preferences.
-4. **Product cards settings** in Theme settings (image ratio, fit, vendor, swatches, toggles),
-   tag badges.
-5. **Shared CSS patterns** still duplicated: underlined text buttons → `.btn--link`, counter pills
-   → one `.count-badge`.
-6. **Spin-to-win** popup (server picks the prize and can issue a personal code), popup teaser tab.
-7. Wishlist / compare synced to the customer account through project-server.
-8. Demo content of the templates (home, About, FAQ, blog, password) is still about the test catalog;
-   brand-neutral copy and the logo come with the real store.
+1. **Store reviews page** (`page.reviews`, `/pages/reviews`): Judge.me's product widget renders
+   nothing outside a product; the page needs Judge.me's all-reviews widget (enabled in the Judge.me
+   admin first), then styling like the product widget.
+2. **Notifications** for new contact / back-in-stock requests: Shopify Flow on the customer tags
+   (set up in the admin — there is no API to create workflows).
+3. **Spin to win, next step**: a personal one-time code per email from project-server (needs the
+   discounts scope), a teaser tab to reopen the popup.
+4. Wishlist / compare synced to the customer account through project-server.
+5. The store's own texts in the admin: home meta title / description (Online Store → Preferences),
+   the logo.
 
 ## Decisions
 

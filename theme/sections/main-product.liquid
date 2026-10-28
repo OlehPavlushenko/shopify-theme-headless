@@ -161,7 +161,8 @@
               {%- unless product.metafields.custom.bundle_offer.value == true -%}{%- continue -%}{%- endunless -%}
               {%- comment -%}
                 Shown only on products with the metafield custom.bundle_offer ("Bundle & save") on.
-                Bundle & save: up to three cards (1 item, 2 items −10%, …); picking one sets the quantity
+                Bundle & save: up to three tiles in a row (1 item, 2 items −10%, … with the price per
+                item); picking one sets the quantity
                 of the form. The discount itself is an automatic discount made in the admin with the same
                 quantities — the cards only show it. @ui/quantity-breaks keeps the prices in step with
                 the variant and the card in step with the quantity stepper.
@@ -183,8 +184,8 @@
                       if qty == 0
                         continue
                       endif
-                      assign full = variant.price | times: qty
-                      assign total = 100 | minus: off | times: full | divided_by: 100
+                      # Price per item with the discount (whole cents, rounded down)
+                      assign each = 100 | minus: off | times: variant.price | divided_by: 100
                     -%}
                     <label class="quantity-breaks__option">
                       <input
@@ -195,22 +196,20 @@
                         data-discount="{{ off }}"
                         {% if forloop.first %}checked{% endif %}
                       >
-                      <span class="quantity-breaks__text">
-                        <span class="quantity-breaks__title">
-                          {{- 'products.quantity_breaks.items' | t: count: qty -}}
-                          {%- if popular == i -%}
-                            <span class="pill quantity-breaks__badge">{{ 'products.quantity_breaks.popular' | t }}</span>
-                          {%- endif -%}
-                        </span>
+                      {%- if popular == i -%}
+                        <span class="pill quantity-breaks__badge">{{ 'products.quantity_breaks.popular' | t }}</span>
+                      {%- endif -%}
+                      <span class="quantity-breaks__title">{{ 'products.quantity_breaks.items' | t: count: qty }}</span>
+                      <span class="quantity-breaks__save">
                         {%- if off > 0 -%}
-                          <span class="quantity-breaks__save">{{ 'products.quantity_breaks.save' | t: percent: off }}</span>
+                          {{ 'products.quantity_breaks.save' | t: percent: off }}
+                        {%- else -%}
+                          {{ 'products.quantity_breaks.standard' | t }}
                         {%- endif -%}
                       </span>
                       <span class="quantity-breaks__price">
-                        <span data-break-total>{{ total | money }}</span>
-                        {%- if off > 0 -%}
-                          <s class="quantity-breaks__compare" data-break-full>{{ full | money }}</s>
-                        {%- endif -%}
+                        <span data-break-each>{{ each | money }}</span>
+                        {%- if qty > 1 -%}<span class="quantity-breaks__unit">{{ 'products.quantity_breaks.each' | t }}</span>{%- endif -%}
                       </span>
                     </label>
                   {%- endfor -%}

@@ -126,7 +126,9 @@
         "other": "{{ count }} items"
       },
       "popular": "Most popular",
-      "save": "Save {{ percent }}%"
+      "save": "Save {{ percent }}%",
+      "standard": "Standard price",
+      "each": "/ item"
     },
     "add_to_cart": "Add to cart",
     "in_cart": "{{ count }} in cart",

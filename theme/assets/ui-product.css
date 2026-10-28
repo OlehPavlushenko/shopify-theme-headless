@@ -366,13 +366,15 @@
     min-width: 0;
   }
 
-  /* Bundle & save: cards as radio buttons, the picked one in the accent border */
+  /* Bundle & save: three tiles in a row (quantity, saving, price per item), the picked one in the
+     accent border */
   quantity-breaks {
     display: block;
   }
 
   .quantity-breaks__group {
     display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
     gap: var(--space-xs);
     margin: 0;
     padding: 0;
@@ -390,10 +392,10 @@
   .quantity-breaks__option {
     position: relative;
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    gap: var(--space-s);
-    padding: var(--space-s) var(--space-m);
+    justify-items: center;
+    gap: 0.2rem;
+    padding: var(--space-s) var(--space-xs);
+    text-align: center;
     cursor: pointer;
     background: var(--color-background);
     border: 0.1rem solid var(--color-border);
@@ -413,16 +415,20 @@
     box-shadow: 0 0 0 0.1rem var(--color-accent);
   }
 
+  /* The radio covers the tile, unseen: the border shows the pick, the tile shows keyboard focus */
   .quantity-breaks__input {
-    width: 1.8rem;
-    height: 1.8rem;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     margin: 0;
-    accent-color: var(--color-accent);
+    cursor: pointer;
+    opacity: 0;
   }
 
-  .quantity-breaks__text {
-    display: grid;
-    gap: 0.2rem;
+  .quantity-breaks__option:has(:focus-visible) {
+    outline: var(--focus-ring);
+    outline-offset: 0.2rem;
   }
 
   .quantity-breaks__title {
@@ -430,30 +436,36 @@
     color: var(--color-heading);
   }
 
-  /* "Most popular" sits on the top edge of its card */
-  .quantity-breaks__badge {
-    position: absolute;
-    top: 0;
-    right: var(--space-m);
-    translate: 0 -50%;
-  }
-
   .quantity-breaks__save {
-    font-size: var(--text-sm);
+    font-size: var(--text-xs);
     color: var(--color-accent);
   }
 
+  .quantity-breaks__option:first-of-type .quantity-breaks__save {
+    color: var(--color-text-muted);
+  }
+
   .quantity-breaks__price {
-    display: grid;
-    justify-items: end;
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
     font-weight: var(--font-body-weight-semibold);
     color: var(--color-heading);
   }
 
-  .quantity-breaks__compare {
-    font-size: var(--text-sm);
+  .quantity-breaks__unit {
+    margin-inline-start: 0.2rem;
+    font-size: var(--text-xs);
     font-weight: var(--font-body-weight);
     color: var(--color-text-muted);
+  }
+
+  /* "Most popular" on the tile's top edge */
+  .quantity-breaks__badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    translate: -50% -50%;
+    white-space: nowrap;
   }
 
   .main-product__delivery {

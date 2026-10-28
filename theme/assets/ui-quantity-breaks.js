@@ -4,12 +4,12 @@
  *
  * Markup contract (theme: the quantity_breaks block of sections/main-product.liquid):
  *   <quantity-breaks data-form="<product form id>">
- *     input[type=radio][value=<quantity>][data-discount=<percent>] … [data-break-total] [data-break-full]
+ *     label > input[type=radio][value=<quantity>][data-discount=<percent>] … [data-break-each]
  *   </quantity-breaks>
  * Inside a <product-info data-money-format> (@ui/variant-picker):
  * - a picked card sets the quantity field of the form (the stepper), and the stepper picks the card
  *   of its quantity (none when there is no such card);
- * - on variant:change the totals follow the variant's price.
+ * - on variant:change the prices per item follow the variant's price.
  * Without a stepper the radios themselves are the form's quantity (name="quantity" form="…"):
  * that works without JS too. The discount is applied by Shopify (an automatic discount), not here.
  */
@@ -40,13 +40,9 @@ class QuantityBreaks extends HTMLElement {
     if (!variant) return;
     const format = this.info?.dataset.moneyFormat;
     for (const radio of this.radios) {
-      const option = radio.closest('label');
-      const full = variant.price * Number(radio.value);
       // Whole cents, rounded down as in Liquid
-      const total = Math.floor((full * (100 - Number(radio.dataset.discount))) / 100);
-      option.querySelector('[data-break-total]').textContent = formatMoney(total, format);
-      const fullEl = option.querySelector('[data-break-full]');
-      if (fullEl) fullEl.textContent = formatMoney(full, format);
+      const each = Math.floor((variant.price * (100 - Number(radio.dataset.discount))) / 100);
+      radio.closest('label').querySelector('[data-break-each]').textContent = formatMoney(each, format);
     }
   }
 }

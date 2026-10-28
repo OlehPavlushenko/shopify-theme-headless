@@ -211,7 +211,14 @@
                           {{- 'wheel.copy' | t -}}
                         </button>
                       </div>
-                      <p class="spin-wheel__note">{{ 'wheel.applied' | t }}</p>
+                      <p
+                        class="spin-wheel__note"
+                        data-wheel-note
+                        data-applying="{{ 'wheel.applying' | t | escape }}"
+                        data-applied="{{ 'wheel.applied' | t | escape }}"
+                        data-failed="{{ 'wheel.failed' | t | escape }}"
+                        data-saved="{{ 'wheel.saved' | t | escape }}"
+                      ></p>
                     </div>
                   </spin-wheel>
                   <script type="module">import '@ui/spin-wheel';</script>

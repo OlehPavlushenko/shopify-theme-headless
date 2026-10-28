@@ -13,6 +13,7 @@
   "sections": {
     "christmas_popup": {
       "type": "promo-popup",
+      "name": "Christmas popup",
       "blocks": {
         "text": {
           "type": "text",
@@ -69,6 +70,7 @@
     },
     "spin_popup": {
       "type": "promo-popup",
+      "name": "Spin to win popup",
       "blocks": {
         "text": {
           "type": "text",
@@ -93,7 +95,7 @@
       ],
       "settings": {
         "delay": 0,
-        "scroll": 0,
+        "scroll": 60,
         "exit_intent": true,
         "days": 3,
         "pages": "not_cart",

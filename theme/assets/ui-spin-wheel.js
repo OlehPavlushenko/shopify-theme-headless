@@ -8,9 +8,11 @@
  *     <script type="application/json" data-wheel-prizes>[{ "label", "code", "weight" }]</script>
  *     a <newsletter-form> (the spin starts on newsletter:subscribed) or [data-wheel-spin] (a button)
  *     [data-wheel-result hidden] > [data-wheel-prize] [data-wheel-code] [data-wheel-copy data-copied="…"]
+ *       [data-wheel-note data-applying data-applied data-failed data-saved] (texts for each state)
  *   </spin-wheel>
  * The prize is picked here by weight, the disc stops on it, the result shows the code and
- * discount:apply ({ detail: { code } }, bubbles) asks the cart to apply it. The prize is kept in
+ * discount:apply ({ detail: { code } }, bubbles) asks the cart to apply it; the note follows the
+ * cart's discount:result (applied, or not taken — e.g. no such code in Discounts). The prize is kept in
  * localStorage: the wheel spins once per browser and shows the same prize when it comes back.
  * The codes are ordinary codes from Shopify Discounts (no app): anyone could read them in the page.
  */
@@ -81,10 +83,18 @@ class SpinWheel extends HTMLElement {
     result.querySelector('[data-wheel-prize]').textContent = prize.label;
     result.querySelector('[data-wheel-code]').textContent = prize.code;
     result.hidden = false;
-    if (apply) {
-      result.focus?.();
-      if (prize.code) this.dispatchEvent(new CustomEvent('discount:apply', { bubbles: true, detail: { code: prize.code } }));
-    }
+    const note = result.querySelector('[data-wheel-note]');
+    const say = (state) => note && (note.textContent = note.dataset[state] ?? '');
+    if (!apply || !prize.code) return say('saved');
+    say('applying');
+    const onResult = (event) => {
+      if (event.detail.code.toLowerCase() !== prize.code.toLowerCase()) return;
+      document.removeEventListener('discount:result', onResult);
+      say(event.detail.applicable ? 'applied' : 'failed');
+    };
+    document.addEventListener('discount:result', onResult);
+    result.focus?.();
+    this.dispatchEvent(new CustomEvent('discount:apply', { bubbles: true, detail: { code: prize.code } }));
   }
 
   #copy = async (event) => {

@@ -307,7 +307,10 @@
     "won": "You won",
     "copy": "Copy",
     "copied": "Copied",
-    "applied": "The code is already applied to your cart — it works at checkout."
+    "applying": "Adding the code to your cart…",
+    "applied": "The code is applied to your cart — it works at checkout.",
+    "failed": "The code couldn’t be added to your cart. Copy it and try it at checkout.",
+    "saved": "Copy the code and use it at checkout."
   },
   "newsletter": {
     "placeholder": "Your email",

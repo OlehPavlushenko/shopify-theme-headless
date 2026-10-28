@@ -100,12 +100,21 @@ if (!customElements.get('cart-discount')) customElements.define('cart-discount',
 
 // A newsletter sign-up with a discount code (data-discount): the code goes into the cart right away,
 // next to codes already there. With an empty cart Shopify keeps it and applies it once items are added.
-// A code to add to the cart's codes: after a newsletter sign-up (data-discount) or a prize (discount:apply)
+// A code to add to the cart's codes: after a newsletter sign-up (data-discount) or a prize
+// (discount:apply). The answer comes back as discount:result ({ code, applicable }, on document);
+// a code the cart doesn't take is dropped with the usual error, as one typed in by hand.
+const requested = new Set();
 function applyCode(code) {
   if (!code || !window.liquidAjaxCart) return;
-  const codes = (window.liquidAjaxCart.cart?.discount_codes ?? []).map((c) => c.code);
-  if (codes.some((c) => c.toLowerCase() === code.toLowerCase())) return;
-  window.liquidAjaxCart.update({ discount: [...codes, code].join(',') });
+  const current = window.liquidAjaxCart.cart?.discount_codes ?? [];
+  const found = current.find((c) => c.code.toLowerCase() === code.toLowerCase());
+  if (found) return report(found);
+  requested.add(code.toLowerCase());
+  discount.pending = true;
+  window.liquidAjaxCart.update({ discount: [...current.map((c) => c.code), code].join(',') });
+}
+function report({ code, applicable }) {
+  document.dispatchEvent(new CustomEvent('discount:result', { detail: { code, applicable } }));
 }
 document.addEventListener('newsletter:subscribed', (event) => applyCode(event.detail?.discount));
 document.addEventListener('discount:apply', (event) => applyCode(event.detail?.code));
@@ -116,6 +125,9 @@ document.addEventListener('liquid-ajax-cart:request-end', (event) => {
   if (!discount.pending || requestState.requestType !== 'update') return;
   discount.pending = false;
   const codes = requestState.responseData?.body?.discount_codes ?? [];
+  for (const c of codes) {
+    if (requested.delete(c.code.toLowerCase())) report(c);
+  }
   const invalid = codes.filter((c) => !c.applicable);
   if (!invalid.length) return;
   discount.error = invalid[0].code;

@@ -13,7 +13,7 @@
  * (detail: { status, discount } — discount from data-discount, for the cart to apply).
  * Sending and reCAPTCHA (action "newsletter"): @ui/api.
  */
-import { postJSON } from '@ui/api';
+import { postJSON, wakeWhenSeen } from '@ui/api';
 import * as storage from '@ui/storage';
 
 class NewsletterForm extends HTMLElement {
@@ -29,6 +29,7 @@ class NewsletterForm extends HTMLElement {
     this.#message = this.querySelector('[data-newsletter-message]');
     const { signal } = (this.#abort = new AbortController());
     this.#form.addEventListener('submit', this.#onSubmit, { signal });
+    wakeWhenSeen(this, this.dataset.endpoint, signal);
   }
 
   disconnectedCallback() {

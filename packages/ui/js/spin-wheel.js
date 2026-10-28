@@ -23,7 +23,7 @@
  * popup doesn't come back on this device (@ui/promo-popup reads the same key). A sign-up also sets
  * "newsletter:subscribed" in storage and dispatches newsletter:subscribed (bubbles).
  */
-import { postJSON } from '@ui/api';
+import { postJSON, wakeWhenSeen } from '@ui/api';
 import { copyText, flashLabel } from '@ui/clipboard';
 import { reducedMotion } from '@ui/scroll';
 import * as storage from '@ui/storage';
@@ -52,6 +52,7 @@ class SpinWheel extends HTMLElement {
       return this.#show(saved, 'saved');
     }
     this.querySelector('[data-wheel-form]')?.addEventListener('submit', this.#onSubmit, { signal });
+    if (this.dataset.endpoint) wakeWhenSeen(this, this.dataset.endpoint, signal);
     this.querySelector('[data-wheel-spin]')?.addEventListener('click', this.#onSpinHere, { signal });
   }
 

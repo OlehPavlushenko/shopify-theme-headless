@@ -8,8 +8,26 @@
  *   postJSON(endpoint, data, { recaptcha, action }) → Promise of the parsed answer ({} when it isn't
  *     JSON); with recaptcha (a v3 site key) the body gets a `token` for that action. Rejects on a
  *     network error or when reCAPTCHA can't load.
+ *   wakeWhenSeen(element, endpoint, signal): once the element comes into view, a GET to the API
+ *     host's /health (once per page) — a host on a free plan sleeps when idle and needs up to a
+ *     minute to wake, so it is up by the time the form is sent
  */
 let recaptcha;
+const woken = new Set();
+
+export function wakeWhenSeen(element, endpoint, signal) {
+  const health = new URL('/health', endpoint).href;
+  if (woken.has(health)) return;
+  const observer = new IntersectionObserver((entries) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return;
+    observer.disconnect();
+    if (woken.has(health)) return;
+    woken.add(health);
+    fetch(health, { mode: 'no-cors' }).catch(() => {});
+  });
+  observer.observe(element);
+  signal.addEventListener('abort', () => observer.disconnect());
+}
 
 function loadRecaptcha(siteKey) {
   recaptcha ??= new Promise((resolve, reject) => {

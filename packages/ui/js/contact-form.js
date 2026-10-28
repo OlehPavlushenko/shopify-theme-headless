@@ -14,7 +14,7 @@
  * The endpoint answers { ok: true } or { ok: false, error: invalid_email | invalid_phone | … }.
  * On success the form is replaced by the success text. Sending and reCAPTCHA: @ui/api.
  */
-import { postJSON } from '@ui/api';
+import { postJSON, wakeWhenSeen } from '@ui/api';
 
 class ContactForm extends HTMLElement {
   #abort;
@@ -27,6 +27,7 @@ class ContactForm extends HTMLElement {
     this.#message = this.querySelector('[data-contact-message]');
     const { signal } = (this.#abort = new AbortController());
     this.addEventListener('submit', this.#onSubmit, { signal });
+    wakeWhenSeen(this, this.dataset.endpoint, signal);
   }
 
   disconnectedCallback() {

@@ -68,27 +68,23 @@
 
         {%- comment -%} Focus lands here on open (not on the close button, which would show its focus ring) {%- endcomment -%}
         <div class="promo-popup__content" tabindex="-1" autofocus>
-          <button type="button" class="btn btn--icon promo-popup__close" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">
-            {%- render 'icon', name: 'close' -%}
-          </button>
+          {%- render 'close-button', class: 'promo-popup__close' -%}
 
           {%- assign has_title = false -%}
           {%- for block in section.blocks -%}
             {%- case block.type -%}
               {%- when 'text' -%}
                 <div class="promo-popup__text" {{ block.shopify_attributes }}>
-                  {%- if block.settings.eyebrow != blank -%}
-                    <p class="eyebrow">{{ block.settings.eyebrow | escape }}</p>
-                  {%- endif -%}
-                  {%- if block.settings.heading != blank -%}
-                    <h2 class="h3 promo-popup__heading"{% unless has_title %} id="{{ title_id }}"{% endunless %}>
-                      {{- block.settings.heading -}}
-                    </h2>
-                    {%- assign has_title = true -%}
-                  {%- endif -%}
-                  {%- if block.settings.text != blank -%}
-                    <div class="promo-popup__body">{{ block.settings.text }}</div>
-                  {%- endif -%}
+                  {%- liquid
+                    assign heading_id = nil
+                    unless has_title
+                      assign heading_id = title_id
+                    endunless
+                    render 'section-intro', eyebrow: block.settings.eyebrow, heading: block.settings.heading, heading_class: 'h3 promo-popup__heading', heading_id: heading_id, text: block.settings.text, text_class: 'promo-popup__body'
+                    if block.settings.heading != blank
+                      assign has_title = true
+                    endif
+                  -%}
                 </div>
 
               {%- when 'countdown' -%}
@@ -329,14 +325,14 @@
     { "type": "text", "id": "show_until", "label": "t:labels.show_until", "info": "t:labels.schedule_info" },
     { "type": "header", "content": "t:sections.promo_popup.look" },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" },
-    { "type": "image_picker", "id": "image", "label": "t:sections.promo_popup.image", "info": "t:sections.promo_popup.image_info" }
+    { "type": "image_picker", "id": "image", "label": "t:labels.image", "info": "t:sections.promo_popup.image_info" }
   ],
   "blocks": [
     {
       "type": "text",
       "name": "t:labels.text",
       "settings": [
-        { "type": "text", "id": "eyebrow", "label": "t:sections.promo_popup.eyebrow" },
+        { "type": "text", "id": "eyebrow", "label": "t:labels.eyebrow" },
         { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Get 10% off your first order" },
         { "type": "richtext", "id": "text", "label": "t:labels.text" }
       ]
@@ -392,11 +388,11 @@
     },
     {
       "type": "products",
-      "name": "t:sections.promo_popup.products",
+      "name": "t:labels.products",
       "limit": 1,
       "settings": [
         { "type": "text", "id": "heading", "label": "t:labels.heading" },
-        { "type": "product_list", "id": "products", "label": "t:sections.promo_popup.products", "limit": 6 }
+        { "type": "product_list", "id": "products", "label": "t:labels.products", "limit": 6 }
       ]
     },
     {

@@ -1,0 +1,27 @@
+{% doc %}
+  Icon button that closes a drawer, popup or popover (@ui/dialog).
+  A <dialog> closes through [data-dialog-close]; a [popover] through popovertarget with
+  popovertargetaction="hide".
+
+  @param {string} [class] - Extra classes after "btn btn--icon"
+  @param {string} [label] - Accessible name (default: accessibility.close)
+  @param {string} [popover] - Id of the popover to hide; without it the button closes its <dialog>
+{% enddoc %}
+{%- liquid
+  assign close_label = label
+  if close_label == blank
+    assign close_label = 'accessibility.close' | t
+  endif
+-%}
+<button
+  type="button"
+  class="btn btn--icon{% if class != blank %} {{ class }}{% endif %}"
+  {% if popover != blank %}
+    popovertarget="{{ popover }}" popovertargetaction="hide"
+  {% else %}
+    data-dialog-close
+  {% endif %}
+  aria-label="{{ close_label | escape }}"
+>
+  {%- render 'icon', name: 'close' -%}
+</button>

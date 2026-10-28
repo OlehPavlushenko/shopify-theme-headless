@@ -57,6 +57,23 @@ and the list of mistakes we already made once. Read both before adding code.
 - One rule, one place: color-option detection is `option-is-color`, discount math is
   `discount-percent` (JS: `discountPercent` in `@ui/money`), color dots are `swatch`, breadcrumbs
   are `breadcrumbs`, the options of every search form and link are `search-options`, the API URL is `api-url`, the tab title is `document-title`. Don't copy their logic.
+- Shared markup snippets — use them instead of writing the markup again:
+  - `close-button` (`class`, `label`, `popover`): the × of a drawer, popup or popover;
+    `dialog-header` (`title`, `title_id`, `tag`, `title_class`, `class`, `close_class`, `popover`,
+    `actions`, `content`): the title row of a drawer / popup with its close button;
+  - `form-success` (`text`, `autofocus`): a form's success line;
+  - `search-form` (`id`, `value`, `placeholder`, `label`, `scope`, `class`, `wrap_class`,
+    `section_form`, `autocomplete`, `autofocus`, `panel`): every store search field with its
+    `<form-validate>`;
+  - `section-intro` (`eyebrow`, `heading`, `heading_class`, `heading_id`, `text`, `text_class`,
+    `button_label`, `button_link`, `button_class`, `class`): a section's eyebrow / heading / text / button;
+    `section-head` (`heading`, `heading_tag`, `heading_class`, `id`, `link_label`, `link`, `nav`):
+    the heading row with a "view all" link or slider arrows;
+  - `chip-remove` (`url`, `label`, `aria_label`, `link_attr`): a removable chip (active filters, topics);
+  - `price` with `live: true`: a price the variant picker updates (`data-product-price`, `[data-compare-value]`).
+- Schema labels shared by several sections live under `labels.*` in `en.default.schema.json`
+  (`eyebrow`, `columns`, `limit`, `ratio*`, `link_label`, `collection`, `blog`, `products`, `image`, …);
+  don't point a section at another section's key.
 
 ## CSS
 

@@ -33,7 +33,22 @@
     "schedule": "Schedule",
     "show_from": "Show from",
     "show_until": "Show until",
-    "schedule_info": "Date and time in the store timezone, e.g. 2026-10-31 23:59. Leave empty for no limit."
+    "schedule_info": "Date and time in the store timezone, e.g. 2026-10-31 23:59. Leave empty for no limit.",
+    "eyebrow": "Label above the heading",
+    "columns": "Columns on desktop",
+    "limit": "Number shown",
+    "ratio": "Image shape",
+    "ratio_square": "Square",
+    "ratio_portrait": "Portrait",
+    "ratio_landscape": "Landscape",
+    "link_label": "Link label",
+    "collection": "Collection",
+    "blog": "Blog",
+    "products": "Products",
+    "products_list": "Or pick products",
+    "products_list_info": "Used instead of the collection when set.",
+    "breadcrumbs": "Show breadcrumbs",
+    "image": "Image"
   },
   "options": {
     "alignment": {
@@ -249,26 +264,17 @@
       "menu_heading_info": "Empty: the menu name.",
       "contacts": "Contacts",
       "contacts_info": "Address, phone, email and opening hours from Theme settings > Store details.",
-      "products": "Products",
-      "collection": "Collection",
-      "products_list": "Or pick products",
-      "products_list_info": "Used instead of the collection when set.",
-      "limit": "Number shown",
       "articles": "Blog posts",
-      "articles_heading_info": "Empty: the blog name.",
-      "blog": "Blog"
+      "articles_heading_info": "Empty: the blog name."
     },
     "main_search": {
       "name": "Search header",
-      "results_per_page": "Results per page",
       "show_vendor": "Show vendor",
       "collections": "Popular collections",
-      "collections_info": "Shown as links before a search",
-      "blog": "Blog"
+      "collections_info": "Shown as links before a search"
     },
     "main_collection": {
       "products_per_page": "Products per page",
-      "columns_desktop": "Columns on desktop",
       "columns_mobile": "Columns on mobile",
       "name": "Collection products",
       "filters_header": "Filters",
@@ -319,7 +325,6 @@
       "layout": "Layout",
       "layout_inline": "Text and form in one row",
       "layout_banner": "Banner with an image",
-      "image": "Image",
       "image_info": "Banner layout: shown on the left.",
       "color_scheme_info": "A scheme with a background gradient makes a bold banner."
     },
@@ -343,15 +348,12 @@
       "pages_home": "Home page only",
       "pages_not_cart": "All except the cart",
       "look": "Look",
-      "image": "Image",
       "image_info": "Shown beside the content on larger screens.",
-      "eyebrow": "Label above the heading",
       "newsletter": "Newsletter",
       "success_text": "Text after signing up",
       "success_text_info": "For example the discount code. Create the code in Discounts.",
       "already_text": "Text for an email already subscribed",
       "note": "Small print",
-      "products": "Products",
       "button": "Button",
       "discount_code": "Discount code to apply",
       "discount_code_info": "Added to the cart right after signing up, so the shopper doesn't need to copy it. Create the code in Discounts.",
@@ -367,7 +369,6 @@
     },
     "hero": {
       "name": "Hero",
-      "image": "Image",
       "image_mobile": "Image on phones",
       "image_mobile_info": "Optional, a portrait crop works best. Empty: the main image.",
       "height": "Height",
@@ -408,10 +409,7 @@
       "layout": "Layout",
       "layout_slider": "Slider",
       "layout_grid": "Grid",
-      "columns": "Columns on desktop",
       "quick_add": "Show “Add to cart”",
-      "link_label": "Link label",
-      "link": "Link",
       "link_info": "Empty: the collection.",
       "search_empty_only": "On search: only without results",
       "search_empty_only_info": "On the search page: shown before a search and when it finds nothing.",
@@ -425,10 +423,7 @@
     "collection_list": {
       "name": "Collection list",
       "collections": "Collections",
-      "collections_info": "Empty: all collections with products, except those with \"Hide from collection lists\" ticked in the collection's metafields.",
-      "ratio": "Image shape",
-      "ratio_square": "Square",
-      "ratio_portrait": "Portrait"
+      "collections_info": "Empty: all collections with products, except those with \"Hide from collection lists\" ticked in the collection's metafields."
     },
     "quick_view": {
       "name": "Quick view"
@@ -451,7 +446,6 @@
       "name": "Page header",
       "heading_info": "Empty: the page, collection or blog title.",
       "text_info": "Empty: the collection or blog description.",
-      "breadcrumbs": "Show breadcrumbs",
       "alignment": "Alignment",
       "alignment_left": "Left",
       "alignment_center": "Center",
@@ -465,7 +459,6 @@
       "image_source": "Source",
       "image_source_collection": "Collection image",
       "image_source_picked": "Picked image",
-      "image": "Image",
       "image_info": "Overrides the collection image."
     },
     "main_compare": {
@@ -479,8 +472,7 @@
     },
     "promo_grid": {
       "name": "Promo grid",
-      "promo": "Promo card",
-      "ratio_landscape": "Landscape"
+      "promo": "Promo card"
     },
     "image_text": {
       "name": "Image with text",
@@ -616,7 +608,9 @@
       "signup_header": "Sign-up card",
       "show_signup": "Show a sign-up card among the articles",
       "show_signup_info": "Off when the footer already has the newsletter sign-up.",
-      "signup_position": "After article"
+      "signup_position": "After article",
+      "promo_position": "After article",
+      "promo_position_info": "Shown on the first page, after this article."
     },
     "main_article": {
       "name": "Article",
@@ -692,6 +686,7 @@
       "block_price": "Price",
       "block_variant_picker": "Variant picker",
       "low_stock": "\"Only N left\" from",
+      "low_stock_info": "Used by the stock status of the buy buttons and by the variant picker.",
       "block_buy_buttons": "Buy buttons",
       "show_quantity": "Quantity selector",
       "show_dynamic_checkout": "Dynamic checkout button",
@@ -744,20 +739,16 @@
     },
     "menu_promo": {
       "name": "Menu promo",
-      "image": "Image",
       "heading": "Heading",
       "text": "Text",
-      "link_label": "Link label",
       "link": "Link",
       "layout": "Layout",
       "layout_stacked": "Text under the image",
-      "layout_overlay": "Text over the image",
-      "eyebrow": "Label above the heading"
+      "layout_overlay": "Text over the image"
     },
     "menu_products": {
       "name": "Menu products",
-      "heading": "Heading",
-      "products": "Products"
+      "heading": "Heading"
     },
     "search_term": {
       "name": "Search: popular term",
@@ -772,8 +763,6 @@
     "search_products": {
       "name": "Search: products",
       "heading": "Heading",
-      "collection": "Collection",
-      "products": "Products",
       "products_info": "Hand-picked products take priority over the collection.",
       "limit": "Number of products"
     },

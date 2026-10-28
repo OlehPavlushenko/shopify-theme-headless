@@ -28,9 +28,7 @@
         },
         "picker": {
           "type": "variant_picker",
-          "settings": {
-            "low_stock": 5
-          }
+          "settings": {}
         },
         "quantity_breaks": {
           "type": "quantity_breaks",
@@ -51,8 +49,7 @@
             "show_notify": true,
             "show_quantity": true,
             "show_dynamic_checkout": true,
-            "show_stock": true,
-            "low_stock": 5
+            "show_stock": true
           }
         },
         "delivery": {
@@ -144,6 +141,7 @@
         "info_style": "plain",
         "breadcrumbs": true,
         "sticky_bar": true,
+        "low_stock": 5,
         "color_scheme": "scheme-1"
       }
     },

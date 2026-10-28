@@ -17,21 +17,16 @@
       {%- endif -%}
     </div>
     <div class="image-text__content">
-      {%- if section.settings.eyebrow != blank -%}
-        <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-      {%- endif -%}
-      {%- if section.settings.heading != blank -%}
-        <h2 class="h2">{{ section.settings.heading }}</h2>
-      {%- endif -%}
-      {%- if section.settings.text != blank -%}
-        <div class="rte image-text__text">{{ section.settings.text }}</div>
-      {%- endif -%}
-      {%- if section.settings.button_label != blank -%}
-        <a href="{{ section.settings.button_link | default: routes.root_url }}" class="btn btn--outline">
-          {{- section.settings.button_label | escape -}}
-          {%- render 'icon', name: 'arrow-right' -%}
-        </a>
-      {%- endif -%}
+      {%- assign button_link = section.settings.button_link | default: routes.root_url -%}
+      {%- render 'section-intro',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading,
+        heading_class: 'h2',
+        text: section.settings.text,
+        text_class: 'rte image-text__text',
+        button_label: section.settings.button_label,
+        button_link: button_link
+      -%}
     </div>
   </div>
 </div>
@@ -42,7 +37,7 @@
   "class": "image-text-section",
   "disabled_on": { "groups": ["*"] },
   "settings": [
-    { "type": "image_picker", "id": "image", "label": "t:sections.hero.image" },
+    { "type": "image_picker", "id": "image", "label": "t:labels.image" },
     {
       "type": "select",
       "id": "image_position",
@@ -56,15 +51,15 @@
     {
       "type": "select",
       "id": "ratio",
-      "label": "t:sections.collection_list.ratio",
+      "label": "t:labels.ratio",
       "options": [
-        { "value": "4 / 5", "label": "t:sections.collection_list.ratio_portrait" },
-        { "value": "1", "label": "t:sections.collection_list.ratio_square" },
-        { "value": "4 / 3", "label": "t:sections.promo_grid.ratio_landscape" }
+        { "value": "4 / 5", "label": "t:labels.ratio_portrait" },
+        { "value": "1", "label": "t:labels.ratio_square" },
+        { "value": "4 / 3", "label": "t:labels.ratio_landscape" }
       ],
       "default": "1"
     },
-    { "type": "text", "id": "eyebrow", "label": "t:sections.promo_popup.eyebrow", "default": "Our story" },
+    { "type": "text", "id": "eyebrow", "label": "t:labels.eyebrow", "default": "Our story" },
     { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Made with care for you" },
     { "type": "richtext", "id": "text", "label": "t:labels.text", "default": "<p>We choose every product for a reason and check it before it reaches you.</p>" },
     { "type": "text", "id": "button_label", "label": "t:labels.button_label", "default": "Learn more" },

@@ -1,0 +1,27 @@
+{% doc %}
+  Header row of a drawer or popup: the title (labels the dialog through its id) and the close button.
+  Styles: .drawer__header / .popup__header (packages/ui/css/components.css).
+
+  @param {string} title - Title HTML (escape plain text before passing it)
+  @param {string} title_id - Id of the title (the dialog's aria-labelledby)
+  @param {string} [tag] - Title element (default: h2; p inside overlays without a heading level)
+  @param {string} [title_class] - Classes of the title (default: h5)
+  @param {string} [class] - Classes of the row (default: popup__header; drawer__header in drawers)
+  @param {string} [popover] - Id of the popover to hide (popover panels); otherwise the button closes its <dialog>
+  @param {string} [close_class] - Extra classes of the close button
+  @param {string} [actions] - HTML between the title and the close button
+  @param {string} [content] - HTML after the close button (a row under the title)
+{% enddoc %}
+{%- liquid
+  assign header_tag = tag | default: 'h2'
+  assign header_title_class = title_class | default: 'h5'
+  assign header_class = class | default: 'popup__header'
+-%}
+<div class="{{ header_class }}">
+  <{{ header_tag }} id="{{ title_id }}" class="{{ header_title_class }}">
+    {{- title -}}
+  </{{ header_tag }}>
+  {{- actions -}}
+  {%- render 'close-button', class: close_class, popover: popover -%}
+  {{- content -}}
+</div>

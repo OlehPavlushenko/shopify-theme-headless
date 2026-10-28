@@ -37,7 +37,6 @@
     "comment_form_title": "Add a comment",
     "read_more": "Read more",
     "all": "All",
-    "filter_label": "Filter articles by topic",
     "reading_time": {
       "one": "{{ count }} min read",
       "other": "{{ count }} min read"
@@ -59,7 +58,6 @@
     "view_cart": "View cart",
     "checkout": "Checkout",
     "update": "Update cart",
-    "close": "Close cart",
     "empty": "Your cart is empty",
     "continue_shopping": "Continue shopping",
     "login_html": "<a href=\"{{ link }}\">Log in</a> to check out faster.",
@@ -198,7 +196,6 @@
     "print": "Print"
   },
   "password": {
-    "title": "This shop is private",
     "password": "Password",
     "enter": "Enter",
     "enter_with": "Enter with password",
@@ -214,7 +211,6 @@
     "start_title": "What are you looking for?",
     "start_text": "Type a product, a category or a brand above, or start from a popular collection.",
     "no_results_html": "No results for “{{ terms }}”. Check the spelling or try a different word.",
-    "results_for_html": "{{ count }} results for “{{ terms }}”",
     "products": "Products",
     "collections": "Collections",
     "suggestions": "Suggestions",

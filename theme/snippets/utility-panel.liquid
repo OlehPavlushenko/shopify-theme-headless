@@ -39,18 +39,11 @@
 
   <div id="{{ id }}" class="drawer utility-panel" popover="manual" aria-labelledby="{{ id }}-title">
     <div class="drawer__inner">
-      <div class="drawer__header">
-        <p id="{{ id }}-title" class="h5">{{ 'accessibility.utility_panel' | t }}</p>
-        <button
-          type="button"
-          class="btn btn--icon"
-          popovertarget="{{ id }}"
-          popovertargetaction="hide"
-          aria-label="{{ 'accessibility.close' | t }}"
-        >
-          {%- render 'icon', name: 'close' -%}
-        </button>
-      </div>
+      {%- liquid
+        assign panel_title = 'accessibility.utility_panel' | t
+        assign panel_title_id = id | append: '-title'
+        render 'dialog-header', title: panel_title, title_id: panel_title_id, tag: 'p', class: 'drawer__header', popover: id
+      -%}
       <div class="drawer__body utility-panel__body">{{ content }}</div>
     </div>
   </div>

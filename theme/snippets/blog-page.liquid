@@ -31,12 +31,8 @@
         <div class="main-blog__active">
           <span class="main-blog__active-label">{{ 'blog.results_for' | t }}</span>
           <ul class="main-blog__active-list" role="list">
-            <li>
-              <a href="{{ blog_url }}" class="chip chip--compact" data-section-link aria-label="{{ 'blog.clear_search' | t: terms: terms | escape }}">
-                {{- shown_terms -}}
-                {%- render 'icon', name: 'close' -%}
-              </a>
-            </li>
+            {%- assign clear_label = 'blog.clear_search' | t: terms: terms -%}
+            {%- render 'chip-remove', url: blog_url, label: shown_terms, aria_label: clear_label, link_attr: 'data-section-link' -%}
           </ul>
           <span class="main-blog__count" role="status">{{ 'blog.articles_count' | t: count: count }}</span>
         </div>
@@ -46,12 +42,12 @@
           <ul class="main-blog__active-list" role="list">
             {%- for chosen in current_tags -%}
               {%- capture remove_url -%}{% render 'blog-topic-url', blog_url: blog_url, tag: chosen %}{%- endcapture -%}
-              <li>
-                <a href="{{ remove_url | strip }}" class="chip chip--compact" data-section-link aria-label="{{ 'blog.remove_topic' | t: topic: chosen | escape }}">
-                  {{- chosen | escape -}}
-                  {%- render 'icon', name: 'close' -%}
-                </a>
-              </li>
+              {%- liquid
+                assign remove_url = remove_url | strip
+                assign chosen_label = chosen | escape
+                assign remove_label = 'blog.remove_topic' | t: topic: chosen
+                render 'chip-remove', url: remove_url, label: chosen_label, aria_label: remove_label, link_attr: 'data-section-link'
+              -%}
             {%- endfor -%}
             <li><a href="{{ blog_url }}" class="main-blog__clear" data-section-link>{{ 'facets.clear_all' | t }}</a></li>
           </ul>

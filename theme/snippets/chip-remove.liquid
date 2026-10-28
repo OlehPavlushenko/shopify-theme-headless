@@ -1,0 +1,15 @@
+{% doc %}
+  A removable chip in a list of active choices (filters, blog topics, search terms): a list item with
+  a link to the same page without that choice, its label and a × icon. Styles: .chip--compact (components.css).
+
+  @param {string} url - URL without this choice
+  @param {string} label - Visible label HTML (escape plain text before passing it)
+  @param {string} aria_label - Accessible name ("Remove …"; escaped here)
+  @param {string} [link_attr] - Attribute the page's script intercepts (data-facets-link, data-section-link)
+{% enddoc %}
+<li>
+  <a href="{{ url }}" class="chip chip--compact" {{ link_attr }} aria-label="{{ aria_label | escape }}">
+    {{- label -}}
+    {%- render 'icon', name: 'close' -%}
+  </a>
+</li>

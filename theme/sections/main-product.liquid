@@ -152,13 +152,7 @@
 
             {%- when 'price' -%}
               <div class="main-product__price" {{ block.shopify_attributes }}>
-                <span class="price-tag{% if discount > 0 %} price-tag--sale{% endif %} main-product__price-tag" data-product-price>
-                  <span class="price-tag__current">{{ variant.price | money }}</span>
-                  <s class="price-tag__compare"{% if discount == 0 %} hidden{% endif %}>
-                    <span class="visually-hidden">{{ 'products.regular_price' | t }}</span>
-                    <span data-compare-value>{{ variant.compare_at_price | money }}</span>
-                  </s>
-                </span>
+                {%- render 'price', product: product, variant: variant, class: 'main-product__price-tag', live: true -%}
                 {%- if discount > 0 -%}
                   <span class="pill" data-discount-badge>−{{ discount }}%</span>
                 {%- else -%}
@@ -232,7 +226,7 @@
             {%- when 'variant_picker' -%}
               {%- unless product.has_only_default_variant -%}
                 <div class="main-product__picker" {{ block.shopify_attributes }}>
-                  {%- render 'variant-picker', product: product, id: section.id, low_stock: block.settings.low_stock -%}
+                  {%- render 'variant-picker', product: product, id: section.id, low_stock: section.settings.low_stock -%}
                 </div>
               {%- endunless -%}
 
@@ -243,7 +237,7 @@
                     assign stock_state = 'in'
                     if variant.available == false
                       assign stock_state = 'out'
-                    elsif variant.inventory_management == 'shopify' and variant.inventory_quantity > 0 and variant.inventory_quantity <= block.settings.low_stock
+                    elsif variant.inventory_management == 'shopify' and variant.inventory_quantity > 0 and variant.inventory_quantity <= section.settings.low_stock
                       assign stock_state = 'low'
                     endif
                     assign label_in = 'products.stock_in' | t
@@ -328,12 +322,8 @@
                           </div>
                         </form>
                       </form-validate>
-                      <template data-contact-success>
-                        <p class="notice notice--success" role="status" tabindex="-1">
-                          {%- render 'icon', name: 'check' -%}
-                          {{ 'products.notify.success' | t }}
-                        </p>
-                      </template>
+                      {%- assign notify_success = 'products.notify.success' | t -%}
+                      <template data-contact-success>{% render 'form-success', text: notify_success %}</template>
                     </contact-form>
                   </stock-notify>
                   <script type="module">
@@ -389,12 +379,11 @@
                   {%- if info_page.content == blank -%}{%- continue -%}{%- endif -%}
                   <dialog class="popup" id="{{ popup_id }}" aria-labelledby="{{ popup_id }}-title">
                     <div class="popup__inner">
-                      <div class="popup__header">
-                        <h2 class="h5" id="{{ popup_id }}-title">{{ info_page.title | escape }}</h2>
-                        <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">
-                          {%- render 'icon', name: 'close' -%}
-                        </button>
-                      </div>
+                      {%- liquid
+                        assign popup_title = info_page.title | escape
+                        assign popup_title_id = popup_id | append: '-title'
+                        render 'dialog-header', title: popup_title, title_id: popup_title_id
+                      -%}
                       <div class="popup__body rte">{{ info_page.content }}</div>
                     </div>
                   </dialog>
@@ -426,12 +415,7 @@
                     {%- render 'icon', name: 'chat' -%}
                     {{- 'products.ask.title' | t -}}
                   </button>
-                  {%- capture ask_success -%}
-                    <p class="notice notice--success" role="status" tabindex="-1">
-                      {%- render 'icon', name: 'check' -%}
-                      {{ 'contact.success' | t }}
-                    </p>
-                  {%- endcapture -%}
+                  {%- assign ask_success = 'contact.success' | t -%}
                   {%- capture ask_fields -%}
                     <variant-fields data-product="{{ product.title | escape }}">
                       <p class="ask-form__about">{{ 'products.ask.about' | t }} <strong data-variant-title>{{ ask_product | escape }}</strong></p>
@@ -453,12 +437,11 @@
                   {%- endcapture -%}
                   <dialog class="popup" id="{{ ask_id }}" aria-labelledby="{{ ask_id }}-title">
                     <div class="popup__inner">
-                      <div class="popup__header">
-                        <h2 class="h5" id="{{ ask_id }}-title">{{ 'products.ask.title' | t }}</h2>
-                        <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">
-                          {%- render 'icon', name: 'close' -%}
-                        </button>
-                      </div>
+                      {%- liquid
+                        assign ask_title = 'products.ask.title' | t
+                        assign ask_title_id = ask_id | append: '-title'
+                        render 'dialog-header', title: ask_title, title_id: ask_title_id
+                      -%}
                       <div class="popup__body">
                         <contact-form
                           {% if api != blank %}
@@ -481,7 +464,7 @@
                               {%- form 'contact', id: ask_form_id, class: 'ask-form' -%}
                                 {%- if form.posted_successfully? -%}
                                   {%- assign ask_reopen = true -%}
-                                  {{ ask_success }}
+                                  {%- render 'form-success', text: ask_success -%}
                                 {%- elsif form.errors -%}
                                   {%- assign ask_reopen = true -%}
                                   <p class="form-error" role="alert">{{ form.errors | default_errors }}</p>
@@ -490,7 +473,7 @@
                               {%- endform -%}
                             {%- endif -%}
                           </form-validate>
-                          <template data-contact-success>{{ ask_success }}</template>
+                          <template data-contact-success>{% render 'form-success', text: ask_success %}</template>
                         </contact-form>
                       </div>
                     </div>
@@ -620,7 +603,7 @@
   {%- if images.size > 0 -%}
     <dialog class="popup product-lightbox" id="Lightbox-{{ section.id }}" aria-label="{{ product.title | escape }}">
       <div class="product-lightbox__inner">
-        <button type="button" class="btn btn--icon product-lightbox__close" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">{%- render 'icon', name: 'close' -%}</button>
+        {%- render 'close-button', class: 'product-lightbox__close' -%}
         <ul class="product-lightbox__track" role="list" data-lightbox-track>
           {%- for media in media_list -%}
             {%- if media.media_type == 'image' -%}
@@ -665,10 +648,7 @@
             <button type="button" class="qty__btn" data-qty="1" aria-label="{{ 'cart.increase' | t: product: product.title | escape }}">{%- render 'icon', name: 'plus' -%}</button>
           </quantity-input>
         {%- endif -%}
-        <span class="price-tag{% if discount > 0 %} price-tag--sale{% endif %} sticky-buy__price" data-product-price>
-            <span class="price-tag__current">{{ variant.price | money }}</span>
-            <s class="price-tag__compare"{% if discount == 0 %} hidden{% endif %}><span data-compare-value>{{ variant.compare_at_price | money }}</span></s>
-        </span>
+        {%- render 'price', product: product, variant: variant, class: 'sticky-buy__price', live: true -%}
         <button type="submit" form="{{ form_id }}" class="btn sticky-buy__button" data-add-button{% unless variant.available %} disabled{% endunless %}>
           <span data-add-label>{%- if variant.available -%}{{ label_add }}{%- else -%}{{ label_sold_out }}{%- endif -%}</span>
         </button>
@@ -701,10 +681,10 @@
     {
       "type": "select",
       "id": "ratio",
-      "label": "t:sections.collection_list.ratio",
+      "label": "t:labels.ratio",
       "options": [
-        { "value": "1", "label": "t:sections.collection_list.ratio_square" },
-        { "value": "4 / 5", "label": "t:sections.collection_list.ratio_portrait" }
+        { "value": "1", "label": "t:labels.ratio_square" },
+        { "value": "4 / 5", "label": "t:labels.ratio_portrait" }
       ],
       "default": "1"
     },
@@ -718,8 +698,9 @@
       ],
       "default": "plain"
     },
-    { "type": "checkbox", "id": "breadcrumbs", "label": "t:sections.page_header.breadcrumbs", "default": true },
+    { "type": "checkbox", "id": "breadcrumbs", "label": "t:labels.breadcrumbs", "default": true },
     { "type": "checkbox", "id": "sticky_bar", "label": "t:sections.main_product.sticky_bar", "info": "t:sections.main_product.sticky_bar_info", "default": true },
+    { "type": "range", "id": "low_stock", "label": "t:sections.main_product.low_stock", "info": "t:sections.main_product.low_stock_info", "min": 1, "max": 20, "step": 1, "default": 5 },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
   ],
   "blocks": [
@@ -766,10 +747,7 @@
     {
       "type": "variant_picker",
       "name": "t:sections.main_product.block_variant_picker",
-      "limit": 1,
-      "settings": [
-        { "type": "range", "id": "low_stock", "label": "t:sections.main_product.low_stock", "min": 1, "max": 20, "step": 1, "default": 5 }
-      ]
+      "limit": 1
     },
     {
       "type": "buy_buttons",
@@ -779,8 +757,7 @@
         { "type": "checkbox", "id": "show_notify", "label": "t:sections.main_product.show_notify", "info": "t:sections.main_product.show_notify_info", "default": true },
         { "type": "checkbox", "id": "show_quantity", "label": "t:sections.main_product.show_quantity", "default": true },
         { "type": "checkbox", "id": "show_dynamic_checkout", "label": "t:sections.main_product.show_dynamic_checkout", "info": "t:sections.main_product.show_dynamic_checkout_info", "default": true },
-        { "type": "checkbox", "id": "show_stock", "label": "t:sections.main_product.show_stock", "default": true },
-        { "type": "range", "id": "low_stock", "label": "t:sections.main_product.low_stock", "min": 1, "max": 20, "step": 1, "default": 5 }
+        { "type": "checkbox", "id": "show_stock", "label": "t:sections.main_product.show_stock", "default": true }
       ]
     },
     {
@@ -842,7 +819,7 @@
       "settings": [
         { "type": "paragraph", "content": "t:sections.main_product.complementary_info" },
         { "type": "text", "id": "heading", "label": "t:labels.heading", "default": "Pairs well with" },
-        { "type": "range", "id": "limit", "label": "t:sections.footer.limit", "min": 1, "max": 6, "step": 1, "default": 3 }
+        { "type": "range", "id": "limit", "label": "t:labels.limit", "min": 1, "max": 6, "step": 1, "default": 3 }
       ]
     },
     {

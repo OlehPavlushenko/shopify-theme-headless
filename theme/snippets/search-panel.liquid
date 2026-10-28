@@ -39,31 +39,11 @@
     data-products-params="{{ products_params | escape }}"
   >
     {%- comment -%} An empty field isn't sent: a hint under it instead (<form-validate>) {%- endcomment -%}
-    <form-validate data-message-required="{{ 'search.empty_query' | t | escape }}">
-    <form action="{{ routes.search_url }}" method="get" role="search" class="search-panel__form">
-      <label class="visually-hidden" for="{{ id }}-input">{{ 'search.title' | t }}</label>
-      {%- render 'icon', name: 'search', class: 'search-panel__icon' -%}
-      <input
-        id="{{ id }}-input"
-        class="search-panel__input"
-        type="search"
-        name="q"
-        placeholder="{{ 'search.placeholder' | t | escape }}"
-        autocomplete="off"
-        autocorrect="off"
-        autocapitalize="off"
-        spellcheck="false"
-        enterkeyhint="search"
-        aria-controls="{{ id }}-results"
-        autofocus
-        required
-      >
-      {%- render 'search-options' -%}
-      <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">
-        {%- render 'icon', name: 'close' -%}
-      </button>
-    </form>
-    </form-validate>
+    {%- liquid
+      assign input_id = id | append: '-input'
+      assign results_id = id | append: '-results'
+      render 'search-form', id: input_id, class: 'search-panel__form', autocomplete: results_id, autofocus: true, panel: true
+    -%}
 
     <div id="{{ id }}-results" class="search-panel__results" data-results aria-live="polite"></div>
 

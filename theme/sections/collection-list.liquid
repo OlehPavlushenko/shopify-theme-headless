@@ -48,18 +48,18 @@
   "settings": [
     { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Shop by category" },
     { "type": "collection_list", "id": "collections", "label": "t:sections.collection_list.collections", "info": "t:sections.collection_list.collections_info", "limit": 12 },
-    { "type": "range", "id": "columns", "label": "t:sections.product_list.columns", "min": 3, "max": 6, "step": 1, "default": 4 },
+    { "type": "range", "id": "columns", "label": "t:labels.columns", "min": 3, "max": 6, "step": 1, "default": 4 },
     {
       "type": "select",
       "id": "ratio",
-      "label": "t:sections.collection_list.ratio",
+      "label": "t:labels.ratio",
       "options": [
-        { "value": "1", "label": "t:sections.collection_list.ratio_square" },
-        { "value": "4 / 5", "label": "t:sections.collection_list.ratio_portrait" }
+        { "value": "1", "label": "t:labels.ratio_square" },
+        { "value": "4 / 5", "label": "t:labels.ratio_portrait" }
       ],
       "default": "4 / 5"
     },
-    { "type": "text", "id": "link_label", "label": "t:sections.product_list.link_label", "default": "All collections" },
+    { "type": "text", "id": "link_label", "label": "t:labels.link_label", "default": "All collections" },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
   ],
   "presets": [{ "name": "t:sections.collection_list.name" }]

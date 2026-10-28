@@ -24,12 +24,7 @@
       data-time-short="{{ 'delivery.time_short' | t | escape }}"
     >
       <div class="delivery-estimate__head">
-        {%- if section.settings.eyebrow != blank -%}
-          <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-        {%- endif -%}
-        {%- if section.settings.heading != blank -%}
-          <h2 class="h3">{{ section.settings.heading }}</h2>
-        {%- endif -%}
+        {%- render 'section-intro', eyebrow: section.settings.eyebrow, heading: section.settings.heading -%}
         <p class="delivery-estimate__lead">
           {%- render 'icon', name: 'clock' -%}
           <span data-delivery-lead>{{ 'delivery.lead_fallback' | t: hour: section.settings.cutoff }}</span>
@@ -52,9 +47,7 @@
           <span class="delivery-estimate__date" data-delivery-date="arrive">{{ 'delivery.arrive_fallback' | t: range: range }}</span>
         </li>
       </ol>
-      {%- if section.settings.text != blank -%}
-        <div class="rte delivery-estimate__note">{{ section.settings.text }}</div>
-      {%- endif -%}
+      {%- render 'section-intro', text: section.settings.text, text_class: 'rte delivery-estimate__note' -%}
     </delivery-steps>
   </div>
 </div>
@@ -66,7 +59,7 @@
   "class": "delivery-estimate-section",
   "disabled_on": { "groups": ["*"] },
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "t:sections.promo_popup.eyebrow", "default": "Delivery estimate" },
+    { "type": "text", "id": "eyebrow", "label": "t:labels.eyebrow", "default": "Delivery estimate" },
     { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "When will my order arrive?" },
     { "type": "richtext", "id": "text", "label": "t:labels.text", "default": "<p>Business days, Monday to Friday. Free delivery on orders over $50.</p>" },
     { "type": "range", "id": "cutoff", "label": "t:sections.main_product.delivery_cutoff", "min": 8, "max": 22, "step": 1, "unit": "h", "default": 14 },

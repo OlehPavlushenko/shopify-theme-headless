@@ -5,16 +5,7 @@
 {% endcomment %}
 <div class="timeline color-{{ section.settings.color_scheme }} section-spacing">
   <div class="page-width">
-    {%- if section.settings.eyebrow != blank or section.settings.heading != blank -%}
-      <div class="timeline__head">
-        {%- if section.settings.eyebrow != blank -%}
-          <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-        {%- endif -%}
-        {%- if section.settings.heading != blank -%}
-          <h2 class="h3">{{ section.settings.heading }}</h2>
-        {%- endif -%}
-      </div>
-    {%- endif -%}
+    {%- render 'section-intro', class: 'timeline__head', eyebrow: section.settings.eyebrow, heading: section.settings.heading -%}
     <ol class="timeline__list" role="list" style="--timeline-steps: {{ section.blocks.size | at_least: 1 }};">
       {%- for block in section.blocks -%}
         <li class="timeline__step" {{ block.shopify_attributes }}>
@@ -37,7 +28,7 @@
   "disabled_on": { "groups": ["*"] },
   "max_blocks": 6,
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "t:sections.promo_popup.eyebrow", "default": "Our journey" },
+    { "type": "text", "id": "eyebrow", "label": "t:labels.eyebrow", "default": "Our journey" },
     { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "How we got here" },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
   ],

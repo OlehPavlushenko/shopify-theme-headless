@@ -14,16 +14,17 @@
   aria-labelledby="CartDrawer-title"
 >
   <div class="drawer__inner" data-ajax-cart-section>
-    <div class="drawer__header cart-drawer__header">
-      <h2 id="CartDrawer-title" class="h5">
-        {{ 'cart.title' | t }}
-        {%- if cart.item_count > 0 %} <span class="muted">({{ cart.item_count }})</span>{% endif -%}
-      </h2>
-      <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'cart.close' | t }}">
-        {%- render 'icon', name: 'close' -%}
-      </button>
-      {%- render 'cart-free-shipping' -%}
-    </div>
+    {%- capture drawer_title -%}
+      {{ 'cart.title' | t }}
+      {%- if cart.item_count > 0 %} <span class="muted">({{ cart.item_count }})</span>{% endif -%}
+    {%- endcapture -%}
+    {%- capture free_shipping -%}{%- render 'cart-free-shipping' -%}{%- endcapture -%}
+    {%- render 'dialog-header',
+      title: drawer_title,
+      title_id: 'CartDrawer-title',
+      class: 'drawer__header cart-drawer__header',
+      content: free_shipping
+    -%}
 
     <div class="drawer__body cart-drawer__body" data-ajax-cart-section-scroll>
       {%- if cart.item_count == 0 -%}
@@ -119,15 +120,17 @@
   aria-labelledby="CartNotification-title"
 >
   <div class="cart-added__inner stack">
-    <div class="cart-added__head">
-      <p id="CartNotification-title" class="cluster">
-        {%- render 'icon', name: 'check' -%}
-        {{ 'cart.added' | t }}
-      </p>
-      <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'cart.close' | t }}">
-        {%- render 'icon', name: 'close' -%}
-      </button>
-    </div>
+    {%- capture added_title -%}
+      {%- render 'icon', name: 'check' -%}
+      {{ 'cart.added' | t }}
+    {%- endcapture -%}
+    {%- render 'dialog-header',
+      title: added_title,
+      title_id: 'CartNotification-title',
+      tag: 'p',
+      title_class: 'cluster',
+      class: 'cart-added__head'
+    -%}
     <div class="cart-added__item">
       <img data-notification="image" class="cart-added__image" width="80" height="80" alt="" hidden>
       <div class="stack" style="--stack-gap: var(--space-2xs);">

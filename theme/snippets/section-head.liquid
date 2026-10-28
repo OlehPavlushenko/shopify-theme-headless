@@ -4,6 +4,9 @@
   Styles: packages/ui/css/sections.css.
 
   @param {string} [heading] - Section heading (rich text allowed)
+  @param {string} [heading_tag] - Heading element (default: h2)
+  @param {string} [heading_class] - Size class of the heading (default: h3)
+  @param {string} [id] - Id of the heading (the section's aria-labelledby)
   @param {string} [link_label] - Text of the link after the heading
   @param {string} [link] - URL of the link
   @param {boolean} [nav] - Render the slider arrows (inside <ui-slider>)
@@ -11,7 +14,10 @@
 {%- if heading != blank or link_label != blank or nav -%}
   <div class="section-head{% if nav %} slider__head{% endif %}">
     {%- if heading != blank -%}
-      <h2 class="h3 section-head__title">{{ heading }}</h2>
+      {%- assign head_tag = heading_tag | default: 'h2' -%}
+      <{{ head_tag }}{% if id != blank %} id="{{ id }}"{% endif %} class="{{ heading_class | default: 'h3' }} section-head__title">
+        {{- heading -}}
+      </{{ head_tag }}>
     {%- endif -%}
     {%- if link_label != blank and link != blank -%}
       <a href="{{ link }}" class="link-arrow section-head__link">

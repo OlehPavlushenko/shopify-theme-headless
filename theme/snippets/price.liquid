@@ -5,6 +5,9 @@
   @param {object} product - Product
   @param {object} [variant] - Variant to price; defaults to the selected or first available one
   @param {string} [class] - Extra classes
+  @param {boolean} [live] - Updated by the variant picker (@ui/variant-picker): data-product-price, and the
+    compare-at price is always output (hidden when not on sale) with its value in [data-compare-value].
+    Without the unit price, which the picker doesn't update.
 {% enddoc %}
 {%- liquid
   assign target = variant | default: product.selected_or_first_available_variant
@@ -20,7 +23,7 @@
     assign current = product.price_min
   endif
 -%}
-<span class="price-tag{% if on_sale %} price-tag--sale{% endif %} {{ class }}">
+<span class="price-tag{% if on_sale %} price-tag--sale{% endif %} {{ class }}"{% if live %} data-product-price{% endif %}>
   <span class="price-tag__current">
     {%- if show_from -%}
       {%- assign current_money = current | money -%}
@@ -29,13 +32,18 @@
       {{ current | money }}
     {%- endif -%}
   </span>
-  {%- if on_sale and show_from == false -%}
+  {%- if live -%}
+    <s class="price-tag__compare"{% unless on_sale %} hidden{% endunless %}>
+      <span class="visually-hidden">{{ 'products.regular_price' | t }}</span>
+      <span data-compare-value>{% if on_sale %}{{ compare | money }}{% endif %}</span>
+    </s>
+  {%- elsif on_sale and show_from == false -%}
     <s class="price-tag__compare">
       <span class="visually-hidden">{{ 'products.regular_price' | t }}</span>
       {{ compare | money }}
     </s>
   {%- endif -%}
-  {%- if target.unit_price_measurement -%}
+  {%- if target.unit_price_measurement and live != true -%}
     <span class="price-tag__unit text-sm">
       {{- target.unit_price | money }}/
       {%- if target.unit_price_measurement.reference_value != 1 -%}

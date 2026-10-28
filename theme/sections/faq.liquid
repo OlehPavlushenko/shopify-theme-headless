@@ -26,15 +26,13 @@
   <{{ wrapper }} class="page-width faq__inner{% if has_intro == false %} faq__inner--list-only{% endif %}">
     {%- if has_intro -%}
       <div class="faq__intro">
-        {%- if section.settings.eyebrow != blank -%}
-          <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-        {%- endif -%}
-        {%- if section.settings.heading != blank -%}
-          <h2 class="h2">{{ section.settings.heading }}</h2>
-        {%- endif -%}
-        {%- if section.settings.text != blank -%}
-          <div class="rte faq__text">{{ section.settings.text }}</div>
-        {%- endif -%}
+        {%- render 'section-intro',
+          eyebrow: section.settings.eyebrow,
+          heading: section.settings.heading,
+          heading_class: 'h2',
+          text: section.settings.text,
+          text_class: 'rte faq__text'
+        -%}
         {%- if show_nav -%}
           {%- comment -%} Search + topics: sticky — in the intro column from 990px, a bar under the header on phones {%- endcomment -%}
           <div class="faq__tools" data-faq-tools>
@@ -54,12 +52,7 @@
             {%- endif -%}
           </div>
         {%- endif -%}
-        {%- if section.settings.button_label != blank -%}
-          <a href="{{ contact_url }}" class="btn btn--outline">
-            {{- section.settings.button_label | escape -}}
-            {%- render 'icon', name: 'arrow-right' -%}
-          </a>
-        {%- endif -%}
+        {%- render 'section-intro', button_label: section.settings.button_label, button_link: contact_url -%}
       </div>
     {%- endif -%}
 
@@ -150,7 +143,7 @@
       ],
       "default": "split"
     },
-    { "type": "text", "id": "eyebrow", "label": "t:sections.promo_popup.eyebrow", "default": "FAQ" },
+    { "type": "text", "id": "eyebrow", "label": "t:labels.eyebrow", "default": "FAQ" },
     { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "Questions & answers" },
     { "type": "richtext", "id": "text", "label": "t:labels.text", "default": "<p>Can't find what you're looking for? Our team replies within a day.</p>" },
     { "type": "text", "id": "button_label", "label": "t:labels.button_label", "default": "Contact us" },

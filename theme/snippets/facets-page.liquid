@@ -95,21 +95,29 @@
     {%- if has_filters -%}
       <div id="{{ panel_id }}" class="facets__panel drawer drawer--start" popover="manual" aria-labelledby="{{ panel_id }}-title">
         <div class="drawer__inner facets__panel-inner">
-          <div class="drawer__header facets__panel-header">
-            <p id="{{ panel_id }}-title" class="facets__panel-title">
-              {%- render 'icon', name: 'sliders' -%}
-              {{- 'facets.filters' | t -}}
-            </p>
-            {%- comment -%} "Clear all" beside the title (sidebar); re-rendered with the results {%- endcomment -%}
+          {%- capture panel_title -%}
+            {%- render 'icon', name: 'sliders' -%}
+            {{- 'facets.filters' | t -}}
+          {%- endcapture -%}
+          {%- comment -%} "Clear all" beside the title (sidebar); re-rendered with the results {%- endcomment -%}
+          {%- capture panel_clear -%}
             <span class="facets__panel-clear" data-facets-clear>
               {%- if active_filters > 0 -%}
                 <a href="{{ clear_url }}" class="btn btn--link" data-facets-link>{{ 'facets.clear_all' | t }}</a>
               {%- endif -%}
             </span>
-            <button type="button" class="btn btn--icon facets__panel-close" popovertarget="{{ panel_id }}" popovertargetaction="hide" aria-label="{{ 'accessibility.close' | t }}">
-              {%- render 'icon', name: 'close' -%}
-            </button>
-          </div>
+          {%- endcapture -%}
+          {%- assign panel_title_id = panel_id | append: '-title' -%}
+          {%- render 'dialog-header',
+            title: panel_title,
+            title_id: panel_title_id,
+            tag: 'p',
+            title_class: 'facets__panel-title',
+            class: 'drawer__header facets__panel-header',
+            close_class: 'facets__panel-close',
+            popover: panel_id,
+            actions: panel_clear
+          -%}
           <div class="drawer__body facets__panel-body" data-facets-body>
             {%- comment -%} The toolbar select joins the form (form="…"); without it the current sort rides along hidden {%- endcomment -%}
             {%- liquid

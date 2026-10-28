@@ -100,10 +100,14 @@
     # A limited offer (metafield custom.offer_ends ahead): the "Offer" badge and a timer under the price
     assign offer_end = product.metafields.custom.offer_ends.value | date: '%s' | plus: 0
     assign now = 'now' | date: '%s' | plus: 0
+    assign offer_active = false
+    if offer_end > now
+      assign offer_active = true
+    endif
   -%}
   {%- if product.available == false -%}
     <span class="pill pill--soft product-card__badge">{{ 'products.sold_out' | t }}</span>
-  {%- elsif offer_end > now -%}
+  {%- elsif offer_active -%}
     <span class="pill pill--offer product-card__badge">{{ 'products.offer.badge' | t }}</span>
   {%- elsif discount > 0 -%}
     <span class="pill product-card__badge">−{{ discount }}%</span>
@@ -120,7 +124,7 @@
     <{{ tag }} class="product-card__title line-clamp">{{ product.title | escape }}</{{ tag }}>
     {%- if settings.card_show_rating -%}{%- render 'rating', product: product, class: 'product-card__rating' -%}{%- endif -%}
     {%- render 'price', product: product -%}
-    {%- if product.available and settings.card_show_timer -%}{%- render 'offer-timer', product: product, class: 'product-card__offer' -%}{%- endif -%}
+    {%- if product.available and settings.card_show_timer -%}{%- render 'offer-timer', product: product, class: 'product-card__offer', active: offer_active -%}{%- endif -%}
     {%- unless product.has_only_default_variant or settings.card_show_options == false -%}
       {%- liquid
         assign option = product.options_with_values.first

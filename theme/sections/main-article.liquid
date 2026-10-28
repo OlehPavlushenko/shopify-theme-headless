@@ -122,10 +122,14 @@
         {%- form 'new_comment', article, class: 'main-article__comment-form' -%}
           <h3 class="h5">{{ 'blog.comment_form_title' | t }}</h3>
           {%- if form.posted_successfully? -%}
-            <p class="notice notice--success" role="status">
-              {%- render 'icon', name: 'check' -%}
-              {%- if blog.moderated? -%}{{ 'blog.comment_moderated' | t }}{%- else -%}{{ 'blog.comment_posted' | t }}{%- endif -%}
-            </p>
+            {%- liquid
+              if blog.moderated?
+                assign comment_success = 'blog.comment_moderated' | t
+              else
+                assign comment_success = 'blog.comment_posted' | t
+              endif
+              render 'form-success', text: comment_success
+            -%}
           {%- elsif form.errors -%}
             <p class="form-error" role="alert">{{ form.errors | default_errors }}</p>
           {%- endif -%}
@@ -183,10 +187,11 @@
     {%- if related_cards != blank -%}
       <section class="page-width main-article__related" aria-labelledby="ReadNext-{{ section.id }}">
         {%- assign related_heading = 'blog.read_next' | t -%}
-        <div class="section-head">
-          <h2 id="ReadNext-{{ section.id }}" class="h3 section-head__title">{{ related_heading }}</h2>
-          <a href="{{ blog.url }}" class="link-arrow section-head__link">{{ 'blog.all_articles' | t }}{%- render 'icon', name: 'arrow-right' -%}</a>
-        </div>
+        {%- liquid
+          assign related_id = 'ReadNext-' | append: section.id
+          assign all_articles = 'blog.all_articles' | t
+          render 'section-head', heading: related_heading, id: related_id, link_label: all_articles, link: blog.url
+        -%}
         <ul class="grid main-article__related-grid" role="list" style="--grid-columns: 3; --grid-columns-mobile: 1;">{{ related_cards }}</ul>
       </section>
     {%- endif -%}

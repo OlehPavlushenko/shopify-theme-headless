@@ -1,0 +1,48 @@
+{% doc %}
+  Intro of a content section: eyebrow, heading, text and a button, each only when set.
+  With a class, the parts get a wrapper <div> (nothing is rendered when every part is empty);
+  without one they are output as they are, so the caller can put its own content between them.
+  Styles: .eyebrow (base.css); the classes passed in.
+
+  @param {string} [eyebrow] - Small uppercase line above the heading (plain text)
+  @param {string} [heading] - Heading (rich text allowed)
+  @param {string} [heading_class] - Classes of the h2 (default: h3)
+  @param {string} [heading_id] - Id of the h2 (e.g. a dialog's aria-labelledby)
+  @param {string} [text] - Rich text under the heading
+  @param {string} [text_class] - Classes of the text block (default: rte)
+  @param {string} [button_label] - Label of the button
+  @param {string} [button_link] - URL of the button
+  @param {string} [button_class] - Classes of the button (default: btn btn--outline; with an arrow icon)
+  @param {string} [class] - Classes of a wrapper <div> around the parts
+{% enddoc %}
+{%- liquid
+  assign has_button = false
+  if button_label != blank and button_link != blank
+    assign has_button = true
+  endif
+  assign has_content = has_button
+  if eyebrow != blank or heading != blank or text != blank
+    assign has_content = true
+  endif
+-%}
+{%- if has_content -%}
+  {%- if class != blank -%}<div class="{{ class }}">{%- endif -%}
+  {%- if eyebrow != blank -%}
+    <p class="eyebrow">{{ eyebrow | escape }}</p>
+  {%- endif -%}
+  {%- if heading != blank -%}
+    <h2 class="{{ heading_class | default: 'h3' }}"{% if heading_id != blank %} id="{{ heading_id }}"{% endif %}>
+      {{- heading -}}
+    </h2>
+  {%- endif -%}
+  {%- if text != blank -%}
+    <div class="{{ text_class | default: 'rte' }}">{{ text }}</div>
+  {%- endif -%}
+  {%- if has_button -%}
+    <a href="{{ button_link }}" class="{{ button_class | default: 'btn btn--outline' }}">
+      {{- button_label | escape -}}
+      {%- render 'icon', name: 'arrow-right' -%}
+    </a>
+  {%- endif -%}
+  {%- if class != blank -%}</div>{%- endif -%}
+{%- endif -%}

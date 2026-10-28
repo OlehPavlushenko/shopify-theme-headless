@@ -55,13 +55,7 @@
       <p class="product-card__vendor">{{ product.vendor | escape }}</p>
     {%- endif -%}
     <h2 class="h4 quick-view__title">{{ product.title | escape }}</h2>
-    <span class="price-tag{% if on_sale %} price-tag--sale{% endif %} quick-view__price" data-product-price>
-      <span class="price-tag__current">{{ variant.price | money }}</span>
-      <s class="price-tag__compare"{% unless on_sale %} hidden{% endunless %}>
-        <span class="visually-hidden">{{ 'products.regular_price' | t }}</span>
-        <span data-compare-value>{{ variant.compare_at_price | money }}</span>
-      </s>
-    </span>
+    {%- render 'price', product: product, variant: variant, class: 'quick-view__price', live: true -%}
 
     {%- unless product.has_only_default_variant -%}
       {%- render 'variant-picker', product: product, id: 'QuickView' -%}

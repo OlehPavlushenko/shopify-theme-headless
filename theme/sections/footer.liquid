@@ -8,7 +8,8 @@
 <footer class="site-footer color-{{ section.settings.color_scheme }}">
   {%- if section.blocks.size > 0 -%}
     {%- liquid
-      # Columns that have something to show (a menu without links or a blog without posts renders nothing)
+      # Columns that have something to show (a menu without links, a product list without products or a
+      # blog without posts renders nothing)
       assign has_brand = false
       assign column_count = 0
       for block in section.blocks
@@ -17,6 +18,10 @@
             assign has_brand = true
           when 'menu'
             if block.settings.menu.links.size > 0
+              assign column_count = column_count | plus: 1
+            endif
+          when 'products'
+            if block.settings.products.count > 0 or block.settings.collection.products_count > 0
               assign column_count = column_count | plus: 1
             endif
           when 'articles'
@@ -99,17 +104,19 @@
                 assign footer_products = block.settings.collection.products
               endif
             -%}
-            <details class="site-footer__column" data-footer-column open {{ block.shopify_attributes }}>
-              <summary class="site-footer__heading eyebrow">
-                {{- block.settings.heading | escape -}}
-                {%- render 'icon', name: 'chevron-down' -%}
-              </summary>
-              <ul class="product-rows" role="list">
-                {%- for product in footer_products limit: block.settings.limit -%}
-                  {%- render 'product-row', product: product, add: false -%}
-                {%- endfor -%}
-              </ul>
-            </details>
+            {%- if block.settings.products.count > 0 or block.settings.collection.products_count > 0 -%}
+              <details class="site-footer__column" data-footer-column open {{ block.shopify_attributes }}>
+                <summary class="site-footer__heading eyebrow">
+                  {{- block.settings.heading | escape -}}
+                  {%- render 'icon', name: 'chevron-down' -%}
+                </summary>
+                <ul class="product-rows" role="list">
+                  {%- for product in footer_products limit: block.settings.limit -%}
+                    {%- render 'product-row', product: product, add: false -%}
+                  {%- endfor -%}
+                </ul>
+              </details>
+            {%- endif -%}
 
           {%- when 'articles' -%}
             {%- assign blog = block.settings.blog -%}
@@ -226,12 +233,12 @@
     },
     {
       "type": "products",
-      "name": "t:sections.footer.products",
+      "name": "t:labels.products",
       "settings": [
         { "type": "text", "id": "heading", "label": "t:labels.heading", "default": "Popular" },
-        { "type": "collection", "id": "collection", "label": "t:sections.footer.collection" },
-        { "type": "product_list", "id": "products", "label": "t:sections.footer.products_list", "info": "t:sections.footer.products_list_info", "limit": 4 },
-        { "type": "range", "id": "limit", "label": "t:sections.footer.limit", "min": 1, "max": 4, "step": 1, "default": 2 }
+        { "type": "collection", "id": "collection", "label": "t:labels.collection" },
+        { "type": "product_list", "id": "products", "label": "t:labels.products_list", "info": "t:labels.products_list_info", "limit": 4 },
+        { "type": "range", "id": "limit", "label": "t:labels.limit", "min": 1, "max": 4, "step": 1, "default": 2 }
       ]
     },
     {
@@ -240,8 +247,8 @@
       "limit": 1,
       "settings": [
         { "type": "text", "id": "heading", "label": "t:labels.heading", "info": "t:sections.footer.articles_heading_info" },
-        { "type": "blog", "id": "blog", "label": "t:sections.footer.blog" },
-        { "type": "range", "id": "limit", "label": "t:sections.footer.limit", "min": 1, "max": 4, "step": 1, "default": 2 }
+        { "type": "blog", "id": "blog", "label": "t:labels.blog" },
+        { "type": "range", "id": "limit", "label": "t:labels.limit", "min": 1, "max": 4, "step": 1, "default": 2 }
       ]
     }
   ]

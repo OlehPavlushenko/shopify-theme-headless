@@ -1,0 +1,11 @@
+{% doc %}
+  A form's success line (.notice--success): a check icon and the message. Focusable (tabindex="-1")
+  so <contact-form> can move focus to it after a JSON post.
+
+  @param {string} text - Message (plain text or translated HTML)
+  @param {boolean} [autofocus] - Take focus on page load (the form was just posted natively)
+{% enddoc %}
+<p class="notice notice--success" role="status" tabindex="-1"{% if autofocus %} autofocus{% endif %}>
+  {%- render 'icon', name: 'check' -%}
+  {{ text }}
+</p>

@@ -35,12 +35,11 @@
 
   <dialog class="drawer" id="Pickup-{{ id }}" aria-labelledby="Pickup-{{ id }}-title">
     <div class="drawer__inner">
-      <div class="drawer__header">
-        <h2 class="h5" id="Pickup-{{ id }}-title">{{ variant.product.title | escape }}</h2>
-        <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">
-          {%- render 'icon', name: 'close' -%}
-        </button>
-      </div>
+      {%- liquid
+        assign pickup_title = variant.product.title | escape
+        assign pickup_title_id = 'Pickup-' | append: id | append: '-title'
+        render 'dialog-header', title: pickup_title, title_id: pickup_title_id, class: 'drawer__header'
+      -%}
       <div class="drawer__body">
         <ul class="pickup__locations" role="list">
           {%- for item in pickups -%}

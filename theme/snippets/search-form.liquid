@@ -1,0 +1,84 @@
+{% doc %}
+  A store search form: the field with its search icon, the options of the search (search-options)
+  and the submit button, inside <form-validate> (an empty field isn't sent: a hint under it instead).
+  Styles: .search-form / .search-field (packages/ui/css/components.css), .search-panel__form (search.css).
+
+  @param {string} id - Id of the input
+  @param {string} [value] - Current terms (escaped here)
+  @param {string} [placeholder] - Placeholder (default: search.placeholder)
+  @param {string} [label] - Hidden label of the field (default: search.title)
+  @param {string} [scope] - Passed to search-options: products (default) | articles
+  @param {string} [class] - Class of the form (default: search-form)
+  @param {string} [wrap_class] - Class of the <form-validate> wrapper
+  @param {boolean} [section_form] - Re-render the page's section instead of navigating (data-section-form)
+  @param {string} [autocomplete] - Id of the live results list the field drives (predictive search):
+    aria-controls, no autocorrect / autocapitalize / spellcheck
+  @param {boolean} [autofocus] - Focus the field when its dialog opens
+  @param {boolean} [panel] - Search panel layout: icon and input styled by the panel, a close button
+    instead of the submit button
+{% enddoc %}
+{%- liquid
+  assign field_label = label
+  if label == blank
+    assign field_label = 'search.title' | t
+  endif
+  assign field_placeholder = placeholder
+  if placeholder == blank
+    assign field_placeholder = 'search.placeholder' | t
+  endif
+  assign form_class = class | default: 'search-form'
+-%}
+<form-validate
+  {% if wrap_class != blank %}
+    class="{{ wrap_class }}"
+  {% endif %}
+  data-message-required="{{ 'search.empty_query' | t | escape }}"
+>
+  <form
+    action="{{ routes.search_url }}"
+    method="get"
+    role="search"
+    class="{{ form_class }}"
+    {% if section_form %}
+      data-section-form
+    {% endif %}
+  >
+    <label class="visually-hidden" for="{{ id }}">{{ field_label }}</label>
+    {%- capture field -%}
+      <input
+        id="{{ id }}"
+        class="{% if panel %}search-panel__input{% else %}input{% endif %}"
+        type="search"
+        name="q"
+        {% if value != blank %}
+          value="{{ value | escape }}"
+        {% endif %}
+        placeholder="{{ field_placeholder | escape }}"
+        autocomplete="off"
+        {% if autocomplete != blank %}
+          autocorrect="off" autocapitalize="off" spellcheck="false" aria-controls="{{ autocomplete }}"
+        {% endif %}
+        enterkeyhint="search"
+        {% if autofocus %}
+          autofocus
+        {% endif %}
+        required
+      >
+    {%- endcapture -%}
+    {%- if panel -%}
+      {%- render 'icon', name: 'search', class: 'search-panel__icon' -%}
+      {{- field -}}
+    {%- else -%}
+      <span class="search-field">
+        {%- render 'icon', name: 'search' -%}
+        {{- field -}}
+      </span>
+    {%- endif -%}
+    {%- render 'search-options', scope: scope -%}
+    {%- if panel -%}
+      {%- render 'close-button' -%}
+    {%- else -%}
+      <button type="submit" class="btn">{{ 'search.submit' | t }}</button>
+    {%- endif -%}
+  </form>
+</form-validate>

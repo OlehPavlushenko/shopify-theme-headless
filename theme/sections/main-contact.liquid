@@ -60,12 +60,7 @@
     {%- comment -%} With Theme settings > Integrations > "API URL": the message goes to project-server (POST /contact) {%- endcomment -%}
     {%- capture api -%}{% render 'api-url' %}{%- endcapture -%}
     {%- assign api = api | strip -%}
-    {%- capture success -%}
-      <p class="notice notice--success" role="status" tabindex="-1">
-        {%- render 'icon', name: 'check' -%}
-        {{ 'contact.success' | t }}
-      </p>
-    {%- endcapture -%}
+    {%- assign success_text = 'contact.success' | t -%}
 
     <contact-form
       class="main-contact__form-card"
@@ -89,7 +84,7 @@
         {%- else -%}
           {%- form 'contact', id: 'ContactForm', class: 'main-contact__form' -%}
             {%- if form.posted_successfully? -%}
-              {{ success | replace: 'tabindex="-1"', 'tabindex="-1" autofocus' }}
+              {%- render 'form-success', text: success_text, autofocus: true -%}
             {%- elsif form.errors -%}
               <p class="form-error" role="alert" tabindex="-1" autofocus>{{ form.errors | default_errors }}</p>
             {%- endif -%}
@@ -97,7 +92,7 @@
           {%- endform -%}
         {%- endif -%}
       </form-validate>
-      <template data-contact-success>{{ success }}</template>
+      <template data-contact-success>{% render 'form-success', text: success_text %}</template>
     </contact-form>
   </div>
 </div>

@@ -16,30 +16,42 @@
 import { formatMoney } from '@ui/money';
 
 class QuantityBreaks extends HTMLElement {
+  #abort;
+  #info;
+  #radios = [];
+  #quantity;
+
   connectedCallback() {
-    this.info = this.closest('product-info');
-    this.radios = [...this.querySelectorAll('input[type="radio"]')];
-    this.quantity = document.getElementById(this.dataset.form)?.querySelector('input[name="quantity"]');
-    this.addEventListener('change', this.#onPick);
-    this.quantity?.addEventListener('change', this.#onQuantity);
-    this.info?.addEventListener('variant:change', (event) => this.#prices(event.detail.variant));
+    this.#info = this.closest('product-info');
+    this.#radios = [...this.querySelectorAll('input[type="radio"]')];
+    this.#quantity = document.getElementById(this.dataset.form)?.querySelector('input[name="quantity"]');
+    const { signal } = (this.#abort = new AbortController());
+    this.addEventListener('change', this.#onPick, { signal });
+    this.#quantity?.addEventListener('change', this.#onQuantity, { signal });
+    this.#info?.addEventListener('variant:change', this.#onVariantChange, { signal });
     // Back / forward may restore a picked card: the stepper follows it
     this.#onPick();
   }
 
+  disconnectedCallback() {
+    this.#abort?.abort();
+  }
+
   #onPick = () => {
-    const picked = this.radios.find((radio) => radio.checked);
-    if (picked && this.quantity && this.quantity.value !== picked.value) this.quantity.value = picked.value;
+    const picked = this.#radios.find((radio) => radio.checked);
+    if (picked && this.#quantity && this.#quantity.value !== picked.value) this.#quantity.value = picked.value;
   };
 
   #onQuantity = () => {
-    for (const radio of this.radios) radio.checked = radio.value === this.quantity.value;
+    for (const radio of this.#radios) radio.checked = radio.value === this.#quantity.value;
   };
+
+  #onVariantChange = (event) => this.#prices(event.detail.variant);
 
   #prices(variant) {
     if (!variant) return;
-    const format = this.info?.dataset.moneyFormat;
-    for (const radio of this.radios) {
+    const format = this.#info?.dataset.moneyFormat;
+    for (const radio of this.#radios) {
       // Whole cents, rounded down as in Liquid
       const each = Math.floor((variant.price * (100 - Number(radio.dataset.discount))) / 100);
       radio.closest('label').querySelector('[data-break-each]').textContent = formatMoney(each, format);

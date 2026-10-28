@@ -14,96 +14,109 @@
  * Opening and closing go through @ui/dialog (animated, focus handling).
  */
 import { openDialog, closeDialog } from '@ui/dialog';
+import * as storage from '@ui/storage';
 
 const DAY = 86_400_000;
 let shown = false;
 const YEAR_DAYS = 365;
 
-function read(key) {
-  try {
-    return Number(localStorage.getItem(key) || sessionStorage.getItem(key) || 0);
-  } catch {
-    return 0;
-  }
-}
+const read = (key) => Number(storage.get(key) || storage.get(key, { session: true }) || 0);
 
 // Never shortens a longer period already stored (a sign-up keeps it away for a year, closing after it must not cut that)
 function remember(key, days) {
-  try {
-    if (days > 0) {
-      const until = Date.now() + days * DAY;
-      if (until > read(key)) localStorage.setItem(key, String(until));
-    } else {
-      sessionStorage.setItem(key, String(Number.MAX_SAFE_INTEGER));
-    }
-  } catch {}
+  if (days > 0) {
+    const until = Date.now() + days * DAY;
+    if (until > read(key)) storage.set(key, until);
+  } else {
+    storage.set(key, Number.MAX_SAFE_INTEGER, { session: true });
+  }
 }
 
 class PromoPopup extends HTMLElement {
-  #cleanup = [];
+  #abort;
+  #triggers;
+  #timer;
+  #ticking = false;
+  #dialog;
+  #key;
 
   connectedCallback() {
-    this.dialog = this.querySelector('dialog');
-    this.key = `promo-popup:${this.dataset.id}`;
-    if (!this.dialog) return;
+    this.#dialog = this.querySelector('dialog');
+    this.#key = `promo-popup:${this.dataset.id}`;
+    if (!this.#dialog) return;
 
-    this.dialog.addEventListener('close', () => {
-      if (!window.Shopify?.designMode) remember(this.key, Number(this.dataset.days) || 0);
-    });
-    this.addEventListener('newsletter:subscribed', () => remember(this.key, YEAR_DAYS));
+    const { signal } = (this.#abort = new AbortController());
+    this.#dialog.addEventListener('close', this.#onClose, { signal });
+    this.addEventListener('newsletter:subscribed', this.#onSubscribed, { signal });
 
-    if (window.Shopify?.designMode) return this.#editorMode();
-    if (read(this.key) > Date.now()) return;
+    if (window.Shopify?.designMode) return this.#editorMode(signal);
+    if (read(this.#key) > Date.now()) return;
     this.#arm();
   }
 
   disconnectedCallback() {
-    for (const off of this.#cleanup) off();
+    this.#abort?.abort();
+    this.#disarm();
   }
 
-  #open = () => {
-    for (const off of this.#cleanup) off();
-    this.#cleanup = [];
-    if (shown || document.querySelector('dialog[open]:modal')) return;
-    shown = true;
-    openDialog(this.dialog, null);
+  #onClose = () => {
+    if (!window.Shopify?.designMode) remember(this.#key, Number(this.dataset.days) || 0);
   };
 
+  #onSubscribed = () => remember(this.#key, YEAR_DAYS);
+
+  #open = () => {
+    this.#disarm();
+    if (shown || document.querySelector('dialog[open]:modal')) return;
+    shown = true;
+    openDialog(this.#dialog, null);
+  };
+
+  // The triggers go once one has fired (or the element leaves the page)
+  #disarm() {
+    this.#triggers?.abort();
+    clearTimeout(this.#timer);
+  }
+
   #arm() {
+    const { signal } = (this.#triggers = new AbortController());
     const delay = this.dataset.delay;
-    if (delay !== undefined && delay !== '') {
-      const timer = setTimeout(this.#open, Number(delay) * 1000);
-      this.#cleanup.push(() => clearTimeout(timer));
-    }
-
-    const percent = Number(this.dataset.scroll);
-    if (percent > 0) {
-      const onScroll = () => {
-        const max = document.documentElement.scrollHeight - innerHeight;
-        if (max > 0 && (scrollY / max) * 100 >= percent) this.#open();
-      };
-      addEventListener('scroll', onScroll, { passive: true });
-      this.#cleanup.push(() => removeEventListener('scroll', onScroll));
-    }
-
+    if (delay !== undefined && delay !== '') this.#timer = setTimeout(this.#open, Number(delay) * 1000);
+    if (Number(this.dataset.scroll) > 0) addEventListener('scroll', this.#onScroll, { passive: true, signal });
     if (this.hasAttribute('data-exit') && matchMedia('(hover: hover)').matches) {
-      const onLeave = (event) => {
-        if (!event.relatedTarget && event.clientY <= 0) this.#open();
-      };
-      document.addEventListener('mouseout', onLeave);
-      this.#cleanup.push(() => document.removeEventListener('mouseout', onLeave));
+      document.addEventListener('mouseout', this.#onLeave, { signal });
     }
   }
 
-  #editorMode() {
-    const section = this.closest('.shopify-section');
-    document.addEventListener('shopify:section:select', (event) => {
-      if (event.target === section) openDialog(this.dialog, null);
+  // Checked once per frame, not on every scroll event
+  #onScroll = () => {
+    if (this.#ticking) return;
+    this.#ticking = true;
+    requestAnimationFrame(() => {
+      this.#ticking = false;
+      if (this.#triggers?.signal.aborted) return;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      if (max > 0 && (scrollY / max) * 100 >= Number(this.dataset.scroll)) this.#open();
     });
-    document.addEventListener('shopify:section:deselect', (event) => {
-      if (event.target === section) closeDialog(this.dialog);
-    });
+  };
+
+  #onLeave = (event) => {
+    if (!event.relatedTarget && event.clientY <= 0) this.#open();
+  };
+
+  // Theme editor: open while its section is selected
+  #editorMode(signal) {
+    document.addEventListener('shopify:section:select', this.#onSectionSelect, { signal });
+    document.addEventListener('shopify:section:deselect', this.#onSectionDeselect, { signal });
   }
+
+  #onSectionSelect = (event) => {
+    if (event.target === this.closest('.shopify-section')) openDialog(this.#dialog, null);
+  };
+
+  #onSectionDeselect = (event) => {
+    if (event.target === this.closest('.shopify-section')) closeDialog(this.#dialog);
+  };
 }
 
 if (!customElements.get('promo-popup')) customElements.define('promo-popup', PromoPopup);

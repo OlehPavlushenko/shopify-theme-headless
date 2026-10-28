@@ -13,6 +13,7 @@
  * Stickiness itself is CSS (position: sticky on the section wrapper, see header.css).
  */
 class SiteHeader extends HTMLElement {
+  #abort;
   #lastY = 0;
   #ticking = false;
   #resizeObserver;
@@ -30,16 +31,16 @@ class SiteHeader extends HTMLElement {
     // rendering: the observer's first call reads it (#syncHeight)
     // Scroll-up mode slides the header with a transition: --header-bottom is measured again once
     // the slide ends (or after a moment, if no transitionend comes)
+    const { signal } = (this.#abort = new AbortController());
     this.#section = this.closest('.site-header-section');
-    this.#section?.addEventListener('transitionend', this.#onTransitionEnd);
-    window.addEventListener('scroll', this.#onScroll, { passive: true });
+    this.#section?.addEventListener('transitionend', this.#onTransitionEnd, { signal });
+    window.addEventListener('scroll', this.#onScroll, { passive: true, signal });
   }
 
   disconnectedCallback() {
+    this.#abort?.abort();
     this.#resizeObserver?.disconnect();
-    this.#section?.removeEventListener('transitionend', this.#onTransitionEnd);
     clearTimeout(this.#slideTimer);
-    window.removeEventListener('scroll', this.#onScroll);
   }
 
   #onTransitionEnd = (event) => {

@@ -7,21 +7,27 @@
  * below that they start closed and open on tap. The server renders them open, so without JS
  * nothing is hidden.
  */
+import { scrollBehavior } from '@ui/scroll';
+
 const wide = matchMedia('(min-width: 750px)');
 
 class SiteFooter extends HTMLElement {
+  #abort;
+  #columns = [];
+
   connectedCallback() {
-    this.columns = [...this.querySelectorAll('[data-footer-column]')];
-    this.#sync();
-    wide.addEventListener('change', this.#sync);
+    this.#columns = [...this.querySelectorAll('[data-footer-column]')];
+    this.#onWideChange();
+    const { signal } = (this.#abort = new AbortController());
+    wide.addEventListener('change', this.#onWideChange, { signal });
   }
 
   disconnectedCallback() {
-    wide.removeEventListener('change', this.#sync);
+    this.#abort?.abort();
   }
 
-  #sync = () => {
-    for (const column of this.columns) column.open = wide.matches;
+  #onWideChange = () => {
+    for (const column of this.#columns) column.open = wide.matches;
   };
 }
 
@@ -33,8 +39,7 @@ document.addEventListener('click', (event) => {
   const link = event.target.closest('[data-back-to-top]');
   if (!link) return;
   event.preventDefault();
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+  window.scrollTo({ top: 0, behavior: scrollBehavior() });
   document.body.setAttribute('tabindex', '-1');
   document.body.focus({ preventScroll: true });
   document.body.addEventListener('blur', () => document.body.removeAttribute('tabindex'), { once: true });

@@ -12,18 +12,26 @@
  * first of them; the button goes away when nothing is left.
  */
 class ShowMore extends HTMLElement {
+  #button;
+  #abort;
+
   connectedCallback() {
-    this.button = this.querySelector('[data-show-more]');
-    this.button?.addEventListener('click', () => this.#more());
+    this.#button = this.querySelector('[data-show-more]');
+    const { signal } = (this.#abort = new AbortController());
+    this.#button?.addEventListener('click', this.#onMore, { signal });
   }
 
-  #more() {
+  disconnectedCallback() {
+    this.#abort?.abort();
+  }
+
+  #onMore = () => {
     const step = Number(this.dataset.step) || 4;
     const next = [...this.querySelectorAll('[data-more]')].slice(0, step);
     for (const item of next) item.removeAttribute('data-more');
     next[0]?.querySelector('a')?.focus({ preventScroll: true });
-    if (!this.querySelector('[data-more]')) this.button.hidden = true;
-  }
+    if (!this.querySelector('[data-more]')) this.#button.hidden = true;
+  };
 }
 
 if (!customElements.get('show-more')) customElements.define('show-more', ShowMore);

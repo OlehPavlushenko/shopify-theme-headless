@@ -26,17 +26,34 @@
  * ({ detail: { variant } }, bubbles); <product-info> updates price, form, button, media and link.
  * `variant-picker:connect` (bubbles) tells the page a picker appeared (e.g. to mark values in the cart).
  * Plain data in, DOM out: a headless storefront feeds the same JSON shape.
+ * variantTitle(variant) → its options joined with " / " ('' for "Default Title"), as in Liquid.
+ * picker.variants, picker.selected and picker.variant are read by the page (e.g. the cart marks).
  */
 import { formatMoney, discountPercent } from '@ui/money';
+import { scrollBehavior } from '@ui/scroll';
+
+export function variantTitle(variant) {
+  const title = variant?.options?.join(' / ') ?? '';
+  return title === 'Default Title' ? '' : title;
+}
 
 class VariantPicker extends HTMLElement {
+  #abort;
+
   connectedCallback() {
     this.variants = JSON.parse(this.querySelector('[data-variants]').textContent);
     this.fieldsets = [...this.querySelectorAll('fieldset')];
-    this.addEventListener('change', (event) => this.#pick(event.target));
+    const { signal } = (this.#abort = new AbortController());
+    this.addEventListener('change', this.#onChange, { signal });
     this.#update(false);
     this.dispatchEvent(new CustomEvent('variant-picker:connect', { bubbles: true }));
   }
+
+  disconnectedCallback() {
+    this.#abort?.abort();
+  }
+
+  #onChange = (event) => this.#pick(event.target);
 
   get selected() {
     return this.fieldsets.map((fieldset) => fieldset.querySelector('input:checked')?.value);
@@ -77,13 +94,24 @@ class VariantPicker extends HTMLElement {
 }
 
 class ProductInfo extends HTMLElement {
+  #abort;
+  #frame;
+
   connectedCallback() {
-    this.addEventListener('variant:change', (event) => this.#render(event.detail.variant));
+    const { signal } = (this.#abort = new AbortController());
+    this.addEventListener('variant:change', this.#onVariantChange, { signal });
     // Start on the selected variant's image (the picker connects after this element)
-    requestAnimationFrame(() => this.#showMedia(this.querySelector('variant-picker')?.variant, 'instant'));
+    this.#frame = requestAnimationFrame(() => this.#showMedia(this.querySelector('variant-picker')?.variant, 'instant'));
   }
 
-  #showMedia(variant, behavior = 'smooth') {
+  disconnectedCallback() {
+    this.#abort?.abort();
+    cancelAnimationFrame(this.#frame);
+  }
+
+  #onVariantChange = (event) => this.#render(event.detail.variant);
+
+  #showMedia(variant, behavior = scrollBehavior()) {
     const media = variant?.featured_media && this.querySelector(`[data-media-id="${variant.featured_media.id}"]`);
     media?.parentElement.scrollTo({ left: media.offsetLeft - media.parentElement.offsetLeft, behavior });
   }

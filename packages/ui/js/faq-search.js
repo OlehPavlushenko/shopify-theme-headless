@@ -50,14 +50,22 @@ function highlight(root, words) {
 }
 
 class FaqSearch extends HTMLElement {
+  #input;
+  #tools;
+  #items;
+  #topics;
+  #links;
+  #empty;
+  #status;
+  #abort;
   #timer;
   #ticking = false;
   #current = null;
 
   connectedCallback() {
-    this.input = this.querySelector('[data-faq-input]');
-    this.tools = this.querySelector('[data-faq-tools]');
-    this.items = [...this.querySelectorAll('[data-faq-item]')].map((item) => ({
+    this.#input = this.querySelector('[data-faq-input]');
+    this.#tools = this.querySelector('[data-faq-tools]');
+    this.#items = [...this.querySelectorAll('[data-faq-item]')].map((item) => ({
       item,
       text: normalize(item.textContent),
       title: item.querySelector('.accordion__title'),
@@ -66,27 +74,31 @@ class FaqSearch extends HTMLElement {
       // "One answer open at a time" groups the <details> by name; searching opens several
       group: item.getAttribute('name'),
     }));
-    this.topics = [...this.querySelectorAll('[data-faq-topic]')];
-    this.links = [...this.querySelectorAll('[data-faq-topic-link]')];
-    this.empty = this.querySelector('[data-faq-empty]');
-    this.status = this.querySelector('[data-faq-status]');
-    this.input?.addEventListener('input', () => {
-      clearTimeout(this.#timer);
-      this.#timer = setTimeout(() => this.#filter(), 120);
-    });
-    this.addEventListener('click', this.#onClick);
-    if (this.topics.length) window.addEventListener('scroll', this.#onScroll, { passive: true });
+    this.#topics = [...this.querySelectorAll('[data-faq-topic]')];
+    this.#links = [...this.querySelectorAll('[data-faq-topic-link]')];
+    this.#empty = this.querySelector('[data-faq-empty]');
+    this.#status = this.querySelector('[data-faq-status]');
+    const { signal } = (this.#abort = new AbortController());
+    this.#input?.addEventListener('input', this.#onInput, { signal });
+    this.addEventListener('click', this.#onClick, { signal });
+    if (this.#topics.length) window.addEventListener('scroll', this.#onScroll, { passive: true, signal });
     this.setAttribute('data-ready', '');
   }
 
   disconnectedCallback() {
-    window.removeEventListener('scroll', this.#onScroll);
+    this.#abort?.abort();
+    clearTimeout(this.#timer);
   }
+
+  #onInput = () => {
+    clearTimeout(this.#timer);
+    this.#timer = setTimeout(() => this.#filter(), 120);
+  };
 
   // Space taken at the top: the header's full height (it may slide back in while scrolling up) and,
   // on phones, the sticky tools bar
   #offset() {
-    const bar = this.tools && matchMedia('(max-width: 989px)').matches ? this.tools.offsetHeight : 0;
+    const bar = this.#tools && matchMedia('(max-width: 989px)').matches ? this.#tools.offsetHeight : 0;
     return headerOffset(bar + 16);
   }
 
@@ -107,8 +119,8 @@ class FaqSearch extends HTMLElement {
     requestAnimationFrame(() => {
       this.#ticking = false;
       const line = this.#offset() + 24;
-      const passed = this.topics.filter((topic) => !topic.hidden && topic.getBoundingClientRect().top <= line);
-      this.#setCurrent(passed.at(-1)?.id ?? this.topics.find((topic) => !topic.hidden)?.id);
+      const passed = this.#topics.filter((topic) => !topic.hidden && topic.getBoundingClientRect().top <= line);
+      this.#setCurrent(passed.at(-1)?.id ?? this.#topics.find((topic) => !topic.hidden)?.id);
     });
   };
 
@@ -116,23 +128,23 @@ class FaqSearch extends HTMLElement {
   #setCurrent(id) {
     if (id === this.#current) return;
     this.#current = id;
-    for (const link of this.links) {
-      const current = link.hash === `#${id}`;
-      if (current) link.setAttribute('aria-current', 'true');
-      else link.removeAttribute('aria-current');
-      // Phones: the topics row scrolls sideways — bring the new current topic into view
-      const row = link.closest('.faq__nav-list');
-      if (current && row.scrollWidth > row.clientWidth) {
-        row.scrollTo({ left: link.parentElement.offsetLeft - row.offsetLeft - 16, behavior: scrollBehavior() });
-      }
+    // Phones: the topics row scrolls sideways — measured once, before the writes, to bring the new
+    // current topic into view
+    const link = this.#links.find((item) => item.hash === `#${id}`);
+    const row = link?.closest('.faq__nav-list');
+    const left = row && row.scrollWidth > row.clientWidth ? link.parentElement.offsetLeft - row.offsetLeft - 16 : null;
+    for (const item of this.#links) {
+      if (item === link) item.setAttribute('aria-current', 'true');
+      else item.removeAttribute('aria-current');
     }
+    if (left !== null) row.scrollTo({ left, behavior: scrollBehavior() });
   }
 
   #filter() {
-    const query = normalize(this.input.value);
+    const query = normalize(this.#input.value);
     const words = query ? query.split(' ') : [];
     let found = 0;
-    for (const entry of this.items) {
+    for (const entry of this.#items) {
       const match = words.every((word) => entry.text.includes(word));
       entry.item.hidden = !match;
       if (match) found += 1;
@@ -152,18 +164,18 @@ class FaqSearch extends HTMLElement {
       }
     }
     // A topic (and its nav link) shows while at least one of its questions does
-    for (const topic of this.topics) {
-      const visible = this.items.some(({ item }) => item.dataset.topic === topic.id && !item.hidden);
+    for (const topic of this.#topics) {
+      const visible = this.#items.some(({ item }) => item.dataset.topic === topic.id && !item.hidden);
       topic.hidden = !visible;
-      this.links.filter((link) => link.hash === `#${topic.id}`).forEach((link) => (link.parentElement.hidden = !visible));
+      this.#links.filter((link) => link.hash === `#${topic.id}`).forEach((link) => (link.parentElement.hidden = !visible));
     }
     this.toggleAttribute('data-searching', words.length > 0);
-    if (this.empty) {
-      this.empty.hidden = found > 0;
-      const terms = this.empty.querySelector('[data-faq-terms]');
-      if (terms) terms.textContent = this.input.value.trim();
+    if (this.#empty) {
+      this.#empty.hidden = found > 0;
+      const terms = this.#empty.querySelector('[data-faq-terms]');
+      if (terms) terms.textContent = this.#input.value.trim();
     }
-    if (this.status) this.status.textContent = words.length ? this.status.dataset.label.replace('%n', found) : '';
+    if (this.#status) this.#status.textContent = words.length ? this.#status.dataset.label.replace('%n', found) : '';
     // The list got shorter: from far down the page the browser keeps the page's end in view, and the
     // field and the results end up above the screen — bring the FAQ's start back below the header
     const top = this.getBoundingClientRect().top;

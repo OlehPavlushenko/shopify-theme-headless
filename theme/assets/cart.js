@@ -12,7 +12,9 @@
  */
 import 'liquid-ajax-cart';
 import { openDialog } from '@ui/dialog';
+import { fetchHTML, latest } from '@ui/fetch-html';
 import { formatMoney } from '@ui/money';
+import { getJSON, setJSON } from '@ui/storage';
 
 const settings = window.theme?.cart ?? {};
 
@@ -55,20 +57,33 @@ function showNotification(items) {
 const discount = { open: false, pending: false, error: '' };
 
 class CartDiscount extends HTMLElement {
+  #abort;
+  #details;
+  #input;
+
   connectedCallback() {
-    this.details = this.querySelector('details');
-    this.input = this.querySelector('[data-discount-input]');
-    if (this.details && discount.open) this.details.open = true;
-    this.details?.addEventListener('toggle', () => (discount.open = this.details.open));
+    this.#details = this.querySelector('details');
+    this.#input = this.querySelector('[data-discount-input]');
+    if (this.#details && discount.open) this.#details.open = true;
+    const { signal } = (this.#abort = new AbortController());
+    this.#details?.addEventListener('toggle', this.#onToggle, { signal });
     const error = this.querySelector('[data-discount-error]');
     if (error) error.textContent = discount.error ? error.dataset.message.replace('__code__', discount.error) : '';
-    this.addEventListener('click', this.#onClick);
-    this.input?.addEventListener('keydown', (event) => {
-      if (event.key !== 'Enter') return;
-      event.preventDefault(); // inside the cart form: Enter must not submit it
-      this.#apply();
-    });
+    this.addEventListener('click', this.#onClick, { signal });
+    this.#input?.addEventListener('keydown', this.#onKeydown, { signal });
   }
+
+  disconnectedCallback() {
+    this.#abort?.abort();
+  }
+
+  #onToggle = () => (discount.open = this.#details.open);
+
+  #onKeydown = (event) => {
+    if (event.key !== 'Enter') return;
+    event.preventDefault(); // inside the cart form: Enter must not submit it
+    this.#apply();
+  };
 
   get #codes() {
     return [...this.querySelectorAll('[data-discount-remove]')].map((el) => el.dataset.discountRemove);
@@ -81,8 +96,8 @@ class CartDiscount extends HTMLElement {
   };
 
   #apply() {
-    const code = this.input?.value.trim();
-    if (!code) return this.input?.focus();
+    const code = this.#input?.value.trim();
+    if (!code) return this.#input?.focus();
     const codes = this.#codes;
     if (!codes.some((c) => c.toLowerCase() === code.toLowerCase())) codes.push(code);
     this.#send(codes);
@@ -149,32 +164,54 @@ document.addEventListener('liquid-ajax-cart:request-end', (event) => {
  * - Lists are mixed round-robin (1st of A, 1st of B, 1st of C, 2nd of A…), without products that
  *   are in the cart or already in the drawer's own "You may also like" list; 10 at most.
  * - Slides in a moment after the drawer; the close button hides it until the cart's products change.
+ * - Only the latest refresh renders (an older one whose lists arrive later is dropped).
  */
 const RECS_LIMIT = 10;
 const RECS_DELAY = 700;
 
 class CartRecommendations extends HTMLElement {
+  #abort;
   #cache = new Map();
   #key = '';
   #dismissed = false;
   #timer;
+  #refreshes = latest();
+  #list;
+  #dialog;
 
   connectedCallback() {
-    this.list = this.querySelector('[data-recs-list]');
-    this.dialog = this.closest('dialog');
-    if (!this.list || !this.dialog || !settings.recommendationsUrl) return;
-    this.dialog.addEventListener('dialog:open', () => this.#refresh(RECS_DELAY));
-    this.dialog.addEventListener('close', () => this.#toggle(false));
-    this.querySelector('[data-recs-close]')?.addEventListener('click', () => {
-      this.#dismissed = true;
-      this.#toggle(false);
-    });
-    document.addEventListener('liquid-ajax-cart:request-end', () => {
-      if (this.dialog.open) this.#refresh(0);
-    });
+    this.#list = this.querySelector('[data-recs-list]');
+    this.#dialog = this.closest('dialog');
+    if (!this.#list || !this.#dialog || !settings.recommendationsUrl) return;
+    const { signal } = (this.#abort = new AbortController());
+    this.#dialog.addEventListener('dialog:open', this.#onDialogOpen, { signal });
+    this.#dialog.addEventListener('close', this.#onDialogClose, { signal });
+    this.querySelector('[data-recs-close]')?.addEventListener('click', this.#onDismiss, { signal });
+    document.addEventListener('liquid-ajax-cart:request-end', this.#onCartChange, { signal });
   }
 
+  disconnectedCallback() {
+    this.#abort?.abort();
+    this.#refreshes.abort();
+    clearTimeout(this.#timer);
+  }
+
+  #onDialogOpen = () => this.#refresh(RECS_DELAY);
+
+  #onDialogClose = () => this.#toggle(false);
+
+  #onDismiss = () => {
+    this.#dismissed = true;
+    this.#toggle(false);
+  };
+
+  #onCartChange = () => {
+    if (this.#dialog.open) this.#refresh(0);
+  };
+
   async #refresh(delay) {
+    // A newer refresh wins: an older one whose lists arrive later renders nothing
+    const { isCurrent } = this.#refreshes.next();
     const items = window.liquidAjaxCart?.cart?.items ?? [];
     const inCart = new Set(items.map((item) => item.product_id));
     const seeds = [...inCart].slice(0, 3);
@@ -186,9 +223,10 @@ class CartRecommendations extends HTMLElement {
     if (!seeds.length || this.#dismissed) return this.#toggle(false);
 
     const lists = await Promise.all(seeds.map((id) => this.#load(id)));
+    if (!isCurrent()) return;
     const skip = new Set([
       ...inCart,
-      ...[...this.dialog.querySelectorAll('.cart-upsell [data-product-id]')].map((el) => Number(el.dataset.productId)),
+      ...[...this.#dialog.querySelectorAll('.cart-upsell [data-product-id]')].map((el) => Number(el.dataset.productId)),
     ]);
     const picked = [];
     for (let i = 0; picked.length < RECS_LIMIT && lists.some((list) => i < list.length); i++) {
@@ -201,19 +239,16 @@ class CartRecommendations extends HTMLElement {
     }
     if (!picked.length) return this.#toggle(false);
 
-    this.list.innerHTML = picked.map((row) => row.html).join('');
+    this.#list.innerHTML = picked.map((row) => row.html).join('');
     clearTimeout(this.#timer);
-    this.#timer = setTimeout(() => this.dialog.open && this.#toggle(true), delay);
+    this.#timer = setTimeout(() => this.#dialog.open && this.#toggle(true), delay);
   }
 
   async #load(productId) {
     // Bump the version when the markup of sections/cart-recommendations changes
     const storageKey = `cart-recs:v5:${productId}`;
     if (!this.#cache.has(productId)) {
-      let stored = null;
-      try {
-        stored = JSON.parse(sessionStorage.getItem(storageKey));
-      } catch {}
+      const stored = getJSON(storageKey, null, { session: true });
       this.#cache.set(productId, stored ? Promise.resolve(stored) : this.#fetch(productId, storageKey));
     }
     return this.#cache.get(productId);
@@ -223,13 +258,9 @@ class CartRecommendations extends HTMLElement {
     try {
       const url = new URL(settings.recommendationsUrl, location.origin);
       url.search = new URLSearchParams({ product_id: productId, limit: 10, intent: 'related', section_id: 'cart-recommendations' });
-      const response = await fetch(url);
-      if (!response.ok) return [];
-      const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+      const doc = await fetchHTML(url);
       const rows = [...doc.querySelectorAll('[data-product-id]')].map((el) => ({ id: Number(el.dataset.productId), html: el.outerHTML }));
-      try {
-        sessionStorage.setItem(storageKey, JSON.stringify(rows));
-      } catch {}
+      setJSON(storageKey, rows, { session: true });
       return rows;
     } catch {
       return [];
@@ -252,21 +283,35 @@ if (!customElements.get('cart-recommendations')) customElements.define('cart-rec
  * it follows every cart change after that. The steps change the cart line's quantity.
  */
 class CartItemState extends HTMLElement {
+  #abort;
+  #label;
+  #line;
+  #quantity = 0;
+
   connectedCallback() {
-    this.label = this.querySelector('[data-in-cart-label]');
-    this.addEventListener('click', (event) => {
-      const step = event.target.closest('[data-step]');
-      if (step && this.line) {
-        window.liquidAjaxCart.change({ id: this.line.key, quantity: this.quantity + Number(step.dataset.step) });
-      }
-    });
+    this.#label = this.querySelector('[data-in-cart-label]');
+    const { signal } = (this.#abort = new AbortController());
+    this.addEventListener('click', this.#onClick, { signal });
     // Inside <product-info> (quick view): follow the picked variant
-    this.closest('product-info')?.addEventListener('variant:change', (event) => {
-      this.dataset.variantId = event.detail.variant?.id ?? '';
-      this.sync(window.liquidAjaxCart?.cart);
-    });
+    this.closest('product-info')?.addEventListener('variant:change', this.#onVariantChange, { signal });
     if (window.liquidAjaxCart?.init) this.sync(window.liquidAjaxCart.cart);
   }
+
+  disconnectedCallback() {
+    this.#abort?.abort();
+  }
+
+  #onClick = (event) => {
+    const step = event.target.closest('[data-step]');
+    if (step && this.#line) {
+      window.liquidAjaxCart.change({ id: this.#line.key, quantity: this.#quantity + Number(step.dataset.step) });
+    }
+  };
+
+  #onVariantChange = (event) => {
+    this.dataset.variantId = event.detail.variant?.id ?? '';
+    this.sync(window.liquidAjaxCart?.cart);
+  };
 
   // data-variant-id: that variant's line (with steps); data-product-id: all the product's lines
   // (a count only — product cards with options)
@@ -274,10 +319,10 @@ class CartItemState extends HTMLElement {
     const productId = Number(this.dataset.productId);
     const variantId = Number(this.dataset.variantId);
     const lines = cart?.items?.filter((item) => (productId ? item.product_id === productId : item.variant_id === variantId)) ?? [];
-    this.line = lines[0];
-    this.quantity = lines.reduce((sum, item) => sum + item.quantity, 0);
-    this.toggleAttribute('data-in-cart', this.quantity > 0);
-    if (this.quantity) this.label.textContent = this.dataset.label.replace('%n', this.quantity);
+    this.#line = lines[0];
+    this.#quantity = lines.reduce((sum, item) => sum + item.quantity, 0);
+    this.toggleAttribute('data-in-cart', this.#quantity > 0);
+    if (this.#quantity) this.#label.textContent = this.dataset.label.replace('%n', this.#quantity);
   }
 }
 
@@ -313,6 +358,7 @@ document.addEventListener('liquid-ajax-cart:request-end', syncCartItemStates);
 
 // Add buttons (<ajax-cart-product-form>): a spinner while the item is added, then "Added" for a moment
 const ADDED_FOR = 2000;
+const addedTimers = new WeakMap();
 const addButton = (requestState) => requestState.info?.initiator?.querySelector?.('[type="submit"]');
 
 document.addEventListener('liquid-ajax-cart:request-start', (event) => {
@@ -329,8 +375,11 @@ document.addEventListener('liquid-ajax-cart:request-end', (event) => {
 
   if (button) {
     button.setAttribute('data-added', '');
-    clearTimeout(button.addedTimer);
-    button.addedTimer = setTimeout(() => button.removeAttribute('data-added'), ADDED_FOR);
+    clearTimeout(addedTimers.get(button));
+    addedTimers.set(
+      button,
+      setTimeout(() => button.removeAttribute('data-added'), ADDED_FOR)
+    );
   }
 
   // Flash the added lines in the re-rendered cart

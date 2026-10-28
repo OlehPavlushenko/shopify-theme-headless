@@ -17,27 +17,29 @@
  * the document title by its data-title (the tab follows the topic / search).
  * State: [aria-busy] while loading.
  */
+import { fetchHTML, importChildren, latest } from '@ui/fetch-html';
 import { headerOffset, scrollBehavior } from '@ui/scroll';
 
 const cache = new Map();
 const isSearch = (url) => new URL(url, location.origin).pathname.endsWith('/search');
 
 class SectionSwap extends HTMLElement {
-  #controller;
-  #request = 0;
+  #abort;
+  #requests = latest();
 
   // Whether this was rendered on the search page: the section id belongs to that template
   #onSearch = isSearch(location.href);
 
   connectedCallback() {
-    this.addEventListener('click', this.#onClick);
-    window.addEventListener('popstate', this.#onPopState);
-    if (this.hasAttribute('data-section-forms')) document.addEventListener('submit', this.#onSubmit);
+    const { signal } = (this.#abort = new AbortController());
+    this.addEventListener('click', this.#onClick, { signal });
+    window.addEventListener('popstate', this.#onPopState, { signal });
+    if (this.hasAttribute('data-section-forms')) document.addEventListener('submit', this.#onSubmit, { signal });
   }
 
   disconnectedCallback() {
-    window.removeEventListener('popstate', this.#onPopState);
-    document.removeEventListener('submit', this.#onSubmit);
+    this.#abort?.abort();
+    this.#requests.abort();
   }
 
   #onSubmit = (event) => {
@@ -63,33 +65,15 @@ class SectionSwap extends HTMLElement {
     const sectionUrl = new URL(url, location.origin);
     // Another template: the whole page (this section's id is unknown there)
     if (isSearch(url) === this.#onSearch) sectionUrl.searchParams.set('section_id', this.dataset.section);
-    const key = sectionUrl.toString();
     // A newer click wins: the one before is aborted, and an older answer is ignored
-    const request = ++this.#request;
-    this.#controller?.abort();
+    const { signal, isCurrent } = this.#requests.next();
     this.setAttribute('aria-busy', 'true');
     try {
-      if (!cache.has(key)) {
-        this.#controller = new AbortController();
-        cache.set(
-          key,
-          fetch(key, { signal: this.#controller.signal })
-            .then((response) => {
-              if (!response.ok) throw new Error(response.statusText);
-              return response.text();
-            })
-            // An aborted or failed request leaves the cache, so the next click fetches again
-            .catch((error) => {
-              cache.delete(key);
-              throw error;
-            })
-        );
-      }
-      const text = await cache.get(key);
-      if (request !== this.#request) return;
-      const next = new DOMParser().parseFromString(text, 'text/html').querySelector('section-swap');
+      const html = await fetchHTML(sectionUrl, { signal, cache });
+      if (!isCurrent()) return;
+      const next = html.querySelector('section-swap');
       if (!next) throw new Error('No section-swap in the response');
-      this.replaceChildren(...[...next.childNodes].map((node) => document.importNode(node, true)));
+      this.replaceChildren(...importChildren(next));
       if (next.dataset.title) document.title = next.dataset.title;
       if (push) {
         // The first entry gets the state too, so going back to it re-renders
@@ -100,13 +84,11 @@ class SectionSwap extends HTMLElement {
       this.#syncForms(url);
       this.focus({ preventScroll: true });
     } catch (error) {
-      cache.delete(key);
-      if (error.name !== 'AbortError' && request === this.#request) window.location.href = url;
+      if (error.name !== 'AbortError' && isCurrent()) window.location.href = url;
     } finally {
-      if (request === this.#request) this.removeAttribute('aria-busy');
+      if (isCurrent()) this.removeAttribute('aria-busy');
     }
   }
-
   // The forms' search fields show the terms of the URL shown (empty off the search page)
   #syncForms(url) {
     const terms = isSearch(url) ? (new URL(url, location.origin).searchParams.get('q') ?? '') : '';

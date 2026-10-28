@@ -14,30 +14,24 @@
  * Limits: compare holds MAX.compare items (a new one is refused), the wishlist MAX.wishlist.
  * "recent" (recently viewed) is written by recordView(), newest first.
  * Items: { handle, title, image, url } — enough for a toast's thumbnail without a request.
- * Storage can be unavailable (private mode, blocked): lists then live for the page only.
+ * Storage (@ui/storage) can be unavailable (private mode, blocked): lists then live for the page only.
  */
+import { getJSON, setJSON } from '@ui/storage';
 import { showToast } from '@ui/toast';
 
 const MAX = { wishlist: 100, compare: 4, recent: 12 };
 const memory = {};
 const key = (list) => `saved-list:${list}`;
 
+// Storage blocked (or nothing stored yet): the in-memory copy of this page
 export function getItems(list) {
-  try {
-    const value = JSON.parse(localStorage.getItem(key(list)));
-    return Array.isArray(value) ? value : [];
-  } catch {
-    return memory[list] ?? [];
-  }
+  const value = getJSON(key(list));
+  return Array.isArray(value) ? value : (memory[list] ?? []);
 }
 
 function save(list, items) {
   memory[list] = items;
-  try {
-    localStorage.setItem(key(list), JSON.stringify(items));
-  } catch {
-    // Storage blocked: the in-memory copy keeps working for this page
-  }
+  setJSON(key(list), items);
   document.dispatchEvent(new CustomEvent('saved-list:change', { detail: { list, items } }));
 }
 
@@ -97,27 +91,33 @@ export const remove = (list, handle) =>
   );
 
 class SavedToggle extends HTMLElement {
+  #abort;
+  #button;
+
   connectedCallback() {
-    this.button = this.querySelector('button');
-    this.button.addEventListener('click', (event) => {
-      event.preventDefault();
-      const { list, handle, title, image, url } = this.dataset;
-      toggle(list, { handle, title, image, url });
-    });
+    this.#button = this.querySelector('button');
+    const { signal } = (this.#abort = new AbortController());
+    this.#button.addEventListener('click', this.#onClick, { signal });
     this.#render();
-    document.addEventListener('saved-list:change', this.#onChange);
+    document.addEventListener('saved-list:change', this.#onChange, { signal });
   }
 
   disconnectedCallback() {
-    document.removeEventListener('saved-list:change', this.#onChange);
+    this.#abort?.abort();
   }
+
+  #onClick = (event) => {
+    event.preventDefault();
+    const { list, handle, title, image, url } = this.dataset;
+    toggle(list, { handle, title, image, url });
+  };
 
   #onChange = (event) => {
     if (event.detail.list === this.dataset.list) this.#render();
   };
 
   #render() {
-    this.button.setAttribute('aria-pressed', String(has(this.dataset.list, this.dataset.handle)));
+    this.#button.setAttribute('aria-pressed', String(has(this.dataset.list, this.dataset.handle)));
   }
 }
 

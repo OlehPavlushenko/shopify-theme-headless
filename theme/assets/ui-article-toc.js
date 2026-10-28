@@ -31,21 +31,31 @@ const slug = (text) =>
     .slice(0, 60);
 
 class ArticleToc extends HTMLElement {
+  #content;
+  #progress;
+  #toggle;
+  #currentLabel;
+  #headings;
+  #links;
+  #offset;
+  #abort;
+  #frame;
   #ticking = false;
   #current = null;
 
   connectedCallback() {
-    this.content = document.querySelector(this.dataset.content);
-    this.progress = document.querySelector('[data-reading-progress]');
-    this.toggle = this.querySelector('[data-toc-toggle]');
-    this.currentLabel = this.querySelector('[data-toc-current]');
-    if (!this.content) return;
-    this.headings = [...this.content.querySelectorAll('h2')];
+    this.#content = document.querySelector(this.dataset.content);
+    this.#progress = document.querySelector('[data-reading-progress]');
+    this.#toggle = this.querySelector('[data-toc-toggle]');
+    this.#currentLabel = this.querySelector('[data-toc-current]');
+    if (!this.#content) return;
+    const { signal } = (this.#abort = new AbortController());
+    this.#headings = [...this.#content.querySelectorAll('h2')];
     const list = this.querySelector('[data-toc-list]');
-    if (this.headings.length >= 2 && list) {
+    if (this.#headings.length >= 2 && list) {
       const used = new Set();
       list.replaceChildren(
-        ...this.headings.map((heading, index) => {
+        ...this.#headings.map((heading, index) => {
           let id = heading.id || slug(heading.textContent) || `section-${index + 1}`;
           while (used.has(id)) id = `${id}-${index + 1}`;
           used.add(id);
@@ -59,37 +69,37 @@ class ArticleToc extends HTMLElement {
           return item;
         })
       );
-      this.links = [...list.querySelectorAll('a')];
+      this.#links = [...list.querySelectorAll('a')];
       this.hidden = false;
-      this.addEventListener('click', this.#onClick);
-      this.toggle?.addEventListener('click', () => this.#setOpen(!this.hasAttribute('data-open')));
-      document.addEventListener('click', this.#onOutside);
-      document.addEventListener('keydown', this.#onKey);
+      this.addEventListener('click', this.#onClick, { signal });
+      this.#toggle?.addEventListener('click', this.#onToggle, { signal });
+      document.addEventListener('click', this.#onOutside, { signal });
+      document.addEventListener('keydown', this.#onKey, { signal });
     }
-    window.addEventListener('scroll', this.#onScroll, { passive: true });
-    window.addEventListener('resize', this.#onResize, { passive: true });
+    window.addEventListener('scroll', this.#onScroll, { passive: true, signal });
+    window.addEventListener('resize', this.#onResize, { passive: true, signal });
     // The first measurement after layout, not while the page renders
-    requestAnimationFrame(() => {
+    this.#frame = requestAnimationFrame(() => {
       this.#onResize();
       this.#onScroll();
     });
   }
 
   disconnectedCallback() {
-    window.removeEventListener('scroll', this.#onScroll);
-    window.removeEventListener('resize', this.#onResize);
-    document.removeEventListener('click', this.#onOutside);
-    document.removeEventListener('keydown', this.#onKey);
+    this.#abort?.abort();
+    cancelAnimationFrame(this.#frame);
   }
+
+  #onToggle = () => this.#setOpen(!this.hasAttribute('data-open'));
 
   // The header offset only changes with the layout: read once, again on resize
   #onResize = () => {
-    this.offset = headerOffset(24);
+    this.#offset = headerOffset(24);
   };
 
   #setOpen(open) {
     this.toggleAttribute('data-open', open);
-    this.toggle?.setAttribute('aria-expanded', String(open));
+    this.#toggle?.setAttribute('aria-expanded', String(open));
   }
 
   #onOutside = (event) => {
@@ -99,7 +109,7 @@ class ArticleToc extends HTMLElement {
   #onKey = (event) => {
     if (event.key === 'Escape' && this.hasAttribute('data-open')) {
       this.#setOpen(false);
-      this.toggle?.focus();
+      this.#toggle?.focus();
     }
   };
 
@@ -119,15 +129,15 @@ class ArticleToc extends HTMLElement {
     requestAnimationFrame(() => {
       this.#ticking = false;
       // Reads
-      const box = this.content.getBoundingClientRect();
+      const box = this.#content.getBoundingClientRect();
       const height = window.innerHeight;
-      const line = (this.offset ?? 0) + 40;
-      const current = this.links
-        ? (this.headings.filter((heading) => heading.getBoundingClientRect().top <= line).at(-1) ?? this.headings[0])
+      const line = (this.#offset ?? 0) + 40;
+      const current = this.#links
+        ? (this.#headings.filter((heading) => heading.getBoundingClientRect().top <= line).at(-1) ?? this.#headings[0])
         : null;
       // Writes
       const read = Math.min(Math.max((height * 0.5 - box.top) / box.height, 0), 1).toFixed(3);
-      this.progress?.style.setProperty('--progress', read);
+      this.#progress?.style.setProperty('--progress', read);
       this.style.setProperty('--progress', read);
       // The bottom bar: while the text is on screen — from its start until its end is near the top
       const visible = box.top < height * 0.6 && box.bottom > height * 0.15;
@@ -136,12 +146,12 @@ class ArticleToc extends HTMLElement {
       if (current && current !== this.#current) {
         this.#current = current;
         // aria-current="true" (an empty value reads as false)
-        this.links.forEach((link) => {
+        this.#links.forEach((link) => {
           if (link.hash === `#${encodeURIComponent(current.id)}` || link.hash === `#${current.id}`)
             link.setAttribute('aria-current', 'true');
           else link.removeAttribute('aria-current');
         });
-        if (this.currentLabel) this.currentLabel.textContent = current.textContent.trim();
+        if (this.#currentLabel) this.#currentLabel.textContent = current.textContent.trim();
       }
     });
   };

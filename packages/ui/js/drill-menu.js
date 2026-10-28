@@ -8,16 +8,26 @@
  * element of the panel that opens. Resets to the root panel when the surrounding <dialog> or popover closes.
  */
 class DrillMenu extends HTMLElement {
+  #abort;
   #stack = ['root'];
 
   connectedCallback() {
-    this.addEventListener('click', this.#onClick);
+    const { signal } = (this.#abort = new AbortController());
+    this.addEventListener('click', this.#onClick, { signal });
     // Back to the root panel whenever the surrounding dialog or popover closes
-    this.closest('dialog')?.addEventListener('close', () => this.#show('root', true));
-    this.closest('[popover]')?.addEventListener('toggle', (event) => {
-      if (event.newState === 'closed') this.#show('root', true);
-    });
+    this.closest('dialog')?.addEventListener('close', this.#onClose, { signal });
+    this.closest('[popover]')?.addEventListener('toggle', this.#onToggle, { signal });
   }
+
+  disconnectedCallback() {
+    this.#abort?.abort();
+  }
+
+  #onClose = () => this.#show('root', true);
+
+  #onToggle = (event) => {
+    if (event.newState === 'closed') this.#show('root', true);
+  };
 
   #onClick = (event) => {
     const opener = event.target.closest('[data-panel-open]');

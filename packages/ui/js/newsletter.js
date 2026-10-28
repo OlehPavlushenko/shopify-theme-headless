@@ -11,49 +11,40 @@
  * The endpoint answers { ok, status: subscribed | already_subscribed } or { ok: false, error }.
  * On success the fields are replaced by the success text and newsletter:subscribed is dispatched
  * (detail: { status, discount } — discount from data-discount, for the cart to apply).
+ * Sending and reCAPTCHA (action "newsletter"): @ui/api.
  */
-let recaptcha;
-
-// Loads reCAPTCHA v3 once, on the first submit
-function loadRecaptcha(key) {
-  recaptcha ??= new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = `https://www.google.com/recaptcha/api.js?render=${encodeURIComponent(key)}`;
-    script.onload = () => window.grecaptcha.ready(() => resolve(window.grecaptcha));
-    script.onerror = reject;
-    document.head.append(script);
-  });
-  return recaptcha;
-}
+import { postJSON } from '@ui/api';
 
 class NewsletterForm extends HTMLElement {
+  #abort;
+  #form;
+  #input;
+  #message;
+
   connectedCallback() {
-    this.form = this.querySelector('form');
-    if (!this.form || !this.dataset.endpoint) return;
-    this.input = this.form.querySelector('input[type="email"]');
-    this.message = this.querySelector('[data-newsletter-message]');
-    this.form.addEventListener('submit', this.#onSubmit);
+    this.#form = this.querySelector('form');
+    if (!this.#form || !this.dataset.endpoint) return;
+    this.#input = this.#form.querySelector('input[type="email"]');
+    this.#message = this.querySelector('[data-newsletter-message]');
+    const { signal } = (this.#abort = new AbortController());
+    this.#form.addEventListener('submit', this.#onSubmit, { signal });
+  }
+
+  disconnectedCallback() {
+    this.#abort?.abort();
   }
 
   #onSubmit = async (event) => {
     event.preventDefault();
-    const email = this.input.value.trim();
-    if (!this.input.checkValidity() || !email) return this.#error(this.dataset.messageInvalid);
+    const email = this.#input.value.trim();
+    if (!this.#input.checkValidity() || !email) return this.#error(this.dataset.messageInvalid);
 
-    const button = this.form.querySelector('[type="submit"]');
+    const button = this.#form.querySelector('[type="submit"]');
     button.setAttribute('aria-busy', 'true');
     button.disabled = true;
     this.#error('');
     try {
-      const token = this.dataset.recaptcha
-        ? await (await loadRecaptcha(this.dataset.recaptcha)).execute(this.dataset.recaptcha, { action: 'newsletter' })
-        : undefined;
-      const response = await fetch(this.dataset.endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, token }),
-      });
-      const result = await response.json().catch(() => ({}));
+      const result = await postJSON(this.dataset.endpoint, { email }, { recaptcha: this.dataset.recaptcha, action: 'newsletter' });
       if (result.ok) return this.#done(result.status);
       this.#error(result.error === 'invalid_email' ? this.dataset.messageInvalid : this.dataset.messageError);
     } catch {
@@ -65,8 +56,8 @@ class NewsletterForm extends HTMLElement {
   };
 
   #error(text) {
-    this.message.textContent = text;
-    this.input.toggleAttribute('aria-invalid', Boolean(text));
+    this.#message.textContent = text;
+    this.#input.toggleAttribute('aria-invalid', Boolean(text));
   }
 
   #done(status) {
@@ -75,7 +66,7 @@ class NewsletterForm extends HTMLElement {
     done.className = 'newsletter-form__done';
     done.setAttribute('role', 'status');
     done.append(template.content.cloneNode(true));
-    this.form.replaceChildren(done);
+    this.#form.replaceChildren(done);
     this.dispatchEvent(new CustomEvent('newsletter:subscribed', { bubbles: true, detail: { status, discount: this.dataset.discount } }));
   }
 }

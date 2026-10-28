@@ -11,17 +11,22 @@
  * fit() recomputes the span (call it when the grid's column count changes). Without JS the link
  * opens the next page.
  */
+import { fetchHTML, sectionUrl } from '@ui/fetch-html';
+
 class LoadMore extends HTMLElement {
+  #abort;
   #observer;
 
   connectedCallback() {
-    this.addEventListener('click', this.#onClick);
+    const { signal } = (this.#abort = new AbortController());
+    this.addEventListener('click', this.#onClick, { signal });
     // The observer's first call sets the span after layout (no measuring while the page renders)
     this.#observer = new ResizeObserver(() => this.fit());
     this.#observer.observe(this);
   }
 
   disconnectedCallback() {
+    this.#abort?.abort();
     this.#observer?.disconnect();
   }
 
@@ -57,11 +62,7 @@ class LoadMore extends HTMLElement {
     if (link.hasAttribute('aria-busy')) return;
     link.setAttribute('aria-busy', 'true');
     try {
-      const url = new URL(link.href, location.origin);
-      url.searchParams.set('section_id', this.dataset.section);
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(response.statusText);
-      const html = new DOMParser().parseFromString(await response.text(), 'text/html');
+      const html = await fetchHTML(sectionUrl(link.href, this.dataset.section));
       const cell = this.querySelector('[data-load-more-cell]');
       const items = [...html.querySelectorAll('[data-load-more-grid] > [data-load-more-item]')].map((item) =>
         document.importNode(item, true)

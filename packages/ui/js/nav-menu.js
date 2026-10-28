@@ -14,26 +14,47 @@ const OPEN_DELAY = 90;
 const CLOSE_DELAY = 200;
 
 class NavMenu extends HTMLElement {
-  #timers = new WeakMap();
+  #abort;
+  #timers = new Map();
+  #items = [];
 
   connectedCallback() {
-    this.items = [...this.querySelectorAll('[data-menu-item]')];
-    for (const item of this.items) {
-      const toggle = item.querySelector('[aria-controls]');
-      toggle?.addEventListener('click', () => this.#set(item, !item.hasAttribute('data-open')));
-      item.addEventListener('pointerenter', (event) => event.pointerType === 'mouse' && this.#schedule(item, true));
-      item.addEventListener('pointerleave', (event) => event.pointerType === 'mouse' && this.#schedule(item, false));
-      item.addEventListener('focusout', (event) => {
-        if (!item.contains(event.relatedTarget)) this.#set(item, false);
-      });
+    this.#items = [...this.querySelectorAll('[data-menu-item]')];
+    const { signal } = (this.#abort = new AbortController());
+    for (const item of this.#items) {
+      item.addEventListener('pointerenter', this.#onPointerEnter, { signal });
+      item.addEventListener('pointerleave', this.#onPointerLeave, { signal });
+      item.addEventListener('focusout', this.#onFocusOut, { signal });
     }
-    document.addEventListener('click', this.#onDocumentClick);
-    this.addEventListener('keydown', this.#onKeydown);
+    this.addEventListener('click', this.#onToggleClick, { signal });
+    this.addEventListener('keydown', this.#onKeydown, { signal });
+    document.addEventListener('click', this.#onDocumentClick, { signal });
   }
 
   disconnectedCallback() {
-    document.removeEventListener('click', this.#onDocumentClick);
+    this.#abort?.abort();
+    for (const timer of this.#timers.values()) clearTimeout(timer);
+    this.#timers.clear();
   }
+
+  #onToggleClick = (event) => {
+    const toggle = event.target.closest('[data-menu-item] [aria-controls]');
+    const item = toggle?.closest('[data-menu-item]');
+    if (item && toggle === item.querySelector('[aria-controls]')) this.#set(item, !item.hasAttribute('data-open'));
+  };
+
+  #onPointerEnter = (event) => {
+    if (event.pointerType === 'mouse') this.#schedule(event.currentTarget, true);
+  };
+
+  #onPointerLeave = (event) => {
+    if (event.pointerType === 'mouse') this.#schedule(event.currentTarget, false);
+  };
+
+  #onFocusOut = (event) => {
+    const item = event.currentTarget;
+    if (!item.contains(event.relatedTarget)) this.#set(item, false);
+  };
 
   #schedule(item, open) {
     clearTimeout(this.#timers.get(item));
@@ -46,7 +67,7 @@ class NavMenu extends HTMLElement {
   #set(item, open) {
     clearTimeout(this.#timers.get(item));
     if (open) {
-      for (const other of this.items) if (other !== item) this.#set(other, false);
+      for (const other of this.#items) if (other !== item) this.#set(other, false);
     }
     item.toggleAttribute('data-open', open);
     item.querySelector('[aria-controls]')?.setAttribute('aria-expanded', String(open));
@@ -54,12 +75,12 @@ class NavMenu extends HTMLElement {
 
   #onDocumentClick = (event) => {
     if (this.contains(event.target)) return;
-    for (const item of this.items) this.#set(item, false);
+    for (const item of this.#items) this.#set(item, false);
   };
 
   #onKeydown = (event) => {
     if (event.key !== 'Escape') return;
-    const open = this.items.find((item) => item.hasAttribute('data-open'));
+    const open = this.#items.find((item) => item.hasAttribute('data-open'));
     if (!open) return;
     this.#set(open, false);
     open.querySelector('[aria-controls]')?.focus();

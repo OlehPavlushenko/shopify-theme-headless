@@ -17,37 +17,54 @@
  * so does a submit of the form (a list under a field). Focuses the input when the surrounding
  * <dialog> opens (dialog:open from @ui/dialog).
  */
+import { fetchHTML, latest } from '@ui/fetch-html';
+
 const DEBOUNCE = 220;
 
 class PredictiveSearch extends HTMLElement {
+  #abort;
   #timer;
-  #controller;
+  #requests = latest();
   #cache = new Map();
+  #input;
+  #results;
+  #emptyState;
 
   connectedCallback() {
-    this.input = this.querySelector('input[name="q"]');
-    this.results = this.querySelector('[data-results]');
-    this.emptyState = this.querySelector('[data-empty-state]');
-    if (!this.input || !this.results) return;
+    this.#input = this.querySelector('input[name="q"]');
+    this.#results = this.querySelector('[data-results]');
+    this.#emptyState = this.querySelector('[data-empty-state]');
+    if (!this.#input || !this.#results) return;
 
-    this.input.addEventListener('input', this.#onInput);
-    this.input.addEventListener('keydown', this.#onKeydown);
-    this.input.form?.addEventListener('submit', () => this.#render(''));
-    this.closest('dialog')?.addEventListener('dialog:open', () => {
-      this.input.focus();
-      this.input.select();
-    });
+    const { signal } = (this.#abort = new AbortController());
+    this.#input.addEventListener('input', this.#onInput, { signal });
+    this.#input.addEventListener('keydown', this.#onKeydown, { signal });
+    this.#input.form?.addEventListener('submit', this.#onSubmit, { signal });
+    this.closest('dialog')?.addEventListener('dialog:open', this.#onDialogOpen, { signal });
+  }
+
+  disconnectedCallback() {
+    this.#abort?.abort();
+    clearTimeout(this.#timer);
+    this.#requests.abort();
   }
 
   #onInput = () => {
     clearTimeout(this.#timer);
-    this.#timer = setTimeout(() => this.#search(this.input.value.trim()), DEBOUNCE);
+    this.#timer = setTimeout(() => this.#search(this.#input.value.trim()), DEBOUNCE);
+  };
+
+  #onSubmit = () => this.#render('');
+
+  #onDialogOpen = () => {
+    this.#input.focus();
+    this.#input.select();
   };
 
   #onKeydown = (event) => {
     if (event.key === 'Escape' && !this.closest('dialog')) this.#render('');
     if (event.key !== 'ArrowDown') return;
-    const first = this.results.querySelector('a, button');
+    const first = this.#results.querySelector('a, button');
     if (first) {
       event.preventDefault();
       first.focus();
@@ -55,7 +72,9 @@ class PredictiveSearch extends HTMLElement {
   };
 
   async #search(query) {
-    this.#controller?.abort();
+    // A newer query wins: the request before is aborted, its answer ignored
+    const { signal, isCurrent } = this.#requests.next();
+    this.removeAttribute('aria-busy');
     if (!query) {
       this.#render('');
       return;
@@ -65,16 +84,15 @@ class PredictiveSearch extends HTMLElement {
       return;
     }
 
-    const controller = (this.#controller = new AbortController());
     this.setAttribute('aria-busy', 'true');
     try {
       const { productsEndpoint, productsParams } = this.dataset;
       const [suggestions, products] = await Promise.all([
-        this.#fetch(this.dataset.endpoint, this.dataset.params, query, controller.signal).catch((error) => {
+        this.#fetch(this.dataset.endpoint, this.dataset.params, query, signal).catch((error) => {
           if (!productsEndpoint || error.name === 'AbortError') throw error;
           return null;
         }),
-        productsEndpoint ? this.#fetch(productsEndpoint, productsParams, query, controller.signal) : null,
+        productsEndpoint ? this.#fetch(productsEndpoint, productsParams, query, signal) : null,
       ]);
       let html = suggestions?.innerHTML.trim() ?? '';
       if (products) {
@@ -83,11 +101,11 @@ class PredictiveSearch extends HTMLElement {
         html = products.innerHTML.trim();
       }
       this.#cache.set(query, html);
-      if (this.input.value.trim() === query) this.#render(html);
+      if (this.#input.value.trim() === query) this.#render(html);
     } catch (error) {
       if (error.name !== 'AbortError') console.error(error);
     } finally {
-      if (this.#controller === controller) this.removeAttribute('aria-busy');
+      if (isCurrent()) this.removeAttribute('aria-busy');
     }
   }
 
@@ -96,16 +114,14 @@ class PredictiveSearch extends HTMLElement {
     const url = new URL(endpoint, location.origin);
     url.search = params ?? '';
     url.searchParams.set('q', query);
-    const response = await fetch(url, { signal });
-    if (!response.ok) throw new Error(`Predictive search failed: ${response.status}`);
-    const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+    const doc = await fetchHTML(url, { signal });
     return doc.querySelector('[data-predictive-results]');
   }
 
   #render(html) {
-    this.results.innerHTML = html;
+    this.#results.innerHTML = html;
     this.toggleAttribute('data-has-results', Boolean(html));
-    if (this.emptyState) this.emptyState.hidden = Boolean(html);
+    if (this.#emptyState) this.#emptyState.hidden = Boolean(html);
   }
 }
 

@@ -14,42 +14,51 @@
  * (or the video poster when the slide has no image).
  * data-start / data-end: play only that part of the video and loop it.
  */
-const allowed = () => !matchMedia('(prefers-reduced-motion: reduce)').matches && !navigator.connection?.saveData;
+import { reducedMotion } from '@ui/scroll';
+
+const allowed = () => !reducedMotion() && !navigator.connection?.saveData;
 
 const shown = (video) => getComputedStyle(video).display !== 'none';
 
 class BackgroundVideo extends HTMLElement {
+  #abort;
   #observer;
+  #videos = [];
+  #start = 0;
+  #end = 0;
 
   connectedCallback() {
-    this.videos = [...this.querySelectorAll('video')];
+    this.#videos = [...this.querySelectorAll('video')];
     if (!allowed()) {
       this.setAttribute('data-off', '');
       return;
     }
-    this.start = Number(this.dataset.start) || 0;
-    this.end = Number(this.dataset.end) || 0;
-    for (const video of this.videos) this.#segment(video);
+    this.#start = Number(this.dataset.start) || 0;
+    this.#end = Number(this.dataset.end) || 0;
+    const { signal } = (this.#abort = new AbortController());
+    for (const video of this.#videos) this.#segment(video, signal);
 
-    const begin = () => {
-      this.#observer = new IntersectionObserver(([entry]) => this.#toggle(entry.isIntersecting), { threshold: 0.25 });
-      this.#observer.observe(this);
-    };
-    if (document.readyState === 'complete') begin();
-    else addEventListener('load', begin, { once: true });
+    if (document.readyState === 'complete') this.#onLoad();
+    else addEventListener('load', this.#onLoad, { once: true, signal });
   }
 
   disconnectedCallback() {
+    this.#abort?.abort();
     this.#observer?.disconnect();
   }
+
+  #onLoad = () => {
+    this.#observer = new IntersectionObserver(([entry]) => this.#toggle(entry.isIntersecting), { threshold: 0.25 });
+    this.#observer.observe(this);
+  };
 
   // Load the frame at data-start and show the video with it
   #prepare(video) {
     if (video.dataset.prepared) return;
     video.dataset.prepared = 'true';
     const ready = () => video.setAttribute('data-ready', '');
-    if (this.start) {
-      video.addEventListener('loadedmetadata', () => (video.currentTime = this.start), { once: true });
+    if (this.#start) {
+      video.addEventListener('loadedmetadata', () => (video.currentTime = this.#start), { once: true });
       video.addEventListener('seeked', ready, { once: true });
     } else {
       video.addEventListener('loadeddata', ready, { once: true });
@@ -59,20 +68,28 @@ class BackgroundVideo extends HTMLElement {
   }
 
   // Loop data-start … data-end (or to the end of the file)
-  #segment(video) {
-    if (!this.start && !this.end) return;
+  #segment(video, signal) {
+    if (!this.#start && !this.#end) return;
     video.loop = false;
-    video.addEventListener('timeupdate', () => {
-      if (this.end && video.currentTime >= this.end) video.currentTime = this.start;
-    });
-    video.addEventListener('ended', () => {
-      video.currentTime = this.start;
-      video.play().catch(() => {});
-    });
+    video.addEventListener(
+      'timeupdate',
+      () => {
+        if (this.#end && video.currentTime >= this.#end) video.currentTime = this.#start;
+      },
+      { signal }
+    );
+    video.addEventListener(
+      'ended',
+      () => {
+        video.currentTime = this.#start;
+        video.play().catch(() => {});
+      },
+      { signal }
+    );
   }
 
   #toggle(visible) {
-    for (const video of this.videos) {
+    for (const video of this.#videos) {
       if (visible && shown(video)) {
         this.#prepare(video);
         video.play().catch(() => {});

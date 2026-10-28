@@ -8,17 +8,19 @@
  *     [data-facets-link] — chip / "Clear all" links, fetched instead of followed
  *     <load-more> (@ui/load-more) around the grid — "Load more" appends the next page's products
  *     button[data-density] (the grid carries data-density too) — few (bigger cards: a column less, 1 on phones) / many (as set),
- *       remembered per browser
+ *       remembered per browser (@ui/storage)
  *   </facet-filters>
  *
  * A change in the form (checkbox, sort, price after a pause) builds the URL from the form, fetches
  * it with ?section_id=<section>, replaces the parts above and pushes the URL to the history (back
  * and forward re-render). Open filter groups and the open drawer stay as they are. Responses are
- * cached per URL; only the latest change renders (an older request is aborted or ignored). Without
- * JS the form submits and every link is a real URL.
+ * cached per URL; only the latest change renders (an older request is aborted or ignored: @ui/fetch-html).
+ * Without JS the form submits and every link is a real URL.
  * <price-range>: two number fields + a dual range slider kept in sync.
  */
+import { fetchHTML, latest, sectionUrl } from '@ui/fetch-html';
 import { headerOffset, scrollBehavior } from '@ui/scroll';
+import * as storage from '@ui/storage';
 
 const cache = new Map();
 
@@ -26,49 +28,38 @@ const cache = new Map();
 const inputSelector = (input) =>
   input.name ? `[name="${CSS.escape(input.name)}"]${input.type === 'checkbox' ? `[value="${CSS.escape(input.value)}"]` : ''}` : null;
 const DENSITY_KEY = 'facets:density';
-
-function readDensity() {
-  try {
-    return localStorage.getItem(DENSITY_KEY) || 'many';
-  } catch {
-    return 'many';
-  }
-}
-
-function saveDensity(value) {
-  try {
-    localStorage.setItem(DENSITY_KEY, value);
-  } catch {
-    // Storage blocked: the choice lasts for this page
-  }
-}
+// Storage blocked: the choice lasts for this page (the grid keeps its data-density)
+const readDensity = () => storage.get(DENSITY_KEY) || 'many';
 
 class FacetFilters extends HTMLElement {
-  #controller;
-  #request = 0;
+  #abort;
+  #requests = latest();
   #timer;
   #revealOnClose = false;
   #lastChanged = null;
 
   connectedCallback() {
-    this.section = this.dataset.section;
-    this.addEventListener('change', this.#onChange);
-    this.addEventListener('input', this.#onInput);
-    this.addEventListener('click', this.#onClick);
-    this.addEventListener('submit', (event) => {
-      event.preventDefault();
-      this.#apply(this.#formUrl());
-    });
-    this.addEventListener('toggle', this.#onToggle, true);
-    document.addEventListener('click', this.#onOutsideClick);
-    window.addEventListener('popstate', this.#onPopState);
+    const { signal } = (this.#abort = new AbortController());
+    this.addEventListener('change', this.#onChange, { signal });
+    this.addEventListener('input', this.#onInput, { signal });
+    this.addEventListener('click', this.#onClick, { signal });
+    this.addEventListener('submit', this.#onSubmit, { signal });
+    this.addEventListener('toggle', this.#onToggle, { capture: true, signal });
+    document.addEventListener('click', this.#onOutsideClick, { signal });
+    window.addEventListener('popstate', this.#onPopState, { signal });
     this.#applyDensity(readDensity());
   }
 
   disconnectedCallback() {
-    document.removeEventListener('click', this.#onOutsideClick);
-    window.removeEventListener('popstate', this.#onPopState);
+    this.#abort?.abort();
+    clearTimeout(this.#timer);
+    this.#requests.abort();
   }
+
+  #onSubmit = (event) => {
+    event.preventDefault();
+    this.#apply(this.#formUrl());
+  };
 
   get #form() {
     return this.querySelector('[data-facets-form]');
@@ -108,7 +99,7 @@ class FacetFilters extends HTMLElement {
     if (toggle) this.#toggleValues(toggle);
     const density = event.target.closest('button[data-density]');
     if (density) {
-      saveDensity(density.dataset.density);
+      storage.set(DENSITY_KEY, density.dataset.density);
       this.#applyDensity(density.dataset.density);
     }
   };
@@ -158,42 +149,13 @@ class FacetFilters extends HTMLElement {
     this.querySelector('load-more')?.fit?.();
   }
 
-  async #fetch(url) {
-    const sectionUrl = new URL(url, location.origin);
-    sectionUrl.searchParams.set('section_id', this.section);
-    const key = sectionUrl.toString();
-    this.#controller?.abort();
-    if (!cache.has(key)) {
-      this.#controller = new AbortController();
-      cache.set(
-        key,
-        fetch(key, { signal: this.#controller.signal })
-          .then((response) => {
-            if (!response.ok) throw new Error(response.statusText);
-            return response.text();
-          })
-          // An aborted or failed request leaves the cache, so the next try fetches again
-          .catch((error) => {
-            cache.delete(key);
-            throw error;
-          })
-      );
-    }
-    try {
-      return new DOMParser().parseFromString(await cache.get(key), 'text/html');
-    } catch (error) {
-      cache.delete(key);
-      throw error;
-    }
-  }
-
   async #apply(url, push = true) {
-    // A newer change wins: an older answer arriving later is ignored
-    const request = ++this.#request;
+    // A newer change wins: the request before is aborted, an older answer arriving later is ignored
+    const { signal, isCurrent } = this.#requests.next();
     this.setAttribute('aria-busy', 'true');
     try {
-      const html = await this.#fetch(url);
-      if (request !== this.#request) return;
+      const html = await fetchHTML(sectionUrl(url, this.dataset.section), { signal, cache });
+      if (!isCurrent()) return;
       const next = html.querySelector('facet-filters');
       if (!next) throw new Error('No facets markup');
       this.#replace(next);
@@ -204,10 +166,10 @@ class FacetFilters extends HTMLElement {
       }
       if (push) this.#revealResults();
     } catch (error) {
-      if (error.name === 'AbortError' || request !== this.#request) return;
+      if (error.name === 'AbortError' || !isCurrent()) return;
       window.location.href = url;
     } finally {
-      if (request === this.#request) this.removeAttribute('aria-busy');
+      if (isCurrent()) this.removeAttribute('aria-busy');
     }
   }
 
@@ -298,34 +260,45 @@ class FacetFilters extends HTMLElement {
 }
 
 class PriceRange extends HTMLElement {
+  #abort;
+  #min;
+  #max;
+  #rangeMin;
+  #rangeMax;
+
   connectedCallback() {
-    this.min = this.querySelector('[data-price-min]');
-    this.max = this.querySelector('[data-price-max]');
-    this.rangeMin = this.querySelector('[data-range-min]');
-    this.rangeMax = this.querySelector('[data-range-max]');
-    this.addEventListener('input', this.#sync);
+    this.#min = this.querySelector('[data-price-min]');
+    this.#max = this.querySelector('[data-price-max]');
+    this.#rangeMin = this.querySelector('[data-range-min]');
+    this.#rangeMax = this.querySelector('[data-range-max]');
+    const { signal } = (this.#abort = new AbortController());
+    this.addEventListener('input', this.#onInput, { signal });
     this.#paint();
   }
 
+  disconnectedCallback() {
+    this.#abort?.abort();
+  }
+
   // The slider writes into the fields (and back); the thumbs never cross
-  #sync = (event) => {
+  #onInput = (event) => {
     const top = Number(this.dataset.max);
-    if (event.target === this.rangeMin || event.target === this.rangeMax) {
-      const low = Math.min(Number(this.rangeMin.value), Number(this.rangeMax.value));
-      const high = Math.max(Number(this.rangeMin.value), Number(this.rangeMax.value));
-      this.min.value = low > 0 ? low : '';
-      this.max.value = high < top ? high : '';
+    if (event.target === this.#rangeMin || event.target === this.#rangeMax) {
+      const low = Math.min(Number(this.#rangeMin.value), Number(this.#rangeMax.value));
+      const high = Math.max(Number(this.#rangeMin.value), Number(this.#rangeMax.value));
+      this.#min.value = low > 0 ? low : '';
+      this.#max.value = high < top ? high : '';
     } else {
-      this.rangeMin.value = this.min.value || 0;
-      this.rangeMax.value = this.max.value || top;
+      this.#rangeMin.value = this.#min.value || 0;
+      this.#rangeMax.value = this.#max.value || top;
     }
     this.#paint();
   };
 
   #paint() {
     const top = Number(this.dataset.max) || 1;
-    this.style.setProperty('--range-from', `${(Number(this.rangeMin.value) / top) * 100}%`);
-    this.style.setProperty('--range-to', `${(Number(this.rangeMax.value) / top) * 100}%`);
+    this.style.setProperty('--range-from', `${(Number(this.#rangeMin.value) / top) * 100}%`);
+    this.style.setProperty('--range-to', `${(Number(this.#rangeMax.value) / top) * 100}%`);
   }
 }
 

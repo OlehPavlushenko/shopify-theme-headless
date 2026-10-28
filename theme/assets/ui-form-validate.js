@@ -20,19 +20,27 @@ const FIELDS = 'input:not([type="hidden"], [type="submit"], [type="button"]), te
 let uid = 0;
 
 class FormValidate extends HTMLElement {
+  #form;
+  #abort;
+
   connectedCallback() {
-    this.form = this.querySelector('form');
-    if (!this.form) return;
-    this.form.noValidate = true;
-    this.form.addEventListener('submit', this.#onSubmit);
-    this.form.addEventListener('input', this.#onInput);
+    this.#form = this.querySelector('form');
+    if (!this.#form) return;
+    this.#form.noValidate = true;
+    const { signal } = (this.#abort = new AbortController());
+    this.#form.addEventListener('submit', this.#onSubmit, { signal });
+    this.#form.addEventListener('input', this.#onInput, { signal });
+  }
+
+  disconnectedCallback() {
+    this.#abort?.abort();
   }
 
   // Runs before other submit listeners added later (an AJAX form stops when this prevents it)
   #onSubmit = (event) => {
     // formnovalidate on the button that sent it (e.g. "Decline") skips the checks
     if (event.submitter?.formNoValidate) return;
-    const invalid = [...this.form.querySelectorAll(FIELDS)].filter((field) => !this.#check(field));
+    const invalid = [...this.#form.querySelectorAll(FIELDS)].filter((field) => !this.#check(field));
     if (!invalid.length) return;
     event.preventDefault();
     event.stopImmediatePropagation();

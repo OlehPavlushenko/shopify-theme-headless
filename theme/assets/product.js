@@ -18,51 +18,68 @@
  * <variant-fields data-product="<title>">: parts of a form that follow the variant — [data-variant-id]
  *   gets its id, [data-variant-title] "Product / Variant" (an input's value, else its text).
  * <pickup-availability data-root>: on a variant change, fetches the pickup info of that variant
- *   (/variants/<id>/?section_id=pickup-availability) into itself.
- * <share-button data-url data-title data-copied>: the system share sheet, else copies the link.
+ *   (/variants/<id>/?section_id=pickup-availability) into itself; only the latest variant's answer
+ *   renders (a slower one for an earlier pick is dropped).
+ * <share-button data-url data-title data-copied>: the system share sheet, else copies the link
+ *   ([data-share-label] says data-copied for a moment, only when it was copied).
  * <product-recommendations data-url [data-replace]>: fetched once it nears the viewport; fills
  *   its [data-recommendations] (or, with data-replace, swaps itself for the response); hidden when
  *   empty.
- * Records the product in the recently viewed list (@ui/saved-list).
+ * Records the product in the recently viewed list (@ui/saved-list). Scrolling is instant with
+ * "reduce motion" (@ui/scroll).
  */
+import { copyText, flashLabel } from '@ui/clipboard';
 import { deliveryDates, formatLeft } from '@ui/delivery';
 import { openDialog } from '@ui/dialog';
+import { fetchHTML, importChildren, latest, sectionUrl } from '@ui/fetch-html';
 import { recordView } from '@ui/saved-list';
+import { scrollBehavior } from '@ui/scroll';
+import { variantTitle } from '@ui/variant-picker';
 
 const wide = matchMedia('(min-width: 990px)');
 
 class ProductGallery extends HTMLElement {
+  #abort;
+  #ticking = false;
+  #track;
+  #counter;
+
   connectedCallback() {
-    this.track = this.querySelector('[data-gallery-track]');
-    this.counter = this.querySelector('[data-gallery-current]');
-    this.track.addEventListener('scroll', this.#onScroll, { passive: true });
-    this.addEventListener('click', this.#onClick);
-    this.closest('product-info')?.addEventListener('variant:change', (event) => this.#show(event.detail.variant?.featured_media?.id));
+    this.#track = this.querySelector('[data-gallery-track]');
+    this.#counter = this.querySelector('[data-gallery-current]');
+    const { signal } = (this.#abort = new AbortController());
+    this.#track.addEventListener('scroll', this.#onScroll, { passive: true, signal });
+    this.addEventListener('click', this.#onClick, { signal });
+    this.closest('product-info')?.addEventListener('variant:change', this.#onVariantChange, { signal });
+  }
+
+  disconnectedCallback() {
+    this.#abort?.abort();
   }
 
   get #items() {
-    return [...this.track.children];
+    return [...this.#track.children];
   }
+
+  #onVariantChange = (event) => this.#show(event.detail.variant?.featured_media?.id);
 
   #onScroll = () => {
     if (this.#ticking) return;
     this.#ticking = true;
     requestAnimationFrame(() => {
       this.#ticking = false;
-      const { scrollLeft, clientWidth } = this.track;
+      const { scrollLeft, clientWidth } = this.#track;
       const index = Math.round(scrollLeft / clientWidth);
-      if (this.counter) this.counter.textContent = index + 1;
+      if (this.#counter) this.#counter.textContent = index + 1;
       this.querySelectorAll('[data-thumb]').forEach((thumb, i) => thumb.toggleAttribute('aria-current', i === index));
     });
   };
-
-  #ticking = false;
 
   #onClick = (event) => {
     const thumb = event.target.closest('[data-thumb]');
     if (thumb) {
       const item = this.#items[Number(thumb.dataset.thumb)];
-      this.track.scrollTo({ left: item.offsetLeft - this.track.offsetLeft, behavior: 'smooth' });
+      this.#track.scrollTo({ left: item.offsetLeft - this.#track.offsetLeft, behavior: scrollBehavior() });
       this.querySelectorAll('[data-thumb]').forEach((other) => other.toggleAttribute('aria-current', other === thumb));
       return;
     }
@@ -71,14 +88,14 @@ class ProductGallery extends HTMLElement {
   };
 
   #show(mediaId) {
-    const item = mediaId && this.track.querySelector(`[data-media-id="${mediaId}"]`);
+    const item = mediaId && this.#track.querySelector(`[data-media-id="${mediaId}"]`);
     if (!item) return;
     const layout = this.dataset.layout;
     if (wide.matches && (layout === 'grid' || layout === 'stacked')) {
-      this.track.prepend(item);
+      this.#track.prepend(item);
       return;
     }
-    this.track.scrollTo({ left: item.offsetLeft - this.track.offsetLeft, behavior: 'smooth' });
+    this.#track.scrollTo({ left: item.offsetLeft - this.#track.offsetLeft, behavior: scrollBehavior() });
   }
 
   #zoom(item) {
@@ -92,110 +109,167 @@ class ProductGallery extends HTMLElement {
 }
 
 class QuantityInput extends HTMLElement {
+  #abort;
+  #input;
+
   connectedCallback() {
-    this.input = this.querySelector('input');
-    this.addEventListener('click', (event) => {
-      const step = event.target.closest('[data-qty]');
-      if (!step) return;
-      const min = Number(this.input.min) || 1;
-      this.input.value = Math.max(min, (Number(this.input.value) || min) + Number(step.dataset.qty));
-      this.input.dispatchEvent(new Event('change', { bubbles: true }));
-    });
-  }
-}
-
-class StockNotify extends HTMLElement {
-  connectedCallback() {
-    this.closest('product-info')?.addEventListener('variant:change', (event) => {
-      const variant = event.detail.variant;
-      this.hidden = !variant || variant.available;
-    });
-  }
-}
-
-class VariantFields extends HTMLElement {
-  connectedCallback() {
-    this.closest('product-info')?.addEventListener('variant:change', (event) => {
-      const variant = event.detail.variant;
-      if (!variant) return;
-      // The variant's title, as in Liquid: its options joined ("Default Title" for a product without options)
-      const name = variant.options.join(' / ');
-      const title = this.dataset.product + (name === 'Default Title' ? '' : ` / ${name}`);
-      for (const field of this.querySelectorAll('[data-variant-id]')) field.value = variant.id;
-      for (const field of this.querySelectorAll('[data-variant-title]')) {
-        if (field instanceof HTMLInputElement) field.value = title;
-        else field.textContent = title;
-      }
-    });
-  }
-}
-
-class PickupAvailability extends HTMLElement {
-  connectedCallback() {
-    this.closest('product-info')?.addEventListener('variant:change', async (event) => {
-      const id = event.detail.variant?.id;
-      if (!id) return;
-      try {
-        const response = await fetch(`${this.dataset.root.replace(/\/$/, '')}/variants/${id}/?section_id=pickup-availability`);
-        if (!response.ok) return;
-        const html = new DOMParser().parseFromString(await response.text(), 'text/html');
-        const content = html.querySelector('[data-pickup-content]');
-        if (content) this.replaceChildren(...[...content.childNodes].map((node) => document.importNode(node, true)));
-      } catch {
-        // Keeps what it shows
-      }
-    });
-  }
-}
-
-class StickyBuyBar extends HTMLElement {
-  connectedCallback() {
-    const info = this.closest('product-info');
-    const button = info?.querySelector('[data-product-form] [data-add-button]');
-    if (!button) return;
-    this.observer = new IntersectionObserver(([entry]) => {
-      // Visible once the main button is above the viewport (not while it is still below it)
-      this.hidden = entry.isIntersecting || entry.boundingClientRect.top > 0;
-    });
-    this.observer.observe(button);
-
-    this.querySelector('[data-sticky-top]')?.addEventListener('click', () => {
-      const target = info.querySelector('variant-picker') ?? info.querySelector('.main-product__head') ?? info;
-      const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-      target.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'center' });
-      target.querySelector('input:checked')?.focus({ preventScroll: true });
-    });
-
-    this.form = document.getElementById(this.dataset.form);
-    this.qty = this.querySelector('[data-sticky-qty]');
-    // The bar's stepper sets the form's quantity (the "Bundle & save" card follows it)
-    this.qty?.addEventListener('change', (event) => {
-      event.stopPropagation();
-      const quantity = this.form?.querySelector('input[name="quantity"]:not([type="radio"])');
-      if (!quantity) return;
-      quantity.value = this.qty.value;
-      quantity.dispatchEvent(new Event('change', { bubbles: true }));
-    });
-    info.addEventListener('change', () => this.#count());
-    info.addEventListener('variant:change', (event) => {
-      const name = event.detail.variant?.options.join(' / ');
-      const label = this.querySelector('[data-sticky-variant]');
-      if (label && name) label.textContent = name;
-    });
-    this.#count();
-  }
-
-  // The form's quantity (stepper or picked card) into the bar
-  #count() {
-    const quantity = Number(new FormData(this.form ?? undefined).get('quantity')) || 1;
-    if (this.qty) this.qty.value = quantity;
-    const count = this.querySelector('[data-sticky-count]');
-    count.textContent = `× ${quantity}`;
-    count.hidden = quantity < 2;
+    this.#input = this.querySelector('input');
+    const { signal } = (this.#abort = new AbortController());
+    this.addEventListener('click', this.#onClick, { signal });
   }
 
   disconnectedCallback() {
-    this.observer?.disconnect();
+    this.#abort?.abort();
+  }
+
+  #onClick = (event) => {
+    const step = event.target.closest('[data-qty]');
+    if (!step) return;
+    const min = Number(this.#input.min) || 1;
+    this.#input.value = Math.max(min, (Number(this.#input.value) || min) + Number(step.dataset.qty));
+    this.#input.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+}
+
+class StockNotify extends HTMLElement {
+  #abort;
+
+  connectedCallback() {
+    const { signal } = (this.#abort = new AbortController());
+    this.closest('product-info')?.addEventListener('variant:change', this.#onVariantChange, { signal });
+  }
+
+  disconnectedCallback() {
+    this.#abort?.abort();
+  }
+
+  #onVariantChange = (event) => {
+    const variant = event.detail.variant;
+    this.hidden = !variant || variant.available;
+  };
+}
+
+class VariantFields extends HTMLElement {
+  #abort;
+
+  connectedCallback() {
+    const { signal } = (this.#abort = new AbortController());
+    this.closest('product-info')?.addEventListener('variant:change', this.#onVariantChange, { signal });
+  }
+
+  disconnectedCallback() {
+    this.#abort?.abort();
+  }
+
+  #onVariantChange = (event) => {
+    const variant = event.detail.variant;
+    if (!variant) return;
+    // The variant's title, as in Liquid ("Product / Variant"; the product alone without options)
+    const name = variantTitle(variant);
+    const title = this.dataset.product + (name ? ` / ${name}` : '');
+    for (const field of this.querySelectorAll('[data-variant-id]')) field.value = variant.id;
+    for (const field of this.querySelectorAll('[data-variant-title]')) {
+      if (field instanceof HTMLInputElement) field.value = title;
+      else field.textContent = title;
+    }
+  };
+}
+
+class PickupAvailability extends HTMLElement {
+  #abort;
+  #requests = latest();
+
+  connectedCallback() {
+    const { signal } = (this.#abort = new AbortController());
+    this.closest('product-info')?.addEventListener('variant:change', this.#onVariantChange, { signal });
+  }
+
+  disconnectedCallback() {
+    this.#abort?.abort();
+    this.#requests.abort();
+  }
+
+  #onVariantChange = async (event) => {
+    const id = event.detail.variant?.id;
+    if (!id) return;
+    // A newer pick wins: the request before is aborted, a late answer for it ignored
+    const { signal, isCurrent } = this.#requests.next();
+    try {
+      const html = await fetchHTML(sectionUrl(`${this.dataset.root.replace(/\/$/, '')}/variants/${id}/`, 'pickup-availability'), {
+        signal,
+      });
+      if (!isCurrent()) return;
+      const content = html.querySelector('[data-pickup-content]');
+      if (content) this.replaceChildren(...importChildren(content));
+    } catch {
+      // Keeps what it shows
+    }
+  };
+}
+
+class StickyBuyBar extends HTMLElement {
+  #abort;
+  #observer;
+  #info;
+  #form;
+  #qty;
+
+  connectedCallback() {
+    this.#info = this.closest('product-info');
+    const button = this.#info?.querySelector('[data-product-form] [data-add-button]');
+    if (!button) return;
+    this.#observer = new IntersectionObserver(([entry]) => {
+      // Visible once the main button is above the viewport (not while it is still below it)
+      this.hidden = entry.isIntersecting || entry.boundingClientRect.top > 0;
+    });
+    this.#observer.observe(button);
+
+    const { signal } = (this.#abort = new AbortController());
+    this.querySelector('[data-sticky-top]')?.addEventListener('click', this.#onTop, { signal });
+
+    this.#form = document.getElementById(this.dataset.form);
+    this.#qty = this.querySelector('[data-sticky-qty]');
+    // The bar's stepper sets the form's quantity (the "Bundle & save" card follows it)
+    this.#qty?.addEventListener('change', this.#onQtyChange, { signal });
+    this.#info.addEventListener('change', this.#onFormChange, { signal });
+    this.#info.addEventListener('variant:change', this.#onVariantChange, { signal });
+    this.#count();
+  }
+
+  disconnectedCallback() {
+    this.#abort?.abort();
+    this.#observer?.disconnect();
+  }
+
+  #onTop = () => {
+    const target = this.#info.querySelector('variant-picker') ?? this.#info.querySelector('.main-product__head') ?? this.#info;
+    target.scrollIntoView({ behavior: scrollBehavior(), block: 'center' });
+    target.querySelector('input:checked')?.focus({ preventScroll: true });
+  };
+
+  #onQtyChange = (event) => {
+    event.stopPropagation();
+    const quantity = this.#form?.querySelector('input[name="quantity"]:not([type="radio"])');
+    if (!quantity) return;
+    quantity.value = this.#qty.value;
+    quantity.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+
+  #onFormChange = () => this.#count();
+
+  #onVariantChange = (event) => {
+    const name = variantTitle(event.detail.variant);
+    const label = this.querySelector('[data-sticky-variant]');
+    if (label && name) label.textContent = name;
+  };
+
+  // The form's quantity (stepper or picked card) into the bar
+  #count() {
+    const quantity = Number(new FormData(this.#form ?? undefined).get('quantity')) || 1;
+    if (this.#qty) this.#qty.value = quantity;
+    const count = this.querySelector('[data-sticky-count]');
+    count.textContent = `× ${quantity}`;
+    count.hidden = quantity < 2;
   }
 }
 
@@ -213,49 +287,54 @@ class DeliveryEstimate extends HTMLElement {
 }
 
 class ShareButton extends HTMLElement {
+  #abort;
+
   connectedCallback() {
-    this.querySelector('button').addEventListener('click', async () => {
-      const { url, title, copied } = this.dataset;
-      if (navigator.share) {
-        try {
-          await navigator.share({ url, title });
-        } catch {
-          // Cancelled
-        }
-        return;
-      }
-      await navigator.clipboard?.writeText(url);
-      const label = this.querySelector('[data-share-label]');
-      const text = label.textContent;
-      label.textContent = copied;
-      setTimeout(() => (label.textContent = text), 2000);
-    });
+    const { signal } = (this.#abort = new AbortController());
+    this.querySelector('button').addEventListener('click', this.#onClick, { signal });
   }
+
+  disconnectedCallback() {
+    this.#abort?.abort();
+  }
+
+  #onClick = async () => {
+    const { url, title, copied } = this.dataset;
+    if (navigator.share) {
+      try {
+        await navigator.share({ url, title });
+      } catch {
+        // Cancelled
+      }
+      return;
+    }
+    if (await copyText(url)) flashLabel(this.querySelector('[data-share-label]'), copied);
+  };
 }
 
 class ProductRecommendations extends HTMLElement {
+  #observer;
+
   connectedCallback() {
     if (this.hasAttribute('data-loaded')) return; // the fetched copy that replaced the shell
-    this.observer = new IntersectionObserver(
+    this.#observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
-        this.observer.disconnect();
+        this.#observer.disconnect();
         this.#load();
       },
       { rootMargin: '600px 0px' }
     );
-    this.observer.observe(this);
+    this.#observer.observe(this);
   }
 
   disconnectedCallback() {
-    this.observer?.disconnect();
+    this.#observer?.disconnect();
   }
 
   async #load() {
     try {
-      const response = await fetch(this.dataset.url);
-      if (!response.ok) throw new Error(response.statusText);
-      const html = new DOMParser().parseFromString(await response.text(), 'text/html');
+      const html = await fetchHTML(this.dataset.url);
       if (this.hasAttribute('data-replace')) {
         const next = html.querySelector('product-recommendations');
         if (next?.querySelector('[data-slider-track] > li')) {

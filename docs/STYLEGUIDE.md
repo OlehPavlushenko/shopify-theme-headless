@@ -99,6 +99,18 @@ and the list of mistakes we already made once. Read both before adding code.
 - Overlays open and close through `@ui/dialog`; open styles go on `[open]:not([data-closing])` /
   `:popover-open:not([data-closing])`.
 - Server-render first: the HTML works without JS (forms post, links navigate); JS enhances.
+- Component lifecycle: handlers are class fields (`#onClick = (event) => {…}`); every listener added
+  in `connectedCallback` (on the element, its parts, an ancestor, `document` or `window`) takes
+  `{ signal }` from an `AbortController` made there (`#abort`) and aborted in `disconnectedCallback`,
+  which also clears timers, observers and requests. State lives in private `#fields`, not in public
+  fields or expandos on other elements (a `WeakMap` for those).
+- Shared helpers instead of copies: `@ui/fetch-html` (`sectionUrl`, `fetchHTML` with an optional
+  cache, `importChildren`, `latest()` — only the newest request renders), `@ui/storage` (local /
+  session storage that never throws), `@ui/api` (`postJSON` to project-server with reCAPTCHA v3),
+  `@ui/clipboard` (`copyText`, `flashLabel`), `@ui/scroll` (`reducedMotion()`, `scrollBehavior()` —
+  never a hard-coded `'smooth'` or another `matchMedia('(prefers-reduced-motion…)')`), `variantTitle`
+  from `@ui/variant-picker`. A new `@ui/*` module gets its line in `snippets/import-map`.
+- Layout reads before writes: in a frame or update, measure everything first, then change the DOM.
 - Inline JSON only with the fields the script reads (the variant picker gets 6 fields, not the
   full variant objects).
 - Prettier formats: `npm run format`.

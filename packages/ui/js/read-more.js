@@ -11,35 +11,44 @@
  * The button shows only when the text is taller than the limit ([data-overflow]); [data-expanded]
  * while open. Without JS the text is shown in full (the limit applies with [data-ready] only).
  */
+import { scrollBehavior } from '@ui/scroll';
+
 class ReadMore extends HTMLElement {
+  #abort;
+  #observer;
+  #content;
+  #button;
+
   connectedCallback() {
-    this.content = this.querySelector('[data-read-more-content]');
-    this.button = this.querySelector('[data-read-more-toggle]');
-    if (!this.content || !this.button) return;
+    this.#content = this.querySelector('[data-read-more-content]');
+    this.#button = this.querySelector('[data-read-more-toggle]');
+    if (!this.#content || !this.#button) return;
     this.setAttribute('data-ready', '');
-    this.button.addEventListener('click', () => this.#toggle());
-    this.observer = new ResizeObserver(() => this.#measure());
-    this.observer.observe(this.content);
+    const { signal } = (this.#abort = new AbortController());
+    this.#button.addEventListener('click', this.#onToggle, { signal });
+    this.#observer = new ResizeObserver(() => this.#measure());
+    this.#observer.observe(this.#content);
   }
 
   disconnectedCallback() {
-    this.observer?.disconnect();
+    this.#abort?.abort();
+    this.#observer?.disconnect();
   }
 
   #measure() {
     if (this.hasAttribute('data-expanded')) return;
-    const overflow = this.content.scrollHeight > this.content.clientHeight + 1;
+    const overflow = this.#content.scrollHeight > this.#content.clientHeight + 1;
     this.toggleAttribute('data-overflow', overflow);
-    this.button.hidden = !overflow;
+    this.#button.hidden = !overflow;
   }
 
-  #toggle() {
+  #onToggle = () => {
     const expanded = !this.hasAttribute('data-expanded');
     this.toggleAttribute('data-expanded', expanded);
-    this.button.setAttribute('aria-expanded', String(expanded));
-    this.button.textContent = expanded ? this.button.dataset.labelLess : this.button.dataset.labelMore;
-    if (!expanded) this.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-  }
+    this.#button.setAttribute('aria-expanded', String(expanded));
+    this.#button.textContent = expanded ? this.#button.dataset.labelLess : this.#button.dataset.labelMore;
+    if (!expanded) this.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() });
+  };
 }
 
 if (!customElements.get('read-more')) customElements.define('read-more', ReadMore);

@@ -17,44 +17,46 @@
  * [data-saved-remove="<handle>"] buttons inside remove a product. Re-renders on every list change.
  * Headless storefronts render the same items from Storefront API data.
  */
+import { fetchHTML, sectionUrl } from '@ui/fetch-html';
 import { getItems, remove } from '@ui/saved-list';
 
 const cache = new Map();
 
+// null: no product page (404: deleted, archived or unpublished) or the section rendered no item — the
+// product no longer exists. Other failures reject (the product stays in the list; not cached).
 async function fetchItem(handle, section) {
-  const key = `${handle}:${section}`;
-  if (!cache.has(key)) {
-    cache.set(
-      key,
-      fetch(`${window.Shopify?.routes?.root ?? '/'}products/${encodeURIComponent(handle)}?section_id=${section}`).then((response) => {
-        // 404: deleted, archived or unpublished; other failures may pass (kept in the list, not cached)
-        if (response.status === 404) return '';
-        if (!response.ok) throw new Error(response.statusText);
-        return response.text();
-      })
-    );
-    cache.get(key).catch(() => cache.delete(key));
+  const url = sectionUrl(`${window.Shopify?.routes?.root ?? '/'}products/${encodeURIComponent(handle)}`, section);
+  try {
+    const html = await fetchHTML(url, { cache });
+    return html.querySelector('[data-saved-item]');
+  } catch (error) {
+    if (error.status === 404) return null;
+    throw error;
   }
-  // null: no product page or the section rendered no item — the product no longer exists
-  const html = await cache.get(key);
-  return html ? new DOMParser().parseFromString(html, 'text/html').querySelector('[data-saved-item]') : null;
 }
 
 class SavedProducts extends HTMLElement {
+  #abort;
+  #run = 0;
+  #container;
+
   connectedCallback() {
-    this.container = this.querySelector('[data-saved-products]');
-    this.empty = this.querySelector('[data-saved-empty]');
-    this.addEventListener('click', (event) => {
-      const button = event.target.closest('[data-saved-remove]');
-      if (button) remove(this.dataset.list, button.dataset.savedRemove);
-    });
-    document.addEventListener('saved-list:change', this.#onChange);
+    this.#container = this.querySelector('[data-saved-products]');
+    const { signal } = (this.#abort = new AbortController());
+    this.addEventListener('click', this.#onClick, { signal });
+    document.addEventListener('saved-list:change', this.#onChange, { signal });
     this.#render();
   }
 
   disconnectedCallback() {
-    document.removeEventListener('saved-list:change', this.#onChange);
+    this.#abort?.abort();
+    this.#run += 1; // a render in flight leaves the page alone
   }
+
+  #onClick = (event) => {
+    const button = event.target.closest('[data-saved-remove]');
+    if (button) remove(this.dataset.list, button.dataset.savedRemove);
+  };
 
   #onChange = (event) => {
     if (event.detail.list === this.dataset.list) this.#render();
@@ -62,13 +64,13 @@ class SavedProducts extends HTMLElement {
 
   // data-state: loading (nothing shown yet) → filled | empty; CSS shows the container or the empty state
   async #render() {
-    const run = (this.run = (this.run ?? 0) + 1);
+    const run = ++this.#run;
     // data-exclude: a handle left out (the current product); data-limit: the most shown
     const items = getItems(this.dataset.list)
       .filter((item) => item.handle !== this.dataset.exclude)
       .slice(0, Number(this.dataset.limit) || undefined);
     if (!items.length) {
-      this.container.querySelectorAll('[data-saved-item]').forEach((node) => node.remove());
+      this.#container.querySelectorAll('[data-saved-item]').forEach((node) => node.remove());
       this.dataset.state = 'empty';
       return;
     }
@@ -77,7 +79,7 @@ class SavedProducts extends HTMLElement {
     this.querySelectorAll('[data-saved-skeleton] > *').forEach((item, i) => (item.hidden = i >= items.length));
     this.setAttribute('aria-busy', 'true');
     const nodes = await Promise.all(items.map((item) => fetchItem(item.handle, this.dataset.section).catch(() => undefined)));
-    if (run !== this.run) return; // a newer change is rendering
+    if (run !== this.#run) return; // a newer change is rendering
     items.forEach((item, i) => nodes[i] === null && remove(this.dataset.list, item.handle));
     const found = nodes.filter(Boolean).map((node) => document.importNode(node, true));
     // Inside <show-more data-step>: products past the step wait behind "Show more" on phones;
@@ -85,12 +87,12 @@ class SavedProducts extends HTMLElement {
     const more = this.querySelector('show-more');
     if (more) {
       const step = Number(more.dataset.step) || 4;
-      const shown = Math.max(step, this.container.querySelectorAll('[data-saved-item]:not([data-more])').length);
+      const shown = Math.max(step, this.#container.querySelectorAll('[data-saved-item]:not([data-more])').length);
       found.forEach((node, i) => node.toggleAttribute('data-more', i >= shown));
       more.querySelector('[data-show-more]').hidden = found.length <= shown;
     }
-    this.container.querySelectorAll('[data-saved-item]').forEach((node) => node.remove());
-    this.container.append(...found);
+    this.#container.querySelectorAll('[data-saved-item]').forEach((node) => node.remove());
+    this.#container.append(...found);
     this.style.setProperty('--saved-count', found.length);
     this.dataset.state = found.length ? 'filled' : 'empty';
     this.removeAttribute('aria-busy');

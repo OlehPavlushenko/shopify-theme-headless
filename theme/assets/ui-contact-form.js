@@ -13,48 +13,39 @@
  * Listens on itself, so the fields are checked first (<form-validate> stops an invalid form before
  * the event gets here). Without data-endpoint (or without JS) the form submits normally.
  * The endpoint answers { ok: true } or { ok: false, error: invalid_email | invalid_phone | … }.
- * On success the form is replaced by the success text.
+ * On success the form is replaced by the success text. Sending and reCAPTCHA: @ui/api.
  */
-let recaptcha;
-
-// Loads reCAPTCHA v3 once, on the first submit
-function loadRecaptcha(key) {
-  recaptcha ??= new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = `https://www.google.com/recaptcha/api.js?render=${encodeURIComponent(key)}`;
-    script.onload = () => window.grecaptcha.ready(() => resolve(window.grecaptcha));
-    script.onerror = reject;
-    document.head.append(script);
-  });
-  return recaptcha;
-}
+import { postJSON } from '@ui/api';
 
 class ContactForm extends HTMLElement {
+  #abort;
+  #form;
+  #message;
+
   connectedCallback() {
-    this.form = this.querySelector('form');
-    if (!this.form || !this.dataset.endpoint) return;
-    this.message = this.querySelector('[data-contact-message]');
-    this.addEventListener('submit', this.#onSubmit);
+    this.#form = this.querySelector('form');
+    if (!this.#form || !this.dataset.endpoint) return;
+    this.#message = this.querySelector('[data-contact-message]');
+    const { signal } = (this.#abort = new AbortController());
+    this.addEventListener('submit', this.#onSubmit, { signal });
+  }
+
+  disconnectedCallback() {
+    this.#abort?.abort();
   }
 
   #onSubmit = async (event) => {
     event.preventDefault();
-    const button = this.form.querySelector('[type="submit"]');
+    const button = this.#form.querySelector('[type="submit"]');
     button.setAttribute('aria-busy', 'true');
     button.disabled = true;
     this.#error('');
     try {
-      const data = Object.fromEntries(new FormData(this.form));
-      if (this.dataset.recaptcha) {
-        const grecaptcha = await loadRecaptcha(this.dataset.recaptcha);
-        data.token = await grecaptcha.execute(this.dataset.recaptcha, { action: this.dataset.action ?? 'contact' });
-      }
-      const response = await fetch(this.dataset.endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+      const data = Object.fromEntries(new FormData(this.#form));
+      const result = await postJSON(this.dataset.endpoint, data, {
+        recaptcha: this.dataset.recaptcha,
+        action: this.dataset.action ?? 'contact',
       });
-      const result = await response.json().catch(() => ({}));
       if (result.ok) return this.#done();
       const messages = { invalid_email: this.dataset.messageEmail, invalid_phone: this.dataset.messagePhone };
       this.#error(messages[result.error] ?? this.dataset.messageError);
@@ -67,13 +58,13 @@ class ContactForm extends HTMLElement {
   };
 
   #error(text) {
-    this.message.textContent = text;
+    this.#message.textContent = text;
   }
 
   #done() {
     const done = this.querySelector('[data-contact-success]').content.cloneNode(true);
-    this.form.replaceChildren(done);
-    this.form.querySelector('[tabindex="-1"]')?.focus();
+    this.#form.replaceChildren(done);
+    this.#form.querySelector('[tabindex="-1"]')?.focus();
   }
 }
 

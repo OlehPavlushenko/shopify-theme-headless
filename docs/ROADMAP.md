@@ -96,13 +96,17 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
 
 ## Next
 
+0. **Go live**: publish the theme; project-server on a public https host (its URL in Theme settings >
+   Integrations > API URL, the store domain in ALLOWED_ORIGINS, THEME_SECRET = the theme's API
+   secret); then Lighthouse / PageSpeed Insights on the CDN. Measured in theme dev, our own JS is
+   ~0.3 s of main thread; Shopify's perf-kit / analytics are the rest.
 1. **Store reviews page** (`page.reviews`, `/pages/reviews`): Judge.me's product widget renders
    nothing outside a product; the page needs Judge.me's all-reviews widget (enabled in the Judge.me
    admin first), then styling like the product widget.
 2. **Notifications** for new contact / back-in-stock requests: Shopify Flow on the customer tags
    (set up in the admin — there is no API to create workflows).
-3. **Spin to win, next step**: a personal one-time code per email from project-server (needs the
-   discounts scope), a teaser tab to reopen the popup.
+3. **Spin to win, next step**: the prize is picked on the server once per email (done); a personal
+   one-time code per email (needs the discounts scope), a teaser tab to reopen the popup.
 4. Wishlist / compare synced to the customer account through project-server.
 5. The store's own texts in the admin: home meta title / description (Online Store → Preferences),
    the logo.

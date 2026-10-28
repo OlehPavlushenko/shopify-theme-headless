@@ -74,7 +74,7 @@
               {%- when 'image' -%}
                 <button type="button" class="frame product-gallery__zoom" style="--frame-ratio: {{ section.settings.ratio }};" data-zoom="{{ forloop.index0 }}" aria-label="{{ 'products.zoom' | t: index: forloop.index }}">
                   {%- if eager -%}
-                    {{ media | image_url: width: 1600 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: media_sizes, widths: '600, 900, 1200, 1600', alt: media_alt }}
+                    {{ media | image_url: width: 1600 | image_tag: loading: 'eager', fetchpriority: 'high', preload: true, sizes: media_sizes, widths: '600, 900, 1200, 1600', alt: media_alt }}
                   {%- else -%}
                     {{ media | image_url: width: 1600 | image_tag: loading: 'lazy', sizes: media_sizes, widths: '600, 900, 1200, 1600', alt: media_alt }}
                   {%- endif -%}

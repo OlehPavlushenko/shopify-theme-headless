@@ -71,7 +71,12 @@
                 sizes="100vw"
               >
               {%- if eager and block.settings.video == blank -%}
-                {{ image_mobile | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '600, 900, 1200', alt: image_alt }}
+                {%- comment -%} Preloaded (Link header) only when phones and desktops share the image {%- endcomment -%}
+                {%- if block.settings.image_mobile == blank -%}
+                  {{ image_mobile | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', preload: true, sizes: '100vw', widths: '600, 900, 1200', alt: image_alt }}
+                {%- else -%}
+                  {{ image_mobile | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '600, 900, 1200', alt: image_alt }}
+                {%- endif -%}
               {%- else -%}
                 {{ image_mobile | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '100vw', widths: '600, 900, 1200', alt: image_alt }}
               {%- endif -%}

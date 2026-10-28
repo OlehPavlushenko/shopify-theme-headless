@@ -96,7 +96,7 @@
         "scroll": 0,
         "exit_intent": true,
         "days": 3,
-        "pages": "all",
+        "pages": "not_cart",
         "show_from": "",
         "show_until": "",
         "color_scheme": "scheme-1"

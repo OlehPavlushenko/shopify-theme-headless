@@ -41,7 +41,7 @@
   {%- if article.image and section.settings.image_layout != 'none' -%}
     <div class="page-width main-article__media">
       <div class="frame" style="--frame-ratio: 16 / 9;">
-        {{ article.image | image_url: width: 2000 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 1440px) 1344px, 100vw', widths: '750, 1100, 1500, 2000', alt: image_alt }}
+        {{ article.image | image_url: width: 2000 | image_tag: loading: 'eager', fetchpriority: 'high', preload: true, sizes: '(min-width: 1440px) 1344px, 100vw', widths: '750, 1100, 1500, 2000', alt: image_alt }}
       </div>
     </div>
   {%- endif -%}

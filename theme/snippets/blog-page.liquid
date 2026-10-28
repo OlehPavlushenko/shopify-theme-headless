@@ -89,7 +89,7 @@
             {%- if article.object_type and article.object_type != 'article' -%}{%- continue -%}{%- endif -%}
             <li data-load-more-item{% if featured and forloop.first %} class="main-blog__featured"{% endif %}>
               {%- if featured and forloop.first -%}
-                {%- render 'article-card', article: article, layout: 'featured', heading_tag: 'h2', show_tags: section.settings.tags, blog_url: blog_url, sizes: '(min-width: 990px) 60vw, 100vw' -%}
+                {%- render 'article-card', article: article, layout: 'featured', eager: true, heading_tag: 'h2', show_tags: section.settings.tags, blog_url: blog_url, sizes: '(min-width: 990px) 60vw, 100vw' -%}
               {%- else -%}
                 {%- render 'article-card', article: article, heading_tag: 'h2', show_tags: section.settings.tags, blog_url: blog_url, sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw' -%}
               {%- endif -%}

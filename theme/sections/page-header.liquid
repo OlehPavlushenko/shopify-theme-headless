@@ -56,7 +56,7 @@
 <div class="page-header page-header--{{ section.settings.alignment }} page-header--media-{{ media }} color-{{ section.settings.color_scheme }}">
   {%- if media == 'cover' -%}
     <div class="page-header__cover" style="--page-header-tint: {{ section.settings.tint }}%;">
-      {{ image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750, 1200, 1800, 2400', alt: '' }}
+      {{ image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', preload: true, sizes: '100vw', widths: '750, 1200, 1800, 2400', alt: '' }}
     </div>
   {%- endif -%}
   <div class="page-header__inner page-width">
@@ -131,7 +131,7 @@
     </div>
     {%- if media == 'split' -%}
       <div class="frame page-header__media" style="--frame-ratio: 4 / 3;">
-        {{ image | image_url: width: 1400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 40vw, 100vw', widths: '600, 900, 1200, 1400', alt: '' }}
+        {{ image | image_url: width: 1400 | image_tag: loading: 'eager', fetchpriority: 'high', preload: true, sizes: '(min-width: 990px) 40vw, 100vw', widths: '600, 900, 1200, 1400', alt: '' }}
       </div>
     {%- endif -%}
   </div>

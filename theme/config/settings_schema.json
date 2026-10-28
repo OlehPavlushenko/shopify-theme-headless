@@ -494,6 +494,12 @@
         "id": "recaptcha_site_key",
         "label": "t:settings.integrations.recaptcha_site_key",
         "info": "t:settings.integrations.recaptcha_site_key_info"
+      },
+      {
+        "type": "html",
+        "id": "deferred_scripts",
+        "label": "t:settings.integrations.deferred_scripts",
+        "info": "t:settings.integrations.deferred_scripts_info"
       }
     ]
   },

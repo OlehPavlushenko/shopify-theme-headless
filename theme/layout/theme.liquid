@@ -179,5 +179,10 @@
         data-href="{{ pages['wishlist'].url | default: routes.root_url }}"
       ></template>
     {%- endif -%}
+    {%- comment -%} Theme settings > Integrations > Third-party scripts: started on the first interaction (assets/deferred-scripts.js) {%- endcomment -%}
+    {%- if settings.deferred_scripts != blank -%}
+      <template id="DeferredScripts">{{ settings.deferred_scripts }}</template>
+      <script src="{{ 'deferred-scripts.js' | asset_url }}" defer></script>
+    {%- endif -%}
   </body>
 </html>

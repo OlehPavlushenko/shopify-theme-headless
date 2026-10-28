@@ -51,6 +51,20 @@ or a Flow / marketing app automation).
 | `400 { ok: false, error: "invalid_email" \| "invalid_product" }` | |
 | `403`, `429`, `502` | as above |
 
+`POST /spin` — JSON `{ "email": "...", "prizes": "<the wheel's prize list, a JSON string>", "signature": "<its HMAC-SHA256>", "token": "<reCAPTCHA v3 token, action spin>" }`
+— the Spin to win wheel. Signs the email up (as `/newsletter`) and picks the prize here, by weight,
+once per email: the prize is kept on the customer (metafield `custom.spin_prize`, tag `spin-wheel`)
+and every later spin of that email gets the same prize back. The prize list comes from the theme
+(the popup's Prize blocks) signed with `THEME_SECRET` (Liquid `hmac_sha256` with the theme setting
+Integrations > API secret), so the chances can't be changed in the browser; without `THEME_SECRET`
+the list isn't checked (local development only).
+
+| Answer | Meaning |
+|---|---|
+| `200 { ok: true, status: "spun" \| "already_spun", subscribed, prize: { label, code } }` | the prize (the same one again when already spun) |
+| `400 { ok: false, error: "invalid_email" \| "invalid_prizes" }` | `invalid_prizes`: not signed, changed, or not 2–12 prizes |
+| `403`, `429`, `502` | as above |
+
 `GET /health` — `{ ok: true }`.
 
 ## Notes

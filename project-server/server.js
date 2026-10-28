@@ -1,5 +1,5 @@
 // Small API next to the theme: newsletter sign-up (POST /newsletter), contact form messages
-// (POST /contact) and back-in-stock requests (POST /notify).
+// (POST /contact), back-in-stock requests (POST /notify) and the Spin to win wheel (POST /spin).
 // Config: .env.local (see .env.example). Run: npm run dev (watch) or npm start.
 import express from 'express';
 import helmet from 'helmet';
@@ -8,6 +8,7 @@ import rateLimit from 'express-rate-limit';
 import newsletter from './routes/newsletter.js';
 import contact from './routes/contact.js';
 import notify from './routes/notify.js';
+import spin from './routes/spin.js';
 
 const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? '')
   .split(',')
@@ -32,6 +33,7 @@ app.get('/health', (req, res) => res.json({ ok: true }));
 app.use('/newsletter', onlyStorefront, limit, newsletter);
 app.use('/contact', onlyStorefront, limit, contact);
 app.use('/notify', onlyStorefront, limit, notify);
+app.use('/spin', onlyStorefront, limit, spin);
 
 const port = Number(process.env.PORT) || 5000;
 app.listen(port, () => console.log(`API on http://localhost:${port} — allowed origins: ${allowedOrigins.join(', ') || 'none'}`));

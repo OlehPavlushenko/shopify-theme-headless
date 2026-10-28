@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "header": {
@@ -6,7 +15,13 @@
         "heading": "",
         "text": "",
         "breadcrumbs": true,
+        "blog_search": true,
+        "blog": "",
+        "subcollections": true,
         "alignment": "left",
+        "image_layout": "none",
+        "image_source": "collection",
+        "tint": 45,
         "color_scheme": "scheme-2"
       }
     },
@@ -19,11 +34,45 @@
     },
     "reviews": {
       "type": "apps",
+      "blocks": {
+        "judge_me_reviews_review_snippet_widget_DCQjrj": {
+          "type": "shopify://apps/judge-me-reviews/blocks/review_snippet_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "reviews_selection": "store",
+            "products": [],
+            "filter_pinned": false,
+            "filter_featured": true,
+            "filter_custom_tags": "",
+            "min_star_rating": "all",
+            "show_review_media": true,
+            "max_reviews": 5,
+            "review_length": "medium",
+            "text_size": "medium",
+            "max_width": 1100,
+            "max_image_size": "small",
+            "arrows_visibility": "always_shown",
+            "transition_speed": 5,
+            "corner_styling": "inherit",
+            "text_color": "",
+            "card_color": "",
+            "stars_color": "",
+            "arrows_color": "",
+            "arrows_background_color": ""
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_review_snippet_widget_DCQjrj"
+      ],
       "settings": {
         "full_width": false,
         "color_scheme": "scheme-1"
       }
     }
   },
-  "order": ["header", "main", "reviews"]
+  "order": [
+    "header",
+    "main",
+    "reviews"
+  ]
 }

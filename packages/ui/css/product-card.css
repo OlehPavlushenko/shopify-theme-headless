@@ -303,13 +303,10 @@
     padding-inline: var(--space-s);
   }
 
-  /* A wide deal box (phones, tablets: full width above the slider) gets a wide card — image on
-     the left, name, price and button on the right; a narrow one (a column) stays upright */
-  .deal-card {
-    container-type: inline-size;
-  }
-
-  @container (min-width: 32rem) {
+  /* Below 990px the deal box is full width (above the slider, a whole grid row): a wide card —
+     image on the left, name, price and button on the right; from 990px (a column) it stays upright.
+     Media queries, not container queries: a size container here cost seconds of layout on load. */
+  @media (max-width: 989px) {
     .deal-card__body {
       padding-bottom: 0;
     }
@@ -346,7 +343,7 @@
   }
 
   /* Tablets: the image stays a moderate square, the text gets the rest */
-  @container (min-width: 56rem) {
+  @media (min-width: 750px) and (max-width: 989px) {
     .deal-card .product-card {
       grid-template-columns: 24rem minmax(0, 1fr);
     }

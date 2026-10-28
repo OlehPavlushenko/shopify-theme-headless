@@ -370,7 +370,7 @@
 
   /* Deal of the week. Slider: the deal card stays put, one column wide, next to the slider of the
      other products from 990px (above it, full width, on tablets and phones). Grid: the first cell;
-     the whole row on phones. */
+     the whole row below 990px. */
   .product-list__deal-layout {
     display: grid;
     gap: var(--slider-gap);
@@ -386,7 +386,7 @@
     }
   }
 
-  @media (max-width: 749px) {
+  @media (max-width: 989px) {
     .product-list__grid > .product-list__deal {
       grid-column: 1 / -1;
     }

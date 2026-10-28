@@ -142,6 +142,7 @@
         "gallery_layout": "grid",
         "ratio": "1",
         "info_style": "plain",
+        "breadcrumbs": true,
         "sticky_bar": true,
         "color_scheme": "scheme-1"
       }
@@ -183,7 +184,10 @@
           }
         }
       },
-      "block_order": ["q1", "q2"],
+      "block_order": [
+        "q1",
+        "q2"
+      ],
       "settings": {
         "layout": "split",
         "eyebrow": "FAQ",
@@ -194,6 +198,7 @@
         "show_nav": false,
         "single_open": true,
         "open_first": false,
+        "structured_data": false,
         "color_scheme": "scheme-2"
       }
     },
@@ -214,17 +219,26 @@
           "settings": {
             "review_data": "real_data",
             "max_width": 1200,
-            "show_shop_reviews": true,
+            "show_shop_reviews": false,
             "empty_state": "empty_widget"
           }
         }
       },
-      "block_order": ["judge_me_reviews_review_widget_ExBBVb"],
+      "block_order": [
+        "judge_me_reviews_review_widget_ExBBVb"
+      ],
       "settings": {
         "full_width": false,
         "color_scheme": ""
       }
     }
   },
-  "order": ["main", "story", "related", "faq", "recent", "17931764247569e44a"]
+  "order": [
+    "main",
+    "story",
+    "related",
+    "faq",
+    "recent",
+    "17931764247569e44a"
+  ]
 }

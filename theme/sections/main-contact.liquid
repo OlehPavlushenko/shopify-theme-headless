@@ -57,16 +57,11 @@
       {%- render 'social-links' -%}
     </div>
 
-    {%- liquid
-      # With Theme settings > Integrations > "API URL": the message goes to project-server (POST /contact)
-      assign api = settings.api_url | strip
-      assign api_end = api | slice: -1
-      if api_end == '/'
-        assign api = api | remove_last: '/'
-      endif
-    -%}
+    {%- comment -%} With Theme settings > Integrations > "API URL": the message goes to project-server (POST /contact) {%- endcomment -%}
+    {%- capture api -%}{% render 'api-url' %}{%- endcapture -%}
+    {%- assign api = api | strip -%}
     {%- capture success -%}
-      <p class="main-contact__notice main-contact__notice--success" role="status" tabindex="-1">
+      <p class="notice notice--success" role="status" tabindex="-1">
         {%- render 'icon', name: 'check' -%}
         {{ 'contact.success' | t }}
       </p>

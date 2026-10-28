@@ -39,6 +39,18 @@ Shopify Flow workflow "Customer tags added" (tag `contact`) → "Send internal e
 | `400 { ok: false, error: "invalid_email" \| "invalid_phone" \| "invalid_message" }` | message empty or over 5000 characters |
 | `403`, `429`, `502` | as for `/newsletter` (`captcha_failed`, `forbidden_origin`, `server_error`) |
 
+`POST /notify` — JSON `{ "email": "...", "variant": "<variant id>", "product": "<title / variant>", "token": "<reCAPTCHA v3 token, action notify>" }`
+— "notify me when it's back in stock" on the product page. Kept the same way as a contact message:
+a note line with the product and variant, tag `back-in-stock`. This only collects the requests; the
+email when the product is back goes from the admin (Shopify Email to the customers with the tag,
+or a Flow / marketing app automation).
+
+| Answer | Meaning |
+|---|---|
+| `200 { ok: true }` | saved |
+| `400 { ok: false, error: "invalid_email" \| "invalid_product" }` | |
+| `403`, `429`, `502` | as above |
+
 `GET /health` — `{ ok: true }`.
 
 ## Notes

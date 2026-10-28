@@ -317,6 +317,47 @@
     text-underline-offset: var(--underline-offset);
   }
 
+  /* A sold-out variant (its add button disabled): nothing to buy, so no bundles, quantity, "Buy it
+     now", installments or delivery dates — the back-in-stock form takes their place */
+  product-info:has([data-product-form] [data-add-button]:disabled)
+    :is(quantity-breaks, .main-product__qty, .main-product__checkout, .main-product__terms, .main-product__delivery) {
+    display: none;
+  }
+
+  /* Back in stock: a framed email form under the sold-out button */
+  .stock-notify__form {
+    display: grid;
+    gap: var(--space-xs);
+    padding: var(--space-m);
+    border: 0.1rem solid var(--color-border);
+    border-radius: var(--radius-input);
+  }
+
+  .stock-notify__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin: 0;
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-heading);
+  }
+
+  .stock-notify__text {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .stock-notify__row {
+    max-width: none;
+    margin-top: var(--space-xs);
+  }
+
+  .stock-notify__row .input {
+    flex: 1;
+    min-width: 0;
+  }
+
   /* Bundle & save: cards as radio buttons, the picked one in the accent border */
   quantity-breaks {
     display: block;

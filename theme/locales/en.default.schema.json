@@ -604,6 +604,8 @@
       "show_related_info": "Three articles that share the most tags with this one."
     },
     "main_product": {
+      "show_notify": "\"Notify me when it's back\" for sold-out variants",
+      "show_notify_info": "An email field instead of the button; requests land on the customer in the admin (tag back-in-stock). Needs the API URL in Theme settings > Integrations.",
       "block_quantity_breaks": "Bundle & save",
       "quantity_breaks_info": "Cards for buying more at once. The cards only show the discount: create an automatic discount in Discounts with the same quantities and percentages (Amount off products, minimum quantity).",
       "break_qty_1": "First card: quantity",

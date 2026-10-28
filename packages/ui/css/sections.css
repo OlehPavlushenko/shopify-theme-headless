@@ -1506,22 +1506,6 @@
     gap: var(--space-xl) var(--space-m);
   }
 
-  /* Form success notice (contact form, comment form) */
-  .main-contact__notice {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-    padding: var(--space-s) var(--space-m);
-    font-size: var(--text-sm);
-    font-weight: var(--font-body-weight-medium);
-    border-radius: var(--radius-input);
-  }
-
-  .main-contact__notice--success {
-    color: var(--color-success);
-    background: color-mix(in srgb, var(--color-success) 10%, var(--color-background));
-  }
-
   @media (min-width: 750px) {
     .main-contact__row {
       grid-template-columns: repeat(2, minmax(0, 1fr));

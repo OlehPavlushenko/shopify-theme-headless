@@ -1,5 +1,5 @@
-// Small API next to the theme: newsletter sign-up (POST /newsletter) and contact form messages
-// (POST /contact).
+// Small API next to the theme: newsletter sign-up (POST /newsletter), contact form messages
+// (POST /contact) and back-in-stock requests (POST /notify).
 // Config: .env.local (see .env.example). Run: npm run dev (watch) or npm start.
 import express from 'express';
 import helmet from 'helmet';
@@ -7,6 +7,7 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import newsletter from './routes/newsletter.js';
 import contact from './routes/contact.js';
+import notify from './routes/notify.js';
 
 const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? '')
   .split(',')
@@ -30,6 +31,7 @@ const limit = rateLimit({ windowMs: 60_000, limit: 10, standardHeaders: true, le
 app.get('/health', (req, res) => res.json({ ok: true }));
 app.use('/newsletter', onlyStorefront, limit, newsletter);
 app.use('/contact', onlyStorefront, limit, contact);
+app.use('/notify', onlyStorefront, limit, notify);
 
 const port = Number(process.env.PORT) || 5000;
 app.listen(port, () => console.log(`API on http://localhost:${port} — allowed origins: ${allowedOrigins.join(', ') || 'none'}`));

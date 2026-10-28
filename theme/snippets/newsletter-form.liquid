@@ -14,13 +14,10 @@
   @param {string} [note] - Small print under the field; a validation message takes its place
   @param {string} [discount_code] - Discount code the cart gets right after signing up (assets/cart.js)
 {% enddoc %}
+{%- capture api -%}{% render 'api-url' %}{%- endcapture -%}
 {%- liquid
   assign form_id = 'Newsletter-' | append: id
-  assign api = settings.api_url | strip
-  assign api_end = api | slice: -1
-  if api_end == '/'
-    assign api = api | remove_last: '/'
-  endif
+  assign api = api | strip
   assign success = success_text | default: ''
   if success == blank
     assign success = 'newsletter.success' | t

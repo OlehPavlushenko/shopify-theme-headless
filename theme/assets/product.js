@@ -10,6 +10,8 @@
  * <sticky-buy-bar hidden>: shown once the main add button has scrolled up out of view.
  * <delivery-estimate data-min data-max data-cutoff data-template data-template-today data-locale>:
  *   "Order within 3 h — delivered Thu 29 Oct – Mon 2 Nov" (business days, today's cut-off hour).
+ * <stock-notify data-product hidden>: the back-in-stock form, shown for sold-out variants only; its
+ *   [data-notify-variant] / [data-notify-product] fields follow the variant.
  * <share-button data-url data-title data-copied>: the system share sheet, else copies the link.
  * <product-recommendations data-url [data-replace]>: fetched once it nears the viewport; fills
  *   its [data-recommendations] (or, with data-replace, swaps itself for the response); hidden when
@@ -91,6 +93,19 @@ class QuantityInput extends HTMLElement {
       const min = Number(this.input.min) || 1;
       this.input.value = Math.max(min, (Number(this.input.value) || min) + Number(step.dataset.qty));
       this.input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  }
+}
+
+class StockNotify extends HTMLElement {
+  connectedCallback() {
+    this.closest('product-info')?.addEventListener('variant:change', (event) => {
+      const variant = event.detail.variant;
+      this.hidden = !variant || variant.available;
+      if (!variant) return;
+      this.querySelector('[data-notify-variant]').value = variant.id;
+      const title = variant.title === 'Default Title' ? '' : ` / ${variant.title}`;
+      this.querySelector('[data-notify-product]').value = this.dataset.product + title;
     });
   }
 }
@@ -193,6 +208,7 @@ for (const [name, element] of [
   ['product-gallery', ProductGallery],
   ['quantity-input', QuantityInput],
   ['sticky-buy-bar', StickyBuyBar],
+  ['stock-notify', StockNotify],
   ['delivery-estimate', DeliveryEstimate],
   ['share-button', ShareButton],
   ['product-recommendations', ProductRecommendations],

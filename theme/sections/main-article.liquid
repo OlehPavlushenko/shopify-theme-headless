@@ -138,7 +138,7 @@
         {%- form 'new_comment', article, class: 'main-article__comment-form' -%}
           <h3 class="h5">{{ 'blog.comment_form_title' | t }}</h3>
           {%- if form.posted_successfully? -%}
-            <p class="main-contact__notice main-contact__notice--success" role="status">
+            <p class="notice notice--success" role="status">
               {%- render 'icon', name: 'check' -%}
               {%- if blog.moderated? -%}{{ 'blog.comment_moderated' | t }}{%- else -%}{{ 'blog.comment_posted' | t }}{%- endif -%}
             </p>

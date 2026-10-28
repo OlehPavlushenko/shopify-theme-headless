@@ -1355,6 +1355,23 @@
     padding-inline-start: var(--space-m);
   }
 
+  /* ---------------------------------------------------------- notice */
+  /* A form's success line with an icon (contact form, comment form, back-in-stock request) */
+  .notice {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-s) var(--space-m);
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-medium);
+    border-radius: var(--radius-input);
+  }
+
+  .notice--success {
+    color: var(--color-success);
+    background: color-mix(in srgb, var(--color-success) 10%, var(--color-background));
+  }
+
   /* A live alert waiting for its text (e.g. the contact form sent by AJAX) */
   .form-errors:empty {
     display: none;

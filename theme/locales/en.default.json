@@ -94,6 +94,13 @@
     }
   },
   "products": {
+    "notify": {
+      "title": "Notify me when it's back",
+      "text": "Leave your email and we'll write as soon as it's in stock again.",
+      "submit": "Notify me",
+      "success": "Thanks! We'll email you as soon as it's back.",
+      "error": "We couldn't save your request. Please try again in a minute."
+    },
     "quantity_breaks": {
       "items": {
         "one": "{{ count }} item",

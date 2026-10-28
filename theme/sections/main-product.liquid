@@ -280,6 +280,51 @@
                   <span data-in-cart-label></span>
                   <a href="{{ routes.cart_url }}" data-dialog-open="CartDrawer">{{ 'cart.view_cart' | t }}</a>
                 </cart-item-state>
+                {%- comment -%}
+                  Back in stock: for a sold-out variant, an email field sent to project-server (POST /notify,
+                  <contact-form> with data-action="notify"); <stock-notify> (assets/product.js) shows it for
+                  sold-out variants only and keeps the variant fields in step. Needs the API URL.
+                {%- endcomment -%}
+                {%- capture api -%}{% render 'api-url' %}{%- endcapture -%}
+                {%- assign api = api | strip -%}
+                {%- if block.settings.show_notify and api != blank -%}
+                  <stock-notify class="stock-notify" data-product="{{ product.title | escape }}"{% if variant.available %} hidden{% endif %}>
+                    <contact-form
+                      data-endpoint="{{ api }}/notify"
+                      data-action="notify"
+                      {% if settings.recaptcha_site_key != blank %}
+                        data-recaptcha="{{ settings.recaptcha_site_key | escape }}"
+                      {% endif %}
+                      data-message-error="{{ 'products.notify.error' | t | escape }}"
+                      data-message-email="{{ 'forms.email' | t | escape }}"
+                    >
+                      <form-validate {% render 'form-validate-messages' %}>
+                        <form class="stock-notify__form">
+                          <p class="stock-notify__title">{%- render 'icon', name: 'mail' -%}{{ 'products.notify.title' | t }}</p>
+                          <p class="stock-notify__text">{{ 'products.notify.text' | t }}</p>
+                          <input type="hidden" name="variant" value="{{ variant.id }}" data-notify-variant>
+                          <input type="hidden" name="product" value="{{ product.title | escape }}{% unless product.has_only_default_variant %} / {{ variant.title | escape }}{% endunless %}" data-notify-product>
+                          <p class="form-errors" role="alert" data-contact-message></p>
+                          <div class="search-form stock-notify__row">
+                            <label class="visually-hidden" for="Notify-{{ section.id }}">{{ 'contact.email' | t }}</label>
+                            <input class="input" type="email" id="Notify-{{ section.id }}" name="email" value="{{ customer.email }}" autocomplete="email" spellcheck="false" placeholder="{{ 'newsletter.placeholder' | t }}" required>
+                            <button type="submit" class="btn">{{ 'products.notify.submit' | t }}</button>
+                          </div>
+                        </form>
+                      </form-validate>
+                      <template data-contact-success>
+                        <p class="notice notice--success" role="status" tabindex="-1">
+                          {%- render 'icon', name: 'check' -%}
+                          {{ 'products.notify.success' | t }}
+                        </p>
+                      </template>
+                    </contact-form>
+                  </stock-notify>
+                  <script type="module">
+                    import '@ui/form-validate';
+                    import '@ui/contact-form';
+                  </script>
+                {%- endif -%}
               </div>
 
             {%- when 'delivery' -%}
@@ -513,6 +558,7 @@
       "name": "t:sections.main_product.block_buy_buttons",
       "limit": 1,
       "settings": [
+        { "type": "checkbox", "id": "show_notify", "label": "t:sections.main_product.show_notify", "info": "t:sections.main_product.show_notify_info", "default": true },
         { "type": "checkbox", "id": "show_quantity", "label": "t:sections.main_product.show_quantity", "default": true },
         { "type": "checkbox", "id": "show_dynamic_checkout", "label": "t:sections.main_product.show_dynamic_checkout", "info": "t:sections.main_product.show_dynamic_checkout_info", "default": true },
         { "type": "checkbox", "id": "show_stock", "label": "t:sections.main_product.show_stock", "default": true },

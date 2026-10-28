@@ -92,6 +92,23 @@
     }
   },
   "products": {
+    "pickup": {
+      "available_at_html": "Pickup available at <strong>{{ location }}</strong>",
+      "unavailable_html": "Pickup currently unavailable at <strong>{{ location }}</strong>",
+      "ready_in": "Usually ready in {{ time }}",
+      "not_here": "Not available for pickup here",
+      "view_info": "View store information"
+    },
+    "ask": {
+      "title": "Ask a question",
+      "about": "About",
+      "question": "Your question"
+    },
+    "meta": {
+      "collections": "Collections",
+      "type": "Type",
+      "vendor": "Brand"
+    },
     "offer": {
       "badge": "Offer",
       "expires_in": "Expires in"

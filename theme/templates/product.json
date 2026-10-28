@@ -96,30 +96,6 @@
             "open": true
           }
         },
-        "ingredients": {
-          "type": "collapsible",
-          "settings": {
-            "heading": "Ingredients",
-            "icon": "leaf",
-            "source": "metafield",
-            "metafield": "custom.ingredients",
-            "page": "",
-            "content": "",
-            "open": false
-          }
-        },
-        "shipping": {
-          "type": "collapsible",
-          "settings": {
-            "heading": "Delivery & returns",
-            "icon": "truck",
-            "source": "custom",
-            "metafield": "",
-            "page": "",
-            "content": "<p>Orders ship within 1–2 business days; delivery across the country takes 2–4 days and is free from $50.</p><p>Unopened products can be returned within 14 days — write to us and we arrange a free pickup.</p>",
-            "open": false
-          }
-        },
         "complementary": {
           "type": "complementary",
           "settings": {
@@ -129,6 +105,29 @@
         },
         "share": {
           "type": "share",
+          "settings": {}
+        },
+        "info_links": {
+          "type": "info_links",
+          "settings": {
+            "label_1": "Shipping & returns",
+            "icon_1": "truck",
+            "page_1": "shipping-returns",
+            "label_2": "",
+            "icon_2": "return",
+            "page_2": "",
+            "label_3": "",
+            "icon_3": "tag",
+            "page_3": "",
+            "show_ask": true
+          }
+        },
+        "pickup": {
+          "type": "pickup",
+          "settings": {}
+        },
+        "meta": {
+          "type": "meta",
           "settings": {}
         }
       },
@@ -142,11 +141,12 @@
         "quantity_breaks",
         "buy",
         "delivery",
+        "info_links",
+        "pickup",
         "highlights",
         "description",
-        "ingredients",
-        "shipping",
         "complementary",
+        "meta",
         "share"
       ],
       "settings": {

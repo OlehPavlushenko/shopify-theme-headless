@@ -1,0 +1,14 @@
+{% comment %}
+  Local pickup of one variant, fetched by <pickup-availability> (assets/product.js) when the
+  variant changes: /variants/<id>/?section_id=pickup-availability. Not added in the editor.
+{% endcomment %}
+<div data-pickup-content>
+  {%- render 'pickup-availability', variant: product.selected_or_first_available_variant, id: 'fetched' -%}
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.pickup_availability.name",
+  "class": "pickup-availability-section"
+}
+{% endschema %}

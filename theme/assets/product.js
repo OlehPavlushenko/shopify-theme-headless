@@ -12,6 +12,8 @@
  *   "Order within 3 h — delivered Thu 29 Oct – Mon 2 Nov" (business days, today's cut-off hour).
  * <stock-notify data-product hidden>: the back-in-stock form, shown for sold-out variants only; its
  *   [data-notify-variant] / [data-notify-product] fields follow the variant.
+ * <pickup-availability data-root>: on a variant change, fetches the pickup info of that variant
+ *   (/variants/<id>/?section_id=pickup-availability) into itself.
  * <share-button data-url data-title data-copied>: the system share sheet, else copies the link.
  * <product-recommendations data-url [data-replace]>: fetched once it nears the viewport; fills
  *   its [data-recommendations] (or, with data-replace, swaps itself for the response); hidden when
@@ -106,6 +108,24 @@ class StockNotify extends HTMLElement {
       this.querySelector('[data-notify-variant]').value = variant.id;
       const title = variant.title === 'Default Title' ? '' : ` / ${variant.title}`;
       this.querySelector('[data-notify-product]').value = this.dataset.product + title;
+    });
+  }
+}
+
+class PickupAvailability extends HTMLElement {
+  connectedCallback() {
+    this.closest('product-info')?.addEventListener('variant:change', async (event) => {
+      const id = event.detail.variant?.id;
+      if (!id) return;
+      try {
+        const response = await fetch(`${this.dataset.root.replace(/\/$/, '')}/variants/${id}/?section_id=pickup-availability`);
+        if (!response.ok) return;
+        const html = new DOMParser().parseFromString(await response.text(), 'text/html');
+        const content = html.querySelector('[data-pickup-content]');
+        if (content) this.replaceChildren(...[...content.childNodes].map((node) => document.importNode(node, true)));
+      } catch {
+        // Keeps what it shows
+      }
     });
   }
 }
@@ -209,6 +229,7 @@ for (const [name, element] of [
   ['quantity-input', QuantityInput],
   ['sticky-buy-bar', StickyBuyBar],
   ['stock-notify', StockNotify],
+  ['pickup-availability', PickupAvailability],
   ['delivery-estimate', DeliveryEstimate],
   ['share-button', ShareButton],
   ['product-recommendations', ProductRecommendations],

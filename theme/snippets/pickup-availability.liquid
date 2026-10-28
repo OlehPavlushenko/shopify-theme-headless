@@ -1,0 +1,63 @@
+{% doc %}
+  Local pickup for a variant: "Pickup available at <location>" with its usual ready time, and a
+  link opening the list of locations with their addresses (a drawer). Nothing when the store has no
+  pickup locations for it. Rendered in the product info, and by sections/pickup-availability, which
+  <pickup-availability> (assets/product.js) fetches for another variant
+  (/variants/<id>/?section_id=pickup-availability). Styles: .pickup in product.css.
+
+  @param {object} variant - The variant
+  @param {string} id - Unique id for the drawer
+{% enddoc %}
+{%- liquid
+  assign pickups = variant.store_availabilities | where: 'pick_up_enabled', true
+  assign here = pickups | where: 'available', true | first
+-%}
+{%- if pickups.size > 0 -%}
+  <div class="pickup">
+    {%- if here -%}
+      {%- render 'icon', name: 'check' -%}
+      <div class="pickup__text">
+        <p class="pickup__title">{{ 'products.pickup.available_at_html' | t: location: here.location.name }}</p>
+        <p class="pickup__time">{{ here.pick_up_time }}</p>
+    {%- else -%}
+      {%- render 'icon', name: 'close' -%}
+      <div class="pickup__text">
+        <p class="pickup__title">{{ 'products.pickup.unavailable_html' | t: location: pickups.first.location.name }}</p>
+    {%- endif -%}
+        <button type="button" class="btn btn--link pickup__more" data-dialog-open="Pickup-{{ id }}">
+          {{- 'products.pickup.view_info' | t -}}
+        </button>
+      </div>
+  </div>
+
+  <dialog class="drawer" id="Pickup-{{ id }}" aria-labelledby="Pickup-{{ id }}-title">
+    <div class="drawer__inner">
+      <div class="drawer__header">
+        <h2 class="h5" id="Pickup-{{ id }}-title">{{ variant.product.title | escape }}</h2>
+        <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">
+          {%- render 'icon', name: 'close' -%}
+        </button>
+      </div>
+      <div class="drawer__body">
+        <ul class="pickup__locations" role="list">
+          {%- for item in pickups -%}
+            <li class="pickup__location">
+              <p class="pickup__title">{{ item.location.name | escape }}</p>
+              <p class="pickup__time">
+                {%- if item.available -%}
+                  {{ 'products.pickup.ready_in' | t: time: item.pick_up_time }}
+                {%- else -%}
+                  {{ 'products.pickup.not_here' | t }}
+                {%- endif -%}
+              </p>
+              <address class="pickup__address">{{ item.location.address | format_address }}</address>
+              {%- if item.location.address.phone != blank -%}
+                <p class="pickup__time">{{ item.location.address.phone | escape }}</p>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+  </dialog>
+{%- endif -%}

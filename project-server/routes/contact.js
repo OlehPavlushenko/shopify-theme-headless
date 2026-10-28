@@ -1,5 +1,6 @@
-// POST /contact { name?, email, phone?, message, token? } — a contact form message, kept in Shopify:
-// on top of the sender's customer note with the date, phone and name, tag "contact" (lib/customers).
+// POST /contact { name?, email, phone?, subject?, message, token? } — a contact form message (subject:
+// the product of "Ask a question"), kept in Shopify: on top of the sender's customer note with the
+// date, phone and name, tag "contact" (lib/customers).
 // In the admin: Customers filtered by that tag (Shopify Flow can email the team on "Customer tags added").
 // Answers { ok: true } or { ok: false, error } with a stable code the theme maps to its own texts:
 // invalid_email | invalid_message | invalid_phone | captcha_failed | server_error.
@@ -18,6 +19,7 @@ router.post('/', async (req, res) => {
   const email = text('email', 255).toLowerCase();
   const name = text('name', 100);
   const phone = text('phone', 30);
+  const subject = text('subject', 200);
   const message = text('message', MAX_MESSAGE + 1);
   if (email.length > 254 || !EMAIL.test(email)) return res.status(400).json({ ok: false, error: 'invalid_email' });
   if (phone && !PHONE.test(phone)) return res.status(400).json({ ok: false, error: 'invalid_phone' });
@@ -26,7 +28,7 @@ router.post('/', async (req, res) => {
     return res.status(403).json({ ok: false, error: 'captcha_failed' });
   }
 
-  const entry = `— Contact form, ${stamp()}${phone ? `, phone ${phone}` : ''}${name ? `, ${name}` : ''}\n${message}`;
+  const entry = `— ${subject ? `Question about ${subject}` : 'Contact form'}, ${stamp()}${phone ? `, phone ${phone}` : ''}${name ? `, ${name}` : ''}\n${message}`;
   try {
     await addNote(email, entry, 'contact', name);
     return res.json({ ok: true });

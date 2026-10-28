@@ -2952,7 +2952,7 @@
 .jdgm-review-widget .jm-review-widget {
   --jm-review-widget-text-color: var(--color-foreground) !important;
   --jm-review-widget-lighter-text-color: var(--color-text-muted) !important;
-  --jm-review-widget-star-and-histogram-color: var(--color-accent-2) !important;
+  --jm-review-widget-star-and-histogram-color: var(--color-rating) !important;
   --jm-review-widget-button-color: var(--color-button) !important;
   --jm-review-widget-button-text-color: var(--color-button-label) !important;
   --jm-widget-primary-color: var(--color-accent) !important;
@@ -2993,15 +2993,15 @@
 /* Stars in the theme's star color (the app colors them inline), a step smaller */
 .jdgm-review-widget .jm-star-rating__font-icon {
   font-size: 1.8rem;
-  color: var(--color-accent-2) !important;
+  color: var(--color-rating) !important;
 }
 
 .jdgm-review-widget .jm-star-rating svg path {
-  stroke: var(--color-accent-2) !important;
+  stroke: var(--color-rating) !important;
 }
 
 .jdgm-review-widget .jm-star-rating__filled svg path {
-  fill: var(--color-accent-2) !important;
+  fill: var(--color-rating) !important;
 }
 
 /* "Customer reviews" as a section heading (.h2), the average in the heading font; .jm-text gets its
@@ -3063,7 +3063,7 @@
 .jdgm-write-review-modal {
   --jdgm-primary-color: var(--color-accent);
   --jdgm-secondary-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
-  --jdgm-star-color: var(--color-accent-2);
+  --jdgm-star-color: var(--color-rating);
 }
 
 .jdgm-write-review-modal .jdgm-write-review-modal__content {
@@ -3091,7 +3091,7 @@
 }
 
 .jdgm-write-review-modal :is(.jdgm-write-review-modal__stars, .jdgm-write-review-modal__other-product-stars) .jdgm-star {
-  color: var(--color-accent-2) !important;
+  color: var(--color-rating) !important;
 }
 
 /* Next (also "Submit review") and the other filled buttons as .btn */

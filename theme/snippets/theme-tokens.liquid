@@ -1,6 +1,6 @@
 {% doc %}
   Overrides the default design tokens (packages/tokens -> assets/ui-tokens.css) with Theme settings:
-  fonts, page width, radii, status colors. Output is unlayered, so it wins over the layered defaults.
+  fonts, page width, radii, status and rating colors. Output is unlayered, so it wins over the layered defaults.
   Color schemes: snippets/color-schemes.liquid.
 {% enddoc %}
 {%- liquid
@@ -48,5 +48,6 @@
     --color-warning: {{ settings.color_warning }};
     --color-danger: {{ settings.color_danger }};
     --color-focus: {{ settings.color_focus }};
+    --color-rating: {{ settings.color_rating | default: '#c9772b' }};
   }
 {%- endstyle -%}

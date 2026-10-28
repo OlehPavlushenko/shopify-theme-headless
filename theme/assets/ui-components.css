@@ -403,7 +403,7 @@
     height: var(--rating-size, 1.6rem);
     background: linear-gradient(
       90deg,
-      var(--color-accent-2) var(--rating),
+      var(--color-rating) var(--rating),
       color-mix(in srgb, var(--color-foreground) 20%, transparent) var(--rating)
     );
     mask: var(--star) 0 0 / calc(var(--rating-size, 1.6rem) * 1.1) var(--rating-size, 1.6rem) repeat-x;

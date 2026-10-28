@@ -91,6 +91,8 @@
       "info": "Info",
       "warning": "Warning",
       "danger": "Error",
+      "rating": "Rating stars",
+      "rating_info": "The same on every color scheme: product cards, the product page, the reviews widget.",
       "focus": "Focus outline"
     },
     "typography": {

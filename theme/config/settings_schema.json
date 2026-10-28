@@ -233,6 +233,13 @@
         "id": "color_focus",
         "label": "t:settings.colors.focus",
         "default": "#2f6b4f"
+      },
+      {
+        "type": "color",
+        "id": "color_rating",
+        "label": "t:settings.colors.rating",
+        "info": "t:settings.colors.rating_info",
+        "default": "#c9772b"
       }
     ]
   },

@@ -212,7 +212,7 @@
     }
 
     .site-header--logo-center-below .site-nav__link {
-      min-height: 4.8rem;
+      min-height: var(--control-height-lg);
     }
   }
 

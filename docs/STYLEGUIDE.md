@@ -65,7 +65,7 @@ and the list of mistakes we already made once. Read both before adding code.
   - text: `--color-text-muted` (secondary text, AA contrast), `--color-text-disabled` (sold out,
     struck through, disabled — not for readable text);
   - shape: `--radius-full`, `--radius-card`, `--radius-media`, `--radius-button`, `--radius-badge`;
-  - size: `--control-height-sm|…|lg`, `--control-toggle`, `--icon-sm`, `--underline-offset`.
+  - size: `--control-height-xs|sm|…|lg` (xs: compact chips and topic tags), `--control-toggle`, `--icon-sm`, `--underline-offset`.
 - **Colors derived from scheme colors are defined per scheme**, in `color-schemes.liquid`. A custom
   property with `var()` set on `:root` is resolved once and inherited as is — dark sections would
   get the light scheme's value.

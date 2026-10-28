@@ -7,7 +7,10 @@
  *   On a variant change (from <product-info>): the slider scrolls to the variant's image; the grid
  *   and the stacked layout move it to the top on wide screens.
  * <quantity-input>: − / + buttons around a number input.
- * <sticky-buy-bar hidden>: shown once the main add button has scrolled up out of view.
+ * <sticky-buy-bar data-form="<product form id>" hidden>: shown once the main add button has scrolled
+ *   up out of view. Shows what the form adds: [data-sticky-variant] the variant's options,
+ *   [data-sticky-count] "× N" (phones), [data-sticky-qty] a stepper both ways in step with the
+ *   form's quantity (a stepper or the "Bundle & save" radios).
  * <delivery-estimate data-min data-max data-cutoff data-template data-template-today data-locale>:
  *   "Order within 3 h — delivered Thu 29 Oct – Mon 2 Nov" (business days, today's cut-off hour).
  * <stock-notify hidden>: the back-in-stock form, shown for sold-out variants only.
@@ -146,13 +149,41 @@ class PickupAvailability extends HTMLElement {
 
 class StickyBuyBar extends HTMLElement {
   connectedCallback() {
-    const button = this.closest('product-info')?.querySelector('[data-product-form] [data-add-button]');
+    const info = this.closest('product-info');
+    const button = info?.querySelector('[data-product-form] [data-add-button]');
     if (!button) return;
     this.observer = new IntersectionObserver(([entry]) => {
       // Visible once the main button is above the viewport (not while it is still below it)
       this.hidden = entry.isIntersecting || entry.boundingClientRect.top > 0;
     });
     this.observer.observe(button);
+
+    this.form = document.getElementById(this.dataset.form);
+    this.qty = this.querySelector('[data-sticky-qty]');
+    // The bar's stepper sets the form's quantity (the "Bundle & save" card follows it)
+    this.qty?.addEventListener('change', (event) => {
+      event.stopPropagation();
+      const quantity = this.form?.querySelector('input[name="quantity"]:not([type="radio"])');
+      if (!quantity) return;
+      quantity.value = this.qty.value;
+      quantity.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    info.addEventListener('change', () => this.#count());
+    info.addEventListener('variant:change', (event) => {
+      const name = event.detail.variant?.options.join(' / ');
+      const label = this.querySelector('[data-sticky-variant]');
+      if (label && name) label.textContent = name;
+    });
+    this.#count();
+  }
+
+  // The form's quantity (stepper or picked card) into the bar
+  #count() {
+    const quantity = Number(new FormData(this.form ?? undefined).get('quantity')) || 1;
+    if (this.qty) this.qty.value = quantity;
+    const count = this.querySelector('[data-sticky-count]');
+    count.textContent = `× ${quantity}`;
+    count.hidden = quantity < 2;
   }
 
   disconnectedCallback() {

@@ -633,20 +633,36 @@
     </dialog>
   {%- endif -%}
 
-  {%- comment -%} ------------------------------------------------------- sticky bar {%- endcomment -%}
+  {%- comment -%}
+    Sticky bar: what the main form adds — the variant ("Size / Color"), the quantity (a stepper kept
+    in step with the main one from 750px; "× 2" in the text line on phones), the price and the add
+    button, which submits the main form. <sticky-buy-bar> in assets/product.js.
+  {%- endcomment -%}
   {%- if section.settings.sticky_bar -%}
-    <sticky-buy-bar class="sticky-buy" hidden>
+    {%- assign buy_block = section.blocks | where: 'type', 'buy_buttons' | first -%}
+    <sticky-buy-bar class="sticky-buy" data-form="{{ form_id }}" hidden>
       <div class="page-width sticky-buy__inner">
         {%- if product.featured_media -%}
           {{ product.featured_media | image_url: width: 120 | image_tag: loading: 'lazy', class: 'sticky-buy__image', width: 48, height: 48, alt: '' }}
         {%- endif -%}
         <div class="sticky-buy__text">
           <p class="sticky-buy__title">{{ product.title | escape }}</p>
-          <span class="price-tag{% if discount > 0 %} price-tag--sale{% endif %} sticky-buy__price" data-product-price>
+          <p class="sticky-buy__meta">
+            {%- unless product.has_only_default_variant -%}<span data-sticky-variant>{{ variant.title | escape }}</span>{%- endunless -%}
+            <span class="sticky-buy__count" data-sticky-count hidden></span>
+          </p>
+        </div>
+        {%- if buy_block.settings.show_quantity -%}
+          <quantity-input class="qty sticky-buy__qty">
+            <button type="button" class="qty__btn" data-qty="-1" aria-label="{{ 'cart.decrease' | t: product: product.title | escape }}">{%- render 'icon', name: 'minus' -%}</button>
+            <input class="qty__input" type="number" value="1" min="1" inputmode="numeric" aria-label="{{ 'cart.quantity' | t }}" data-sticky-qty>
+            <button type="button" class="qty__btn" data-qty="1" aria-label="{{ 'cart.increase' | t: product: product.title | escape }}">{%- render 'icon', name: 'plus' -%}</button>
+          </quantity-input>
+        {%- endif -%}
+        <span class="price-tag{% if discount > 0 %} price-tag--sale{% endif %} sticky-buy__price" data-product-price>
             <span class="price-tag__current">{{ variant.price | money }}</span>
             <s class="price-tag__compare"{% if discount == 0 %} hidden{% endif %}><span data-compare-value>{{ variant.compare_at_price | money }}</span></s>
-          </span>
-        </div>
+        </span>
         <button type="submit" form="{{ form_id }}" class="btn sticky-buy__button" data-add-button{% unless variant.available %} disabled{% endunless %}>
           <span data-add-label>{%- if variant.available -%}{{ label_add }}{%- else -%}{{ label_sold_out }}{%- endif -%}</span>
         </button>

@@ -908,13 +908,16 @@
   }
 
   .sticky-buy__inner {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto auto;
+    grid-template-areas: "image text qty price button";
     align-items: center;
-    gap: var(--space-s);
+    gap: var(--space-s) var(--space-m);
     padding-block: var(--space-xs);
   }
 
   .sticky-buy__image {
+    grid-area: image;
     width: 4.8rem;
     height: 4.8rem;
     object-fit: cover;
@@ -922,8 +925,28 @@
   }
 
   .sticky-buy__text {
+    grid-area: text;
     display: grid;
     min-width: 0;
+  }
+
+  /* The variant (and on phones "× 2") under the title */
+  .sticky-buy__meta {
+    display: flex;
+    gap: var(--space-2xs);
+    overflow: hidden;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .sticky-buy__meta > [data-sticky-variant]:not([hidden]) + .sticky-buy__count::before {
+    content: "· ";
+  }
+
+  .sticky-buy__qty {
+    grid-area: qty;
   }
 
   .sticky-buy__title {
@@ -936,16 +959,34 @@
   }
 
   .sticky-buy__price {
+    grid-area: price;
     font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-semibold);
   }
 
   .sticky-buy__button {
-    margin-inline-start: auto;
+    grid-area: button;
     white-space: nowrap;
   }
 
+  @media (min-width: 750px) {
+    .sticky-buy__count {
+      display: none;
+    }
+  }
+
+  /* Phones: title, variant · count and the price on the left, the button on the right */
   @media (max-width: 749px) {
-    .sticky-buy__image {
+    .sticky-buy__inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "text button"
+        "price button";
+      row-gap: 0.2rem;
+    }
+
+    .sticky-buy__image,
+    .sticky-buy__qty {
       display: none;
     }
   }

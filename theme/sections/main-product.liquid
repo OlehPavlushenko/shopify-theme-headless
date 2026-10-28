@@ -39,6 +39,9 @@
   data-label-sold-out="{{ label_sold_out | escape }}"
   data-label-unavailable="{{ label_unavailable | escape }}"
 >
+  {%- if section.settings.breadcrumbs -%}
+    <div class="page-width main-product__crumbs">{%- render 'breadcrumbs' -%}</div>
+  {%- endif -%}
   <div class="page-width main-product__inner">
     {%- comment -%}
       The head — the product's label (metafield custom.label, e.g. "Bestseller") and the title, the
@@ -717,6 +720,7 @@
       ],
       "default": "plain"
     },
+    { "type": "checkbox", "id": "breadcrumbs", "label": "t:sections.page_header.breadcrumbs", "default": true },
     { "type": "checkbox", "id": "sticky_bar", "label": "t:sections.main_product.sticky_bar", "info": "t:sections.main_product.sticky_bar_info", "default": true },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
   ],

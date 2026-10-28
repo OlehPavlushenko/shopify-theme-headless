@@ -105,12 +105,13 @@
 {% endif %}
 
 {%- comment -%}
-  Search results and filtered collection lists duplicate catalog pages: not indexed, links followed.
+  Search results and filtered collection lists duplicate catalog pages, the wishlist and compare pages
+  are personal: not indexed, links followed.
   (The canonical of a filtered list points to the collection itself.)
 {%- endcomment -%}
 {%- liquid
   assign noindex = false
-  if request.page_type == 'search'
+  if request.page_type == 'search' or template.suffix == 'wishlist' or template.suffix == 'compare'
     assign noindex = true
   endif
   if request.page_type == 'collection'

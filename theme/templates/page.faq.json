@@ -48,6 +48,7 @@
         "show_nav": true,
         "single_open": false,
         "open_first": false,
+        "structured_data": true,
         "color_scheme": "scheme-1"
       }
     },

@@ -114,7 +114,8 @@
   <script type="module">import '@ui/faq-search';</script>
 {%- endif -%}
 
-{%- if questions.size > 0 -%}
+{%- comment -%} FAQPage markup only where it is on (the FAQ page): one page per set of questions {%- endcomment -%}
+{%- if questions.size > 0 and section.settings.structured_data -%}
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -157,6 +158,7 @@
     { "type": "checkbox", "id": "show_nav", "label": "t:sections.faq.show_nav", "info": "t:sections.faq.show_nav_info", "default": false },
     { "type": "checkbox", "id": "single_open", "label": "t:sections.faq.single_open", "default": true },
     { "type": "checkbox", "id": "open_first", "label": "t:sections.faq.open_first", "default": false },
+    { "type": "checkbox", "id": "structured_data", "label": "t:sections.faq.structured_data", "info": "t:sections.faq.structured_data_info", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
   ],
   "blocks": [

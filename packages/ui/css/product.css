@@ -15,6 +15,10 @@
     gap: var(--space-l);
   }
 
+  .main-product__crumbs {
+    margin-bottom: var(--space-m);
+  }
+
   /* Label and title: above the gallery on phones, at the top of the info column from 990px */
   .main-product__head {
     display: grid;

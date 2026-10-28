@@ -923,10 +923,38 @@
     border-radius: calc(var(--radius-media) * 0.5);
   }
 
+  /* Title and variant: a button back up to the options, a small up arrow after the title */
   .sticky-buy__text {
     grid-area: text;
     display: grid;
+    justify-items: start;
     min-width: 0;
+    padding: 0;
+    font: inherit;
+    text-align: start;
+    color: inherit;
+    cursor: pointer;
+    background: none;
+    border: 0;
+  }
+
+  .sticky-buy__text .svg-icon {
+    --icon-size: 1.4rem;
+
+    flex-shrink: 0;
+    rotate: 180deg;
+    color: var(--color-text-muted);
+    transition: translate var(--duration-short) var(--ease);
+  }
+
+  @media (hover: hover) {
+    .sticky-buy__text:hover .sticky-buy__title {
+      color: var(--color-link-hover);
+    }
+
+    .sticky-buy__text:hover .svg-icon {
+      translate: 0 -0.2rem;
+    }
   }
 
   /* The variant (and on phones "× 2") under the title */
@@ -949,10 +977,17 @@
   }
 
   .sticky-buy__title {
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    max-width: 100%;
     font-size: var(--text-sm);
     font-weight: var(--font-body-weight-medium);
     color: var(--color-heading);
+  }
+
+  .sticky-buy__name {
+    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }

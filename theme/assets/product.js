@@ -10,7 +10,8 @@
  * <sticky-buy-bar data-form="<product form id>" hidden>: shown once the main add button has scrolled
  *   up out of view. Shows what the form adds: [data-sticky-variant] the variant's options,
  *   [data-sticky-count] "× N" (phones), [data-sticky-qty] a stepper both ways in step with the
- *   form's quantity (a stepper or the "Bundle & save" radios).
+ *   form's quantity (a stepper or the "Bundle & save" radios). [data-sticky-top] scrolls back up to
+ *   the variant picker (else the product's head) and focuses the picked value.
  * <delivery-estimate data-min data-max data-cutoff data-template data-template-today data-locale>:
  *   "Order within 3 h — delivered Thu 29 Oct – Mon 2 Nov" (business days, today's cut-off hour).
  * <stock-notify hidden>: the back-in-stock form, shown for sold-out variants only.
@@ -157,6 +158,13 @@ class StickyBuyBar extends HTMLElement {
       this.hidden = entry.isIntersecting || entry.boundingClientRect.top > 0;
     });
     this.observer.observe(button);
+
+    this.querySelector('[data-sticky-top]')?.addEventListener('click', () => {
+      const target = info.querySelector('variant-picker') ?? info.querySelector('.main-product__head') ?? info;
+      const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+      target.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'center' });
+      target.querySelector('input:checked')?.focus({ preventScroll: true });
+    });
 
     this.form = document.getElementById(this.dataset.form);
     this.qty = this.querySelector('[data-sticky-qty]');

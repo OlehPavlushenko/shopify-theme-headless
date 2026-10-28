@@ -145,6 +145,7 @@
     "zoom": "Zoom image {{ index }}",
     "show_media": "Show image {{ index }}",
     "rating": "Rated {{ rating }} out of {{ max }}",
+    "back_to_options": "Back to the product options",
     "reviews_count": {
       "one": "{{ count }} review",
       "other": "{{ count }} reviews"

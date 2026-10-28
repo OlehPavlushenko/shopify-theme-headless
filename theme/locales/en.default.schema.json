@@ -13,6 +13,7 @@
     "overlays": "Overlays"
   },
   "labels": {
+    "label": "Label",
     "alignment": "Alignment",
     "background": "Background",
     "color_scheme": "Color scheme",
@@ -606,7 +607,6 @@
       "info_link_1": "Link 1",
       "info_link_2": "Link 2",
       "info_link_3": "Link 3",
-      "icon": "Icon",
       "info_page": "Page",
       "icon_truck": "Truck",
       "icon_return": "Return",

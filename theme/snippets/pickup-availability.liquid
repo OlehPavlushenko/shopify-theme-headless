@@ -11,23 +11,26 @@
 {%- liquid
   assign pickups = variant.store_availabilities | where: 'pick_up_enabled', true
   assign here = pickups | where: 'available', true | first
+  if here
+    assign pickup_icon = 'check'
+  else
+    assign pickup_icon = 'close'
+  endif
 -%}
 {%- if pickups.size > 0 -%}
   <div class="pickup">
-    {%- if here -%}
-      {%- render 'icon', name: 'check' -%}
-      <div class="pickup__text">
+    {%- render 'icon', name: pickup_icon -%}
+    <div class="pickup__text">
+      {%- if here -%}
         <p class="pickup__title">{{ 'products.pickup.available_at_html' | t: location: here.location.name }}</p>
         <p class="pickup__time">{{ here.pick_up_time }}</p>
-    {%- else -%}
-      {%- render 'icon', name: 'close' -%}
-      <div class="pickup__text">
+      {%- else -%}
         <p class="pickup__title">{{ 'products.pickup.unavailable_html' | t: location: pickups.first.location.name }}</p>
-    {%- endif -%}
-        <button type="button" class="btn btn--link pickup__more" data-dialog-open="Pickup-{{ id }}">
-          {{- 'products.pickup.view_info' | t -}}
-        </button>
-      </div>
+      {%- endif -%}
+      <button type="button" class="btn btn--link pickup__more" data-dialog-open="Pickup-{{ id }}">
+        {{- 'products.pickup.view_info' | t -}}
+      </button>
+    </div>
   </div>
 
   <dialog class="drawer" id="Pickup-{{ id }}" aria-labelledby="Pickup-{{ id }}-title">

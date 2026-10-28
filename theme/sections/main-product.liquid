@@ -382,7 +382,7 @@
                     endif
                     assign popup_id = 'Info-' | append: block.id | append: '-' | append: i
                   -%}
-                  <a href="{{ info_page.url }}" class="info-links__link"{% if info_page.content != blank %} data-dialog-open="{{ popup_id }}"{% endif %}>
+                  <a href="{{ info_page.url }}" class="btn btn--link info-links__link"{% if info_page.content != blank %} data-dialog-open="{{ popup_id }}"{% endif %}>
                     {%- render 'icon', name: block.settings[icon_key] -%}
                     {{- block.settings[label_key] | escape -}}
                   </a>
@@ -422,7 +422,7 @@
                       assign body_field = 'contact[body]'
                     endif
                   -%}
-                  <button type="button" class="info-links__link" data-dialog-open="{{ ask_id }}">
+                  <button type="button" class="btn btn--link info-links__link" data-dialog-open="{{ ask_id }}">
                     {%- render 'icon', name: 'chat' -%}
                     {{- 'products.ask.title' | t -}}
                   </button>

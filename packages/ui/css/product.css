@@ -485,20 +485,11 @@
     gap: var(--space-xs) var(--space-l);
   }
 
+  /* .btn--link in the body weight, a quiet underline that darkens on hover */
   .info-links__link {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs);
-    padding: 0;
-    font: inherit;
-    font-size: var(--text-sm);
-    color: var(--color-heading);
-    text-decoration: underline;
+    font-weight: var(--font-body-weight);
     text-decoration-color: var(--color-border);
     text-underline-offset: 0.3em;
-    cursor: pointer;
-    background: none;
-    border: 0;
   }
 
   .info-links__link:hover {

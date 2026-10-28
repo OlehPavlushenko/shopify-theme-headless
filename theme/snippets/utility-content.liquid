@@ -30,7 +30,7 @@
       <a href="{{ pages['wishlist'].url | default: routes.root_url }}" class="utility-panel__link">
         {%- render 'icon', name: 'heart' -%}
         {{ 'wishlist.title' | t }}
-        <span class="saved-count" data-saved-count="wishlist" data-empty></span>
+        <span class="count-badge saved-count" data-saved-count="wishlist" data-empty></span>
       </a>
     </li>
   {%- endif -%}
@@ -39,7 +39,7 @@
       <a href="{{ pages['compare'].url | default: routes.root_url }}" class="utility-panel__link">
         {%- render 'icon', name: 'compare' -%}
         {{ 'compare.title' | t }}
-        <span class="saved-count" data-saved-count="compare" data-empty></span>
+        <span class="count-badge saved-count" data-saved-count="compare" data-empty></span>
       </a>
     </li>
   {%- endif -%}

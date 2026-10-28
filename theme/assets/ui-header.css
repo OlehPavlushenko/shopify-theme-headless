@@ -123,22 +123,15 @@
     position: relative;
   }
 
+  /* .count-badge on the cart icon's corner, a step smaller */
   .cart-count {
     position: absolute;
     top: 0.2rem;
     right: 0;
-    display: grid;
-    place-items: center;
     min-width: 1.9rem;
     height: 1.9rem;
     padding-inline: 0.5rem;
     font-size: 1.1rem;
-    font-weight: var(--font-body-weight-semibold);
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
-    color: var(--color-button-label);
-    background: var(--color-accent);
-    border-radius: var(--radius-full);
   }
 
   /* Empty cart: hidden before Liquid Ajax Cart init (data-empty from Liquid) and after it */

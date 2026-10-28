@@ -305,7 +305,7 @@
                 {%- capture api -%}{% render 'api-url' %}{%- endcapture -%}
                 {%- assign api = api | strip -%}
                 {%- if block.settings.show_notify and api != blank -%}
-                  <stock-notify class="stock-notify" data-product="{{ product.title | escape }}"{% if variant.available %} hidden{% endif %}>
+                  <stock-notify class="stock-notify"{% if variant.available %} hidden{% endif %}>
                     <contact-form
                       data-endpoint="{{ api }}/notify"
                       data-action="notify"
@@ -319,8 +319,10 @@
                         <form class="stock-notify__form">
                           <p class="stock-notify__title">{%- render 'icon', name: 'mail' -%}{{ 'products.notify.title' | t }}</p>
                           <p class="stock-notify__text">{{ 'products.notify.text' | t }}</p>
-                          <input type="hidden" name="variant" value="{{ variant.id }}" data-notify-variant>
-                          <input type="hidden" name="product" value="{{ product.title | escape }}{% unless product.has_only_default_variant %} / {{ variant.title | escape }}{% endunless %}" data-notify-product>
+                          <variant-fields data-product="{{ product.title | escape }}">
+                            <input type="hidden" name="variant" value="{{ variant.id }}" data-variant-id>
+                            <input type="hidden" name="product" value="{{ product.title | escape }}{% unless product.has_only_default_variant %} / {{ variant.title | escape }}{% endunless %}" data-variant-title>
+                          </variant-fields>
                           <p class="form-errors" role="alert" data-contact-message></p>
                           <div class="search-form stock-notify__row">
                             <label class="visually-hidden" for="Notify-{{ section.id }}">{{ 'contact.email' | t }}</label>
@@ -363,9 +365,12 @@
 
             {%- when 'info_links' -%}
               {%- comment -%}
-                A row of small links that open a page in a drawer (size guide, shipping, returns…), and
-                "Ask a question": a short form about this product to project-server (POST /contact,
-                needs the API URL). Without JS the page links are plain links.
+                A row of small links that open a page in a popup (size guide, shipping, returns…), and
+                "Ask a question": a short form about this product and its current variant. With the
+                API URL it goes to project-server (POST /contact, the customer note + tag "contact");
+                without it, Shopify's contact form (emailed to the store's contact email; the popup
+                opens again after the post with its result). Without JS, or for a page without text (built
+                from sections), a page link is a plain link.
               {%- endcomment -%}
               {%- capture api -%}{% render 'api-url' %}{%- endcapture -%}
               {%- assign api = api | strip -%}
@@ -379,41 +384,90 @@
                     if info_page == blank or block.settings[label_key] == blank
                       continue
                     endif
-                    assign drawer_id = 'Info-' | append: block.id | append: '-' | append: i
+                    assign popup_id = 'Info-' | append: block.id | append: '-' | append: i
                   -%}
-                  <a href="{{ info_page.url }}" class="info-links__link" data-dialog-open="{{ drawer_id }}">
+                  <a href="{{ info_page.url }}" class="info-links__link"{% if info_page.content != blank %} data-dialog-open="{{ popup_id }}"{% endif %}>
                     {%- render 'icon', name: block.settings[icon_key] -%}
                     {{- block.settings[label_key] | escape -}}
                   </a>
-                  <dialog class="drawer" id="{{ drawer_id }}" aria-labelledby="{{ drawer_id }}-title">
-                    <div class="drawer__inner">
-                      <div class="drawer__header">
-                        <h2 class="h5" id="{{ drawer_id }}-title">{{ info_page.title | escape }}</h2>
+                  {%- if info_page.content == blank -%}{%- continue -%}{%- endif -%}
+                  <dialog class="popup" id="{{ popup_id }}" aria-labelledby="{{ popup_id }}-title">
+                    <div class="popup__inner">
+                      <div class="popup__header">
+                        <h2 class="h5" id="{{ popup_id }}-title">{{ info_page.title | escape }}</h2>
                         <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">
                           {%- render 'icon', name: 'close' -%}
                         </button>
                       </div>
-                      <div class="drawer__body rte">{{ info_page.content }}</div>
+                      <div class="popup__body rte">{{ info_page.content }}</div>
                     </div>
                   </dialog>
                 {%- endfor -%}
-                {%- if block.settings.show_ask and api != blank -%}
-                  {%- assign ask_id = 'Ask-' | append: block.id -%}
+                {%- if block.settings.show_ask -%}
+                  {%- liquid
+                    assign ask_id = 'Ask-' | append: block.id
+                    assign name_label = 'contact.name' | t
+                    assign product_label = 'products.ask.product' | t
+                    capture ask_product
+                      echo product.title
+                      unless product.has_only_default_variant
+                        echo ' / ' | append: variant.title
+                      endunless
+                    endcapture
+                    if api != blank
+                      assign name_field = 'name'
+                      assign email_field = 'email'
+                      assign product_field = 'subject'
+                      assign body_field = 'message'
+                    else
+                      assign name_field = 'contact[' | append: name_label | append: ']'
+                      assign email_field = 'contact[email]'
+                      assign product_field = 'contact[' | append: product_label | append: ']'
+                      assign body_field = 'contact[body]'
+                    endif
+                  -%}
                   <button type="button" class="info-links__link" data-dialog-open="{{ ask_id }}">
                     {%- render 'icon', name: 'chat' -%}
                     {{- 'products.ask.title' | t -}}
                   </button>
-                  <dialog class="drawer" id="{{ ask_id }}" aria-labelledby="{{ ask_id }}-title">
-                    <div class="drawer__inner">
-                      <div class="drawer__header">
+                  {%- capture ask_success -%}
+                    <p class="notice notice--success" role="status" tabindex="-1">
+                      {%- render 'icon', name: 'check' -%}
+                      {{ 'contact.success' | t }}
+                    </p>
+                  {%- endcapture -%}
+                  {%- capture ask_fields -%}
+                    <variant-fields data-product="{{ product.title | escape }}">
+                      <p class="ask-form__about">{{ 'products.ask.about' | t }} <strong data-variant-title>{{ ask_product | escape }}</strong></p>
+                      <input type="hidden" name="{{ product_field }}" value="{{ ask_product | escape }}" data-variant-title>
+                    </variant-fields>
+                    <div class="field">
+                      <label class="field__label" for="{{ ask_id }}-name">{{ name_label }}</label>
+                      <input class="input" type="text" id="{{ ask_id }}-name" name="{{ name_field }}" value="{{ customer.name }}" autocomplete="name" maxlength="100">
+                    </div>
+                    <div class="field">
+                      <label class="field__label" for="{{ ask_id }}-email">{{ 'contact.email' | t }} *</label>
+                      <input class="input" type="email" id="{{ ask_id }}-email" name="{{ email_field }}" value="{{ customer.email }}" autocomplete="email" spellcheck="false" required>
+                    </div>
+                    <div class="field">
+                      <label class="field__label" for="{{ ask_id }}-message">{{ 'products.ask.question' | t }} *</label>
+                      <textarea class="input" id="{{ ask_id }}-message" name="{{ body_field }}" rows="5" maxlength="5000" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn--full">{{ 'contact.send' | t }}</button>
+                  {%- endcapture -%}
+                  <dialog class="popup" id="{{ ask_id }}" aria-labelledby="{{ ask_id }}-title">
+                    <div class="popup__inner">
+                      <div class="popup__header">
                         <h2 class="h5" id="{{ ask_id }}-title">{{ 'products.ask.title' | t }}</h2>
                         <button type="button" class="btn btn--icon" data-dialog-close aria-label="{{ 'accessibility.close' | t }}">
                           {%- render 'icon', name: 'close' -%}
                         </button>
                       </div>
-                      <div class="drawer__body">
+                      <div class="popup__body">
                         <contact-form
-                          data-endpoint="{{ api }}/contact"
+                          {% if api != blank %}
+                            data-endpoint="{{ api }}/contact"
+                          {% endif %}
                           {% if settings.recaptcha_site_key != blank %}
                             data-recaptcha="{{ settings.recaptcha_site_key | escape }}"
                           {% endif %}
@@ -421,31 +475,26 @@
                           data-message-email="{{ 'forms.email' | t | escape }}"
                         >
                           <form-validate {% render 'form-validate-messages' %}>
-                            <form class="ask-form">
-                              <p class="ask-form__about">{{ 'products.ask.about' | t }} <strong>{{ product.title | escape }}</strong></p>
-                              <input type="hidden" name="subject" value="{{ product.title | escape }}">
-                              <p class="form-errors" role="alert" data-contact-message></p>
-                              <div class="field">
-                                <label class="field__label" for="{{ ask_id }}-name">{{ 'contact.name' | t }}</label>
-                                <input class="input" type="text" id="{{ ask_id }}-name" name="name" value="{{ customer.name }}" autocomplete="name" maxlength="100">
-                              </div>
-                              <div class="field">
-                                <label class="field__label" for="{{ ask_id }}-email">{{ 'contact.email' | t }} *</label>
-                                <input class="input" type="email" id="{{ ask_id }}-email" name="email" value="{{ customer.email }}" autocomplete="email" spellcheck="false" required>
-                              </div>
-                              <div class="field">
-                                <label class="field__label" for="{{ ask_id }}-message">{{ 'products.ask.question' | t }} *</label>
-                                <textarea class="input" id="{{ ask_id }}-message" name="message" rows="5" maxlength="5000" required></textarea>
-                              </div>
-                              <button type="submit" class="btn btn--full">{{ 'contact.send' | t }}</button>
-                            </form>
+                            {%- if api != blank -%}
+                              <form class="ask-form">
+                                <p class="form-errors" role="alert" data-contact-message></p>
+                                {{ ask_fields }}
+                              </form>
+                            {%- else -%}
+                              {%- assign ask_form_id = ask_id | append: '-form' -%}
+                              {%- form 'contact', id: ask_form_id, class: 'ask-form' -%}
+                                {%- if form.posted_successfully? -%}
+                                  {%- assign ask_reopen = true -%}
+                                  {{ ask_success }}
+                                {%- elsif form.errors -%}
+                                  {%- assign ask_reopen = true -%}
+                                  <p class="form-error" role="alert">{{ form.errors | default_errors }}</p>
+                                {%- endif -%}
+                                {{ ask_fields }}
+                              {%- endform -%}
+                            {%- endif -%}
                           </form-validate>
-                          <template data-contact-success>
-                            <p class="notice notice--success" role="status" tabindex="-1">
-                              {%- render 'icon', name: 'check' -%}
-                              {{ 'contact.success' | t }}
-                            </p>
-                          </template>
+                          <template data-contact-success>{{ ask_success }}</template>
                         </contact-form>
                       </div>
                     </div>
@@ -454,6 +503,13 @@
                     import '@ui/form-validate';
                     import '@ui/contact-form';
                   </script>
+                  {%- if ask_reopen -%}
+                    {%- comment -%} Back from Shopify's contact post: show its result {%- endcomment -%}
+                    <script type="module">
+                      import { openDialog } from '@ui/dialog';
+                      openDialog(document.getElementById('{{ ask_id }}'), document.querySelector('[data-dialog-open="{{ ask_id }}"]'));
+                    </script>
+                  {%- endif -%}
                 {%- endif -%}
               </div>
 

@@ -102,6 +102,7 @@
     "ask": {
       "title": "Ask a question",
       "about": "About",
+      "product": "Product",
       "question": "Your question"
     },
     "meta": {

@@ -523,6 +523,11 @@
     --icon-size: 1.8rem;
   }
 
+  /* Hidden fields and texts that follow the variant (assets/product.js): no box of their own */
+  variant-fields {
+    display: contents;
+  }
+
   .ask-form {
     display: grid;
     gap: var(--space-xl);

@@ -1075,6 +1075,24 @@
     }
   }
 
+  /* A popup with a title bar: the header stays on top while the dialog scrolls */
+  .popup__header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    padding: var(--space-m) var(--space-l);
+    background: var(--color-background);
+    border-bottom: 0.1rem solid var(--color-border);
+  }
+
+  .popup__body {
+    padding: var(--space-l);
+  }
+
   .drawer::backdrop,
   .popup::backdrop {
     background: transparent;

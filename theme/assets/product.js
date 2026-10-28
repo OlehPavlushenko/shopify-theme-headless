@@ -10,8 +10,9 @@
  * <sticky-buy-bar hidden>: shown once the main add button has scrolled up out of view.
  * <delivery-estimate data-min data-max data-cutoff data-template data-template-today data-locale>:
  *   "Order within 3 h — delivered Thu 29 Oct – Mon 2 Nov" (business days, today's cut-off hour).
- * <stock-notify data-product hidden>: the back-in-stock form, shown for sold-out variants only; its
- *   [data-notify-variant] / [data-notify-product] fields follow the variant.
+ * <stock-notify hidden>: the back-in-stock form, shown for sold-out variants only.
+ * <variant-fields data-product="<title>">: parts of a form that follow the variant — [data-variant-id]
+ *   gets its id, [data-variant-title] "Product / Variant" (an input's value, else its text).
  * <pickup-availability data-root>: on a variant change, fetches the pickup info of that variant
  *   (/variants/<id>/?section_id=pickup-availability) into itself.
  * <share-button data-url data-title data-copied>: the system share sheet, else copies the link.
@@ -104,10 +105,23 @@ class StockNotify extends HTMLElement {
     this.closest('product-info')?.addEventListener('variant:change', (event) => {
       const variant = event.detail.variant;
       this.hidden = !variant || variant.available;
+    });
+  }
+}
+
+class VariantFields extends HTMLElement {
+  connectedCallback() {
+    this.closest('product-info')?.addEventListener('variant:change', (event) => {
+      const variant = event.detail.variant;
       if (!variant) return;
-      this.querySelector('[data-notify-variant]').value = variant.id;
-      const title = variant.title === 'Default Title' ? '' : ` / ${variant.title}`;
-      this.querySelector('[data-notify-product]').value = this.dataset.product + title;
+      // The variant's title, as in Liquid: its options joined ("Default Title" for a product without options)
+      const name = variant.options.join(' / ');
+      const title = this.dataset.product + (name === 'Default Title' ? '' : ` / ${name}`);
+      for (const field of this.querySelectorAll('[data-variant-id]')) field.value = variant.id;
+      for (const field of this.querySelectorAll('[data-variant-title]')) {
+        if (field instanceof HTMLInputElement) field.value = title;
+        else field.textContent = title;
+      }
     });
   }
 }
@@ -229,6 +243,7 @@ for (const [name, element] of [
   ['quantity-input', QuantityInput],
   ['sticky-buy-bar', StickyBuyBar],
   ['stock-notify', StockNotify],
+  ['variant-fields', VariantFields],
   ['pickup-availability', PickupAvailability],
   ['delivery-estimate', DeliveryEstimate],
   ['share-button', ShareButton],

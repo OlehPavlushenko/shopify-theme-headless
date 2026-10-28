@@ -3,7 +3,7 @@
  * <contact-form> — sends a form to an API without a page reload: the contact form, and the
  * back-in-stock request on the product page (data-action="notify": the reCAPTCHA action).
  *
- * Markup contract (theme: sections/main-contact.liquid):
+ * Markup contract (theme: snippets/contact-form.liquid):
  *   <contact-form data-endpoint="https://api…/contact" [data-recaptcha="<v3 site key>"]
  *                 [data-action="contact"] data-message-error="…" data-message-email="…" data-message-phone="…">
  *     <form-validate> <form> named fields (sent as JSON, e.g. name, email, phone, message)

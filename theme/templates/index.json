@@ -160,8 +160,8 @@
             "eyebrow": "Gift ideas",
             "heading": "Christmas sets",
             "text": "Ready-to-give boxes",
-            "link_label": "Shop sets",
-            "link": "/collections/all"
+            "button_label": "Shop sets",
+            "button_link": "/collections/all"
           }
         },
         "p2": {
@@ -171,8 +171,8 @@
             "eyebrow": "Seasonal",
             "heading": "Winter picks",
             "text": "Hydration for cold days",
-            "link_label": "Discover",
-            "link": "/collections/all"
+            "button_label": "Discover",
+            "button_link": "/collections/all"
           }
         },
         "p3": {
@@ -182,8 +182,8 @@
             "eyebrow": "Best sellers",
             "heading": "Daily balance",
             "text": "What our customers love",
-            "link_label": "Shop now",
-            "link": "/collections/all"
+            "button_label": "Shop now",
+            "button_link": "/collections/all"
           }
         }
       },

@@ -34,8 +34,8 @@
             "image": "shopify://shop_images/about-image-1.png",
             "heading": "Heading",
             "text": "Text",
-            "link_label": "Link label",
-            "link": "shopify://collections/hydrogen"
+            "button_label": "Link label",
+            "button_link": "shopify://collections/hydrogen"
           }
         },
         "menu_products_zr8Rpi": {

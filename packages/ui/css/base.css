@@ -396,6 +396,36 @@
     line-clamp: var(--lines, 2);
   }
 
+  /*
+   * A column of a two- or three-column layout (from 990px) that stays in view under the header
+   * while the page scrolls: cart summary, product media and info. A utility: it beats the
+   * component's own position.
+   * --scroll: never taller than the screen, it scrolls inside (filters sidebar, FAQ intro, article
+   * contents and "Shop this article"). --wide: only from 1200px (the article's third column).
+   */
+  @media (min-width: 990px) {
+    .sticky-column {
+      position: sticky;
+      top: var(--sticky-top);
+      transition: var(--sticky-transition);
+    }
+
+    .sticky-column--scroll {
+      max-height: var(--sticky-max-height);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+    }
+  }
+
+  @media (max-width: 1199px) {
+    .sticky-column--wide {
+      position: static;
+      max-height: none;
+      overflow-y: visible;
+    }
+  }
+
   .visually-hidden {
     position: absolute !important;
     width: 1px !important;

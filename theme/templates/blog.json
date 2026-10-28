@@ -34,8 +34,8 @@
             "eyebrow": "Gift ideas",
             "heading": "Ready-to-give sets",
             "text": "Our favourite picks from the guides, packed in one box",
-            "link_label": "Shop sets",
-            "link": "shopify://collections/sets-programs"
+            "button_label": "Shop sets",
+            "button_link": "shopify://collections/sets-programs"
           }
         }
       },

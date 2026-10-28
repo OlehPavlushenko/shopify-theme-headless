@@ -26,11 +26,20 @@
   if menu.links.size > 0 and section.settings.show_utility_panel
     assign has_mobile_menu = true
   endif
+  # Product sliders of the search panel and the mega menus: fetched when first shown
+  # (snippets/lazy-section). section.index is blank when the section is rendered on its own
+  assign lazy = false
+  if section.index and request.design_mode == false
+    assign lazy = true
+  endif
 -%}
 
 <site-header
   class="site-header site-header--{{ layout }} color-{{ section.settings.color_scheme }}"
   data-sticky="{{ section.settings.sticky }}"
+  {% if menu.links.size > 0 %}
+    data-menu="MenuPanel"
+  {% endif %}
   {% if transparent %}
     data-transparent
     style="--header-transparent-fg: {{ section.settings.transparent_text_color }};"
@@ -90,7 +99,7 @@
 
     {%- if menu.links.size > 0 -%}
       <div class="site-header__nav">
-        {%- render 'site-nav', menu: menu, blocks: section.blocks -%}
+        {%- render 'site-nav', menu: menu, blocks: section.blocks, lazy: lazy, section_id: section.id -%}
       </div>
     {%- endif -%}
 
@@ -143,6 +152,8 @@
 
 {%- render 'search-panel',
   id: 'SearchPanel',
+  lazy: lazy,
+  section_id: section.id,
   style: section.settings.search_style,
   color_scheme: section.settings.search_color_scheme,
   blocks: section.blocks
@@ -486,13 +497,13 @@
         },
         {
           "type": "text",
-          "id": "link_label",
-          "label": "t:labels.link_label"
+          "id": "button_label",
+          "label": "t:labels.button_label"
         },
         {
           "type": "url",
-          "id": "link",
-          "label": "t:blocks.menu_promo.link"
+          "id": "button_link",
+          "label": "t:labels.button_link"
         }
       ]
     },

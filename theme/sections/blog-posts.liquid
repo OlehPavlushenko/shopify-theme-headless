@@ -13,7 +13,7 @@
   <div class="page-width">
     <ui-slider class="slider" style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 1.2;">
       {%- render 'section-head', heading: section.settings.heading, link_label: section.settings.link_label, link: link, nav: true -%}
-      <ul class="slider__track" data-slider-track role="list">
+      <ul class="scroll-track slider__track" data-slider-track role="list">
         {%- for post in source.articles -%}
           {%- if post.id == article.id -%}{%- continue -%}{%- endif -%}
           {%- if shown >= section.settings.limit -%}{%- break -%}{%- endif -%}

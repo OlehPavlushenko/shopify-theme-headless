@@ -209,8 +209,10 @@
     transition: background-color var(--duration-default) var(--ease);
   }
 
-  .product-card__step:hover {
-    background: color-mix(in srgb, var(--color-button-label) 16%, transparent);
+  @media (hover: hover) {
+    .product-card__step:hover {
+      background: color-mix(in srgb, var(--color-button-label) 16%, transparent);
+    }
   }
 
   .product-card__step .svg-icon {

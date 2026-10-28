@@ -35,8 +35,8 @@
             "eyebrow": "Gift ideas",
             "heading": "Ready-to-give sets",
             "text": "Free gift wrapping on every order",
-            "link_label": "Shop sets",
-            "link": "shopify://collections/sets-programs"
+            "button_label": "Shop sets",
+            "button_link": "shopify://collections/sets-programs"
           }
         }
       },

@@ -18,8 +18,10 @@
     transition: scale var(--duration-long) var(--ease-out);
   }
 
-  .promo-card:hover .promo-card__media img {
-    scale: 1.04;
+  @media (hover: hover) {
+    .promo-card:hover .promo-card__media img {
+      scale: 1.04;
+    }
   }
 
   .promo-card__body {

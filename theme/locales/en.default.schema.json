@@ -741,7 +741,6 @@
       "name": "Menu promo",
       "heading": "Heading",
       "text": "Text",
-      "link": "Link",
       "layout": "Layout",
       "layout_stacked": "Text under the image",
       "layout_overlay": "Text over the image"

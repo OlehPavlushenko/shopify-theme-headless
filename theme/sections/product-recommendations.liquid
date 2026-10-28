@@ -19,7 +19,7 @@
     <div class="page-width">
       <ui-slider class="slider product-list__slider" style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 2.2;">
         {%- render 'section-head', heading: section.settings.heading, nav: true -%}
-        <ul class="slider__track" data-slider-track role="list">
+        <ul class="scroll-track slider__track" data-slider-track role="list">
           {%- for product in recommendations.products -%}
             <li>
               {%- render 'product-card', product: product, quick_add: true, sizes: '(min-width: 990px) 22vw, 45vw' -%}

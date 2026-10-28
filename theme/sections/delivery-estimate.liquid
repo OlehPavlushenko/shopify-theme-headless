@@ -12,7 +12,7 @@
 <div class="delivery-estimate color-{{ section.settings.color_scheme }} section-spacing">
   <div class="page-width">
     <delivery-steps
-      class="delivery-estimate__card"
+      class="card delivery-estimate__card"
       data-min="{{ min_days }}"
       data-max="{{ max_days }}"
       data-cutoff="{{ section.settings.cutoff }}"
@@ -32,17 +32,17 @@
       </div>
       <ol class="delivery-estimate__steps" role="list">
         <li class="delivery-estimate__step delivery-estimate__step--done">
-          <span class="delivery-estimate__icon" aria-hidden="true">{%- render 'icon', name: 'cart' -%}</span>
+          <span class="icon-circle delivery-estimate__icon" aria-hidden="true">{%- render 'icon', name: 'cart' -%}</span>
           <span class="delivery-estimate__label">{{ section.settings.order_label | escape }}</span>
           <span class="delivery-estimate__date" data-delivery-date="order">{{ 'delivery.today' | t }}</span>
         </li>
         <li class="delivery-estimate__step">
-          <span class="delivery-estimate__icon" aria-hidden="true">{%- render 'icon', name: 'truck' -%}</span>
+          <span class="icon-circle delivery-estimate__icon" aria-hidden="true">{%- render 'icon', name: 'truck' -%}</span>
           <span class="delivery-estimate__label">{{ section.settings.ship_label | escape }}</span>
           <span class="delivery-estimate__date" data-delivery-date="ship">{{ 'delivery.ship_fallback' | t }}</span>
         </li>
         <li class="delivery-estimate__step">
-          <span class="delivery-estimate__icon" aria-hidden="true">{%- render 'icon', name: 'gift' -%}</span>
+          <span class="icon-circle delivery-estimate__icon" aria-hidden="true">{%- render 'icon', name: 'gift' -%}</span>
           <span class="delivery-estimate__label">{{ section.settings.arrive_label | escape }}</span>
           <span class="delivery-estimate__date" data-delivery-date="arrive">{{ 'delivery.arrive_fallback' | t: range: range }}</span>
         </li>

@@ -71,7 +71,7 @@
           </div>
           {%- comment -%} One page of 10: only these are rendered {%- endcomment -%}
           {%- paginate search.results by 10 -%}
-            <ul class="slider__track" data-slider-track role="list">
+            <ul class="scroll-track slider__track" data-slider-track role="list">
               {%- for product in search.results -%}
                 <li>
                   {%- render 'product-card',

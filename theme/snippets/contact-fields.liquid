@@ -1,15 +1,24 @@
 {% doc %}
-  The contact form's fields and its button (sections/main-contact), in either form: Shopify's contact
-  form (field names contact[…], the values kept after a failed post) or the plain form sent to
-  project-server (names name, email, phone, message).
+  The contact fields and the send button (snippets/contact-form: the contact page, "Ask a question"),
+  in either form: Shopify's contact form (field names contact[…], the values kept after a failed post)
+  or the plain form sent to project-server (names name, email, phone, message).
 
   @param {object} [form] - Shopify's form object (inside {% form 'contact' %}); none for the API form
   @param {boolean} [api] - Field names for project-server
+  @param {string} [id_prefix] - Prefix of the field ids (default 'ContactForm': ContactForm-name, …)
   @param {boolean} [show_phone] - The optional phone field
+  @param {boolean} [columns] - Name and email side by side (.main-contact__row)
+  @param {string} [message_label] - Label of the message field (default contact.message)
+  @param {number} [rows] - Rows of the message field (default 6)
 {% enddoc %}
 {%- liquid
+  assign prefix = id_prefix | default: 'ContactForm'
   assign name_label = 'contact.name' | t
   assign phone_label = 'contact.phone' | t
+  assign body_label = message_label
+  if body_label == blank
+    assign body_label = 'contact.message' | t
+  endif
   if api
     assign name_field = 'name'
     assign email_field = 'email'
@@ -22,25 +31,25 @@
     assign body_field = 'contact[body]'
   endif
 -%}
-<div class="main-contact__row">
-  <div class="field">
-    <label class="field__label" for="ContactForm-name">{{ name_label }}</label>
-    <input class="input" type="text" id="ContactForm-name" name="{{ name_field | escape }}" value="{{ form.name | default: customer.name | escape }}" autocomplete="name" maxlength="100">
-  </div>
-  <div class="field">
-    <label class="field__label" for="ContactForm-email">{{ 'contact.email' | t }} *</label>
-    <input class="input" type="email" id="ContactForm-email" name="{{ email_field }}" value="{{ form.email | default: customer.email | escape }}" autocomplete="email" spellcheck="false" required>
-  </div>
+{%- if columns -%}<div class="main-contact__row">{%- endif -%}
+<div class="field">
+  <label class="field__label" for="{{ prefix }}-name">{{ name_label }}</label>
+  <input class="input" type="text" id="{{ prefix }}-name" name="{{ name_field | escape }}" value="{{ form.name | default: customer.name | escape }}" autocomplete="name" maxlength="100">
 </div>
+<div class="field">
+  <label class="field__label" for="{{ prefix }}-email">{{ 'contact.email' | t }} *</label>
+  <input class="input" type="email" id="{{ prefix }}-email" name="{{ email_field }}" value="{{ form.email | default: customer.email | escape }}" autocomplete="email" spellcheck="false" required>
+</div>
+{%- if columns -%}</div>{%- endif -%}
 {%- if show_phone -%}
   <div class="field">
-    <label class="field__label" for="ContactForm-phone">{{ phone_label }}</label>
+    <label class="field__label" for="{{ prefix }}-phone">{{ phone_label }}</label>
     {%- comment -%} No mask: numbers are written differently in every country; a light check only {%- endcomment -%}
-    <input class="input" type="tel" id="ContactForm-phone" name="{{ phone_field | escape }}" value="{{ form.phone | escape }}" autocomplete="tel" pattern="\+?[0-9\s\(\)\-\.]{7,20}" data-message-invalid="{{ 'forms.phone' | t | escape }}">
+    <input class="input" type="tel" id="{{ prefix }}-phone" name="{{ phone_field | escape }}" value="{{ form.phone | escape }}" autocomplete="tel" pattern="\+?[0-9\s\(\)\-\.]{7,20}" data-message-invalid="{{ 'forms.phone' | t | escape }}">
   </div>
 {%- endif -%}
 <div class="field">
-  <label class="field__label" for="ContactForm-body">{{ 'contact.message' | t }} *</label>
-  <textarea class="input" id="ContactForm-body" name="{{ body_field }}" rows="6" maxlength="5000" required>{{ form.body }}</textarea>
+  <label class="field__label" for="{{ prefix }}-body">{{ body_label }} *</label>
+  <textarea class="input" id="{{ prefix }}-body" name="{{ body_field }}" rows="{{ rows | default: 6 }}" maxlength="5000" required>{{ form.body }}</textarea>
 </div>
 <button type="submit" class="btn btn--full">{{ 'contact.send' | t }}</button>

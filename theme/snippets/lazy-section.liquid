@@ -1,0 +1,41 @@
+{% doc %}
+  Placeholder of hidden UI that is fetched when it is first shown (<lazy-section>, @ui/lazy-section):
+  the heading and a link that works without JS. The same section rendered on its own (the Section
+  Rendering API, where section.index is blank) outputs the full element with data-lazy-key="<key>",
+  which replaces the placeholder. Callers decide with `lazy` (see snippets/search-panel):
+  section.index present and not in the theme editor.
+
+  @param {string} section_id - section.id of the section that renders the full element
+  @param {string} key - Unique key (the block id); the full element carries data-lazy-key="<key>"
+  @param {string} [class] - Classes of the full element (the placeholder looks like its frame)
+  @param {string} [heading] - Heading shown meanwhile
+  @param {string} [heading_tag] - 'h2' | 'p' (default 'p')
+  @param {string} [heading_class] - Heading classes (default 'eyebrow')
+  @param {string} [link] - Fallback link (default: all products)
+  @param {string} [prefetch] - Selector: pointer or focus on it starts loading (the opener)
+{% enddoc %}
+{%- liquid
+  assign tag = heading_tag | default: 'p'
+-%}
+<lazy-section
+  class="{{ class }}"
+  data-url="{{ routes.root_url }}"
+  data-section="{{ section_id }}"
+  data-key="{{ key }}"
+  {% if prefetch != blank %}
+    data-prefetch="{{ prefetch | escape }}"
+  {% endif %}
+>
+  {%- if heading != blank -%}
+    <div class="slider__head">
+      <{{ tag }} class="{{ heading_class | default: 'eyebrow' }}">{{ heading | escape }}</{{ tag }}>
+    </div>
+  {%- endif -%}
+  <a href="{{ link | default: routes.all_products_collection_url }}" class="link-arrow">
+    {{- 'search.browse_all' | t -}}
+    {%- render 'icon', name: 'arrow-right' -%}
+  </a>
+</lazy-section>
+<script type="module">
+  import '@ui/lazy-section';
+</script>

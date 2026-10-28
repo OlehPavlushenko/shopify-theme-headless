@@ -79,7 +79,7 @@
             -%}
             <li class="collection-tile{% if large %} collection-tile--large{% endif %}">
               <a href="{{ collection.url }}" class="collection-tile__link">
-                <span class="collection-tile__media">
+                <span class="frame frame--cover collection-tile__media">
                   {%- if cover -%}
                     {%- if large and index == 1 -%}
                       {%- comment -%} The first large tile is the page's main image {%- endcomment -%}

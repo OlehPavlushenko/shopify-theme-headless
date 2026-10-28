@@ -5,72 +5,21 @@
  */
 @layer components {
   /* ------------------------------------------------- top search panel */
+  /* A .drawer: .drawer--top slides down full width ('top'), the plain drawer comes from the right
+     ('drawer'). The panel itself scrolls; its backdrop dims without the drawers' blur */
   .search-panel {
-    position: fixed;
-    inset: 0 0 auto;
-    width: 100%;
-    max-width: 100%;
-    max-height: 100dvh;
-    margin: 0;
-    padding: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
-    color: var(--color-foreground);
-    background: var(--color-background);
-    border: 0;
-    box-shadow: var(--shadow-overlay);
-    translate: 0 -100%;
-    /* Leaving: an even slide out (ease-in-out); entering ([open]): decelerating (ease-out) */
-    transition: translate var(--duration-long) var(--ease-in-out);
-  }
-
-  .search-panel[open]:not([data-closing]) {
-    translate: 0 0;
-    transition-duration: var(--duration-long);
-    transition-timing-function: var(--ease-out);
   }
 
   @media (min-width: 750px) {
-    .search-panel {
+    .search-panel--top {
       max-height: min(88dvh, 72rem);
     }
   }
 
-  @starting-style {
-    .search-panel[open]:not([data-closing]) {
-      translate: 0 -100%;
-    }
-  }
-
-  .search-panel::backdrop {
-    background: transparent;
-    transition: background-color var(--duration-default) var(--ease);
-  }
-
-  .search-panel[open]:not([data-closing])::backdrop {
-    background: var(--backdrop-color);
-  }
-
-  @starting-style {
-    .search-panel[open]:not([data-closing])::backdrop {
-      background: transparent;
-    }
-  }
-
-  /* Side drawer style: from the right edge, single column */
-  .search-panel--drawer {
-    inset: 0 0 0 auto;
-    width: var(--drawer-width);
-    height: 100dvh;
-    max-height: 100dvh;
-    border-radius: 0;
-    translate: 100% 0;
-  }
-
-  @starting-style {
-    .search-panel--drawer[open]:not([data-closing]) {
-      translate: 100% 0;
-    }
+  .search-panel:is([open], :popover-open):not([data-closing])::backdrop {
+    backdrop-filter: none;
   }
 
   .search-panel--drawer .search-panel__inner {
@@ -287,17 +236,16 @@
     flex-direction: column;
     gap: var(--space-xs);
     height: 100%;
-    padding: var(--space-l);
     text-decoration: none;
     color: var(--color-foreground);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
     transition: background-color var(--duration-default) var(--ease);
   }
 
-  .text-card:hover {
-    color: var(--color-foreground);
-    background: color-mix(in srgb, var(--color-surface) 80%, var(--color-heading));
+  @media (hover: hover) {
+    .text-card:hover {
+      color: var(--color-foreground);
+      background: color-mix(in srgb, var(--color-surface) 80%, var(--color-heading));
+    }
   }
 
   .text-card__type {

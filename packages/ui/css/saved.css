@@ -60,27 +60,16 @@
     transition: opacity var(--duration-default) var(--ease);
   }
 
+  /* An .empty-state of a set width */
   .saved-empty {
-    display: grid;
-    justify-items: center;
-    gap: var(--space-s);
     max-width: 52rem;
     margin-inline: auto;
-    padding: var(--space-2xl) var(--space-l);
-    text-align: center;
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
   }
 
   .saved-empty__icon {
-    display: grid;
-    place-items: center;
-    width: 6.4rem;
-    aspect-ratio: 1;
+    --icon-circle-size: 6.4rem;
+
     margin-bottom: var(--space-xs);
-    color: var(--color-accent);
-    background: var(--color-background);
-    border-radius: 50%;
   }
 
   .saved-empty__icon .svg-icon {
@@ -148,8 +137,10 @@
     transition: scale var(--duration-long) var(--ease-out);
   }
 
-  .compare-table__media:hover img {
-    scale: 1.04;
+  @media (hover: hover) {
+    .compare-table__media:hover img {
+      scale: 1.04;
+    }
   }
 
   .compare-table__title {

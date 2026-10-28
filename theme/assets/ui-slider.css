@@ -14,6 +14,11 @@
     min-width: 0;
   }
 
+  /* A slider fetched when first shown (@ui/lazy-section): its placeholder takes the slider's classes */
+  lazy-section {
+    display: block;
+  }
+
   .slider__head {
     display: flex;
     flex-wrap: wrap;
@@ -60,26 +65,43 @@
     cursor: default;
   }
 
+  /*
+   * Scroll track: a list that scrolls sideways one snap point per item, without a scrollbar
+   * (announcements, hero, product gallery, lightbox, every .slider__track). Item width:
+   * --track-item (default: one item per view).
+   * .scrollbar-hidden: the same scrollbar hiding for other rows that scroll (subcollections, FAQ topics).
+   */
+  .scroll-track {
+    display: grid;
+    grid-auto-columns: var(--track-item, 100%);
+    grid-auto-flow: column;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    list-style: none;
+  }
+
+  .scroll-track,
+  .scrollbar-hidden {
+    scrollbar-width: none;
+  }
+
+  .scroll-track::-webkit-scrollbar,
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+
   .slider__track {
     --columns: var(--slider-columns-mobile, 2.2);
+    --track-item: calc((100% - (var(--columns) - 1) * var(--slider-gap)) / var(--columns));
 
-    display: grid;
-    grid-auto-columns: calc((100% - (var(--columns) - 1) * var(--slider-gap)) / var(--columns));
-    grid-auto-flow: column;
     gap: var(--slider-gap);
     /* A scrolling track clips both axes: room for borders and focus rings at the top and bottom
        edges, taken back by the margin so the layout doesn't move */
     margin: -0.4rem 0;
     padding: 0.4rem 0;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    list-style: none;
-  }
-
-  .slider__track::-webkit-scrollbar {
-    display: none;
   }
 
   .slider__track > * {

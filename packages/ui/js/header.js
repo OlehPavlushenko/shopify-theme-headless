@@ -4,6 +4,8 @@
  * Attributes (set by the server-rendered markup):
  * - data-sticky="none|always|scroll-up"  scroll-up hides the header while scrolling down
  * - data-transparent                     header overlays the first section until the page scrolls
+ * - data-menu="<id>"                     the mobile menu panel (a popover): <html data-menu-open> while
+ *                                        it is open (the header turns solid, its toggle shows a cross)
  * State attributes it sets:
  * - data-scrolled  page is scrolled past the top (transparent header turns solid)
  * - data-hidden    scroll-up mode, header slid out of view
@@ -34,13 +36,20 @@ class SiteHeader extends HTMLElement {
     this.#section = this.closest('.site-header-section');
     this.#section?.addEventListener('transitionend', this.#onTransitionEnd, { signal });
     window.addEventListener('scroll', this.#onScroll, { passive: true, signal });
+    // beforetoggle doesn't bubble (captured here); it comes as the panel opens and as it is hidden
+    if (this.dataset.menu) document.addEventListener('beforetoggle', this.#onMenuToggle, { capture: true, signal });
   }
 
   disconnectedCallback() {
     this.#abort?.abort();
+    document.documentElement.removeAttribute('data-menu-open');
     this.#resizeObserver?.disconnect();
     clearTimeout(this.#slideTimer);
   }
+
+  #onMenuToggle = (event) => {
+    if (event.target.id === this.dataset.menu) document.documentElement.toggleAttribute('data-menu-open', event.newState === 'open');
+  };
 
   #onTransitionEnd = (event) => {
     if (event.target === this.#section && event.propertyName === 'translate') this.#endSlide();

@@ -92,9 +92,11 @@
       background-color var(--duration-short) var(--ease);
   }
 
-  .cart-line__remove:hover {
-    color: var(--color-heading);
-    background: var(--color-surface);
+  @media (hover: hover) {
+    .cart-line__remove:hover {
+      color: var(--color-heading);
+      background: var(--color-surface);
+    }
   }
 
   .cart-line__remove .svg-icon {
@@ -594,12 +596,6 @@
     gap: var(--space-2xl);
   }
 
-  .main-cart__summary {
-    padding: var(--space-l);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
-  }
-
   .main-cart__upsell {
     margin-top: var(--space-2xl);
   }
@@ -608,12 +604,6 @@
     .main-cart__layout {
       grid-template-columns: minmax(0, 1fr) 40rem;
       align-items: start;
-    }
-
-    .main-cart__summary {
-      position: sticky;
-      top: var(--sticky-top);
-      transition: var(--sticky-transition);
     }
   }
 

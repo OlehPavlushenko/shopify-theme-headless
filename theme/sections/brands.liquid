@@ -7,7 +7,7 @@
   <div class="page-width">
     <ui-slider class="slider" style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 2.5;">
       {%- render 'section-head', heading: section.settings.heading, link_label: section.settings.link_label, link: section.settings.link, nav: true -%}
-      <ul class="slider__track" data-slider-track role="list">
+      <ul class="scroll-track slider__track" data-slider-track role="list">
         {%- for block in section.blocks -%}
           {%- liquid
             assign name = block.settings.name | default: block.settings.image.alt
@@ -18,7 +18,7 @@
           -%}
           <li {{ block.shopify_attributes }}>
             <{{ tag }}
-              class="brand-card"
+              class="card brand-card"
               {% if tag == 'a' %}
                 href="{{ block.settings.link }}" aria-label="{{ name | escape }}"
               {% endif %}

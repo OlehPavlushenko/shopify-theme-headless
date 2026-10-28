@@ -10,7 +10,11 @@ and the list of mistakes we already made once. Read both before adding code.
   variant picker, slider, drawer / popup, accordion, toast, skeleton, section head, page header,
   promo card (`.grid-promo` in a grid), `.btn` variants, `.pill` (statuses: `--soft`, `--success`,
   `--danger`), `.chip` (selected: `aria-pressed` / `aria-checked` / `aria-current`; `--compact` for
-  removable filters), `.tag` (topics), `.empty-state`, `.form-errors`, `.notice` (`--success`: a form's success line), `.search-form` (a field with its button), `.search-field` (icon inside a field), `.load-more` cell. Extend one
+  removable filters), `.tag` (topics), `.empty-state`, `.card` (a surface box; `--card-padding`),
+  `.icon-circle` (`--icon-circle-size`, `--icon-circle-bg`), `.frame` (`--cover`: fills its positioned
+  parent), `.scroll-track` (a sideways snap list without a scrollbar; item width `--track-item`;
+  `.scrollbar-hidden` for other scrolling rows), `.sticky-column` (+ `--scroll`, `--wide`: a column that
+  stays under the header), `.drawer` (`--top`, `--start`), `.form-errors`, `.notice` (`--success`: a form's success line), `.search-form` (a field with its button), `.search-field` (icon inside a field), `.load-more` cell. Extend one
   with a parameter or modifier instead of writing a look-alike.
 - **Shared behavior already exists:** `<load-more>` (paginated grids), `<section-swap>` (links and
   GET forms that re-render a section, also from another template), `<form-validate>` (field checks with messages under the fields, messages
@@ -62,6 +66,12 @@ and the list of mistakes we already made once. Read both before adding code.
     `dialog-header` (`title`, `title_id`, `tag`, `title_class`, `class`, `close_class`, `popover`,
     `actions`, `content`): the title row of a drawer / popup with its close button;
   - `form-success` (`text`, `autofocus`): a form's success line;
+    `contact-form` (`api`, `path`, `action`, `fields`, `intro`, `reopen`, …): a form sent to project-server
+    or, without the API URL, Shopify's contact form, with `<form-validate>` and its success template
+    (contact page, "Ask a question", back in stock); `contact-fields` (`id_prefix`, …) are its fields;
+  - `lazy-section` (`section_id`, `key`, `class`, `heading`, `link`, `prefetch`): the placeholder of hidden
+    UI fetched when first shown (`@ui/lazy-section`); the section rendered on its own (`section.index`
+    blank) outputs the full element with `data-lazy-key`;
   - `search-form` (`id`, `value`, `placeholder`, `label`, `scope`, `class`, `wrap_class`,
     `section_form`, `autocomplete`, `autofocus`, `panel`): every store search field with its
     `<form-validate>`;
@@ -121,6 +131,9 @@ and the list of mistakes we already made once. Read both before adding code.
   `{ signal }` from an `AbortController` made there (`#abort`) and aborted in `disconnectedCallback`,
   which also clears timers, observers and requests. State lives in private `#fields`, not in public
   fields or expandos on other elements (a `WeakMap` for those).
+- State on `<html>` / `<body>` comes from JS attributes, not `:has()` over the whole page:
+  `html[data-scroll-lock]` (@ui/dialog: a modal dialog or a side panel is open), `html[data-menu-open]`
+  (@ui/header: the mobile menu), `body[data-sticky-buy]` (product.js: the sticky add-to-cart bar shows).
 - Shared helpers instead of copies: `@ui/fetch-html` (`sectionUrl`, `fetchHTML` with an optional
   cache, `importChildren`, `latest()` — only the newest request renders), `@ui/storage` (local /
   session storage that never throws), `@ui/api` (`postJSON` to project-server with reCAPTCHA v3),

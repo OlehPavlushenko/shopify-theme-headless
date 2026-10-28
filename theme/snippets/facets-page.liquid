@@ -93,7 +93,7 @@
 
   <div class="facets__layout">
     {%- if has_filters -%}
-      <div id="{{ panel_id }}" class="facets__panel drawer drawer--start" popover="manual" aria-labelledby="{{ panel_id }}-title">
+      <div id="{{ panel_id }}" class="facets__panel drawer drawer--start{% if layout == 'sidebar' %} sticky-column sticky-column--scroll{% endif %}" popover="manual" aria-labelledby="{{ panel_id }}-title">
         <div class="drawer__inner facets__panel-inner">
           {%- capture panel_title -%}
             {%- render 'icon', name: 'sliders' -%}
@@ -156,12 +156,12 @@
             {%- if promo and paginate.current_page == 1 and forloop.index == promo.settings.position -%}
               <li class="facets__promo grid-promo" {{ promo.shopify_attributes }}>
                 {%- render 'promo-card',
-                  url: promo.settings.link,
+                  url: promo.settings.button_link,
                   image: promo.settings.image,
                   eyebrow: promo.settings.eyebrow,
                   heading: promo.settings.heading,
                   text: promo.settings.text,
-                  link_label: promo.settings.link_label,
+                  link_label: promo.settings.button_label,
                   layout: 'overlay',
                   ratio: '4 / 5',
                   sizes: card_sizes
@@ -185,7 +185,7 @@
                   show_vendor: section.settings.show_vendor
                 -%}
               {%- else -%}
-                <a href="{{ item.url }}" class="text-card">
+                <a href="{{ item.url }}" class="card text-card">
                   <span class="text-card__type">
                     {%- if object_type == 'article' -%}{{ 'search.article' | t }}{%- else -%}{{ 'search.page' | t }}{%- endif -%}
                   </span>

@@ -44,23 +44,6 @@
     display: block;
   }
 
-  .hero__track {
-    display: grid;
-    grid-auto-columns: 100%;
-    grid-auto-flow: column;
-    margin: 0;
-    padding: 0;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    list-style: none;
-  }
-
-  .hero__track::-webkit-scrollbar {
-    display: none;
-  }
-
   .hero__slide {
     position: relative;
     isolation: isolate;
@@ -85,8 +68,6 @@
   }
 
   .hero__media {
-    position: absolute;
-    inset: 0;
     z-index: -2;
   }
 
@@ -413,8 +394,10 @@
     transition: scale var(--duration-long) var(--ease-out);
   }
 
-  .collection-card:hover .collection-card__media img {
-    scale: 1.04;
+  @media (hover: hover) {
+    .collection-card:hover .collection-card__media img {
+      scale: 1.04;
+    }
   }
 
   /* Inline, so a wrapped title keeps the arrow right after its last word */
@@ -481,15 +464,7 @@
 
   /* Cover: the image behind the text, tinted toward the scheme background */
   .page-header__cover {
-    position: absolute;
-    inset: 0;
     z-index: -1;
-  }
-
-  .page-header__cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
 
   .page-header__cover::after {
@@ -518,12 +493,7 @@
     margin: 0 calc(var(--gutter) * -1);
     padding: 0.4rem var(--gutter);
     overflow-x: auto;
-    scrollbar-width: none;
     list-style: none;
-  }
-
-  .subcollections::-webkit-scrollbar {
-    display: none;
   }
 
   /* The row scrolls: chips keep their width (shrunk, the count spilled over the border) */
@@ -549,9 +519,11 @@
       background-color var(--duration-short) var(--ease);
   }
 
-  .subcollection:hover {
-    background: var(--color-background);
-    border-color: var(--color-heading);
+  @media (hover: hover) {
+    .subcollection:hover {
+      background: var(--color-background);
+      border-color: var(--color-heading);
+    }
   }
 
   .subcollection[aria-current] {
@@ -707,21 +679,22 @@
   /* Logo tiles on the surface color; muted: grayscale until hovered */
   /* Every tile the same 3:2 box whatever the logo's shape (min-height 0: content can't stretch it) */
   .brand-card {
+    --card-padding: var(--space-m);
+
     display: grid;
     grid-template: minmax(0, 1fr) / minmax(0, 1fr);
     place-items: center;
     aspect-ratio: 3 / 2;
     min-height: 0;
-    padding: var(--space-m);
     color: var(--color-heading);
     text-decoration: none;
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
     transition: background-color var(--duration-default) var(--ease);
   }
 
-  a.brand-card:hover {
-    background: color-mix(in srgb, var(--color-surface) 80%, var(--color-foreground) 6%);
+  @media (hover: hover) {
+    a.brand-card:hover {
+      background: color-mix(in srgb, var(--color-surface) 80%, var(--color-foreground) 6%);
+    }
   }
 
   /* Logos of any shape fit the same tile: a wide one by its width, a tall one by its height */
@@ -748,9 +721,11 @@
     filter: grayscale(1);
   }
 
-  .brands--muted .brand-card:hover .brand-card__logo {
-    opacity: 1;
-    filter: none;
+  @media (hover: hover) {
+    .brands--muted .brand-card:hover .brand-card__logo {
+      opacity: 1;
+      filter: none;
+    }
   }
 
   /* -------------------------------------------------------------- FAQ */
@@ -792,16 +767,9 @@
 
     /* align-self: a grid item stretches to its row — sticky needs room to move in */
     .faq--split .faq__intro {
-      position: sticky;
-      top: var(--sticky-top);
       align-self: start;
-      max-height: var(--sticky-max-height);
       margin: calc(-1 * var(--sticky-focus-room));
       padding: var(--sticky-focus-room);
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      scrollbar-width: thin;
-      transition: var(--sticky-transition);
     }
   }
 
@@ -866,11 +834,6 @@
       margin-inline: calc(var(--gutter) * -1);
       padding-inline: var(--gutter);
       overflow-x: auto;
-      scrollbar-width: none;
-    }
-
-    .faq--nav .faq__nav-list::-webkit-scrollbar {
-      display: none;
     }
 
     .faq--nav .faq__intro > .btn {
@@ -1152,12 +1115,7 @@
     }
   }
 
-  /* Cover: the image fills the screen under a tint of the background color */
-  .password--cover .password__media {
-    position: absolute;
-    inset: 0;
-  }
-
+  /* Cover (.frame--cover): the image fills the screen under a tint of the background color */
   .password--cover .password__media::after {
     content: "";
     position: absolute;
@@ -1286,10 +1244,9 @@
   }
 
   .gift-card__message {
+    --card-padding: var(--space-m) var(--space-l);
+
     margin: 0;
-    padding: var(--space-m) var(--space-l);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
   }
 
   .gift-card__message blockquote {
@@ -1489,14 +1446,7 @@
   }
 
   .main-contact__icon {
-    display: grid;
-    flex-shrink: 0;
-    place-items: center;
-    width: var(--control-height);
-    aspect-ratio: 1;
-    color: var(--color-accent);
-    background: var(--color-surface);
-    border-radius: var(--radius-full);
+    --icon-circle-bg: var(--color-surface);
   }
 
   .main-contact__label {
@@ -1510,9 +1460,6 @@
     display: grid;
     align-content: start;
     gap: var(--space-l);
-    padding: var(--space-l);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
   }
 
   /* Rows leave room for a field's error message (.field-error) */
@@ -1677,11 +1624,6 @@
   }
 
   .collection-tile__media :is(img, svg) {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
     transition: scale var(--duration-long) var(--ease-out);
   }
 
@@ -1815,13 +1757,7 @@
   }
 
   .main-blog__signup-icon {
-    display: grid;
-    place-items: center;
-    width: 4.8rem;
-    height: 4.8rem;
-    color: var(--color-accent);
-    background: var(--color-background);
-    border-radius: var(--radius-full);
+    --icon-circle-size: 4.8rem;
   }
 
   .main-blog__signup-icon .svg-icon {
@@ -1909,9 +1845,6 @@
     align-content: start;
     gap: var(--space-s);
     order: 3;
-    padding: var(--space-l);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
   }
 
   .main-article__shop h2 {
@@ -1952,17 +1885,6 @@
     .main-article__layout:has(.main-article__toc article-toc[hidden]) .main-article__body,
     .main-article__layout:not(:has(.main-article__toc)) .main-article__body {
       grid-column: 1 / span 2;
-    }
-
-    .main-article__toc,
-    .main-article__shop {
-      position: sticky;
-      top: var(--sticky-top);
-      max-height: var(--sticky-max-height);
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      scrollbar-width: thin;
-      transition: var(--sticky-transition);
     }
   }
 
@@ -2215,11 +2137,10 @@
   }
 
   .main-article__comment {
+    --card-padding: var(--space-m);
+
     display: grid;
     gap: var(--space-2xs);
-    padding: var(--space-m);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
   }
 
   .main-article__comment-meta {
@@ -2309,8 +2230,10 @@
     transition: scale var(--duration-long) var(--ease-out);
   }
 
-  .article-card:hover .article-card__media img {
-    scale: 1.04;
+  @media (hover: hover) {
+    .article-card:hover .article-card__media img {
+      scale: 1.04;
+    }
   }
 
   .article-card__date {
@@ -2644,11 +2567,10 @@
   }
 
   .delivery-estimate__card {
+    --card-padding: var(--space-xl) var(--space-l);
+
     display: grid;
     gap: var(--space-xl);
-    padding: var(--space-xl) var(--space-l);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
   }
 
   .delivery-estimate__head {
@@ -2707,15 +2629,10 @@
   }
 
   .delivery-estimate__icon {
-    display: grid;
-    place-items: center;
-    width: var(--icon-box);
-    height: var(--icon-box);
+    --icon-circle-size: var(--icon-box);
+
     margin-bottom: var(--space-xs);
-    color: var(--color-accent);
-    background: var(--color-background);
     border: 0.2rem solid var(--color-accent);
-    border-radius: var(--radius-full);
   }
 
   .delivery-estimate__step--done .delivery-estimate__icon {
@@ -2810,9 +2727,6 @@
     display: grid;
     align-content: start;
     gap: var(--space-2xs);
-    padding: var(--space-l);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
   }
 
   .product-story__ingredient > .svg-icon {

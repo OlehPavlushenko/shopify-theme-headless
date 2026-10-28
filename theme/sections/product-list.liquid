@@ -91,10 +91,10 @@
         {%- if deal_card != blank -%}
           <div class="product-list__deal-layout">
             <div class="product-list__deal">{{ deal_card }}</div>
-            <ul class="slider__track" data-slider-track role="list">{{ cards }}</ul>
+            <ul class="scroll-track slider__track" data-slider-track role="list">{{ cards }}</ul>
           </div>
         {%- else -%}
-          <ul class="slider__track" data-slider-track role="list">{{ cards }}</ul>
+          <ul class="scroll-track slider__track" data-slider-track role="list">{{ cards }}</ul>
         {%- endif -%}
       </ui-slider>
     {%- else -%}

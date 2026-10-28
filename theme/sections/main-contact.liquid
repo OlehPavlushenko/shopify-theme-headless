@@ -19,7 +19,7 @@
       <ul class="main-contact__list" role="list">
         {%- if settings.store_phone != blank -%}
           <li class="main-contact__item">
-            <span class="main-contact__icon">{%- render 'icon', name: 'phone' -%}</span>
+            <span class="icon-circle main-contact__icon">{%- render 'icon', name: 'phone' -%}</span>
             <span>
               <span class="main-contact__label">{{ 'contact.phone' | t }}</span>
               <a href="tel:{{ settings.store_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' }}">{{ settings.store_phone | escape }}</a>
@@ -28,7 +28,7 @@
         {%- endif -%}
         {%- if settings.store_email != blank -%}
           <li class="main-contact__item">
-            <span class="main-contact__icon">{%- render 'icon', name: 'mail' -%}</span>
+            <span class="icon-circle main-contact__icon">{%- render 'icon', name: 'mail' -%}</span>
             <span>
               <span class="main-contact__label">{{ 'contact.email' | t }}</span>
               <a href="mailto:{{ settings.store_email }}">{{ settings.store_email | escape }}</a>
@@ -37,7 +37,7 @@
         {%- endif -%}
         {%- if settings.store_address != blank -%}
           <li class="main-contact__item">
-            <span class="main-contact__icon">{%- render 'icon', name: 'map-pin' -%}</span>
+            <span class="icon-circle main-contact__icon">{%- render 'icon', name: 'map-pin' -%}</span>
             <span>
               <span class="main-contact__label">{{ 'contact.address' | t }}</span>
               <span>{{ settings.store_address | escape | newline_to_br }}</span>
@@ -46,7 +46,7 @@
         {%- endif -%}
         {%- if settings.store_hours != blank -%}
           <li class="main-contact__item">
-            <span class="main-contact__icon">{%- render 'icon', name: 'clock' -%}</span>
+            <span class="icon-circle main-contact__icon">{%- render 'icon', name: 'clock' -%}</span>
             <span>
               <span class="main-contact__label">{{ 'contact.hours' | t }}</span>
               <span>{{ settings.store_hours | escape }}</span>
@@ -59,46 +59,18 @@
 
     {%- comment -%} With Theme settings > Integrations > "API URL": the message goes to project-server (POST /contact) {%- endcomment -%}
     {%- capture api -%}{% render 'api-url' %}{%- endcapture -%}
-    {%- assign api = api | strip -%}
-    {%- assign success_text = 'contact.success' | t -%}
-
-    <contact-form
-      class="main-contact__form-card"
-      {% if api != blank %}
-        data-endpoint="{{ api }}/contact"
-      {% endif %}
-      {% if settings.recaptcha_site_key != blank %}
-        data-recaptcha="{{ settings.recaptcha_site_key | escape }}"
-      {% endif %}
-      data-message-error="{{ 'contact.error' | t | escape }}"
-      data-message-email="{{ 'forms.email' | t | escape }}"
-      data-message-phone="{{ 'forms.phone' | t | escape }}"
-    >
-      <h2 class="h4">{{ section.settings.form_heading | escape }}</h2>
-      <form-validate {% render 'form-validate-messages' %}>
-        {%- if api != blank -%}
-          <form id="ContactForm" class="main-contact__form">
-            <p class="form-errors" role="alert" data-contact-message></p>
-            {%- render 'contact-fields', api: true, show_phone: section.settings.show_phone -%}
-          </form>
-        {%- else -%}
-          {%- form 'contact', id: 'ContactForm', class: 'main-contact__form' -%}
-            {%- if form.posted_successfully? -%}
-              {%- render 'form-success', text: success_text, autofocus: true -%}
-            {%- elsif form.errors -%}
-              <p class="form-error" role="alert" tabindex="-1" autofocus>{{ form.errors | default_errors }}</p>
-            {%- endif -%}
-            {%- render 'contact-fields', form: form, show_phone: section.settings.show_phone -%}
-          {%- endform -%}
-        {%- endif -%}
-      </form-validate>
-      <template data-contact-success>{% render 'form-success', text: success_text %}</template>
-    </contact-form>
+    {%- render 'contact-form',
+      api: api,
+      class: 'card main-contact__form-card',
+      heading: section.settings.form_heading,
+      form_id: 'ContactForm',
+      form_class: 'main-contact__form',
+      message_phone: true,
+      show_phone: section.settings.show_phone,
+      columns: true
+    -%}
   </div>
 </div>
-<script type="module">
-  import '@ui/contact-form';
-</script>
 
 {% schema %}
 {

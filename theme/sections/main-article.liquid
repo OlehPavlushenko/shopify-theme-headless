@@ -48,7 +48,7 @@
 
   <div class="page-width main-article__layout">
     {%- if section.settings.show_toc -%}
-      <aside class="main-article__toc">
+      <aside class="main-article__toc sticky-column sticky-column--scroll sticky-column--wide">
         {%- comment -%} From 1200px a sticky list; below it a bar at the bottom of the screen that opens the list {%- endcomment -%}
         <article-toc class="article-toc" data-content="#ArticleContent-{{ section.id }}" hidden>
           <button type="button" class="article-toc__toggle" aria-expanded="false" aria-controls="ArticleTocPanel-{{ section.id }}" data-toc-toggle>
@@ -67,7 +67,7 @@
     {%- endif -%}
 
     {%- if section.settings.show_products and shop_products.size > 0 -%}
-      <aside class="main-article__shop" aria-labelledby="ShopArticle-{{ section.id }}">
+      <aside class="main-article__shop card sticky-column sticky-column--scroll sticky-column--wide" aria-labelledby="ShopArticle-{{ section.id }}">
         <h2 id="ShopArticle-{{ section.id }}" class="h5">{{ 'blog.shop_article' | t }}</h2>
         <ul class="product-rows" role="list">
           {%- for product in shop_products limit: 6 -%}
@@ -107,7 +107,7 @@
           {%- if article.comments.size > 0 -%}
             <ol class="main-article__comment-list" role="list">
               {%- for comment in article.comments -%}
-                <li class="main-article__comment">
+                <li class="card main-article__comment">
                   <p class="main-article__comment-meta">
                     <strong>{{ comment.author | escape }}</strong> · {{ comment.created_at | time_tag: format: 'date' }}
                   </p>

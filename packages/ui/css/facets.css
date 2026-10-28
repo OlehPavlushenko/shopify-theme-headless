@@ -461,16 +461,20 @@
   @media (min-width: 990px) {
     /* Sidebar and horizontal: the panel is part of the page (not a drawer), no drawer chrome */
     :is(.facets--sidebar, .facets--horizontal) .facets__panel {
-      position: static;
       display: block;
       width: auto;
       height: auto;
-      max-height: none;
-      overflow: visible;
       color: inherit;
       background: none;
       box-shadow: none;
       translate: none;
+    }
+
+    /* The sidebar's panel is a .sticky-column */
+    .facets--horizontal .facets__panel {
+      position: static;
+      max-height: none;
+      overflow: visible;
       transition: none;
     }
 
@@ -539,18 +543,11 @@
       overflow: visible;
     }
 
+    /* .sticky-column: room for the scrollbar, so it never covers the counts; quiet */
     .facets--sidebar .facets__panel {
-      position: sticky;
-      top: var(--sticky-top);
-      transition: var(--sticky-transition);
       margin: calc(-1 * var(--sticky-focus-room));
-      max-height: var(--sticky-max-height);
-      /* Room for the scrollbar, so it never covers the counts; thin and quiet */
       padding: var(--sticky-focus-room) var(--space-xs) var(--sticky-focus-room) var(--sticky-focus-room);
-      overflow-y: auto;
-      overscroll-behavior: contain;
       scrollbar-gutter: stable;
-      scrollbar-width: thin;
       scrollbar-color: var(--color-border) transparent;
     }
 
@@ -589,9 +586,14 @@
       transition: border-color var(--duration-short) var(--ease);
     }
 
-    .facets--horizontal .facet__summary:hover,
     .facets--horizontal .facet[open] > .facet__summary {
       border-color: var(--color-heading);
+    }
+
+    @media (hover: hover) {
+      .facets--horizontal .facet__summary:hover {
+        border-color: var(--color-heading);
+      }
     }
 
     .facets--horizontal .facet__body {

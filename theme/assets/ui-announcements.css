@@ -21,20 +21,7 @@
 
   /* One message per page of a scroll-snap track */
   .announcement-bar__track {
-    display: grid;
     grid-column: 2;
-    grid-auto-columns: 100%;
-    grid-auto-flow: column;
-    margin: 0;
-    padding: 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    list-style: none;
-  }
-
-  .announcement-bar__track::-webkit-scrollbar {
-    display: none;
   }
 
   .announcement-bar__item {
@@ -74,8 +61,10 @@
     opacity: 0.7;
   }
 
-  .announcement-bar__arrow:hover {
-    opacity: 1;
+  @media (hover: hover) {
+    .announcement-bar__arrow:hover {
+      opacity: 1;
+    }
   }
 
   .announcement-bar__arrow:disabled {
@@ -101,8 +90,10 @@
     animation: marquee var(--marquee-duration, 40s) linear infinite;
   }
 
-  .marquee:hover .marquee__track {
-    animation-play-state: paused;
+  @media (hover: hover) {
+    .marquee:hover .marquee__track {
+      animation-play-state: paused;
+    }
   }
 
   @keyframes marquee {

@@ -18,7 +18,7 @@
   <div class="page-width">
     <ui-slider class="slider" style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 1.6;">
       {%- render 'section-head', heading: section.settings.heading, link_label: section.settings.link_label, link: routes.collections_url, nav: true -%}
-      <ul class="slider__track" data-slider-track role="list">
+      <ul class="scroll-track slider__track" data-slider-track role="list">
         {%- for collection in list -%}
           {%- liquid
             if picked == false

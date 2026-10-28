@@ -12,6 +12,8 @@
 
   @param {object} menu - link_list
   @param {object[]} blocks - header section blocks (menu_promo, menu_products)
+  @param {boolean} [lazy] - Product sliders as placeholders fetched when the menu opens (snippets/lazy-section)
+  @param {string} [section_id] - The header's section.id (for lazy)
 {% enddoc %}
 <nav-menu class="site-nav">
   <nav aria-label="{{ menu.title | escape }}">
@@ -106,7 +108,7 @@
                       {%- for block in blocks -%}
                         {%- assign target = block.settings.menu_item | handleize -%}
                         {%- if target == link_handle -%}
-                          {%- render 'mega-menu-block', block: block -%}
+                          {%- render 'mega-menu-block', block: block, lazy: lazy, section_id: section_id -%}
                         {%- endif -%}
                       {%- endfor -%}
                     </div>

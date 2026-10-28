@@ -14,6 +14,8 @@
   @param {string} style - 'top' | 'drawer'
   @param {string} color_scheme - Color scheme id
   @param {object[]} blocks - Header blocks
+  @param {boolean} [lazy] - Product sliders as placeholders, fetched when the panel opens (snippets/lazy-section)
+  @param {string} [section_id] - The header's section.id (for lazy)
 {% enddoc %}
 {%- capture predictive_params -%}
   section_id=predictive-search&resources%5Btype%5D=collection,query&resources%5Blimit%5D=5&resources%5Blimit_scope%5D=each
@@ -23,6 +25,7 @@
   assign search_query = search_query | strip
   assign products_params = 'section_id=predictive-search' | append: search_query
   assign panel_style = style | default: 'top'
+  assign opener = '[data-dialog-open="' | append: id | append: '"]'
   if panel_style == 'drawer'
     assign card_sizes = '(min-width: 750px) 180px, 45vw'
   else
@@ -30,7 +33,7 @@
   endif
 -%}
 
-<dialog id="{{ id }}" class="search-panel search-panel--{{ panel_style }} color-{{ color_scheme }}" aria-label="{{ 'search.title' | t }}">
+<dialog id="{{ id }}" class="drawer{% if panel_style == 'top' %} drawer--top{% endif %} search-panel search-panel--{{ panel_style }} color-{{ color_scheme }}" aria-label="{{ 'search.title' | t }}">
   <predictive-search
     class="search-panel__inner{% if panel_style == 'top' %} page-width{% endif %}"
     data-endpoint="{{ routes.predictive_search_url }}"
@@ -131,14 +134,27 @@
               endif
             -%}
             {%- if block_products.size > 0 or block_products.count > 0 -%}
-              <ui-slider class="slider search-slider" {{ block.shopify_attributes }}>
+              {%- if lazy -%}
+                {%- render 'lazy-section',
+                  section_id: section_id,
+                  key: block.id,
+                  class: 'slider search-slider',
+                  heading: block.settings.heading,
+                  heading_tag: 'h2',
+                  heading_class: 'eyebrow search-results__heading',
+                  link: block.settings.collection.url,
+                  prefetch: opener
+                -%}
+                {%- continue -%}
+              {%- endif -%}
+              <ui-slider class="slider search-slider" data-lazy-key="{{ block.id }}" {{ block.shopify_attributes }}>
                 <div class="slider__head">
                   <h2 class="eyebrow search-results__heading">{{ block.settings.heading | escape }}</h2>
                   <div class="slider__head-end">
                     {%- render 'slider-nav', label: block.settings.heading -%}
                   </div>
                 </div>
-                <ul class="slider__track" data-slider-track role="list">
+                <ul class="scroll-track slider__track" data-slider-track role="list">
                   {%- for product in block_products limit: block.settings.limit -%}
                     <li>
                       {%- render 'product-card',

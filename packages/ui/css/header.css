@@ -65,12 +65,13 @@
     justify-self: start;
   }
 
+  /* html[data-menu-open]: the mobile menu panel is open (@ui/header) */
   .site-header__toggle .svg-icon--close,
-  html:has(#MenuPanel:popover-open) .site-header__toggle .svg-icon--menu {
+  html[data-menu-open] .site-header__toggle .svg-icon--menu {
     display: none;
   }
 
-  html:has(#MenuPanel:popover-open) .site-header__toggle .svg-icon--close {
+  html[data-menu-open] .site-header__toggle .svg-icon--close {
     display: block;
   }
 
@@ -93,8 +94,13 @@
     height: auto;
   }
 
+  /* With a logo for the transparent header: the transparent state (below) swaps the two */
+  .site-header__logo-image:has(+ .site-header__logo-image--transparent) {
+    display: var(--header-logo-display, block);
+  }
+
   .site-header__logo-image--transparent {
-    display: none;
+    display: var(--header-logo-transparent-display, none);
   }
 
   .site-header__shop-name {
@@ -136,29 +142,17 @@
   }
 
   /* Transparent at the top of the page; solid once scrolled or while a menu (desktop or mobile) is open */
-  html:not(:has(#MenuPanel:popover-open))
+  html:not([data-menu-open])
     .site-header-section:not(:has(+ .shopify-section-group-header-group))
     .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open])) {
     --color-heading: var(--header-transparent-fg);
     --color-foreground: var(--header-transparent-fg);
     --color-link-hover: var(--header-transparent-fg);
+    --header-logo-display: none;
+    --header-logo-transparent-display: block;
 
     background: transparent;
     border-color: transparent;
-  }
-
-  html:not(:has(#MenuPanel:popover-open))
-    .site-header-section:not(:has(+ .shopify-section-group-header-group))
-    .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open]))
-    :is(.site-header__logo-image:has(+ .site-header__logo-image--transparent)) {
-    display: none;
-  }
-
-  html:not(:has(#MenuPanel:popover-open))
-    .site-header-section:not(:has(+ .shopify-section-group-header-group))
-    .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open]))
-    .site-header__logo-image--transparent {
-    display: block;
   }
 
   /* ------------------------------------------------- desktop layouts */
@@ -254,8 +248,10 @@
     border-radius: 50%;
   }
 
-  .site-nav__toggle:hover {
-    background: var(--color-surface);
+  @media (hover: hover) {
+    .site-nav__toggle:hover {
+      background: var(--color-surface);
+    }
   }
 
   .site-nav__toggle .svg-icon {
@@ -568,9 +564,11 @@
     border-radius: var(--radius-input);
   }
 
-  .utility-panel__link:hover {
-    color: var(--color-heading);
-    background: var(--color-surface);
+  @media (hover: hover) {
+    .utility-panel__link:hover {
+      color: var(--color-heading);
+      background: var(--color-surface);
+    }
   }
 
   .utility-panel__link .svg-icon {

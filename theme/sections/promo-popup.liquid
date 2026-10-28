@@ -232,12 +232,20 @@
                 {%- comment -%} A segment of the wheel (above), nothing of its own {%- endcomment -%}
 
               {%- when 'products' -%}
-                {%- if block.settings.products.count > 0 -%}
-                  <ui-slider class="slider promo-popup__products" {{ block.shopify_attributes }}>
+                {%- comment -%} Fetched when the popup opens (snippets/lazy-section); section.index is blank when the section is rendered on its own {%- endcomment -%}
+                {%- if block.settings.products.count > 0 and section.index and request.design_mode == false -%}
+                  {%- render 'lazy-section',
+                    section_id: section.id,
+                    key: block.id,
+                    class: 'slider promo-popup__products',
+                    heading: block.settings.heading
+                  -%}
+                {%- elsif block.settings.products.count > 0 -%}
+                  <ui-slider class="slider promo-popup__products" data-lazy-key="{{ block.id }}" {{ block.shopify_attributes }}>
                     {%- if block.settings.heading != blank -%}
                       <p class="eyebrow">{{ block.settings.heading | escape }}</p>
                     {%- endif -%}
-                    <ul class="slider__track" data-slider-track role="list">
+                    <ul class="scroll-track slider__track" data-slider-track role="list">
                       {%- for product in block.settings.products -%}
                         <li>
                           {%- render 'product-card',
@@ -255,9 +263,9 @@
                 {%- endif -%}
 
               {%- when 'button' -%}
-                {%- if block.settings.label != blank -%}
-                  <a href="{{ block.settings.link | default: routes.all_products_collection_url }}" class="btn btn--full" {{ block.shopify_attributes }}>
-                    {{- block.settings.label | escape -}}
+                {%- if block.settings.button_label != blank -%}
+                  <a href="{{ block.settings.button_link | default: routes.all_products_collection_url }}" class="btn btn--full" {{ block.shopify_attributes }}>
+                    {{- block.settings.button_label | escape -}}
                   </a>
                 {%- endif -%}
             {%- endcase -%}
@@ -399,8 +407,8 @@
       "type": "button",
       "name": "t:sections.promo_popup.button",
       "settings": [
-        { "type": "text", "id": "label", "label": "t:labels.button_label", "default": "Shop now" },
-        { "type": "url", "id": "link", "label": "t:labels.button_link" }
+        { "type": "text", "id": "button_label", "label": "t:labels.button_label", "default": "Shop now" },
+        { "type": "url", "id": "button_link", "label": "t:labels.button_link" }
       ]
     }
   ],

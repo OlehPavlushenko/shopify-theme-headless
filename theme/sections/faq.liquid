@@ -25,7 +25,7 @@
 <div class="faq faq--{{ section.settings.layout }}{% if show_nav %} faq--nav{% endif %} color-{{ section.settings.color_scheme }} section-spacing">
   <{{ wrapper }} class="page-width faq__inner{% if has_intro == false %} faq__inner--list-only{% endif %}">
     {%- if has_intro -%}
-      <div class="faq__intro">
+      <div class="faq__intro{% if section.settings.layout == 'split' %} sticky-column sticky-column--scroll{% endif %}">
         {%- render 'section-intro',
           eyebrow: section.settings.eyebrow,
           heading: section.settings.heading,
@@ -43,7 +43,7 @@
             </label>
             {%- if topics.size > 0 -%}
               <nav class="faq__nav" aria-label="{{ 'faq.topics' | t | escape }}">
-                <ul class="faq__nav-list" role="list">
+                <ul class="faq__nav-list scrollbar-hidden" role="list">
                   {%- for topic in topics -%}
                     <li><a href="#faq-{{ section.id }}-{{ topic.id }}" class="chip faq__nav-link" data-faq-topic-link>{{ topic.settings.title | escape }}</a></li>
                   {%- endfor -%}

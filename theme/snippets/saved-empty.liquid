@@ -7,8 +7,8 @@
   @param {string} [text] - Text (rich text allowed)
   @param {string} link - Button URL
 {% enddoc %}
-<div class="saved-empty" data-saved-empty>
-  <span class="saved-empty__icon">{%- render 'icon', name: icon -%}</span>
+<div class="empty-state saved-empty" data-saved-empty>
+  <span class="icon-circle saved-empty__icon">{%- render 'icon', name: icon -%}</span>
   <h2 class="h4">{{ heading | escape }}</h2>
   {%- if text != blank -%}
     <p class="saved-empty__text">{{ text }}</p>

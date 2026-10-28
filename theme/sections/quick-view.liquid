@@ -34,7 +34,7 @@
   data-label-unavailable="{{ label_unavailable | escape }}"
 >
   <ui-slider class="slider quick-view__media" style="--slider-columns: 1; --slider-columns-mobile: 1;">
-    <ul class="slider__track quick-view__track" data-slider-track role="list">
+    <ul class="scroll-track slider__track quick-view__track" data-slider-track role="list">
       {%- for media in images -%}
         {%- assign media_alt = media.alt | default: product.title -%}
         <li class="frame quick-view__image" style="--frame-ratio: 1;" data-media-id="{{ media.id }}">

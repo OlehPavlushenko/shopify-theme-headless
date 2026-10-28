@@ -62,7 +62,7 @@
         </div>
 
         {%- if gift_card.message != blank -%}
-          <figure class="gift-card__message">
+          <figure class="card gift-card__message">
             <blockquote><p>{{ gift_card.message | escape | newline_to_br }}</p></blockquote>
             {%- if gift_card.customer -%}
               <figcaption>— {{ gift_card.customer.first_name | default: gift_card.customer.name | escape }}</figcaption>

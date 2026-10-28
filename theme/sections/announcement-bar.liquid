@@ -22,7 +22,7 @@
           {%- render 'icon', name: 'chevron-left' -%}
         </button>
       {%- endif -%}
-      <ul class="announcement-bar__track" data-slider-track role="list">
+      <ul class="scroll-track announcement-bar__track" data-slider-track role="list">
         {%- for block in section.blocks -%}
           <li class="announcement-bar__item" {{ block.shopify_attributes }}>
             {%- if block.settings.link != blank -%}

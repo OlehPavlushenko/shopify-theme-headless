@@ -9,7 +9,9 @@
   Also: a zoom lightbox, a sticky buy bar once the main button scrolls away, recently viewed record.
   Behavior: assets/product.js. Styles: packages/ui/css/product.css.
 {% endcomment %}
+{%- capture api -%}{% render 'api-url' %}{%- endcapture -%}
 {%- liquid
+  assign api = api | strip
   assign variant = product.selected_or_first_available_variant
   assign gallery = section.settings.gallery_layout
   assign media_list = product.media
@@ -61,8 +63,8 @@
       </div>
     {%- endif -%}
     {%- comment -%} ----------------------------------------------------------- gallery {%- endcomment -%}
-    <product-gallery class="product-gallery product-gallery--{{ gallery }}" data-layout="{{ gallery }}">
-      <ul class="product-gallery__track" role="list" data-gallery-track>
+    <product-gallery class="product-gallery product-gallery--{{ gallery }} sticky-column" data-layout="{{ gallery }}">
+      <ul class="scroll-track product-gallery__track" role="list" data-gallery-track>
         {%- for media in media_list -%}
           {%- liquid
             assign eager = false
@@ -129,8 +131,8 @@
     </product-gallery>
 
     {%- comment -%} -------------------------------------------------------------- info {%- endcomment -%}
-    <div class="main-product__info">
-      <div class="main-product__info-inner">
+    <div class="main-product__info sticky-column">
+      <div class="main-product__info-inner{% if section.settings.info_style == 'card' %} card{% endif %}">
         {%- for block in section.blocks -%}
           {%- case block.type -%}
             {%- when 'vendor' -%}
@@ -293,42 +295,36 @@
                   <contact-form> with data-action="notify"); <stock-notify> (assets/product.js) shows it for
                   sold-out variants only and keeps the variant fields in step. Needs the API URL.
                 {%- endcomment -%}
-                {%- capture api -%}{% render 'api-url' %}{%- endcapture -%}
-                {%- assign api = api | strip -%}
                 {%- if block.settings.show_notify and api != blank -%}
+                  {%- capture notify_fields -%}
+                    <p class="stock-notify__title">{%- render 'icon', name: 'mail' -%}{{ 'products.notify.title' | t }}</p>
+                    <p class="stock-notify__text">{{ 'products.notify.text' | t }}</p>
+                    <variant-fields data-product="{{ product.title | escape }}">
+                      <input type="hidden" name="variant" value="{{ variant.id }}" data-variant-id>
+                      <input type="hidden" name="product" value="{{ product.title | escape }}{% unless product.has_only_default_variant %} / {{ variant.title | escape }}{% endunless %}" data-variant-title>
+                    </variant-fields>
+                    <p class="form-errors" role="alert" data-contact-message></p>
+                    <div class="search-form stock-notify__row">
+                      <label class="visually-hidden" for="Notify-{{ section.id }}">{{ 'contact.email' | t }}</label>
+                      <input class="input" type="email" id="Notify-{{ section.id }}" name="email" value="{{ customer.email | escape }}" autocomplete="email" spellcheck="false" placeholder="{{ 'newsletter.placeholder' | t | escape }}" required>
+                      <button type="submit" class="btn">{{ 'products.notify.submit' | t }}</button>
+                    </div>
+                  {%- endcapture -%}
+                  {%- liquid
+                    assign notify_error = 'products.notify.error' | t
+                    assign notify_success = 'products.notify.success' | t
+                  -%}
                   <stock-notify class="stock-notify"{% if variant.available %} hidden{% endif %}>
-                    <contact-form
-                      data-endpoint="{{ api }}/notify"
-                      data-action="notify"
-                      {% if settings.recaptcha_site_key != blank %}
-                        data-recaptcha="{{ settings.recaptcha_site_key | escape }}"
-                      {% endif %}
-                      data-message-error="{{ 'products.notify.error' | t | escape }}"
-                      data-message-email="{{ 'forms.email' | t | escape }}"
-                    >
-                      <form-validate {% render 'form-validate-messages' %}>
-                        <form class="stock-notify__form">
-                          <p class="stock-notify__title">{%- render 'icon', name: 'mail' -%}{{ 'products.notify.title' | t }}</p>
-                          <p class="stock-notify__text">{{ 'products.notify.text' | t }}</p>
-                          <variant-fields data-product="{{ product.title | escape }}">
-                            <input type="hidden" name="variant" value="{{ variant.id }}" data-variant-id>
-                            <input type="hidden" name="product" value="{{ product.title | escape }}{% unless product.has_only_default_variant %} / {{ variant.title | escape }}{% endunless %}" data-variant-title>
-                          </variant-fields>
-                          <p class="form-errors" role="alert" data-contact-message></p>
-                          <div class="search-form stock-notify__row">
-                            <label class="visually-hidden" for="Notify-{{ section.id }}">{{ 'contact.email' | t }}</label>
-                            <input class="input" type="email" id="Notify-{{ section.id }}" name="email" value="{{ customer.email | escape }}" autocomplete="email" spellcheck="false" placeholder="{{ 'newsletter.placeholder' | t | escape }}" required>
-                            <button type="submit" class="btn">{{ 'products.notify.submit' | t }}</button>
-                          </div>
-                        </form>
-                      </form-validate>
-                      {%- assign notify_success = 'products.notify.success' | t -%}
-                      <template data-contact-success>{% render 'form-success', text: notify_success %}</template>
-                    </contact-form>
+                    {%- render 'contact-form',
+                      api: api,
+                      path: 'notify',
+                      action: 'notify',
+                      form_class: 'stock-notify__form',
+                      message_error: notify_error,
+                      success: notify_success,
+                      fields: notify_fields
+                    -%}
                   </stock-notify>
-                  <script type="module">
-                    import '@ui/contact-form';
-                  </script>
                 {%- endif -%}
               </div>
 
@@ -358,8 +354,6 @@
                 opens again after the post with its result). Without JS, or for a page without text (built
                 from sections), a page link is a plain link.
               {%- endcomment -%}
-              {%- capture api -%}{% render 'api-url' %}{%- endcapture -%}
-              {%- assign api = api | strip -%}
               <div class="info-links" {{ block.shopify_attributes }}>
                 {%- for i in (1..3) -%}
                   {%- liquid
@@ -391,7 +385,6 @@
                 {%- if block.settings.show_ask -%}
                   {%- liquid
                     assign ask_id = 'Ask-' | append: block.id
-                    assign name_label = 'contact.name' | t
                     assign product_label = 'products.ask.product' | t
                     capture ask_product
                       echo product.title
@@ -400,94 +393,44 @@
                       endunless
                     endcapture
                     if api != blank
-                      assign name_field = 'name'
-                      assign email_field = 'email'
                       assign product_field = 'subject'
-                      assign body_field = 'message'
                     else
-                      assign name_field = 'contact[' | append: name_label | append: ']'
-                      assign email_field = 'contact[email]'
                       assign product_field = 'contact[' | append: product_label | append: ']'
-                      assign body_field = 'contact[body]'
                     endif
                   -%}
                   <button type="button" class="btn btn--link info-links__link" data-dialog-open="{{ ask_id }}">
                     {%- render 'icon', name: 'chat' -%}
                     {{- 'products.ask.title' | t -}}
                   </button>
-                  {%- assign ask_success = 'contact.success' | t -%}
-                  {%- capture ask_fields -%}
+                  {%- capture ask_intro -%}
                     <variant-fields data-product="{{ product.title | escape }}">
                       <p class="ask-form__about">{{ 'products.ask.about' | t }} <strong data-variant-title>{{ ask_product | escape }}</strong></p>
                       <input type="hidden" name="{{ product_field | escape }}" value="{{ ask_product | escape }}" data-variant-title>
                     </variant-fields>
-                    <div class="field">
-                      <label class="field__label" for="{{ ask_id }}-name">{{ name_label }}</label>
-                      <input class="input" type="text" id="{{ ask_id }}-name" name="{{ name_field | escape }}" value="{{ customer.name | escape }}" autocomplete="name" maxlength="100">
-                    </div>
-                    <div class="field">
-                      <label class="field__label" for="{{ ask_id }}-email">{{ 'contact.email' | t }} *</label>
-                      <input class="input" type="email" id="{{ ask_id }}-email" name="{{ email_field | escape }}" value="{{ customer.email | escape }}" autocomplete="email" spellcheck="false" required>
-                    </div>
-                    <div class="field">
-                      <label class="field__label" for="{{ ask_id }}-message">{{ 'products.ask.question' | t }} *</label>
-                      <textarea class="input" id="{{ ask_id }}-message" name="{{ body_field | escape }}" rows="5" maxlength="5000" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn--full">{{ 'contact.send' | t }}</button>
                   {%- endcapture -%}
                   <dialog class="popup" id="{{ ask_id }}" aria-labelledby="{{ ask_id }}-title">
                     <div class="popup__inner">
                       {%- liquid
                         assign ask_title = 'products.ask.title' | t
                         assign ask_title_id = ask_id | append: '-title'
+                        assign ask_form_id = ask_id | append: '-form'
+                        assign ask_label = 'products.ask.question' | t
                         render 'dialog-header', title: ask_title, title_id: ask_title_id
                       -%}
                       <div class="popup__body">
-                        <contact-form
-                          {% if api != blank %}
-                            data-endpoint="{{ api }}/contact"
-                          {% endif %}
-                          {% if settings.recaptcha_site_key != blank %}
-                            data-recaptcha="{{ settings.recaptcha_site_key | escape }}"
-                          {% endif %}
-                          data-message-error="{{ 'contact.error' | t | escape }}"
-                          data-message-email="{{ 'forms.email' | t | escape }}"
-                        >
-                          <form-validate {% render 'form-validate-messages' %}>
-                            {%- if api != blank -%}
-                              <form class="ask-form">
-                                <p class="form-errors" role="alert" data-contact-message></p>
-                                {{ ask_fields }}
-                              </form>
-                            {%- else -%}
-                              {%- assign ask_form_id = ask_id | append: '-form' -%}
-                              {%- form 'contact', id: ask_form_id, class: 'ask-form' -%}
-                                {%- if form.posted_successfully? -%}
-                                  {%- assign ask_reopen = true -%}
-                                  {%- render 'form-success', text: ask_success -%}
-                                {%- elsif form.errors -%}
-                                  {%- assign ask_reopen = true -%}
-                                  <p class="form-error" role="alert">{{ form.errors | default_errors }}</p>
-                                {%- endif -%}
-                                {{ ask_fields }}
-                              {%- endform -%}
-                            {%- endif -%}
-                          </form-validate>
-                          <template data-contact-success>{% render 'form-success', text: ask_success %}</template>
-                        </contact-form>
+                        {%- render 'contact-form',
+                          api: api,
+                          form_id: ask_form_id,
+                          form_class: 'ask-form',
+                          intro: ask_intro,
+                          id_prefix: ask_id,
+                          message_label: ask_label,
+                          rows: 5,
+                          reopen: ask_id
+                        -%}
                       </div>
                     </div>
                   </dialog>
-                  <script type="module">
-                    import '@ui/contact-form';
-                  </script>
-                  {%- if ask_reopen -%}
-                    {%- comment -%} Back from Shopify's contact post: show its result {%- endcomment -%}
-                    <script type="module">
-                      import { openDialog } from '@ui/dialog';
-                      openDialog(document.getElementById('{{ ask_id }}'), document.querySelector('[data-dialog-open="{{ ask_id }}"]'));
-                    </script>
-                  {%- endif -%}
                 {%- endif -%}
               </div>
 
@@ -533,7 +476,7 @@
                   -%}
                   {%- if block.settings[text_key] != blank -%}
                     <li class="main-product__highlight">
-                      <span class="main-product__highlight-icon">{%- render 'icon', name: block.settings[icon_key] -%}</span>
+                      <span class="icon-circle main-product__highlight-icon">{%- render 'icon', name: block.settings[icon_key] -%}</span>
                       <span>{{ block.settings[text_key] }}</span>
                     </li>
                   {%- endif -%}
@@ -604,7 +547,7 @@
     <dialog class="popup product-lightbox" id="Lightbox-{{ section.id }}" aria-label="{{ product.title | escape }}">
       <div class="product-lightbox__inner">
         {%- render 'close-button', class: 'product-lightbox__close' -%}
-        <ul class="product-lightbox__track" role="list" data-lightbox-track>
+        <ul class="scroll-track product-lightbox__track" role="list" data-lightbox-track>
           {%- for media in media_list -%}
             {%- if media.media_type == 'image' -%}
               {%- assign media_alt = media.alt | default: product.title -%}

@@ -4,16 +4,18 @@
   - menu_products: product slider (.slider + product-card), eyebrow heading and arrows
 
   @param {object} block - Header block of type menu_promo or menu_products
+  @param {boolean} [lazy] - The product slider as a placeholder, fetched when the menu opens (snippets/lazy-section)
+  @param {string} [section_id] - The header's section.id (for lazy)
 {% enddoc %}
 {%- case block.type -%}
   {%- when 'menu_promo' -%}
     {%- render 'promo-card',
-      url: block.settings.link,
+      url: block.settings.button_link,
       image: block.settings.image,
       eyebrow: block.settings.eyebrow,
       heading: block.settings.heading,
       text: block.settings.text,
-      link_label: block.settings.link_label,
+      link_label: block.settings.button_label,
       layout: block.settings.layout,
       ratio: '4 / 5',
       sizes: '(min-width: 990px) 280px, 100vw',
@@ -21,15 +23,23 @@
     -%}
 
   {%- when 'menu_products' -%}
-    {%- if block.settings.products.count > 0 -%}
-      <ui-slider class="slider mega-slider" {{ block.shopify_attributes }}>
+    {%- if block.settings.products.count > 0 and lazy -%}
+      {%- render 'lazy-section',
+        section_id: section_id,
+        key: block.id,
+        class: 'slider mega-slider',
+        heading: block.settings.heading,
+        prefetch: '.site-nav__item--mega'
+      -%}
+    {%- elsif block.settings.products.count > 0 -%}
+      <ui-slider class="slider mega-slider" data-lazy-key="{{ block.id }}" {{ block.shopify_attributes }}>
         <div class="slider__head">
           <p class="eyebrow">{{ block.settings.heading | escape }}</p>
           <div class="slider__head-end">
             {%- render 'slider-nav', label: block.settings.heading -%}
           </div>
         </div>
-        <ul class="slider__track" data-slider-track role="list">
+        <ul class="scroll-track slider__track" data-slider-track role="list">
           {%- for product in block.settings.products -%}
             <li>
               {%- render 'product-card',

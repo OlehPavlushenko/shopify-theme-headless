@@ -13,6 +13,8 @@
  *   and keeps one panel open at a time.
  * Esc, focus trapping and the inert page of dialogs come from showModal(); focus returns to the
  * opener on close.
+ * Scroll lock: <html data-scroll-lock> while a modal dialog or a side panel (.drawer / .menu-panel
+ * popover) is open; components.css hides the page scrollbar from it.
  *
  * Closing is animated by the CSS itself: [data-closing] is set first, the element keeps [open] /
  * :popover-open while its leaving transition runs, then it is closed. (Exit transitions of the top
@@ -20,15 +22,19 @@
  * browser.) Styles therefore put the open look on `[open]:not([data-closing])`.
  */
 const openers = new WeakMap();
+const root = document.documentElement;
+const LOCKING = 'dialog[open]:modal, [popover].drawer:popover-open, [popover].menu-panel:popover-open';
 
 // Scrollbar width for the scroll lock (components.css pads <html> by it while an overlay is open).
 // Measured right before an overlay opens (not at page load: reading layout then forces a reflow
 // while the page is still rendering). Not while one is open: the page scrollbar is hidden then.
 function measureScrollbar() {
-  const width = window.innerWidth - document.documentElement.clientWidth;
-  if (width >= 0 && !document.documentElement.matches(':has(dialog[open]:modal, [popover]:popover-open)')) {
-    document.documentElement.style.setProperty('--scrollbar-width', `${width}px`);
-  }
+  const width = window.innerWidth - root.clientWidth;
+  if (width >= 0 && !root.hasAttribute('data-scroll-lock')) root.style.setProperty('--scrollbar-width', `${width}px`);
+}
+
+function updateScrollLock() {
+  root.toggleAttribute('data-scroll-lock', !!document.querySelector(LOCKING));
 }
 
 // Longest transition of the element (duration + delay), in ms
@@ -51,6 +57,7 @@ function closeAnimated(element, close) {
       closing.delete(element);
       close();
       element.removeAttribute('data-closing');
+      updateScrollLock();
     }, transitionTime(element))
   );
 }
@@ -69,6 +76,7 @@ export function openDialog(dialog, opener = document.activeElement) {
   measureScrollbar();
   openers.set(dialog, opener);
   dialog.showModal();
+  updateScrollLock();
   dialog.dispatchEvent(new CustomEvent('dialog:open', { bubbles: true }));
 }
 
@@ -84,6 +92,7 @@ export function openPanel(panel) {
   for (const other of openPanels()) closePanel(other);
   measureScrollbar();
   panel.showPopover();
+  updateScrollLock();
 }
 
 export function closePanel(panel) {
@@ -147,6 +156,11 @@ document.addEventListener('keydown', (event) => {
   const panels = openPanels();
   if (panels.length) closePanel(panels.at(-1));
 });
+
+// Dialogs and popovers opened or closed without this module (showModal() / close() called
+// directly) keep the scroll lock right too: a dialog's [open] changes, a popover fires toggle
+new MutationObserver(updateScrollLock).observe(root, { attributeFilter: ['open'], subtree: true });
+document.addEventListener('toggle', updateScrollLock, true);
 
 document.addEventListener(
   'close',

@@ -37,7 +37,7 @@
   aria-roledescription="carousel"
   aria-label="{{ 'sections.hero.label' | t }}"
 >
-  <ul class="hero__track" data-slider-track role="list">
+  <ul class="scroll-track hero__track" data-slider-track role="list">
     {%- for block in section.blocks -%}
       {%- liquid
         assign image = block.settings.image
@@ -62,7 +62,7 @@
         {% endif %}
         {{ block.shopify_attributes }}
       >
-        <div class="hero__media">
+        <div class="frame frame--cover hero__media">
           {%- if image -%}
             <picture>
               <source

@@ -1,0 +1,110 @@
+{% doc %}
+  A form sent as JSON to project-server (<contact-form>, @ui/contact-form) when Theme settings >
+  Integrations > "API URL" is set, else Shopify's contact form; checked by <form-validate>; its
+  success line in a template (form-success). Used by the contact page, "Ask a question" and the back
+  in stock request on the product page.
+
+  Fields: the contact fields (snippets/contact-fields: name, email, [phone], message) by default, or
+  `fields` for a form that only goes to project-server (nothing is rendered without the API URL).
+
+  @param {string} api - The API URL (snippets/api-url, captured once per section; stripped here); blank: Shopify's form
+  @param {string} [path] - Endpoint path on project-server (default 'contact')
+  @param {string} [action] - reCAPTCHA action (default 'contact')
+  @param {string} [class] - Classes of <contact-form>
+  @param {string} [heading] - A heading (h4) above the form
+  @param {string} [form_id] - The form's id
+  @param {string} [form_class] - The form's class
+  @param {string} [message_error] - Error text (default contact.error)
+  @param {boolean} [message_phone] - Also the invalid phone message
+  @param {string} [success] - Success text (default contact.success)
+  @param {string} [intro] - HTML before the contact fields (e.g. the product a question is about)
+  @param {string} [id_prefix] - Prefix of the contact fields' ids (default the form id, else 'ContactForm')
+  @param {boolean} [show_phone] - The optional phone field
+  @param {boolean} [columns] - Name and email side by side
+  @param {string} [message_label] - Label of the message field (default contact.message)
+  @param {number} [rows] - Rows of the message field
+  @param {string} [reopen] - Id of the dialog the form is in: opened again after Shopify's post shows its result
+  @param {string} [fields] - Fields of an API-only form, with its [data-contact-message] error line
+{% enddoc %}
+{%- liquid
+  assign api_url = api | strip
+  assign endpoint_path = path | default: 'contact'
+  assign error_text = message_error
+  if error_text == blank
+    assign error_text = 'contact.error' | t
+  endif
+  assign success_text = success
+  if success == blank
+    assign success_text = 'contact.success' | t
+  endif
+  assign field_prefix = id_prefix | default: form_id | default: 'ContactForm'
+-%}
+{%- if api_url != blank or fields == blank -%}
+  <contact-form
+    {% if class != blank %}
+      class="{{ class }}"
+    {% endif %}
+    {% if api_url != blank %}
+      data-endpoint="{{ api_url }}/{{ endpoint_path }}"
+    {% endif %}
+    {% if action != blank %}
+      data-action="{{ action }}"
+    {% endif %}
+    {% if settings.recaptcha_site_key != blank %}
+      data-recaptcha="{{ settings.recaptcha_site_key | escape }}"
+    {% endif %}
+    data-message-error="{{ error_text | escape }}"
+    data-message-email="{{ 'forms.email' | t | escape }}"
+    {% if message_phone %}
+      data-message-phone="{{ 'forms.phone' | t | escape }}"
+    {% endif %}
+  >
+    {%- if heading != blank -%}
+      <h2 class="h4">{{ heading | escape }}</h2>
+    {%- endif -%}
+    <form-validate {% render 'form-validate-messages' %}>
+      {%- if api_url != blank -%}
+        <form{% if form_id != blank %} id="{{ form_id }}"{% endif %}{% if form_class != blank %} class="{{ form_class }}"{% endif %}>
+          {%- if fields != blank -%}
+            {{ fields }}
+          {%- else -%}
+            <p class="form-errors" role="alert" data-contact-message></p>
+            {{ intro }}
+            {%- render 'contact-fields', api: true, id_prefix: field_prefix, show_phone: show_phone, columns: columns, message_label: message_label, rows: rows -%}
+          {%- endif -%}
+        </form>
+      {%- else -%}
+        {%- form 'contact', id: form_id, class: form_class -%}
+          {%- if form.posted_successfully? -%}
+            {%- assign posted = true -%}
+            {%- if reopen != blank -%}
+              {%- render 'form-success', text: success_text -%}
+            {%- else -%}
+              {%- render 'form-success', text: success_text, autofocus: true -%}
+            {%- endif -%}
+          {%- elsif form.errors -%}
+            {%- assign posted = true -%}
+            {%- if reopen != blank -%}
+              <p class="form-error" role="alert">{{ form.errors | default_errors }}</p>
+            {%- else -%}
+              <p class="form-error" role="alert" tabindex="-1" autofocus>{{ form.errors | default_errors }}</p>
+            {%- endif -%}
+          {%- endif -%}
+          {{ intro }}
+          {%- render 'contact-fields', form: form, id_prefix: field_prefix, show_phone: show_phone, columns: columns, message_label: message_label, rows: rows -%}
+        {%- endform -%}
+      {%- endif -%}
+    </form-validate>
+    <template data-contact-success>{% render 'form-success', text: success_text %}</template>
+  </contact-form>
+  <script type="module">
+    import '@ui/contact-form';
+  </script>
+  {%- if posted and reopen != blank -%}
+    {%- comment -%} Back from Shopify's contact post: show its result {%- endcomment -%}
+    <script type="module">
+      import { openDialog } from '@ui/dialog';
+      openDialog(document.getElementById('{{ reopen }}'), document.querySelector('[data-dialog-open="{{ reopen }}"]'));
+    </script>
+  {%- endif -%}
+{%- endif -%}

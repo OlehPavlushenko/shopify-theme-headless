@@ -242,8 +242,10 @@
     color: var(--color-heading);
   }
 
-  .site-footer__top:hover {
-    border-color: var(--color-heading);
+  @media (hover: hover) {
+    .site-footer__top:hover {
+      border-color: var(--color-heading);
+    }
   }
 
   .site-footer__top .svg-icon {
@@ -253,8 +255,10 @@
     transition: translate var(--duration-default) var(--ease-out);
   }
 
-  .site-footer__top:hover .svg-icon {
-    translate: 0 -0.2rem;
+  @media (hover: hover) {
+    .site-footer__top:hover .svg-icon {
+      translate: 0 -0.2rem;
+    }
   }
 
   @media (max-width: 749px) {

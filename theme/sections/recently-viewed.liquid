@@ -8,7 +8,7 @@
   <saved-products class="page-width" data-list="recent" data-section="saved-product" data-exclude="{{ product.handle }}" data-limit="{{ section.settings.limit }}" data-state="loading">
     <ui-slider class="slider product-list__slider" style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 2.2;">
       {%- render 'section-head', heading: section.settings.heading, nav: true -%}
-      <ul class="slider__track" data-slider-track role="list" data-saved-products></ul>
+      <ul class="scroll-track slider__track" data-slider-track role="list" data-saved-products></ul>
     </ui-slider>
     <div data-saved-empty></div>
   </saved-products>

@@ -75,7 +75,7 @@ scripts/
     to change scheme colors locally, set the custom properties on an inner element, not on the element
     that carries the `color-scheme-*` class.
   - `promo.css`: promo card (`snippets/promo-card`, used everywhere promos are shown), newsletter form, promo popup.
-  - Side panels are one component: `.drawer` > `.drawer__inner` > `__header` / `__body` / `__footer`,
+  - Side panels are one component: `.drawer` (`--top`: from the top edge, the search panel) > `.drawer__inner` > `__header` / `__body` / `__footer`,
     on a `<dialog>` (cart, search drawer) or a `[popover]` (utility panel); same width, motion and backdrop.
   - One file per area: `header.css`, `footer.css`, `cart.css`, `blocks.css`, `facets.css`
     (collection / search filters and grid), `product.css` (product page).

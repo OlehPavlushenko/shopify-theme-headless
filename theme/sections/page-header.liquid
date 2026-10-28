@@ -55,7 +55,7 @@
 -%}
 <div class="page-header page-header--{{ section.settings.alignment }} page-header--media-{{ media }} color-{{ section.settings.color_scheme }}">
   {%- if media == 'cover' -%}
-    <div class="page-header__cover" style="--page-header-tint: {{ section.settings.tint }}%;">
+    <div class="frame frame--cover page-header__cover" style="--page-header-tint: {{ section.settings.tint }}%;">
       {{ image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', preload: true, sizes: '100vw', widths: '750, 1200, 1800, 2400', alt: '' }}
     </div>
   {%- endif -%}
@@ -103,7 +103,7 @@
       {%- endif -%}
       {%- if section.settings.subcollections and subcollections.size > 0 -%}
         <nav class="page-header__subcollections" aria-label="{{ 'collections.subcollections' | t }}">
-          <ul class="subcollections" role="list">
+          <ul class="subcollections scrollbar-hidden" role="list">
             {%- for sub in subcollections -%}
               {%- assign thumb = sub.image | default: sub.products.first.featured_image -%}
               <li>

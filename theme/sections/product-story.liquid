@@ -22,7 +22,7 @@
           <ul class="product-story__ingredients" role="list">
             {%- for item in ingredients -%}
               {%- assign parts = item | split: ' — ' -%}
-              <li class="product-story__ingredient">
+              <li class="card product-story__ingredient">
                 {%- render 'icon', name: 'leaf' -%}
                 <p class="product-story__ingredient-name">{{ parts.first | escape }}</p>
                 {%- if parts.size > 1 -%}

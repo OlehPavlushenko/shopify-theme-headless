@@ -201,8 +201,10 @@
       box-shadow var(--duration-short) var(--ease);
   }
 
-  .input:hover {
-    border-color: color-mix(in srgb, var(--color-heading) 40%, var(--color-border));
+  @media (hover: hover) {
+    .input:hover {
+      border-color: color-mix(in srgb, var(--color-heading) 40%, var(--color-border));
+    }
   }
 
   /* Focus: the border takes the focus color, with a soft ring around it (shadcn); the transparent
@@ -572,8 +574,10 @@
     transition: border-color var(--duration-short) var(--ease);
   }
 
-  .variant-picker__swatch:hover {
-    border-color: var(--color-border);
+  @media (hover: hover) {
+    .variant-picker__swatch:hover {
+      border-color: var(--color-border);
+    }
   }
 
   .variant-picker__swatch:has(input:checked) {
@@ -859,8 +863,10 @@
     cursor: pointer;
   }
 
-  .toast__action:hover {
-    background: color-mix(in srgb, var(--color-button-label) 12%, transparent);
+  @media (hover: hover) {
+    .toast__action:hover {
+      background: color-mix(in srgb, var(--color-button-label) 12%, transparent);
+    }
   }
 
   /* -------------------------------------------------------------- chip */
@@ -1022,6 +1028,40 @@
     object-fit: var(--frame-fit, cover);
   }
 
+  /* --cover: fills its positioned parent, behind the content (hero slides, section backgrounds,
+     cover page headers, collection tiles, the password page's cover image) */
+  .frame--cover {
+    position: absolute;
+    inset: 0;
+    aspect-ratio: auto;
+    max-width: none;
+    background: none;
+    border-radius: 0;
+  }
+
+  /* ------------------------------------------------------------- card */
+  /* A box on the scheme's surface color (summaries, forms, info and text cards, logo tiles).
+     Padding: --card-padding */
+  .card {
+    padding: var(--card-padding, var(--space-l));
+    background: var(--color-surface);
+    border-radius: var(--radius-card);
+  }
+
+  /* ------------------------------------------------------ icon circle */
+  /* An icon in a circle (contact details, product highlights, newsletter, delivery steps, empty
+     saved lists). Size: --icon-circle-size; fill: --icon-circle-bg */
+  .icon-circle {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: var(--icon-circle-size, var(--control-height));
+    height: var(--icon-circle-size, var(--control-height));
+    color: var(--color-accent);
+    background: var(--icon-circle-bg, var(--color-background));
+    border-radius: var(--radius-full);
+  }
+
   /* -------------------------------------------------------------- icon */
   .svg-icon {
     flex-shrink: 0;
@@ -1050,9 +1090,11 @@
     border-radius: var(--radius-button);
   }
 
-  a.pagination__item:hover {
-    color: var(--color-heading);
-    background: var(--color-surface);
+  @media (hover: hover) {
+    a.pagination__item:hover {
+      color: var(--color-heading);
+      background: var(--color-surface);
+    }
   }
 
   .pagination__item[aria-current="page"] {
@@ -1101,6 +1143,20 @@
   @starting-style {
     .drawer:is([open], :popover-open):not([data-closing]) {
       translate: 100% 0;
+    }
+  }
+
+  /* From the top edge, full width, as tall as its content (search panel 'top') */
+  .drawer--top {
+    inset: 0 0 auto;
+    width: 100%;
+    height: auto;
+    translate: 0 -100%;
+  }
+
+  @starting-style {
+    .drawer--top:is([open], :popover-open):not([data-closing]) {
+      translate: 0 -100%;
     }
   }
 
@@ -1197,16 +1253,17 @@
   }
 
   /*
-   * Scroll lock while a modal dialog or a side popover is open. The scrollbar disappears, so the
-   * page gets padding of the same width (--scrollbar-width, measured by @ui/dialog) and doesn't jump.
+   * Scroll lock while a modal dialog or a side popover is open ([data-scroll-lock], set by
+   * @ui/dialog). The scrollbar disappears, so the page gets padding of the same width
+   * (--scrollbar-width, measured by @ui/dialog) and doesn't jump.
    */
-  html:has(dialog[open]:modal, [popover].drawer:popover-open, [popover].menu-panel:popover-open) {
+  html[data-scroll-lock] {
     overflow: hidden;
     padding-inline-end: var(--scrollbar-width, 0px);
   }
 
   /* Overlays that scroll inside (search panel, drawers, menus): thin, quiet scrollbar */
-  :is(.drawer, .search-panel, .menu-panel) {
+  :is(.drawer, .menu-panel) {
     scrollbar-width: thin;
     scrollbar-color: color-mix(in srgb, var(--color-foreground) 22%, transparent) transparent;
   }

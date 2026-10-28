@@ -94,12 +94,12 @@
             {%- if promo and paginate.current_page == 1 and forloop.index == promo.settings.position -%}
               <li class="main-blog__promo grid-promo" {{ promo.shopify_attributes }}>
                 {%- render 'promo-card',
-                  url: promo.settings.link,
+                  url: promo.settings.button_link,
                   image: promo.settings.image,
                   eyebrow: promo.settings.eyebrow,
                   heading: promo.settings.heading,
                   text: promo.settings.text,
-                  link_label: promo.settings.link_label,
+                  link_label: promo.settings.button_label,
                   layout: 'overlay',
                   ratio: '4 / 5',
                   sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw'
@@ -110,7 +110,7 @@
             {%- if is_search == false and section.settings.show_signup and paginate.current_page == 1 and forloop.index == section.settings.signup_position -%}
               <li class="main-blog__signup">
                 <div class="main-blog__signup-card">
-                  <span class="main-blog__signup-icon" aria-hidden="true">{%- render 'icon', name: 'mail' -%}</span>
+                  <span class="icon-circle main-blog__signup-icon" aria-hidden="true">{%- render 'icon', name: 'mail' -%}</span>
                   <h2 class="h4">{{ section.settings.signup_heading | escape }}</h2>
                   {%- if section.settings.signup_text != blank -%}
                     <p class="main-blog__signup-text">{{ section.settings.signup_text | escape }}</p>

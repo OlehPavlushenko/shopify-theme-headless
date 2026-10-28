@@ -513,6 +513,36 @@
     line-clamp: var(--lines, 2);
   }
 
+  /*
+   * A column of a two- or three-column layout (from 990px) that stays in view under the header
+   * while the page scrolls: cart summary, product media and info. A utility: it beats the
+   * component's own position.
+   * --scroll: never taller than the screen, it scrolls inside (filters sidebar, FAQ intro, article
+   * contents and "Shop this article"). --wide: only from 1200px (the article's third column).
+   */
+  @media (min-width: 990px) {
+    .sticky-column {
+      position: sticky;
+      top: var(--sticky-top);
+      transition: var(--sticky-transition);
+    }
+
+    .sticky-column--scroll {
+      max-height: var(--sticky-max-height);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+    }
+  }
+
+  @media (max-width: 1199px) {
+    .sticky-column--wide {
+      position: static;
+      max-height: none;
+      overflow-y: visible;
+    }
+  }
+
   .visually-hidden {
     position: absolute !important;
     width: 1px !important;
@@ -749,8 +779,10 @@
       box-shadow var(--duration-short) var(--ease);
   }
 
-  .input:hover {
-    border-color: color-mix(in srgb, var(--color-heading) 40%, var(--color-border));
+  @media (hover: hover) {
+    .input:hover {
+      border-color: color-mix(in srgb, var(--color-heading) 40%, var(--color-border));
+    }
   }
 
   /* Focus: the border takes the focus color, with a soft ring around it (shadcn); the transparent
@@ -1120,8 +1152,10 @@
     transition: border-color var(--duration-short) var(--ease);
   }
 
-  .variant-picker__swatch:hover {
-    border-color: var(--color-border);
+  @media (hover: hover) {
+    .variant-picker__swatch:hover {
+      border-color: var(--color-border);
+    }
   }
 
   .variant-picker__swatch:has(input:checked) {
@@ -1407,8 +1441,10 @@
     cursor: pointer;
   }
 
-  .toast__action:hover {
-    background: color-mix(in srgb, var(--color-button-label) 12%, transparent);
+  @media (hover: hover) {
+    .toast__action:hover {
+      background: color-mix(in srgb, var(--color-button-label) 12%, transparent);
+    }
   }
 
   /* -------------------------------------------------------------- chip */
@@ -1570,6 +1606,40 @@
     object-fit: var(--frame-fit, cover);
   }
 
+  /* --cover: fills its positioned parent, behind the content (hero slides, section backgrounds,
+     cover page headers, collection tiles, the password page's cover image) */
+  .frame--cover {
+    position: absolute;
+    inset: 0;
+    aspect-ratio: auto;
+    max-width: none;
+    background: none;
+    border-radius: 0;
+  }
+
+  /* ------------------------------------------------------------- card */
+  /* A box on the scheme's surface color (summaries, forms, info and text cards, logo tiles).
+     Padding: --card-padding */
+  .card {
+    padding: var(--card-padding, var(--space-l));
+    background: var(--color-surface);
+    border-radius: var(--radius-card);
+  }
+
+  /* ------------------------------------------------------ icon circle */
+  /* An icon in a circle (contact details, product highlights, newsletter, delivery steps, empty
+     saved lists). Size: --icon-circle-size; fill: --icon-circle-bg */
+  .icon-circle {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: var(--icon-circle-size, var(--control-height));
+    height: var(--icon-circle-size, var(--control-height));
+    color: var(--color-accent);
+    background: var(--icon-circle-bg, var(--color-background));
+    border-radius: var(--radius-full);
+  }
+
   /* -------------------------------------------------------------- icon */
   .svg-icon {
     flex-shrink: 0;
@@ -1598,9 +1668,11 @@
     border-radius: var(--radius-button);
   }
 
-  a.pagination__item:hover {
-    color: var(--color-heading);
-    background: var(--color-surface);
+  @media (hover: hover) {
+    a.pagination__item:hover {
+      color: var(--color-heading);
+      background: var(--color-surface);
+    }
   }
 
   .pagination__item[aria-current="page"] {
@@ -1649,6 +1721,20 @@
   @starting-style {
     .drawer:is([open], :popover-open):not([data-closing]) {
       translate: 100% 0;
+    }
+  }
+
+  /* From the top edge, full width, as tall as its content (search panel 'top') */
+  .drawer--top {
+    inset: 0 0 auto;
+    width: 100%;
+    height: auto;
+    translate: 0 -100%;
+  }
+
+  @starting-style {
+    .drawer--top:is([open], :popover-open):not([data-closing]) {
+      translate: 0 -100%;
     }
   }
 
@@ -1745,16 +1831,17 @@
   }
 
   /*
-   * Scroll lock while a modal dialog or a side popover is open. The scrollbar disappears, so the
-   * page gets padding of the same width (--scrollbar-width, measured by @ui/dialog) and doesn't jump.
+   * Scroll lock while a modal dialog or a side popover is open ([data-scroll-lock], set by
+   * @ui/dialog). The scrollbar disappears, so the page gets padding of the same width
+   * (--scrollbar-width, measured by @ui/dialog) and doesn't jump.
    */
-  html:has(dialog[open]:modal, [popover].drawer:popover-open, [popover].menu-panel:popover-open) {
+  html[data-scroll-lock] {
     overflow: hidden;
     padding-inline-end: var(--scrollbar-width, 0px);
   }
 
   /* Overlays that scroll inside (search panel, drawers, menus): thin, quiet scrollbar */
-  :is(.drawer, .search-panel, .menu-panel) {
+  :is(.drawer, .menu-panel) {
     scrollbar-width: thin;
     scrollbar-color: color-mix(in srgb, var(--color-foreground) 22%, transparent) transparent;
   }
@@ -2293,8 +2380,10 @@
     transition: background-color var(--duration-default) var(--ease);
   }
 
-  .product-card__step:hover {
-    background: color-mix(in srgb, var(--color-button-label) 16%, transparent);
+  @media (hover: hover) {
+    .product-card__step:hover {
+      background: color-mix(in srgb, var(--color-button-label) 16%, transparent);
+    }
   }
 
   .product-card__step .svg-icon {
@@ -2631,6 +2720,11 @@
     min-width: 0;
   }
 
+  /* A slider fetched when first shown (@ui/lazy-section): its placeholder takes the slider's classes */
+  lazy-section {
+    display: block;
+  }
+
   .slider__head {
     display: flex;
     flex-wrap: wrap;
@@ -2677,26 +2771,43 @@
     cursor: default;
   }
 
+  /*
+   * Scroll track: a list that scrolls sideways one snap point per item, without a scrollbar
+   * (announcements, hero, product gallery, lightbox, every .slider__track). Item width:
+   * --track-item (default: one item per view).
+   * .scrollbar-hidden: the same scrollbar hiding for other rows that scroll (subcollections, FAQ topics).
+   */
+  .scroll-track {
+    display: grid;
+    grid-auto-columns: var(--track-item, 100%);
+    grid-auto-flow: column;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    list-style: none;
+  }
+
+  .scroll-track,
+  .scrollbar-hidden {
+    scrollbar-width: none;
+  }
+
+  .scroll-track::-webkit-scrollbar,
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+
   .slider__track {
     --columns: var(--slider-columns-mobile, 2.2);
+    --track-item: calc((100% - (var(--columns) - 1) * var(--slider-gap)) / var(--columns));
 
-    display: grid;
-    grid-auto-columns: calc((100% - (var(--columns) - 1) * var(--slider-gap)) / var(--columns));
-    grid-auto-flow: column;
     gap: var(--slider-gap);
     /* A scrolling track clips both axes: room for borders and focus rings at the top and bottom
        edges, taken back by the margin so the layout doesn't move */
     margin: -0.4rem 0;
     padding: 0.4rem 0;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    list-style: none;
-  }
-
-  .slider__track::-webkit-scrollbar {
-    display: none;
   }
 
   .slider__track > * {
@@ -2757,20 +2868,7 @@
 
   /* One message per page of a scroll-snap track */
   .announcement-bar__track {
-    display: grid;
     grid-column: 2;
-    grid-auto-columns: 100%;
-    grid-auto-flow: column;
-    margin: 0;
-    padding: 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    list-style: none;
-  }
-
-  .announcement-bar__track::-webkit-scrollbar {
-    display: none;
   }
 
   .announcement-bar__item {
@@ -2810,8 +2908,10 @@
     opacity: 0.7;
   }
 
-  .announcement-bar__arrow:hover {
-    opacity: 1;
+  @media (hover: hover) {
+    .announcement-bar__arrow:hover {
+      opacity: 1;
+    }
   }
 
   .announcement-bar__arrow:disabled {
@@ -2837,8 +2937,10 @@
     animation: marquee var(--marquee-duration, 40s) linear infinite;
   }
 
-  .marquee:hover .marquee__track {
-    animation-play-state: paused;
+  @media (hover: hover) {
+    .marquee:hover .marquee__track {
+      animation-play-state: paused;
+    }
   }
 
   @keyframes marquee {
@@ -3049,12 +3151,13 @@
     justify-self: start;
   }
 
+  /* html[data-menu-open]: the mobile menu panel is open (@ui/header) */
   .site-header__toggle .svg-icon--close,
-  html:has(#MenuPanel:popover-open) .site-header__toggle .svg-icon--menu {
+  html[data-menu-open] .site-header__toggle .svg-icon--menu {
     display: none;
   }
 
-  html:has(#MenuPanel:popover-open) .site-header__toggle .svg-icon--close {
+  html[data-menu-open] .site-header__toggle .svg-icon--close {
     display: block;
   }
 
@@ -3077,8 +3180,13 @@
     height: auto;
   }
 
+  /* With a logo for the transparent header: the transparent state (below) swaps the two */
+  .site-header__logo-image:has(+ .site-header__logo-image--transparent) {
+    display: var(--header-logo-display, block);
+  }
+
   .site-header__logo-image--transparent {
-    display: none;
+    display: var(--header-logo-transparent-display, none);
   }
 
   .site-header__shop-name {
@@ -3120,29 +3228,17 @@
   }
 
   /* Transparent at the top of the page; solid once scrolled or while a menu (desktop or mobile) is open */
-  html:not(:has(#MenuPanel:popover-open))
+  html:not([data-menu-open])
     .site-header-section:not(:has(+ .shopify-section-group-header-group))
     .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open])) {
     --color-heading: var(--header-transparent-fg);
     --color-foreground: var(--header-transparent-fg);
     --color-link-hover: var(--header-transparent-fg);
+    --header-logo-display: none;
+    --header-logo-transparent-display: block;
 
     background: transparent;
     border-color: transparent;
-  }
-
-  html:not(:has(#MenuPanel:popover-open))
-    .site-header-section:not(:has(+ .shopify-section-group-header-group))
-    .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open]))
-    :is(.site-header__logo-image:has(+ .site-header__logo-image--transparent)) {
-    display: none;
-  }
-
-  html:not(:has(#MenuPanel:popover-open))
-    .site-header-section:not(:has(+ .shopify-section-group-header-group))
-    .site-header[data-transparent]:not([data-scrolled], :has([data-menu-item][data-open]))
-    .site-header__logo-image--transparent {
-    display: block;
   }
 
   /* ------------------------------------------------- desktop layouts */
@@ -3238,8 +3334,10 @@
     border-radius: 50%;
   }
 
-  .site-nav__toggle:hover {
-    background: var(--color-surface);
+  @media (hover: hover) {
+    .site-nav__toggle:hover {
+      background: var(--color-surface);
+    }
   }
 
   .site-nav__toggle .svg-icon {
@@ -3552,9 +3650,11 @@
     border-radius: var(--radius-input);
   }
 
-  .utility-panel__link:hover {
-    color: var(--color-heading);
-    background: var(--color-surface);
+  @media (hover: hover) {
+    .utility-panel__link:hover {
+      color: var(--color-heading);
+      background: var(--color-surface);
+    }
   }
 
   .utility-panel__link .svg-icon {
@@ -3592,15 +3692,7 @@
   }
 
   .custom-section__background {
-    position: absolute;
     z-index: -1;
-    inset: 0;
-  }
-
-  .custom-section__background img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
 
   .custom-section__content {
@@ -3719,23 +3811,6 @@
     display: block;
   }
 
-  .hero__track {
-    display: grid;
-    grid-auto-columns: 100%;
-    grid-auto-flow: column;
-    margin: 0;
-    padding: 0;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    list-style: none;
-  }
-
-  .hero__track::-webkit-scrollbar {
-    display: none;
-  }
-
   .hero__slide {
     position: relative;
     isolation: isolate;
@@ -3760,8 +3835,6 @@
   }
 
   .hero__media {
-    position: absolute;
-    inset: 0;
     z-index: -2;
   }
 
@@ -4088,8 +4161,10 @@
     transition: scale var(--duration-long) var(--ease-out);
   }
 
-  .collection-card:hover .collection-card__media img {
-    scale: 1.04;
+  @media (hover: hover) {
+    .collection-card:hover .collection-card__media img {
+      scale: 1.04;
+    }
   }
 
   /* Inline, so a wrapped title keeps the arrow right after its last word */
@@ -4156,15 +4231,7 @@
 
   /* Cover: the image behind the text, tinted toward the scheme background */
   .page-header__cover {
-    position: absolute;
-    inset: 0;
     z-index: -1;
-  }
-
-  .page-header__cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
 
   .page-header__cover::after {
@@ -4193,12 +4260,7 @@
     margin: 0 calc(var(--gutter) * -1);
     padding: 0.4rem var(--gutter);
     overflow-x: auto;
-    scrollbar-width: none;
     list-style: none;
-  }
-
-  .subcollections::-webkit-scrollbar {
-    display: none;
   }
 
   /* The row scrolls: chips keep their width (shrunk, the count spilled over the border) */
@@ -4224,9 +4286,11 @@
       background-color var(--duration-short) var(--ease);
   }
 
-  .subcollection:hover {
-    background: var(--color-background);
-    border-color: var(--color-heading);
+  @media (hover: hover) {
+    .subcollection:hover {
+      background: var(--color-background);
+      border-color: var(--color-heading);
+    }
   }
 
   .subcollection[aria-current] {
@@ -4382,21 +4446,22 @@
   /* Logo tiles on the surface color; muted: grayscale until hovered */
   /* Every tile the same 3:2 box whatever the logo's shape (min-height 0: content can't stretch it) */
   .brand-card {
+    --card-padding: var(--space-m);
+
     display: grid;
     grid-template: minmax(0, 1fr) / minmax(0, 1fr);
     place-items: center;
     aspect-ratio: 3 / 2;
     min-height: 0;
-    padding: var(--space-m);
     color: var(--color-heading);
     text-decoration: none;
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
     transition: background-color var(--duration-default) var(--ease);
   }
 
-  a.brand-card:hover {
-    background: color-mix(in srgb, var(--color-surface) 80%, var(--color-foreground) 6%);
+  @media (hover: hover) {
+    a.brand-card:hover {
+      background: color-mix(in srgb, var(--color-surface) 80%, var(--color-foreground) 6%);
+    }
   }
 
   /* Logos of any shape fit the same tile: a wide one by its width, a tall one by its height */
@@ -4423,9 +4488,11 @@
     filter: grayscale(1);
   }
 
-  .brands--muted .brand-card:hover .brand-card__logo {
-    opacity: 1;
-    filter: none;
+  @media (hover: hover) {
+    .brands--muted .brand-card:hover .brand-card__logo {
+      opacity: 1;
+      filter: none;
+    }
   }
 
   /* -------------------------------------------------------------- FAQ */
@@ -4467,16 +4534,9 @@
 
     /* align-self: a grid item stretches to its row — sticky needs room to move in */
     .faq--split .faq__intro {
-      position: sticky;
-      top: var(--sticky-top);
       align-self: start;
-      max-height: var(--sticky-max-height);
       margin: calc(-1 * var(--sticky-focus-room));
       padding: var(--sticky-focus-room);
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      scrollbar-width: thin;
-      transition: var(--sticky-transition);
     }
   }
 
@@ -4541,11 +4601,6 @@
       margin-inline: calc(var(--gutter) * -1);
       padding-inline: var(--gutter);
       overflow-x: auto;
-      scrollbar-width: none;
-    }
-
-    .faq--nav .faq__nav-list::-webkit-scrollbar {
-      display: none;
     }
 
     .faq--nav .faq__intro > .btn {
@@ -4827,12 +4882,7 @@
     }
   }
 
-  /* Cover: the image fills the screen under a tint of the background color */
-  .password--cover .password__media {
-    position: absolute;
-    inset: 0;
-  }
-
+  /* Cover (.frame--cover): the image fills the screen under a tint of the background color */
   .password--cover .password__media::after {
     content: "";
     position: absolute;
@@ -4961,10 +5011,9 @@
   }
 
   .gift-card__message {
+    --card-padding: var(--space-m) var(--space-l);
+
     margin: 0;
-    padding: var(--space-m) var(--space-l);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
   }
 
   .gift-card__message blockquote {
@@ -5164,14 +5213,7 @@
   }
 
   .main-contact__icon {
-    display: grid;
-    flex-shrink: 0;
-    place-items: center;
-    width: var(--control-height);
-    aspect-ratio: 1;
-    color: var(--color-accent);
-    background: var(--color-surface);
-    border-radius: var(--radius-full);
+    --icon-circle-bg: var(--color-surface);
   }
 
   .main-contact__label {
@@ -5185,9 +5227,6 @@
     display: grid;
     align-content: start;
     gap: var(--space-l);
-    padding: var(--space-l);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
   }
 
   /* Rows leave room for a field's error message (.field-error) */
@@ -5352,11 +5391,6 @@
   }
 
   .collection-tile__media :is(img, svg) {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
     transition: scale var(--duration-long) var(--ease-out);
   }
 
@@ -5490,13 +5524,7 @@
   }
 
   .main-blog__signup-icon {
-    display: grid;
-    place-items: center;
-    width: 4.8rem;
-    height: 4.8rem;
-    color: var(--color-accent);
-    background: var(--color-background);
-    border-radius: var(--radius-full);
+    --icon-circle-size: 4.8rem;
   }
 
   .main-blog__signup-icon .svg-icon {
@@ -5584,9 +5612,6 @@
     align-content: start;
     gap: var(--space-s);
     order: 3;
-    padding: var(--space-l);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
   }
 
   .main-article__shop h2 {
@@ -5627,17 +5652,6 @@
     .main-article__layout:has(.main-article__toc article-toc[hidden]) .main-article__body,
     .main-article__layout:not(:has(.main-article__toc)) .main-article__body {
       grid-column: 1 / span 2;
-    }
-
-    .main-article__toc,
-    .main-article__shop {
-      position: sticky;
-      top: var(--sticky-top);
-      max-height: var(--sticky-max-height);
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      scrollbar-width: thin;
-      transition: var(--sticky-transition);
     }
   }
 
@@ -5890,11 +5904,10 @@
   }
 
   .main-article__comment {
+    --card-padding: var(--space-m);
+
     display: grid;
     gap: var(--space-2xs);
-    padding: var(--space-m);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
   }
 
   .main-article__comment-meta {
@@ -5984,8 +5997,10 @@
     transition: scale var(--duration-long) var(--ease-out);
   }
 
-  .article-card:hover .article-card__media img {
-    scale: 1.04;
+  @media (hover: hover) {
+    .article-card:hover .article-card__media img {
+      scale: 1.04;
+    }
   }
 
   .article-card__date {
@@ -6319,11 +6334,10 @@
   }
 
   .delivery-estimate__card {
+    --card-padding: var(--space-xl) var(--space-l);
+
     display: grid;
     gap: var(--space-xl);
-    padding: var(--space-xl) var(--space-l);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
   }
 
   .delivery-estimate__head {
@@ -6382,15 +6396,10 @@
   }
 
   .delivery-estimate__icon {
-    display: grid;
-    place-items: center;
-    width: var(--icon-box);
-    height: var(--icon-box);
+    --icon-circle-size: var(--icon-box);
+
     margin-bottom: var(--space-xs);
-    color: var(--color-accent);
-    background: var(--color-background);
     border: 0.2rem solid var(--color-accent);
-    border-radius: var(--radius-full);
   }
 
   .delivery-estimate__step--done .delivery-estimate__icon {
@@ -6485,9 +6494,6 @@
     display: grid;
     align-content: start;
     gap: var(--space-2xs);
-    padding: var(--space-l);
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
   }
 
   .product-story__ingredient > .svg-icon {

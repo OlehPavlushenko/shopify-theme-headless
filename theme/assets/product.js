@@ -8,7 +8,7 @@
  *   and the stacked layout move it to the top on wide screens.
  * <quantity-input>: − / + buttons around a number input.
  * <sticky-buy-bar data-form="<product form id>" hidden>: shown once the main add button has scrolled
- *   up out of view. Shows what the form adds: [data-sticky-variant] the variant's options,
+ *   up out of view (<body data-sticky-buy> meanwhile: the page reserves room for it). Shows what the form adds: [data-sticky-variant] the variant's options,
  *   [data-sticky-count] "× N" (phones), [data-sticky-qty] a stepper both ways in step with the
  *   form's quantity (a stepper or the "Bundle & save" radios). [data-sticky-top] (an up arrow)
  *   scrolls back up to the variant picker (else the product's head) and focuses the picked value.
@@ -221,6 +221,7 @@ class StickyBuyBar extends HTMLElement {
     this.#observer = new IntersectionObserver(([entry]) => {
       // Visible once the main button is above the viewport (not while it is still below it)
       this.hidden = entry.isIntersecting || entry.boundingClientRect.top > 0;
+      document.body.toggleAttribute('data-sticky-buy', !this.hidden);
     });
     this.#observer.observe(button);
 
@@ -239,6 +240,7 @@ class StickyBuyBar extends HTMLElement {
   disconnectedCallback() {
     this.#abort?.abort();
     this.#observer?.disconnect();
+    document.body.removeAttribute('data-sticky-buy');
   }
 
   #onTop = () => {

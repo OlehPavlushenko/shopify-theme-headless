@@ -6,7 +6,7 @@
  * Markup contract:
  *   <ui-slider class="slider" style="--slider-columns: 4; --slider-columns-mobile: 2.2;">
  *     <div class="slider__head"> heading … <div class="slider__nav"> [data-slider-prev] [data-slider-next] </div></div>
- *     <ul class="slider__track" data-slider-track> <li>…</li> </ul>
+ *     <ul class="scroll-track slider__track" data-slider-track> <li>…</li> </ul>
  *   </ui-slider>
  * Scrolling and swiping work without JS. This only wires the arrows: they scroll by one page,
  * get disabled at the edges, and the nav is hidden ([data-overflow] absent) when nothing overflows.

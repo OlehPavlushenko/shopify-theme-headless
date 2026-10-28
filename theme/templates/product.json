@@ -12,10 +12,6 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "vendor": {
-          "type": "vendor",
-          "settings": {}
-        },
         "title": {
           "type": "title",
           "settings": {}
@@ -132,7 +128,6 @@
         }
       },
       "block_order": [
-        "vendor",
         "title",
         "judge_me_reviews_preview_badge_GiLptT",
         "rating",
@@ -194,10 +189,7 @@
           }
         }
       },
-      "block_order": [
-        "q1",
-        "q2"
-      ],
+      "block_order": ["q1", "q2"],
       "settings": {
         "layout": "split",
         "eyebrow": "FAQ",
@@ -233,21 +225,12 @@
           }
         }
       },
-      "block_order": [
-        "judge_me_reviews_review_widget_ExBBVb"
-      ],
+      "block_order": ["judge_me_reviews_review_widget_ExBBVb"],
       "settings": {
         "full_width": false,
         "color_scheme": ""
       }
     }
   },
-  "order": [
-    "main",
-    "story",
-    "related",
-    "faq",
-    "recent",
-    "17931764247569e44a"
-  ]
+  "order": ["main", "story", "related", "faq", "recent", "17931764247569e44a"]
 }

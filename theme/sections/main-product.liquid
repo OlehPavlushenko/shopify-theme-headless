@@ -40,6 +40,21 @@
   data-label-unavailable="{{ label_unavailable | escape }}"
 >
   <div class="page-width main-product__inner">
+    {%- comment -%}
+      The head — the product's label (metafield custom.label, e.g. "Bestseller") and the title, the
+      page's only h1 — comes before the gallery: on phones the title is above the photos, from 990px
+      the grid puts it at the top of the info column. Rendered where the Title block is.
+    {%- endcomment -%}
+    {%- assign title_block = section.blocks | where: 'type', 'title' | first -%}
+    {%- if title_block -%}
+      <div class="main-product__head" {{ title_block.shopify_attributes }}>
+        {%- assign product_label = product.metafields.custom.label.value -%}
+        {%- if product_label != blank -%}
+          <span class="pill pill--soft main-product__label">{{ product_label | escape }}</span>
+        {%- endif -%}
+        <h1 class="h2 main-product__title">{{ product.title | escape }}</h1>
+      </div>
+    {%- endif -%}
     {%- comment -%} ----------------------------------------------------------- gallery {%- endcomment -%}
     <product-gallery class="product-gallery product-gallery--{{ gallery }}" data-layout="{{ gallery }}">
       <ul class="product-gallery__track" role="list" data-gallery-track>
@@ -121,7 +136,7 @@
               {%- endif -%}
 
             {%- when 'title' -%}
-              <h1 class="h2 main-product__title" {{ block.shopify_attributes }}>{{ product.title | escape }}</h1>
+              {%- comment -%} Rendered above, in the head (before the gallery) {%- endcomment -%}
 
             {%- when 'rating' -%}
               {%- assign rating = product.metafields.reviews.rating.value -%}

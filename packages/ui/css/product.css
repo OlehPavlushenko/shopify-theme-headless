@@ -15,6 +15,17 @@
     gap: var(--space-l);
   }
 
+  /* Label and title: above the gallery on phones, at the top of the info column from 990px */
+  .main-product__head {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-xs);
+  }
+
+  .main-product__head .main-product__title {
+    margin: 0;
+  }
+
   /* ---------------------------------------------------------- gallery */
   .product-gallery {
     position: relative;
@@ -731,10 +742,27 @@
       padding-top: var(--space-xl);
     }
 
+    /* Gallery on the left over both rows; head, then the info, on the right */
     .main-product__inner {
       grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        "media head"
+        "media info";
       align-items: start;
-      gap: var(--space-3xl);
+      gap: var(--space-m) var(--space-3xl);
+    }
+
+    .main-product__head {
+      grid-area: head;
+    }
+
+    .product-gallery {
+      grid-area: media;
+    }
+
+    .main-product__info {
+      grid-area: info;
     }
 
     .main-product--stacked .main-product__inner {

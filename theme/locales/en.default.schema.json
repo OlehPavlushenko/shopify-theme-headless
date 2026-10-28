@@ -321,6 +321,10 @@
       "image_info": "Banner layout: shown on the left.",
       "color_scheme_info": "A scheme with a background gradient makes a bold banner."
     },
+    "cookie_banner": {
+      "name": "Cookie banner",
+      "info": "Shows only where consent is required (Settings > Customer privacy) and until the visitor decides; Shopify keeps the answer and the pixels in Customer events follow it. Turn off Shopify's own banner there. A \"Cookie preferences\" link in the footer reopens it."
+    },
     "promo_popup": {
       "name": "Promo popup",
       "when": "When it shows",

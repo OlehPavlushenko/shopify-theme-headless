@@ -174,10 +174,20 @@
         "show_until": "",
         "color_scheme": "scheme-1"
       }
+    },
+    "cookie_banner": {
+      "type": "cookie-banner",
+      "name": "Cookie banner",
+      "settings": {
+        "heading": "We use cookies",
+        "text": "<p>Cookies help the store work, show you what you like and measure what works. You choose which ones we may use.</p>",
+        "color_scheme": "scheme-1"
+      }
     }
   },
   "order": [
     "christmas_popup",
-    "spin_popup"
+    "spin_popup",
+    "cookie_banner"
   ]
 }

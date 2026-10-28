@@ -287,6 +287,96 @@
     right: var(--space-s);
   }
 
+  /* Cookie banner: a card at the bottom left; on phones a sheet across the bottom */
+  .cookie-banner {
+    position: fixed;
+    z-index: 25;
+    inset: auto auto var(--space-m) var(--space-m);
+    display: grid;
+    gap: var(--space-s);
+    width: min(42rem, calc(100vw - var(--space-m) * 2));
+    max-height: calc(100dvh - var(--space-xl));
+    overflow-y: auto;
+    padding: var(--space-l);
+    color: var(--color-foreground);
+    background: var(--color-background);
+    border: 0.1rem solid var(--color-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-overlay);
+    animation: cookie-banner-in var(--duration-long) var(--ease-out);
+  }
+
+  @keyframes cookie-banner-in {
+    from {
+      opacity: 0;
+      translate: 0 1.6rem;
+    }
+  }
+
+  .cookie-banner__text {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .cookie-banner__heading {
+    margin: 0;
+  }
+
+  .cookie-banner__body {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .cookie-banner__choices {
+    display: grid;
+    gap: var(--space-s);
+    padding-block: var(--space-xs);
+    border-block: 0.1rem solid var(--color-border);
+  }
+
+  .cookie-banner__choice {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-s);
+    cursor: pointer;
+  }
+
+  .cookie-banner__choice > span {
+    display: grid;
+  }
+
+  .cookie-banner__choice-title {
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-medium);
+    color: var(--color-heading);
+  }
+
+  .cookie-banner__choice-text {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .cookie-banner__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs) var(--space-s);
+  }
+
+  .cookie-banner__manage {
+    margin-inline-start: auto;
+    font-size: var(--text-sm);
+  }
+
+  @media (max-width: 749px) {
+    .cookie-banner {
+      inset: auto 0 0;
+      width: 100%;
+      border-width: 0.1rem 0 0;
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
+    }
+  }
+
   /* Spin to win: the disc (conic gradient set inline), a pointer at the top, a hub; the result card */
   .spin-wheel {
     display: grid;

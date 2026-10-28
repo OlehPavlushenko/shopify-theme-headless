@@ -193,6 +193,20 @@
     color: var(--color-heading);
   }
 
+  /* A button among the bottom row's links ("Cookie preferences") that looks like them */
+  .site-footer__link-button {
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    background: none;
+    border: 0;
+  }
+
+  .site-footer__link-button:hover {
+    color: var(--color-heading);
+  }
+
   .site-footer__policies {
     display: flex;
     flex-wrap: wrap;

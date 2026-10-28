@@ -156,6 +156,8 @@
         {%- for policy in shop.policies -%}
           <li><a href="{{ policy.url }}">{{ policy.title | escape }}</a></li>
         {%- endfor -%}
+        {%- comment -%} Shown and wired by the cookie banner (sections/cookie-banner) when it is on {%- endcomment -%}
+        <li><button type="button" class="site-footer__link-button" data-cookie-settings hidden>{{ 'cookies.settings' | t }}</button></li>
       </ul>
     {%- endif -%}
 

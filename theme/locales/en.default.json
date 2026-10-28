@@ -301,6 +301,19 @@
       "show_more": "Show more"
     }
   },
+  "cookies": {
+    "accept": "Accept",
+    "decline": "Decline",
+    "manage": "Preferences",
+    "save": "Save choices",
+    "settings": "Cookie preferences",
+    "analytics": "Analytics",
+    "analytics_text": "How the store is used, so we can improve it.",
+    "marketing": "Marketing",
+    "marketing_text": "Ads that fit you, here and on other sites.",
+    "preferences": "Preferences",
+    "preferences_text": "Remembers your choices, like your country."
+  },
   "wheel": {
     "prizes": "Prizes",
     "spinning": "Spinning…",

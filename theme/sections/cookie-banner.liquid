@@ -1,0 +1,68 @@
+{% comment %}
+  Cookie banner, in the "Overlays" section group. Asks for tracking consent through Shopify's
+  Customer Privacy API: Shopify decides who sees it (shouldShowBanner — regions that need consent,
+  per Settings > Customer privacy, until the visitor decides) and keeps the answer; pixels from
+  Customer events (Google, Meta, Tag Manager…) follow it. Accept / Decline, and Preferences with a
+  switch per purpose. Any [data-cookie-settings] (the footer's "Cookie preferences") opens it again.
+  Turn off Shopify's own banner in Settings > Customer privacy when this one is on.
+  Behavior: <cookie-banner> (assets/cookie-banner.js). Styles: .cookie-banner in promo.css.
+{% endcomment %}
+<cookie-banner class="cookie-banner color-{{ section.settings.color_scheme }}" role="region" aria-labelledby="CookieBanner-{{ section.id }}" hidden>
+  <div class="cookie-banner__text">
+    <h2 class="h5 cookie-banner__heading" id="CookieBanner-{{ section.id }}">{{ section.settings.heading }}</h2>
+    <div class="cookie-banner__body">{{ section.settings.text }}</div>
+  </div>
+
+  <form class="cookie-banner__choices" data-cookie-choices hidden>
+    {%- for purpose in (1..3) -%}
+      {%- liquid
+        case purpose
+          when 1
+            assign key = 'analytics'
+          when 2
+            assign key = 'marketing'
+          when 3
+            assign key = 'preferences'
+        endcase
+        assign label_key = 'cookies.' | append: key
+        assign text_key = 'cookies.' | append: key | append: '_text'
+      -%}
+      <label class="cookie-banner__choice">
+        <input type="checkbox" class="switch" name="{{ key }}" checked>
+        <span>
+          <span class="cookie-banner__choice-title">{{ label_key | t }}</span>
+          <span class="cookie-banner__choice-text">{{ text_key | t }}</span>
+        </span>
+      </label>
+    {%- endfor -%}
+  </form>
+
+  <div class="cookie-banner__actions">
+    <button type="button" class="btn btn--sm" data-consent="accept">{{ 'cookies.accept' | t }}</button>
+    <button type="button" class="btn btn--outline btn--sm" data-consent="decline">{{ 'cookies.decline' | t }}</button>
+    <button type="button" class="btn btn--link cookie-banner__manage" data-consent="manage" aria-expanded="false">{{ 'cookies.manage' | t }}</button>
+    <button type="button" class="btn btn--sm" data-consent="save" hidden>{{ 'cookies.save' | t }}</button>
+  </div>
+</cookie-banner>
+<script type="module">import 'cookie-banner';</script>
+
+{% schema %}
+{
+  "name": "t:sections.cookie_banner.name",
+  "class": "cookie-banner-section",
+  "limit": 1,
+  "enabled_on": { "groups": ["custom.overlay"] },
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.cookie_banner.info" },
+    { "type": "inline_richtext", "id": "heading", "label": "t:labels.heading", "default": "We use cookies" },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:labels.text",
+      "default": "<p>Cookies help the store work, show you what you like and measure what works. You choose which ones we may use.</p>"
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "t:sections.cookie_banner.name" }]
+}
+{% endschema %}

@@ -7,14 +7,15 @@
  * Without JS (or on a failed request) the links are ordinary links and the forms post as usual.
  *
  * Markup contract:
- *   <section-swap data-section="<section id>" [data-section-forms] tabindex="-1">
+ *   <section-swap data-section="<section id>" [data-section-forms] [data-title="…"] tabindex="-1">
  *     … <a href="…" data-section-link> …
  *   </section-swap>
  *   <form action="…" data-section-form> (anywhere on the page, with data-section-forms)
  * A form's GET request renders here too (an empty field is stopped before: <form-validate>); the
  * forms' q fields follow the URL shown. A URL of another template (the search page vs the page this
  * was rendered on) is fetched as a whole page — its section has another id — and its <section-swap>
- * is used. The element's children are replaced by those of the <section-swap> in the response.
+ * is used. The element's children are replaced by those of the <section-swap> in the response, and
+ * the document title by its data-title (the tab follows the topic / search).
  * State: [aria-busy] while loading.
  */
 import { headerOffset, scrollBehavior } from '@ui/scroll';
@@ -90,6 +91,7 @@ class SectionSwap extends HTMLElement {
       const next = new DOMParser().parseFromString(text, 'text/html').querySelector('section-swap');
       if (!next) throw new Error('No section-swap in the response');
       this.replaceChildren(...[...next.childNodes].map((node) => document.importNode(node, true)));
+      if (next.dataset.title) document.title = next.dataset.title;
       if (push) {
         // The first entry gets the state too, so going back to it re-renders
         if (!history.state?.sectionSwap) history.replaceState({ sectionSwap: this.dataset.section }, '');

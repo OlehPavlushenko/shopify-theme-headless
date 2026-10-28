@@ -1,0 +1,9 @@
+{% doc %}
+  The document title (plain text): the page title, the topic, the page number and the store name.
+  Used by <title> (snippets/meta-tags) and by sections that re-render in place (data-title on
+  <section-swap>), so the tab follows the content.
+{% enddoc %}
+{{- page_title -}}
+{%- if current_tags %} – tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+{%- if current_page != 1 %} – Page {{ current_page }}{% endif -%}
+{%- unless page_title contains shop.name %} – {{ shop.name }}{% endunless -%}

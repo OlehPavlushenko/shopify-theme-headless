@@ -22,7 +22,9 @@
     assign shown_terms = terms | escape
   endif
 -%}
-<section-swap class="main-blog color-{{ section.settings.color_scheme }} section-spacing" data-section="{{ section.id }}" data-section-forms tabindex="-1">
+{%- comment -%} page_title comes HTML-escaped already: only the quotes added around a topic are escaped {%- endcomment -%}
+{%- capture document_title -%}{% render 'document-title' %}{%- endcapture -%}
+<section-swap class="main-blog color-{{ section.settings.color_scheme }} section-spacing" data-section="{{ section.id }}" data-section-forms data-title="{{ document_title | strip | replace: '"', '&quot;' }}" tabindex="-1">
   <load-more data-section="{{ section.id }}">
     <div class="page-width">
       {%- if is_search and count > 0 -%}

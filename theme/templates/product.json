@@ -20,8 +20,13 @@
           "type": "title",
           "settings": {}
         },
+        "judge_me_reviews_preview_badge_GiLptT": {
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
+        },
         "rating": {
           "type": "rating",
+          "disabled": true,
           "settings": {
             "anchor": "Reviews"
           }
@@ -36,9 +41,23 @@
             "low_stock": 5
           }
         },
+        "quantity_breaks": {
+          "type": "quantity_breaks",
+          "settings": {
+            "heading": "Bundle & save",
+            "qty_1": 1,
+            "discount_1": 0,
+            "qty_2": 2,
+            "discount_2": 10,
+            "qty_3": 3,
+            "discount_3": 15,
+            "popular": "2"
+          }
+        },
         "buy": {
           "type": "buy_buttons",
           "settings": {
+            "show_notify": true,
             "show_quantity": true,
             "show_dynamic_checkout": true,
             "show_stock": true,
@@ -72,6 +91,7 @@
             "icon": "none",
             "source": "description",
             "metafield": "",
+            "page": "",
             "content": "",
             "open": true
           }
@@ -83,6 +103,7 @@
             "icon": "leaf",
             "source": "metafield",
             "metafield": "custom.ingredients",
+            "page": "",
             "content": "",
             "open": false
           }
@@ -94,6 +115,7 @@
             "icon": "truck",
             "source": "custom",
             "metafield": "",
+            "page": "",
             "content": "<p>Orders ship within 1–2 business days; delivery across the country takes 2–4 days and is free from $50.</p><p>Unopened products can be returned within 14 days — write to us and we arrange a free pickup.</p>",
             "open": false
           }
@@ -108,24 +130,12 @@
         "share": {
           "type": "share",
           "settings": {}
-        },
-        "quantity_breaks": {
-          "type": "quantity_breaks",
-          "settings": {
-            "heading": "Bundle & save",
-            "qty_1": 1,
-            "discount_1": 0,
-            "qty_2": 2,
-            "discount_2": 10,
-            "qty_3": 3,
-            "discount_3": 15,
-            "popular": "2"
-          }
         }
       },
       "block_order": [
         "vendor",
         "title",
+        "judge_me_reviews_preview_badge_GiLptT",
         "rating",
         "price",
         "picker",
@@ -144,6 +154,16 @@
         "ratio": "1",
         "info_style": "plain",
         "sticky_bar": true,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "story": {
+      "type": "product-story",
+      "settings": {
+        "ingredients_eyebrow": "What's inside",
+        "ingredients_heading": "Key ingredients",
+        "steps_eyebrow": "Routine",
+        "steps_heading": "How to use",
         "color_scheme": "scheme-1"
       }
     },
@@ -174,7 +194,10 @@
           }
         }
       },
-      "block_order": ["q1", "q2"],
+      "block_order": [
+        "q1",
+        "q2"
+      ],
       "settings": {
         "layout": "split",
         "eyebrow": "FAQ",
@@ -182,6 +205,7 @@
         "text": "",
         "button_label": "Contact us",
         "button_link": "shopify://pages/contact",
+        "show_nav": false,
         "single_open": true,
         "open_first": false,
         "color_scheme": "scheme-2"
@@ -196,16 +220,34 @@
         "color_scheme": "scheme-1"
       }
     },
-    "story": {
-      "type": "product-story",
+    "17931764247569e44a": {
+      "type": "apps",
+      "blocks": {
+        "judge_me_reviews_review_widget_ExBBVb": {
+          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "review_data": "sample_data",
+            "max_width": 1200,
+            "show_shop_reviews": true,
+            "empty_state": "empty_widget"
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_review_widget_ExBBVb"
+      ],
       "settings": {
-        "ingredients_eyebrow": "What's inside",
-        "ingredients_heading": "Key ingredients",
-        "steps_eyebrow": "Routine",
-        "steps_heading": "How to use",
-        "color_scheme": "scheme-1"
+        "full_width": false,
+        "color_scheme": ""
       }
     }
   },
-  "order": ["main", "story", "related", "faq", "recent"]
+  "order": [
+    "main",
+    "story",
+    "related",
+    "faq",
+    "recent",
+    "17931764247569e44a"
+  ]
 }

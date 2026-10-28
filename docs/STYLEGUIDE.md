@@ -127,6 +127,10 @@ and the list of mistakes we already made once. Read both before adding code.
 | A one-line scrolling row (chips, tabs) inside a grid with an `auto` column — the column grows to the row's full width and the page scrolls sideways (page header subcollections, FAQ topics) | `grid-template-columns: minmax(0, 1fr)` on that grid |
 | `display: contents` on a wrapper so a child can be sticky over a longer sibling — the grid gets new items with its own (larger) gap | Set the grid's gap for that case too |
 | "Failed to resolve module specifier @ui/…" on every module | The page loaded while theme dev was uploading — reload once edits settle |
+| A size container (`container-type: inline-size`) on a card in a product list — about 3 s of layout on the home page load at 4× CPU throttling | Media queries for where the box is wide (the deal card) |
+| A new always-loaded stylesheet as its own `stylesheet_tag` — Shopify sends 10 preload Link headers at most, render-blocking styles first, and the page's `image_tag … preload: true` is dropped | Add it to `CORE` in `scripts/sync-ui.mjs` (joined into `ui-core.css`) |
+| The page's main image `loading: 'lazy'` (the blog's featured article was) | `loading: 'eager', fetchpriority: 'high', preload: true` for the one main image of the page |
+| Judging mobile Lighthouse scores from theme dev — it serves HTML and CSS uncompressed (270 KB / 170 KB) through a proxy | Compare before / after there; absolute numbers only on the CDN (the store unlocked) |
 
 ## Verifying
 

@@ -13,8 +13,9 @@
  * - input[type=search][name=q], [data-results] container, optional [data-empty-state]
  *   shown while the query is empty (popular searches, featured products)
  * Debounced, cancels stale requests (AbortController), caches responses per query.
- * ArrowDown from the input moves focus into the results. Focuses the input when the
- * surrounding <dialog> opens (dialog:open from @ui/dialog).
+ * ArrowDown from the input moves focus into the results; outside a <dialog>, Esc empties them, and
+ * so does a submit of the form (a list under a field). Focuses the input when the surrounding
+ * <dialog> opens (dialog:open from @ui/dialog).
  */
 const DEBOUNCE = 220;
 
@@ -31,6 +32,7 @@ class PredictiveSearch extends HTMLElement {
 
     this.input.addEventListener('input', this.#onInput);
     this.input.addEventListener('keydown', this.#onKeydown);
+    this.input.form?.addEventListener('submit', () => this.#render(''));
     this.closest('dialog')?.addEventListener('dialog:open', () => {
       this.input.focus();
       this.input.select();
@@ -43,6 +45,7 @@ class PredictiveSearch extends HTMLElement {
   };
 
   #onKeydown = (event) => {
+    if (event.key === 'Escape' && !this.closest('dialog')) this.#render('');
     if (event.key !== 'ArrowDown') return;
     const first = this.results.querySelector('a, button');
     if (first) {

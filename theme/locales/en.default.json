@@ -215,6 +215,7 @@
     "products": "Products",
     "collections": "Collections",
     "suggestions": "Suggestions",
+    "articles": "Articles",
     "popular": "Popular searches",
     "view_all_html": "View all results for “{{ terms }}”",
     "article": "Article",

@@ -10,7 +10,9 @@
     @ui/saved-list) by itself.
   - Blog search (setting): on the blog page and on its search results (templates/search.blog.json,
     with the blog picked here) a search field for the articles (snippets/search-options). With JS it
-    re-renders the blog's section in place (<section-swap data-section-forms>, @ui/section-swap).
+    re-renders the blog's section in place (<section-swap data-section-forms>, @ui/section-swap), and
+    suggests matching articles as you type in a list under the field (<predictive-search>,
+    sections/predictive-search with resources[type]=article).
   Styles: packages/ui/css/sections.css.
 {% endcomment %}
 {%- liquid
@@ -72,7 +74,12 @@
       {%- endif -%}
       {%- if section.settings.blog_search and header_blog != blank -%}
         {%- comment -%} An empty field isn't sent: a hint under it instead (<form-validate>) {%- endcomment -%}
-        <form-validate class="page-header__search" data-message-required="{{ 'search.empty_query' | t }}">
+        <predictive-search
+          class="page-header__search"
+          data-endpoint="{{ routes.predictive_search_url }}"
+          data-params="section_id=predictive-search&resources[type]=article&resources[limit]=6"
+        >
+        <form-validate data-message-required="{{ 'search.empty_query' | t }}">
         <form action="{{ routes.search_url }}" method="get" role="search" class="search-form" data-section-form>
           <label class="search-field">
             <span class="visually-hidden">{{ 'blog.search_label' | t }}</span>
@@ -83,7 +90,12 @@
           <button type="submit" class="btn">{{ 'search.submit' | t }}</button>
         </form>
         </form-validate>
-        <script type="module">import '@ui/form-validate';</script>
+        <div class="page-header__suggest" data-results></div>
+        </predictive-search>
+        <script type="module">
+          import '@ui/form-validate';
+          import '@ui/predictive-search';
+        </script>
       {%- endif -%}
       {%- if template.suffix == 'wishlist' or template.suffix == 'compare' -%}
         {%- liquid

@@ -9,6 +9,8 @@
   - Predictive search ({{ routes.predictive_search_url }}?q=<terms>&section_id=predictive-search
     &resources[type]=collection,query): query suggestions (the typed part highlighted) and
     collections, which the search page doesn't give; the client puts them into the slot.
+  - Predictive search with resources[type]=article (the blog search field in the Page header): the
+    matching articles alone, as links (Shopify searches the articles of every blog).
   Not added through the theme editor (no presets). Links to the search page carry
   snippets/search-options.
 {% endcomment %}
@@ -39,6 +41,17 @@
         <ul class="link-list" role="list">
           {%- for collection in resources.collections limit: 5 -%}
             <li><a href="{{ collection.url }}" class="link-list__link"><span class="link-list__text">{{ collection.title | escape }}</span></a></li>
+          {%- endfor -%}
+        </ul>
+      </section>
+    {%- endif -%}
+
+    {%- if resources.articles.size > 0 -%}
+      <section class="search-results__group" aria-labelledby="PredictiveArticles">
+        <h2 id="PredictiveArticles" class="eyebrow search-results__heading">{{ 'search.articles' | t }}</h2>
+        <ul class="link-list" role="list">
+          {%- for article in resources.articles limit: 6 -%}
+            <li><a href="{{ article.url }}" class="link-list__link"><span class="link-list__text">{{ article.title | escape }}</span></a></li>
           {%- endfor -%}
         </ul>
       </section>

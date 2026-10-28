@@ -2841,6 +2841,11 @@
     margin: 0;
   }
 
+  /* A single part (only the steps or only the ingredients) keeps a readable width */
+  .product-story__part:only-child {
+    max-width: 72rem;
+  }
+
   .product-story__ingredients,
   .product-story__steps {
     display: grid;
@@ -3020,6 +3025,36 @@
 
 .jdgm-review-widget .jm-reviewer-info__name {
   font-weight: var(--font-body-weight-semibold);
+  color: var(--color-heading);
+}
+
+/* No reviews yet: a soft card with five empty stars, the invitation in the heading font and the
+   button (the app sets the box's width inline, hence !important) */
+.jdgm-review-widget .jm-no-reviews-state {
+  box-sizing: border-box !important;
+  width: 100%;
+  max-inline-size: none !important;
+  padding: var(--space-2xl) var(--space-l);
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+}
+
+.jdgm-review-widget .jm-no-reviews-state::before {
+  content: "";
+  display: block;
+  width: 12.1rem;
+  height: 2.2rem;
+  margin: 0 auto var(--space-s);
+  background: color-mix(in srgb, var(--color-foreground) 22%, transparent);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z'/%3E%3C/svg%3E")
+    0 0 / 2.42rem 2.2rem repeat-x;
+}
+
+.jdgm-review-widget .jm-no-reviews-state__text {
+  font-family: var(--font-heading-family);
+  font-size: calc(var(--font-heading-scale) * var(--text-xl)) !important;
+  font-weight: var(--font-heading-weight) !important;
+  line-height: var(--leading-xl);
   color: var(--color-heading);
 }
 

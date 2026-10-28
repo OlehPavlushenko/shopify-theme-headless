@@ -129,7 +129,7 @@
     color: var(--color-text-muted);
   }
 
-  .newsletter-form:has(.newsletter-form__message:not(:empty)) .newsletter-form__note {
+  .newsletter-form__form:has(.newsletter-form__message:not(:empty)) + .newsletter-form__note {
     visibility: hidden;
   }
 

@@ -348,6 +348,12 @@
   }
 
   /* ----------------------------------------------------- product list */
+  /* A custom element is inline by default: block, so the section padding applies ("You may also
+     like" and "Pairs well with" are <product-recommendations>) */
+  product-recommendations {
+    display: block;
+  }
+
   .product-list__grid {
     --grid-gap: var(--space-xl) var(--space-m);
 

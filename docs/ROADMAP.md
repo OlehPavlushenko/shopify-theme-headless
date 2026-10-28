@@ -96,16 +96,20 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
 
 ## Next
 
-1. **Search page** on the same facets as the collection page.
-2. Review round of the collection and product pages; filters set up in Search & Discovery.
-4. **SEO pass** over all templates: one h1 everywhere (main section or Page header), breadcrumbs,
+1. **Store reviews page** (`page.reviews`, `/pages/reviews`): add the Judge.me "All reviews" block
+   in the editor, then style it like the product widget.
+2. **Notifications** for new contact / back-in-stock requests (Shopify Flow on the customer tags),
+   when the user asks for it.
+3. **SEO pass** over all templates: one h1 everywhere (main section or Page header), breadcrumbs,
    meta, structured data per template; the store description in Online Store → Preferences.
-5. **Product cards settings** in Theme settings (image ratio, fit, vendor, swatches, toggles),
-   rating stars from `reviews.rating`, tag badges.
-6. **Shared CSS patterns** still duplicated: underlined text buttons → `.btn--link`, counter pills
+4. **Product cards settings** in Theme settings (image ratio, fit, vendor, swatches, toggles),
+   tag badges.
+5. **Shared CSS patterns** still duplicated: underlined text buttons → `.btn--link`, counter pills
    → one `.count-badge`.
-7. **Spin-to-win** popup (server picks the prize and can issue a personal code), popup teaser tab.
-8. Wishlist / compare synced to the customer account through project-server.
+6. **Spin-to-win** popup (server picks the prize and can issue a personal code), popup teaser tab.
+7. Wishlist / compare synced to the customer account through project-server.
+8. Demo content of the templates (home, About, FAQ, blog, password) is still about the test catalog;
+   brand-neutral copy and the logo come with the real store.
 
 ## Decisions
 

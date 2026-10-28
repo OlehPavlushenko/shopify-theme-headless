@@ -2888,6 +2888,14 @@
   text-align: start;
 }
 
+@layer components {
+  /* Apps loaded near the screen (assets/lazy-apps.js): a block with room for the widget until then */
+  .apps__lazy {
+    display: block;
+    min-height: 32rem;
+  }
+}
+
 /*
  * Judge.me review widget (app block, usually in the Apps section of the product template) in the
  * theme's look. Unlayered on purpose: the app's CSS is unlayered and would beat @layer rules. Mostly

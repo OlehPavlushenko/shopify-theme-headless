@@ -1,13 +1,27 @@
 {% comment %}
   Apps: a section for app blocks (a reviews widget or carousel, a loyalty banner, an Instagram
   feed…) on any page, in the page width on its color scheme; optional full width. The app draws its
-  own content and styles.
+  own content and styles. "Load when near the screen": the blocks are put in place only when the
+  section comes near the screen (<lazy-apps>, assets/lazy-apps.js) — the page doesn't load the app's
+  widget scripts before that (on the product page, Judge.me's review widget). Leave it off for app
+  blocks at the top of a page.
 {% endcomment %}
 <div class="apps color-{{ section.settings.color_scheme }} section-spacing">
   <div class="{% unless section.settings.full_width %}page-width{% endunless %}">
-    {%- for block in section.blocks -%}
-      {% render block %}
-    {%- endfor -%}
+    {%- if section.settings.lazy and request.design_mode == false -%}
+      <lazy-apps class="apps__lazy">
+        <template>
+          {%- for block in section.blocks -%}
+            {% render block %}
+          {%- endfor -%}
+        </template>
+      </lazy-apps>
+      <script type="module" src="{{ 'lazy-apps.js' | asset_url }}"></script>
+    {%- else -%}
+      {%- for block in section.blocks -%}
+        {% render block %}
+      {%- endfor -%}
+    {%- endif -%}
   </div>
 </div>
 
@@ -17,6 +31,7 @@
   "class": "apps-section",
   "settings": [
     { "type": "checkbox", "id": "full_width", "label": "t:sections.apps.full_width", "default": false },
+    { "type": "checkbox", "id": "lazy", "label": "t:sections.apps.lazy", "info": "t:sections.apps.lazy_info", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
   ],
   "blocks": [{ "type": "@app" }],

@@ -9,12 +9,14 @@
  * - data-exit     present: when the pointer leaves the window at the top (desktop exit intent)
  * - data-days     after closing, don't show again for this many days (0 = until the browser session ends)
  * After a newsletter sign-up inside it (newsletter:subscribed) it stays away for a year.
+ * One promo popup per page view: once one has opened, the others' triggers are ignored.
  * In the theme editor it opens while its section is selected instead of on the triggers.
  * Opening and closing go through @ui/dialog (animated, focus handling).
  */
 import { openDialog, closeDialog } from '@ui/dialog';
 
 const DAY = 86_400_000;
+let shown = false;
 const YEAR_DAYS = 365;
 
 function read(key) {
@@ -62,7 +64,9 @@ class PromoPopup extends HTMLElement {
   #open = () => {
     for (const off of this.#cleanup) off();
     this.#cleanup = [];
-    if (!document.querySelector('dialog[open]:modal')) openDialog(this.dialog, null);
+    if (shown || document.querySelector('dialog[open]:modal')) return;
+    shown = true;
+    openDialog(this.dialog, null);
   };
 
   #arm() {

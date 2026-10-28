@@ -1,6 +1,6 @@
 {% comment %}
   Promo popup, in the "Overlays" section group (rendered on every page). Content from blocks:
-  text, countdown, newsletter, products, button — in the editor's order. Optional image beside the
+  text, countdown, newsletter, "Spin to win" wheel, products, button — in the editor's order. Optional image beside the
   content (hidden on phones). Phones get a sheet from the bottom instead of a centered window.
   When it opens and how often: <promo-popup> (@ui/promo-popup). Styles: packages/ui/css/promo.css.
 {% endcomment %}
@@ -94,6 +94,128 @@
                     discount_code: block.settings.discount_code
                   -%}
                 </div>
+
+              {%- when 'wheel' -%}
+                {%- comment -%}
+                  Spin to win: prizes from the block's lines "Label | CODE | weight" (codes from
+                  Discounts). With the API URL the newsletter sign-up starts the spin, else a button.
+                  The disc is a conic gradient (surface / accent segments) with the labels along the
+                  radius; <spin-wheel> (@ui/spin-wheel) picks the prize and applies its code.
+                {%- endcomment -%}
+                {%- liquid
+                  capture api
+                    render 'api-url'
+                  endcapture
+                  assign api = api | strip
+                  assign lines = block.settings.prizes | newline_to_br | split: '<br />'
+                  assign count = 0
+                  assign prizes_json = ''
+                  assign prize_names = ''
+                  for line in lines
+                    assign parts = line | strip | split: '|'
+                    if parts.size < 2
+                      continue
+                    endif
+                    assign label = parts[0] | strip
+                    assign code = parts[1] | strip | upcase
+                    assign weight = parts[2] | strip | plus: 0
+                    if label == blank
+                      continue
+                    endif
+                    if weight <= 0
+                      assign weight = 1
+                    endif
+                    if count > 0
+                      assign prizes_json = prizes_json | append: ','
+                      assign prize_names = prize_names | append: ', '
+                    endif
+                    assign label_json = label | json
+                    assign code_json = code | json
+                    assign item = '{"label":' | append: label_json | append: ',"code":' | append: code_json | append: ',"weight":' | append: weight | append: '}'
+                    assign prizes_json = prizes_json | append: item
+                    assign prize_names = prize_names | append: label
+                    assign count = count | plus: 1
+                  endfor
+                -%}
+                {%- if count > 1 -%}
+                  {%- liquid
+                    assign stops = ''
+                    assign last = count | minus: 1
+                    assign odd = count | modulo: 2
+                    for i in (0..last)
+                      assign from = i | times: 100.0 | divided_by: count
+                      assign to = i | plus: 1 | times: 100.0 | divided_by: count
+                      assign color = 'var(--color-surface)'
+                      assign parity = i | modulo: 2
+                      if parity == 1
+                        assign color = 'var(--color-accent)'
+                      endif
+                      if odd == 1 and i == last
+                        assign color = 'var(--color-accent-2)'
+                      endif
+                      if i > 0
+                        assign stops = stops | append: ', '
+                      endif
+                      assign stops = stops | append: color | append: ' ' | append: from | append: '% ' | append: to | append: '%'
+                    endfor
+                  -%}
+                  <spin-wheel class="spin-wheel" data-key="{{ section.id }}" {{ block.shopify_attributes }}>
+                    <div class="spin-wheel__stage" aria-hidden="true">
+                      <span class="spin-wheel__pointer"></span>
+                      <div class="spin-wheel__disc" data-wheel-disc style="--segments: {{ count }}; background: conic-gradient({{ stops }});">
+                        {%- assign i = 0 -%}
+                        {%- for line in lines -%}
+                          {%- assign parts = line | strip | split: '|' -%}
+                          {%- assign label = parts[0] | strip -%}
+                          {%- if parts.size < 2 or label == blank -%}{%- continue -%}{%- endif -%}
+                          {%- liquid
+                            assign parity = i | modulo: 2
+                            # On the left half the text turns over so it reads the right way up
+                            assign twice = i | times: 2 | plus: 1
+                          -%}
+                          <span class="spin-wheel__label{% if parity == 1 or odd == 1 and i == last %} spin-wheel__label--on-color{% endif %}{% if twice > count %} spin-wheel__label--flip{% endif %}" style="--i: {{ i }};">
+                            <span>{{ label | escape }}</span>
+                          </span>
+                          {%- assign i = i | plus: 1 -%}
+                        {%- endfor -%}
+                      </div>
+                      <span class="spin-wheel__hub">{%- render 'icon', name: 'gift' -%}</span>
+                    </div>
+                    <p class="visually-hidden">{{ 'wheel.prizes' | t }}: {{ prize_names | escape }}</p>
+                    <script type="application/json" data-wheel-prizes>[{{ prizes_json }}]</script>
+
+                    <div class="spin-wheel__action">
+                      {%- if api != blank -%}
+                        {%- assign spinning = 'wheel.spinning' | t | prepend: '<p>' | append: '</p>' -%}
+                        {%- render 'newsletter-form',
+                          id: block.id,
+                          button_label: block.settings.button_label,
+                          success_text: spinning,
+                          already_text: spinning,
+                          note: block.settings.note
+                        -%}
+                      {%- else -%}
+                        <button type="button" class="btn btn--full" data-wheel-spin>{{ block.settings.button_label | escape }}</button>
+                        {%- if block.settings.note != blank -%}
+                          <p class="newsletter-form__note">{{ block.settings.note }}</p>
+                        {%- endif -%}
+                      {%- endif -%}
+                    </div>
+
+                    <div class="spin-wheel__result" data-wheel-result role="status" tabindex="-1" hidden>
+                      <p class="eyebrow">{{ 'wheel.won' | t }}</p>
+                      <p class="h3 spin-wheel__prize" data-wheel-prize></p>
+                      <div class="spin-wheel__code">
+                        <code data-wheel-code></code>
+                        <button type="button" class="btn btn--outline btn--sm" data-wheel-copy data-copied="{{ 'wheel.copied' | t | escape }}">
+                          {{- 'wheel.copy' | t -}}
+                        </button>
+                      </div>
+                      <p class="spin-wheel__note">{{ 'wheel.applied' | t }}</p>
+                    </div>
+                  </spin-wheel>
+                  <script type="module">import '@ui/spin-wheel';</script>
+                {%- endif -%}
 
               {%- when 'products' -%}
                 {%- if block.settings.products.count > 0 -%}
@@ -219,6 +341,23 @@
         { "type": "richtext", "id": "already_text", "label": "t:sections.promo_popup.already_text" },
         { "type": "inline_richtext", "id": "note", "label": "t:sections.promo_popup.note" },
         { "type": "text", "id": "discount_code", "label": "t:sections.promo_popup.discount_code", "info": "t:sections.promo_popup.discount_code_info" }
+      ]
+    },
+    {
+      "type": "wheel",
+      "name": "t:sections.promo_popup.wheel",
+      "limit": 1,
+      "settings": [
+        { "type": "paragraph", "content": "t:sections.promo_popup.wheel_info" },
+        {
+          "type": "textarea",
+          "id": "prizes",
+          "label": "t:sections.promo_popup.wheel_prizes",
+          "info": "t:sections.promo_popup.wheel_prizes_info",
+          "default": "5% off | SPIN5 | 20\nFree shipping | FREESHIP | 15\n10% off | SPIN10 | 15\n15% off | SPIN15 | 5\n5% off | SPIN5 | 20\nFree shipping | FREESHIP | 15\n10% off | SPIN10 | 8\n20% off | SPIN20 | 2"
+        },
+        { "type": "text", "id": "button_label", "label": "t:labels.button_label", "default": "Spin the wheel" },
+        { "type": "inline_richtext", "id": "note", "label": "t:sections.promo_popup.note", "default": "One spin per person. No spam." }
       ]
     },
     {

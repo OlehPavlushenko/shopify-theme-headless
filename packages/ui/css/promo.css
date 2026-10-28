@@ -287,6 +287,137 @@
     right: var(--space-s);
   }
 
+  /* Spin to win: the disc (conic gradient set inline), a pointer at the top, a hub; the result card */
+  .spin-wheel {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-m);
+  }
+
+  .spin-wheel__stage {
+    position: relative;
+    width: min(28rem, 72vw);
+    aspect-ratio: 1;
+    margin-top: var(--space-xs);
+  }
+
+  .spin-wheel__disc {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 0.5rem var(--color-background),
+      0 0 0 0.6rem var(--color-border),
+      var(--shadow-md);
+    rotate: var(--turn, 0deg);
+    transition: rotate 5s cubic-bezier(0.12, 0.8, 0.18, 1);
+  }
+
+  /* A label along its segment's middle, from near the hub to near the rim */
+  .spin-wheel__label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    padding: 0 0.8rem 0 23%;
+    font-size: 1.1rem;
+    font-weight: var(--font-body-weight-semibold);
+    line-height: 1.15;
+    text-align: center;
+    text-wrap: balance;
+    color: var(--color-heading);
+    transform-origin: 0 0;
+    transform: rotate(calc((var(--i) + 0.5) * 360deg / var(--segments) - 90deg)) translateY(-50%);
+  }
+
+  .spin-wheel__label > span {
+    display: block;
+  }
+
+  .spin-wheel__label--flip > span {
+    rotate: 180deg;
+  }
+
+  .spin-wheel__label--on-color {
+    color: var(--color-button-label);
+  }
+
+  .spin-wheel__pointer {
+    position: absolute;
+    z-index: 1;
+    top: -1.2rem;
+    left: 50%;
+    width: 2.6rem;
+    height: 3rem;
+    background: var(--color-heading);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    translate: -50% 0;
+  }
+
+  .spin-wheel__hub {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 22%;
+    aspect-ratio: 1;
+    color: var(--color-heading);
+    background: var(--color-background);
+    border-radius: 50%;
+    box-shadow: var(--shadow-md);
+    translate: -50% -50%;
+  }
+
+  .spin-wheel__action {
+    width: 100%;
+  }
+
+  .spin-wheel[data-spun] .spin-wheel__action {
+    display: none;
+  }
+
+  .spin-wheel__result {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-xs);
+    width: 100%;
+    padding: var(--space-m);
+    text-align: center;
+    background: color-mix(in srgb, var(--color-accent) 8%, var(--color-background));
+    border-radius: var(--radius-card);
+    outline: 0;
+  }
+
+  .spin-wheel__prize {
+    margin: 0;
+  }
+
+  .spin-wheel__code {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .spin-wheel__code code {
+    padding: 0.4rem var(--space-s);
+    font-size: var(--text-lg);
+    font-weight: var(--font-body-weight-semibold);
+    letter-spacing: 0.08em;
+    color: var(--color-heading);
+    border: 0.1rem dashed var(--color-accent);
+    border-radius: var(--radius-input);
+  }
+
+  .spin-wheel__note {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
   .promo-popup__text {
     display: grid;
     gap: var(--space-xs);

@@ -66,9 +66,45 @@
         "show_until": "2026-12-25 00:00",
         "color_scheme": "scheme-5"
       }
+    },
+    "spin_popup": {
+      "type": "promo-popup",
+      "blocks": {
+        "text": {
+          "type": "text",
+          "settings": {
+            "eyebrow": "Spin to win",
+            "heading": "Every spin wins",
+            "text": "<p>Leave your email and spin the wheel — the discount you land on goes straight into your cart.</p>"
+          }
+        },
+        "wheel": {
+          "type": "wheel",
+          "settings": {
+            "prizes": "5% off | SPIN5 | 20\nFree shipping | FREESHIP | 15\n10% off | SPIN10 | 15\n15% off | SPIN15 | 5\n5% off | SPIN5 | 20\nFree shipping | FREESHIP | 15\n10% off | SPIN10 | 8\n20% off | SPIN20 | 2",
+            "button_label": "Spin the wheel",
+            "note": "One spin per person. No spam."
+          }
+        }
+      },
+      "block_order": [
+        "text",
+        "wheel"
+      ],
+      "settings": {
+        "delay": 0,
+        "scroll": 0,
+        "exit_intent": true,
+        "days": 3,
+        "pages": "all",
+        "show_from": "",
+        "show_until": "",
+        "color_scheme": "scheme-1"
+      }
     }
   },
   "order": [
-    "christmas_popup"
+    "christmas_popup",
+    "spin_popup"
   ]
 }

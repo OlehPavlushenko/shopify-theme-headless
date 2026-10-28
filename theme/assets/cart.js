@@ -100,13 +100,15 @@ if (!customElements.get('cart-discount')) customElements.define('cart-discount',
 
 // A newsletter sign-up with a discount code (data-discount): the code goes into the cart right away,
 // next to codes already there. With an empty cart Shopify keeps it and applies it once items are added.
-document.addEventListener('newsletter:subscribed', (event) => {
-  const code = event.detail?.discount;
+// A code to add to the cart's codes: after a newsletter sign-up (data-discount) or a prize (discount:apply)
+function applyCode(code) {
   if (!code || !window.liquidAjaxCart) return;
   const codes = (window.liquidAjaxCart.cart?.discount_codes ?? []).map((c) => c.code);
   if (codes.some((c) => c.toLowerCase() === code.toLowerCase())) return;
   window.liquidAjaxCart.update({ discount: [...codes, code].join(',') });
-});
+}
+document.addEventListener('newsletter:subscribed', (event) => applyCode(event.detail?.discount));
+document.addEventListener('discount:apply', (event) => applyCode(event.detail?.code));
 
 // After a promo code request: drop codes that don't apply and remember the first one for the error
 document.addEventListener('liquid-ajax-cart:request-end', (event) => {

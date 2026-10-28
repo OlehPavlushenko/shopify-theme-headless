@@ -301,6 +301,14 @@
       "show_more": "Show more"
     }
   },
+  "wheel": {
+    "prizes": "Prizes",
+    "spinning": "Spinning…",
+    "won": "You won",
+    "copy": "Copy",
+    "copied": "Copied",
+    "applied": "The code is already applied to your cart — it works at checkout."
+  },
   "newsletter": {
     "placeholder": "Your email",
     "subscribe": "Subscribe",

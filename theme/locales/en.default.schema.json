@@ -346,7 +346,11 @@
       "products": "Products",
       "button": "Button",
       "discount_code": "Discount code to apply",
-      "discount_code_info": "Added to the cart right after signing up, so the shopper doesn't need to copy it. Create the code in Discounts."
+      "discount_code_info": "Added to the cart right after signing up, so the shopper doesn't need to copy it. Create the code in Discounts.",
+      "wheel": "Spin to win",
+      "wheel_info": "A prize wheel: with Integrations > API URL the newsletter sign-up spins it, else a button. It spins once per shopper and applies the code it lands on to the cart. Create the codes in Discounts.",
+      "wheel_prizes": "Prizes",
+      "wheel_prizes_info": "One per line: Label | CODE | weight. A higher weight lands more often (e.g. 20 vs 2). 2–12 lines."
     },
     "hero": {
       "name": "Hero",

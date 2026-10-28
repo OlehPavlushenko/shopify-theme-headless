@@ -1959,12 +1959,19 @@
       position: sticky;
       top: var(--sticky-top);
       max-height: var(--sticky-max-height);
-      margin: calc(-1 * var(--sticky-focus-room));
-      padding: var(--sticky-focus-room);
       overflow-y: auto;
       overscroll-behavior: contain;
       scrollbar-width: thin;
       transition: var(--sticky-transition);
+    }
+  }
+
+  /* The contents list has no box of its own: room for focus rings at its edges, taken back by the
+     margin. The shop card keeps its own padding (wider than a focus ring) */
+  @media (min-width: 1200px) {
+    .main-article__toc {
+      margin: calc(-1 * var(--sticky-focus-room));
+      padding: var(--sticky-focus-room);
     }
   }
 

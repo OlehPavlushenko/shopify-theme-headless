@@ -1,0 +1,20 @@
+{% doc %}
+  A product's limited offer: "Expires in 2d 10h 05m 12s" while the date in its metafield
+  custom.offer_ends (date and time) is ahead; nothing otherwise. At zero the timer hides itself
+  (@ui/countdown hides the closest [data-countdown-section]). The product card also shows an
+  "Offer" badge for the same date (snippets/product-card). Styles: .offer-timer in components.css.
+
+  @param {object} product - Product
+  @param {string} [class] - Extra classes
+{% enddoc %}
+{%- liquid
+  assign offer_end = product.metafields.custom.offer_ends.value | date: '%s' | plus: 0
+  assign now = 'now' | date: '%s' | plus: 0
+-%}
+{%- if offer_end > now -%}
+  {%- assign expires_label = 'products.offer.expires_in' | t -%}
+  <p class="offer-timer {{ class }}" data-countdown-section>
+    {%- render 'icon', name: 'clock' -%}
+    {%- render 'countdown', end: product.metafields.custom.offer_ends.value, label_text: expires_label -%}
+  </p>
+{%- endif -%}

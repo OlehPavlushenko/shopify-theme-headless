@@ -4,11 +4,14 @@
 
   @param {string} end - End date and time as typed in the editor, e.g. "2026-12-24 23:59"
   @param {boolean} [label] - Show "Ends in" before the timer (default true)
+  @param {string} [label_text] - Another label instead of "Ends in" (e.g. "Expires in")
 {% enddoc %}
 {%- assign end_time = end | date: '%s' -%}
 <span class="countdown-line">
   {%- unless label == false -%}
-    <span class="countdown-line__label">{{ 'sections.countdown.ends_in' | t }}</span>
+    <span class="countdown-line__label">
+      {%- if label_text != blank -%}{{ label_text }}{%- else -%}{{ 'sections.countdown.ends_in' | t }}{%- endif -%}
+    </span>
   {%- endunless -%}
   <ui-countdown class="countdown" data-end="{{ end_time }}" role="timer" aria-label="{{ 'sections.countdown.label' | t }}">
     <span class="countdown__part"><span class="countdown__value" data-unit="days">0</span>{{ 'sections.countdown.days' | t }}</span>

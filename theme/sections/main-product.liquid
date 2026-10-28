@@ -155,9 +155,12 @@
                   <p class="main-product__tax">{{ 'products.tax_included' | t }}</p>
                 {%- endif -%}
               </div>
+              {%- if product.available -%}{%- render 'offer-timer', product: product, class: 'main-product__offer' -%}{%- endif -%}
 
             {%- when 'quantity_breaks' -%}
+              {%- unless product.metafields.custom.bundle_offer.value == true -%}{%- continue -%}{%- endunless -%}
               {%- comment -%}
+                Shown only on products with the metafield custom.bundle_offer ("Bundle & save") on.
                 Bundle & save: up to three cards (1 item, 2 items −10%, …); picking one sets the quantity
                 of the form. The discount itself is an automatic discount made in the admin with the same
                 quantities — the cards only show it. @ui/quantity-breaks keeps the prices in step with

@@ -174,6 +174,13 @@
     gap: var(--space-xs) var(--space-s);
   }
 
+  /* The offer timer under the price: a tinted strip */
+  .main-product__offer {
+    padding: var(--space-xs) var(--space-m);
+    background: color-mix(in srgb, var(--color-warning) 10%, var(--color-background));
+    border-radius: var(--radius-input);
+  }
+
   .main-product__price-tag {
     font-size: var(--text-2xl);
     line-height: var(--leading-2xl);

@@ -93,8 +93,15 @@
     {%- render 'saved-toggles', product: product, class: 'product-card__actions' -%}
   {%- endunless -%}
 
+  {%- liquid
+    # A limited offer (metafield custom.offer_ends ahead): the "Offer" badge and a timer under the price
+    assign offer_end = product.metafields.custom.offer_ends.value | date: '%s' | plus: 0
+    assign now = 'now' | date: '%s' | plus: 0
+  -%}
   {%- if product.available == false -%}
     <span class="pill pill--soft product-card__badge">{{ 'products.sold_out' | t }}</span>
+  {%- elsif offer_end > now -%}
+    <span class="pill pill--offer product-card__badge">{{ 'products.offer.badge' | t }}</span>
   {%- elsif discount > 0 -%}
     <span class="pill product-card__badge">−{{ discount }}%</span>
   {%- elsif on_sale -%}
@@ -107,6 +114,7 @@
     {%- endif -%}
     <{{ tag }} class="product-card__title">{{ product.title | escape }}</{{ tag }}>
     {%- render 'price', product: product -%}
+    {%- if product.available -%}{%- render 'offer-timer', product: product, class: 'product-card__offer' -%}{%- endif -%}
     {%- unless product.has_only_default_variant -%}
       {%- liquid
         assign option = product.options_with_values.first

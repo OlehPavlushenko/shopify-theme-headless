@@ -92,6 +92,10 @@
     }
   },
   "products": {
+    "offer": {
+      "badge": "Offer",
+      "expires_in": "Expires in"
+    },
     "notify": {
       "title": "Notify me when it's back",
       "text": "Leave your email and we'll write as soon as it's in stock again.",

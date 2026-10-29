@@ -91,8 +91,8 @@ async function getAllBase() {
   return data ? { ...ALL, totalCount: data.search.totalCount, products: { filters: data.search.productFilters } } : null;
 }
 
-async function getAllProducts({ first, after, sort, filters, base }) {
-  if (!filters.length) {
+async function getAllProducts({ first, after, sort, filters, base, query = '' }) {
+  if (!filters.length && !query) {
     const [list, search] = await Promise.all([
       storefront(
         `#graphql
@@ -113,8 +113,8 @@ async function getAllProducts({ first, after, sort, filters, base }) {
   }
   const data = await storefront(
     `#graphql
-    query AllProducts($first: Int!, $after: String, $sortKey: SearchSortKeys!, $reverse: Boolean!, $filters: [ProductFilter!]) {
-      search(query: "", first: $first, after: $after, types: PRODUCT, sortKey: $sortKey, reverse: $reverse, productFilters: $filters) {
+    query AllProducts($query: String!, $first: Int!, $after: String, $sortKey: SearchSortKeys!, $reverse: Boolean!, $filters: [ProductFilter!]) {
+      search(query: $query, first: $first, after: $after, types: PRODUCT, sortKey: $sortKey, reverse: $reverse, productFilters: $filters) {
         totalCount
         productFilters { id label type presentation values { id label count input swatch { color image { previewImage { url } } } } }
         pageInfo { hasNextPage endCursor }
@@ -122,11 +122,27 @@ async function getAllProducts({ first, after, sort, filters, base }) {
       }
     }
     ${PRODUCT_CARD}`,
-    { first, after, sortKey: sort.key === 'PRICE' ? 'PRICE' : 'RELEVANCE', reverse: Boolean(sort.key === 'PRICE' && sort.reverse), filters }
+    {
+      query,
+      first,
+      after,
+      sortKey: sort.key === 'PRICE' ? 'PRICE' : 'RELEVANCE',
+      reverse: Boolean(sort.key === 'PRICE' && sort.reverse),
+      filters,
+    }
   );
   const { totalCount, productFilters, pageInfo, nodes } = data.search;
   return { filters: productFilters, pageInfo, nodes, totalCount };
 }
+
+// Shopify's automatic collections of a product type or vendor (/collections/types?q=…, /collections/vendors?q=…,
+// as link_to_type / link_to_vendor make them): every product of it through the search — a type as a search
+// query (the productType filter only works when it is on in Search & Discovery), a vendor as the exact
+// productVendor filter (the query also matches other vendors that contain the name)
+const AUTOMATIC = {
+  types: (value) => ({ query: `product_type:"${value.replace(/["\\]/g, '')}"` }),
+  vendors: (value) => ({ filter: { productVendor: value } }),
+};
 
 // The collection with the theme's metafields and its filters without any filter on (to read the URL)
 async function getCollectionBase(handle) {
@@ -194,11 +210,14 @@ function urlWith(path, params, change) {
 }
 
 export async function getCollectionPage(handle, params, { perPage = 16 } = {}) {
-  const [base, facts] = await Promise.all([
-    getCollectionBase(handle),
-    handle === 'all' ? { defaultSort: 'title-ascending' } : collectionFacts(handle),
+  const automatic = AUTOMATIC[handle] && (params.get('q') ?? '').trim();
+  if (AUTOMATIC[handle] && !automatic) return null;
+  const [found, facts] = await Promise.all([
+    automatic ? getAllBase() : getCollectionBase(handle),
+    handle === 'all' ? { defaultSort: 'title-ascending' } : automatic ? { defaultSort: 'most-relevant' } : collectionFacts(handle),
   ]);
-  if (!base) return null;
+  if (!found) return null;
+  const base = automatic ? { ...found, id: handle, handle, title: automatic, totalCount: undefined } : found;
   const path = `/collections/${handle}`;
   const byValue = (value) => SORT_OPTIONS.find((option) => option.value === value);
   const sort = byValue(params.get('sort_by')) ?? byValue(facts.defaultSort) ?? SORT_OPTIONS[0];
@@ -206,9 +225,12 @@ export async function getCollectionPage(handle, params, { perPage = 16 } = {}) {
   const page = Math.max(1, Number(params.get('page')) || 1);
   const filtersIn = inputsFor(params, base.products.filters);
 
+  // A type's or vendor's collection: the search for it (the search's total is its count)
+  const { query = '', filter } = automatic ? AUTOMATIC[handle](automatic) : {};
+  const filtersAll = filter ? [filter, ...filtersIn] : filtersIn;
   const data =
-    handle === 'all'
-      ? { collection: { products: await getAllProducts({ first: perPage, after, sort, filters: filtersIn, base }) } }
+    handle === 'all' || automatic
+      ? { collection: { products: await getAllProducts({ first: perPage, after, sort, filters: filtersAll, base, query }) } }
       : await storefront(
           `#graphql
     query CollectionPage($handle: String!, $first: Int!, $after: String, $sortKey: ProductCollectionSortKeys!, $reverse: Boolean!, $filters: [ProductFilter!]) {
@@ -224,6 +246,8 @@ export async function getCollectionPage(handle, params, { perPage = 16 } = {}) {
           { handle, first: perPage, after, sortKey: sort.key, reverse: Boolean(sort.reverse), filters: filtersIn }
         );
   const { filters: rawFilters, pageInfo, nodes: products, totalCount } = data.collection.products;
+  // A type or vendor without products has no collection (Shopify answers 404)
+  if (automatic && totalCount === 0 && filtersIn.length === 0) return null;
   const filters = shapeFilters(rawFilters, params, path);
   const activeCount = countActive(filters);
   // The count: the search's total ("all"), the collection's own (Admin API) while nothing is filtered,
@@ -256,7 +280,12 @@ export async function getCollectionPage(handle, params, { perPage = 16 } = {}) {
     page,
     shown: (page - 1) * perPage + products.length,
     nextUrl: nextPageUrl(path, params, pageInfo, page),
-    clearUrl: urlWith(path, new URLSearchParams(params.has('sort_by') ? { sort_by: params.get('sort_by') } : {}), () => {}),
+    // Without the filters, keeping the sort (and a type's or vendor's q)
+    clearUrl: urlWith(
+      path,
+      new URLSearchParams({ ...(automatic && { q: automatic }), ...(params.has('sort_by') && { sort_by: params.get('sort_by') }) }),
+      () => {}
+    ),
   };
 }
 

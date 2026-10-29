@@ -24,8 +24,9 @@ import { getSettings, t } from '@/lib/theme.js';
 const MEDIA_SIZES = { grid: '(min-width: 990px) 28vw, 100vw', stacked: '(min-width: 990px) 55vw, 100vw' };
 const SITE = process.env.SITE_URL || '';
 
-// The vendor's products: the catalog filtered by vendor (filter values are the handleized names)
-const vendorUrl = (vendor) => `/collections/all?filter.p.vendor=${encodeURIComponent(vendor.toLowerCase().replace(/\s+/g, '-'))}`;
+// The vendor's and the type's products: Shopify's automatic collections, as link_to_vendor / link_to_type
+const vendorUrl = (vendor) => `/collections/vendors?q=${encodeURIComponent(vendor)}`;
+const typeUrl = (type) => `/collections/types?q=${encodeURIComponent(type)}`;
 
 function discountOf(variant) {
   const sale = variant.compareAtPrice && Number(variant.compareAtPrice.amount) > Number(variant.price.amount);
@@ -489,7 +490,7 @@ function Block({ block, product, variant, formId, sectionId, buyBlock, discount,
       return <pickup-availability class="main-product__pickup" />;
     case 'meta': {
       // The first six collections by title, as product.collections in Liquid; type and vendor as links
-      // (the theme's link_to_type / link_to_vendor: here the search and the vendor filter)
+      // (the theme's link_to_type / link_to_vendor: Shopify's automatic collections)
       const listed = [...product.collections.nodes].sort((a, b) => a.title.localeCompare(b.title)).slice(0, 6);
       return (
         <dl className="product-meta">
@@ -510,7 +511,7 @@ function Block({ block, product, variant, formId, sectionId, buyBlock, discount,
             <div className="product-meta__row">
               <dt>{t('products.meta.type')}</dt>
               <dd>
-                <Link href={`/search?q=${encodeURIComponent(product.productType)}`}>{product.productType}</Link>
+                <Link href={typeUrl(product.productType)}>{product.productType}</Link>
               </dd>
             </div>
           )}

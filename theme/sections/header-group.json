@@ -85,28 +85,28 @@
           "type": "search_link",
           "settings": {
             "title": "Beauty",
-            "link": "/collections/types?q=%D0%9A%D1%80%D0%B0%D1%81%D0%B0"
+            "link": "shopify://collections/beauty"
           }
         },
         "search_link_2": {
           "type": "search_link",
           "settings": {
             "title": "Health",
-            "link": "/collections/types?q=%D0%97%D0%B4%D0%BE%D1%80%D0%BE%D0%B2%E2%80%99%D1%8F"
+            "link": "shopify://collections/health"
           }
         },
         "search_link_3": {
           "type": "search_link",
           "settings": {
             "title": "Home care",
-            "link": "/collections/types?q=%D0%94%D0%BB%D1%8F%20%D0%B4%D0%BE%D0%BC%D1%83"
+            "link": "shopify://collections/eco-home"
           }
         },
         "search_link_4": {
           "type": "search_link",
           "settings": {
             "title": "Superfoods",
-            "link": "/collections/types?q=%D0%A1%D1%83%D0%BF%D0%B5%D1%80%D1%84%D1%83%D0%B4%D0%B8"
+            "link": "shopify://collections/superfoods"
           }
         },
         "search_products_1": {

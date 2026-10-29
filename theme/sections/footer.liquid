@@ -168,12 +168,25 @@
       </ul>
     {%- endif -%}
 
-    {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
-      <ul class="site-footer__payment" role="list">
-        {%- for type in shop.enabled_payment_types -%}
-          <li>{{ type | payment_type_svg_tag: class: 'site-footer__payment-icon' }}</li>
-        {%- endfor -%}
-      </ul>
+    {%- comment -%}
+      Payment icons: Shopify's for the enabled payment types; without any (a dev store) the methods listed
+      in the "Payment icons" setting, drawn by snippets/payment-icon
+    {%- endcomment -%}
+    {%- if section.settings.show_payment_icons -%}
+      {%- if shop.enabled_payment_types.size > 0 -%}
+        <ul class="site-footer__payment" role="list">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag: class: 'site-footer__payment-icon' }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- elsif section.settings.payment_icons != blank -%}
+        {%- assign listed = section.settings.payment_icons | remove: ' ' | split: ',' -%}
+        <ul class="site-footer__payment" role="list">
+          {%- for type in listed -%}
+            <li>{%- render 'payment-icon', name: type, class: 'site-footer__payment-icon' -%}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
     {%- endif -%}
 
     {%- if section.settings.show_back_to_top -%}
@@ -199,6 +212,7 @@
     },
     { "type": "checkbox", "id": "show_policies", "label": "t:sections.footer.show_policies", "info": "t:sections.footer.show_policies_info", "default": true },
     { "type": "checkbox", "id": "show_payment_icons", "label": "t:labels.show_payment_icons", "default": true },
+    { "type": "text", "id": "payment_icons", "label": "t:sections.footer.payment_icons", "info": "t:sections.footer.payment_icons_info", "default": "visa, master, american_express, paypal, apple_pay, google_pay", "visible_if": "{{ section.settings.show_payment_icons }}" },
     { "type": "checkbox", "id": "show_powered_by", "label": "t:sections.footer.show_powered_by", "default": false },
     { "type": "checkbox", "id": "show_back_to_top", "label": "t:sections.footer.show_back_to_top", "default": true }
   ],

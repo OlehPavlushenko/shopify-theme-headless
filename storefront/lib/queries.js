@@ -58,6 +58,25 @@ export async function getShell() {
   return { shop, header: header?.items ?? [], footer: footer?.items ?? [], policies };
 }
 
+// Shopify Markets for the switchers (snippets/localization-form): the current country and language, the
+// countries with their currency and languages, the languages of the current country
+export async function getLocalization() {
+  const data = await storefront(
+    `#graphql
+    query Localization {
+      localization {
+        country { isoCode currency { isoCode symbol } }
+        language { isoCode }
+        availableLanguages { isoCode endonymName }
+        availableCountries { isoCode currency { isoCode symbol } availableLanguages { isoCode } }
+      }
+    }`,
+    {},
+    { revalidate: 3600 }
+  );
+  return data?.localization ?? null;
+}
+
 // A policy's title as Liquid's policy.title gives it ("Refund policy"; the API says "Refund Policy")
 const policyTitled = (policy) => ({ ...policy, title: policy.title.charAt(0) + policy.title.slice(1).toLowerCase() });
 

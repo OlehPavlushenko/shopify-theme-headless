@@ -91,6 +91,23 @@
       "close": "Hide recommendations"
     }
   },
+  "reviews": {
+    "title": "Customer reviews",
+    "empty": "Be the first to write a review",
+    "write": "Write a review",
+    "name": "Name",
+    "email": "Email",
+    "rating": "Rating",
+    "star": {
+      "one": "{{ count }} star",
+      "other": "{{ count }} stars"
+    },
+    "review_title": "Review title",
+    "body": "Review",
+    "submit": "Submit review",
+    "success": "Thank you! Your review has been sent.",
+    "error": "The review could not be sent. Please try again."
+  },
   "products": {
     "pickup": {
       "available_at_html": "Pickup available at <strong>{{ location }}</strong>",

@@ -7,6 +7,7 @@ import Icon from '@/components/Icon.js';
 import Image from 'next/image';
 import Price from '@/components/Price.js';
 import VariantPickerInputs, { numericId } from '@/components/VariantPickerInputs.js';
+import { moneyFormat } from '@/lib/format.js';
 import { getProductWithVariants } from '@/lib/queries.js';
 import { getSettings, t } from '@/lib/theme.js';
 
@@ -24,7 +25,7 @@ export default async function QuickView({ params }) {
   return (
     <product-info
       class="quick-view"
-      data-money-format={currency === 'USD' ? '${{amount}}' : `{{amount}} ${currency}`}
+      data-money-format={moneyFormat(currency)}
       data-label-add={t('products.add_to_cart')}
       data-label-sold-out={t('products.sold_out')}
       data-label-unavailable={t('products.unavailable')}

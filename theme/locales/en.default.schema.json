@@ -279,6 +279,8 @@
       "show_powered_by": "Show \"Powered by Shopify\"",
       "show_back_to_top": "Show \"Back to top\"",
       "show_policies": "Show policy links",
+      "payment_icons": "Payment icons",
+      "payment_icons_info": "Used when Shopify lists no payment methods for the store. Comma-separated: visa, master, american_express, paypal, apple_pay, google_pay, shopify_pay, klarna.",
       "show_policies_info": "Refund, privacy, terms and shipping policies from Settings > Policies.",
       "brand": "Brand",
       "brand_info": "Logo from Theme settings > Brand; social profiles from Theme settings > Store details.",

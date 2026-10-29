@@ -9,6 +9,22 @@ export async function taxesIncluded() {
   return Boolean((await admin('{ shop { taxesIncluded } }', {}, { revalidate: 3600 }))?.shop?.taxesIncluded);
 }
 
+// A product's Judge.me reviews: the data its review widget renders from (metafield
+// judgeme.review_widget_data, which the Storefront API doesn't expose) — average, count, reviews. null
+// without the token or reviews.
+export async function judgeMeReviews(productId) {
+  const data = await admin(
+    'query ($id: ID!) { product(id: $id) { reviews: metafield(namespace: "judgeme", key: "review_widget_data") { value } } }',
+    { id: productId },
+    { revalidate: 60 }
+  );
+  try {
+    return JSON.parse(data?.product?.reviews?.value ?? 'null');
+  } catch {
+    return null;
+  }
+}
+
 // The template a page uses (page.<suffix>.json, set on the page in the admin), as page.template_suffix:
 // '' for the default one, null without the token
 export async function pageTemplateSuffix(handle) {

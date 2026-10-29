@@ -979,6 +979,153 @@
   .recently-viewed:has(saved-products:not([data-state="filled"])) {
     display: none;
   }
+
+  /* ------------------------------------------------ product reviews */
+  /* The headless storefront's reviews where the theme has Judge.me's widget, in that widget's look as the
+     theme restyles it (sections.css): heading and average, "Write a review", the reviews divided by lines */
+  .product-reviews__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-l);
+    margin-bottom: var(--space-xl);
+  }
+
+  .product-reviews__title {
+    margin: 0;
+  }
+
+  .product-reviews__average {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xs);
+    margin: var(--space-2xs) 0 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .product-reviews__value {
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    font-size: var(--text-xl);
+    color: var(--color-heading);
+  }
+
+  .product-reviews__write {
+    min-width: 24rem;
+  }
+
+  .product-reviews__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .product-reviews__item {
+    --rating-size: 2rem;
+
+    display: grid;
+    justify-items: start;
+    gap: var(--space-s);
+    padding-block: var(--space-xl);
+    border-bottom: 0.1rem solid var(--color-border);
+  }
+
+  .product-reviews__item:first-child {
+    padding-top: 0;
+  }
+
+  .product-reviews__author {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+  }
+
+  .product-reviews__author > span:last-child {
+    display: grid;
+  }
+
+  .product-reviews__avatar {
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-heading);
+    background: var(--color-surface);
+    border-radius: 50%;
+  }
+
+  .product-reviews__name {
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-heading);
+  }
+
+  .product-reviews__date {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .product-reviews__review-title {
+    margin: var(--space-2xs) 0 0;
+    font-family: var(--font-body-family);
+    font-size: var(--text-lg);
+    font-weight: var(--font-body-weight-semibold);
+    color: var(--color-heading);
+  }
+
+  .product-reviews__body > * {
+    margin: 0;
+  }
+
+  @media (max-width: 749px) {
+    .product-reviews__write {
+      flex: 1 1 100%;
+    }
+  }
+
+  /* "Write a review": five stars as radios (the last checked and the ones before it filled) */
+  .review-form {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .review-form__rating {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .review-form__stars {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    gap: var(--space-2xs);
+  }
+
+  .review-form__star {
+    width: 2.8rem;
+    height: 2.8rem;
+    cursor: pointer;
+    background: color-mix(in srgb, var(--color-foreground) 20%, transparent);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+
+  .review-form__star:has(:checked),
+  .review-form__star:has(:checked) ~ .review-form__star,
+  .review-form__stars:hover .review-form__star:is(:hover, :hover ~ .review-form__star) {
+    background: var(--color-rating);
+  }
+
+  .review-form__stars:hover .review-form__star:not(:hover, :hover ~ .review-form__star) {
+    background: color-mix(in srgb, var(--color-foreground) 20%, transparent);
+  }
+
+  .review-form__star:has(:focus-visible) {
+    outline: 0.2rem solid var(--color-heading);
+    outline-offset: 0.2rem;
+  }
 }
 
 /*

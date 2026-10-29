@@ -1,0 +1,29 @@
+{% doc %}
+  A payment method's mark, 38×24, the theme's own drawing (for when Shopify has no enabled payment
+  types to draw — a dev store, or a store that lists its methods by hand: the footer's Payment icons
+  setting). Names as shop.enabled_payment_types. Also the source of the headless storefront's icons
+  (storefront/scripts/icons.mjs). Styles: .site-footer__payment-icon in footer.css.
+
+  @param {string} name - visa | master | american_express | paypal | apple_pay | google_pay | shopify_pay | klarna
+  @param {string} [class] - Extra classes
+{% enddoc %}
+<svg class="payment-icon {{ class }}" viewBox="0 0 38 24" width="38" height="24" role="img" focusable="false">
+  {%- case name -%}
+    {%- when 'visa' -%}
+      <title>Visa</title><rect width="38" height="24" rx="3" fill="#fff"/><rect x=".5" y=".5" width="37" height="23" rx="2.5" fill="none" stroke="#000" stroke-opacity=".14"/><text x="19" y="16" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="700" font-style="italic" fill="#1a1f71">VISA</text>
+    {%- when 'master' -%}
+      <title>Mastercard</title><rect width="38" height="24" rx="3" fill="#fff"/><rect x=".5" y=".5" width="37" height="23" rx="2.5" fill="none" stroke="#000" stroke-opacity=".14"/><circle cx="15" cy="12" r="7" fill="#eb001b"/><circle cx="23" cy="12" r="7" fill="#f79e1b"/><path d="M19 6.26a7 7 0 0 1 0 11.48 7 7 0 0 1 0-11.48z" fill="#ff5f00"/>
+    {%- when 'american_express' -%}
+      <title>American Express</title><rect width="38" height="24" rx="3" fill="#1f72cd"/><text x="19" y="15.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8.5" font-weight="700" fill="#fff">AMEX</text>
+    {%- when 'paypal' -%}
+      <title>PayPal</title><rect width="38" height="24" rx="3" fill="#fff"/><rect x=".5" y=".5" width="37" height="23" rx="2.5" fill="none" stroke="#000" stroke-opacity=".14"/><text x="19" y="15.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="700" font-style="italic"><tspan fill="#003087">Pay</tspan><tspan fill="#009cde">Pal</tspan></text>
+    {%- when 'apple_pay' -%}
+      <title>Apple Pay</title><rect width="38" height="24" rx="3" fill="#000"/><text x="19" y="15.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" font-weight="700" fill="#fff">Apple Pay</text>
+    {%- when 'google_pay' -%}
+      <title>Google Pay</title><rect width="38" height="24" rx="3" fill="#fff"/><rect x=".5" y=".5" width="37" height="23" rx="2.5" fill="none" stroke="#000" stroke-opacity=".14"/><text x="19" y="15.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="700"><tspan fill="#4285f4">G</tspan><tspan fill="#5f6368"> Pay</tspan></text>
+    {%- when 'shopify_pay' -%}
+      <title>Shop Pay</title><rect width="38" height="24" rx="3" fill="#5a31f4"/><text x="19" y="15.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="700" fill="#fff">shop</text>
+    {%- when 'klarna' -%}
+      <title>Klarna</title><rect width="38" height="24" rx="3" fill="#ffb3c7"/><text x="19" y="15.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="700" fill="#17120f">Klarna.</text>
+  {%- endcase -%}
+</svg>

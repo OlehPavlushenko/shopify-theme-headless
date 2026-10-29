@@ -3,6 +3,7 @@
 // group class), so the theme's CSS that relies on it applies. Types without a counterpart yet are skipped.
 // Other props reach every section (context: what the template is about — page, collection, …).
 import AnnouncementBar from './sections/AnnouncementBar.js';
+import Apps from './sections/Apps.js';
 import BlogPosts from './sections/BlogPosts.js';
 import Brands from './sections/Brands.js';
 import CollectionList from './sections/CollectionList.js';
@@ -39,6 +40,7 @@ import TrustBar from './sections/TrustBar.js';
 
 export const SECTIONS = {
   'announcement-bar': AnnouncementBar,
+  apps: Apps,
   'blog-posts': BlogPosts,
   brands: Brands,
   'collection-list': CollectionList,

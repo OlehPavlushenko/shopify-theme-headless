@@ -18,7 +18,7 @@ import SavedToggles from '../SavedToggles.js';
 import VariantPickerInputs, { numericId } from '../VariantPickerInputs.js';
 import { getPage } from '@/lib/queries.js';
 import { getProductRecommendations } from '@/lib/product.js';
-import { formatMoney } from '@/lib/format.js';
+import { formatMoney, moneyFormat } from '@/lib/format.js';
 import { getSettings, t } from '@/lib/theme.js';
 
 const MEDIA_SIZES = { grid: '(min-width: 990px) 28vw, 100vw', stacked: '(min-width: 990px) 55vw, 100vw' };
@@ -584,7 +584,7 @@ export default function MainProduct({ section, context = {} }) {
       class={`main-product main-product--${layout} main-product--info-${settings.info_style} color-${settings.color_scheme}`}
       data-update-url=""
       data-product-handle={product.handle}
-      data-money-format={currency === 'USD' ? '${{amount}}' : `{{amount}} ${currency}`}
+      data-money-format={moneyFormat(currency)}
       data-label-add={t('products.add_to_cart')}
       data-label-sold-out={t('products.sold_out')}
       data-label-unavailable={t('products.unavailable')}

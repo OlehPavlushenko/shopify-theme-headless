@@ -8,7 +8,7 @@ import Icon from '../Icon.js';
 import MegaSlider from '../MegaSlider.js';
 import PromoCard from '../PromoCard.js';
 import ThemeImage from '../ThemeImage.js';
-import UtilityPanel from '../UtilityPanel.js';
+import UtilityPanel, { UtilityContent, hasUtility } from '../UtilityPanel.js';
 import { getMenu } from '@/lib/queries.js';
 import { localPath } from '@/lib/shopify.js';
 import { getSettings, t } from '@/lib/theme.js';
@@ -120,8 +120,9 @@ function SiteNav({ menu, blocks }) {
   );
 }
 
-// The mobile menu: one panel per level (snippets/mobile-menu.liquid)
-function MobileMenu({ menu }) {
+// The mobile menu: one panel per level (snippets/mobile-menu.liquid); the root panel ends with the utility
+// content (below 990px the utility panel's icon is hidden)
+function MobileMenu({ menu, utility }) {
   const parents = menu.filter((item) => item.items.length > 0);
   return (
     <drill-menu class="mobile-nav">
@@ -142,6 +143,7 @@ function MobileMenu({ menu }) {
             </li>
           ))}
         </ul>
+        {utility && <div className="mobile-nav__utility utility-panel__body">{utility}</div>}
       </div>
       {parents.map((item) => (
         <div key={item.id} className="mobile-nav__panel" data-panel={`MenuPanel-${item.id}`} hidden>
@@ -247,7 +249,14 @@ export default async function Header({ section, shopName }) {
       {hasMenu && (
         <div id="MenuPanel" className={`menu-panel color-${settings.color_scheme}`} popover="manual" aria-label={t('accessibility.menu')}>
           <div className="menu-panel__inner page-width">
-            <MobileMenu menu={menu} />
+            <MobileMenu
+              menu={menu}
+              utility={
+                settings.show_utility_panel && (await hasUtility(settings)) ? (
+                  <UtilityContent settings={settings} id="MenuPanelUtility" />
+                ) : null
+              }
+            />
           </div>
         </div>
       )}

@@ -1,9 +1,11 @@
 ﻿// theme/sections/footer.liquid: columns are blocks in the editor's order — brand (logo, text, social),
 // menu, contacts, products, articles — accordions on phones (<site-footer>, @ui/footer); bottom row with
-// copyright, policies and "Back to top". (Payment icons need Liquid's payment_type_svg_tag: not here.)
+// copyright, policies, payment icons and "Back to top".
 import Image from 'next/image';
 import Link from 'next/link';
 import Icon from '../Icon.js';
+import { payment } from '@/lib/icons.js';
+import { storefront } from '@/lib/shopify.js';
 import ProductRow from '../ProductRow.js';
 import ThemeImage from '../ThemeImage.js';
 import { SocialLinks, StoreContacts } from '../StoreContacts.js';
@@ -12,6 +14,38 @@ import { localPath } from '@/lib/shopify.js';
 import { getSettings, t } from '@/lib/theme.js';
 
 const formatDate = (iso) => new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(new Date(iso));
+
+// Payment icons, drawn by the theme's snippets/payment-icon: the store's card brands and wallets (Storefront
+// API, as shop.enabled_payment_types), else the methods listed in the "Payment icons" setting
+const PAYMENT_NAMES = { MASTERCARD: 'master', SHOPIFY_PAY: 'shopify_pay' };
+async function PaymentIcons({ settings }) {
+  const data = await storefront(`{ shop { paymentSettings { acceptedCardBrands supportedDigitalWallets } } }`, {}, { revalidate: 3600 });
+  const enabled = [
+    ...(data?.shop.paymentSettings.acceptedCardBrands ?? []),
+    ...(data?.shop.paymentSettings.supportedDigitalWallets ?? []),
+  ].map((code) => PAYMENT_NAMES[code] ?? code.toLowerCase());
+  const names = (enabled.length ? enabled : (settings.payment_icons ?? '').split(',').map((name) => name.trim())).filter(
+    (name) => payment[name]
+  );
+  if (!names.length) return null;
+  return (
+    <ul className="site-footer__payment" role="list">
+      {names.map((name) => (
+        <li key={name}>
+          <svg
+            className="payment-icon site-footer__payment-icon"
+            viewBox="0 0 38 24"
+            width="38"
+            height="24"
+            role="img"
+            focusable="false"
+            dangerouslySetInnerHTML={{ __html: payment[name] }}
+          />
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 function Column({ heading, children }) {
   return (
@@ -173,6 +207,7 @@ export default async function Footer({ section }) {
             </li>
           </ul>
         )}
+        {settings.show_payment_icons && <PaymentIcons settings={settings} />}
         {settings.show_back_to_top && (
           <a href="#" className="site-footer__top" data-back-to-top>
             {t('general.back_to_top')}

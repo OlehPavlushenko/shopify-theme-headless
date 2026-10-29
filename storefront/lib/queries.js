@@ -204,6 +204,24 @@ export async function getArticles(handle, first = 6) {
   return blog ? { handle: blog.handle, title: blog.title, articles: blog.articles.nodes } : { handle: null, title: '', articles: [] };
 }
 
+// Search-as-you-type (the search panel): query suggestions, collections and products
+export async function predictiveSearch(query) {
+  const data = await storefront(
+    `#graphql
+    query Predictive($query: String!) {
+      predictiveSearch(query: $query, limit: 10, types: [QUERY, COLLECTION, PRODUCT]) {
+        queries { text styledText }
+        collections { handle title }
+        products { ...ProductCard }
+      }
+    }
+    ${PRODUCT_CARD}`,
+    { query },
+    { revalidate: 60 }
+  );
+  return data?.predictiveSearch ?? { queries: [], collections: [], products: [] };
+}
+
 // Search results (products), 24 at most
 export async function searchProducts(query) {
   const data = await storefront(
@@ -259,11 +277,17 @@ export const CART = `#graphql
     checkoutUrl
     totalQuantity
     cost { subtotalAmount { ${MONEY} } totalAmount { ${MONEY} } }
+    discountCodes { code applicable }
+    discountAllocations {
+      discountedAmount { ${MONEY} }
+      ... on CartCodeDiscountAllocation { code }
+      ... on CartAutomaticDiscountAllocation { title }
+    }
     lines(first: 100) {
       nodes {
         id
         quantity
-        cost { totalAmount { ${MONEY} } compareAtAmountPerQuantity { ${MONEY} } }
+        cost { totalAmount { ${MONEY} } amountPerQuantity { ${MONEY} } compareAtAmountPerQuantity { ${MONEY} } }
         merchandise {
           ... on ProductVariant {
             id

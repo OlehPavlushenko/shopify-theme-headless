@@ -1,4 +1,4 @@
-// Storefront API client, used on the server only (server components, server actions).
+﻿// Storefront API client, used on the server only (server components, server actions).
 // SHOPIFY_STORE_DOMAIN=mock.shop uses Shopify's public demo catalog (no token) for development.
 // Without a store `configured` is false and every call returns null: pages render their empty states.
 const domain = process.env.SHOPIFY_STORE_DOMAIN;
@@ -36,7 +36,4 @@ export function localPath(url) {
   }
 }
 
-// "$12.50" in the price's own currency
-export function formatMoney({ amount, currencyCode }) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode }).format(Number(amount));
-}
+export { formatMoney } from './format.js';

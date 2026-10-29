@@ -10,6 +10,7 @@ import JsonLd from '@/components/JsonLd.js';
 import Price from '@/components/Price.js';
 import VariantPicker from '@/components/VariantPicker.js';
 import { getProduct } from '@/lib/queries.js';
+import { getSettings } from '@/lib/theme.js';
 
 const toOptions = (searchParams) => Object.entries(searchParams).map(([name, value]) => ({ name, value: String(value) }));
 
@@ -83,7 +84,14 @@ export default async function ProductPage({ params, searchParams }) {
                 <VariantPicker product={product} selected={variant} />
               </div>
             )}
-            {variant && <AddToCart variantId={variant.id} available={variant.availableForSale} productTitle={product.title} />}
+            {variant && (
+              <AddToCart
+                variantId={variant.id}
+                available={variant.availableForSale}
+                productTitle={product.title}
+                openDrawer={getSettings().cart_type === 'drawer'}
+              />
+            )}
             {product.descriptionHtml && <div className="rte" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />}
           </div>
         </div>

@@ -1,6 +1,6 @@
-// Price tag: the same markup as theme/snippets/price.liquid (styles: .price-tag in packages/ui/css/components.css).
+﻿// Price tag: the same markup as theme/snippets/price.liquid (styles: .price-tag in packages/ui/css/components.css).
 // price / compareAt: MoneyV2 ({ amount, currencyCode }); from: "From $10" for products with different prices.
-import { formatMoney } from '@/lib/shopify.js';
+import { formatMoney } from '@/lib/format.js';
 
 export default function Price({ price, compareAt, from = false }) {
   const onSale = compareAt && Number(compareAt.amount) > Number(price.amount);

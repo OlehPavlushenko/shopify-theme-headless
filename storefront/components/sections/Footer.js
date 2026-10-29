@@ -1,5 +1,5 @@
-﻿// theme/sections/footer.liquid: columns are blocks in the editor's order вЂ” brand (logo, text, social),
-// menu, contacts, products, articles вЂ” accordions on phones (<site-footer>, @ui/footer); bottom row with
+﻿// theme/sections/footer.liquid: columns are blocks in the editor's order — brand (logo, text, social),
+// menu, contacts, products, articles — accordions on phones (<site-footer>, @ui/footer); bottom row with
 // copyright, policies and "Back to top". (Payment icons need Liquid's payment_type_svg_tag: not here.)
 import Image from 'next/image';
 import Link from 'next/link';

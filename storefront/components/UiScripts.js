@@ -10,6 +10,8 @@ export default function UiScripts() {
     import('@ui/header');
     import('@ui/nav-menu');
     import('@ui/drill-menu');
+    import('@ui/predictive-search');
+    import('@ui/form-validate');
     import('@ui/slider');
     import('@ui/countdown');
     import('@ui/footer');

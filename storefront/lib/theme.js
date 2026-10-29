@@ -43,6 +43,18 @@ export const getSettings = cache(() => {
   return { ...defaults, ...current };
 });
 
+// Saved values over the schema defaults. A color scheme that is blank or no longer exists falls back to
+// the default, as Shopify does (the theme would get the default scheme's class)
+function withDefaults(schemaSettings = [], values = {}) {
+  const settings = { ...defaultsOf(schemaSettings), ...values };
+  const schemes = getSettings().color_schemes ?? {};
+  for (const setting of schemaSettings) {
+    if (setting.type === 'color_scheme' && !schemes[settings[setting.id]])
+      settings[setting.id] = setting.default ?? Object.keys(schemes)[0];
+  }
+  return settings;
+}
+
 // One section of a template or group, with defaults filled in; blocks in their order, without disabled ones
 function resolveSection(id, section) {
   const schema = schemaOf(section.type) ?? {};
@@ -50,12 +62,12 @@ function resolveSection(id, section) {
   const blocks = (section.block_order ?? Object.keys(section.blocks ?? {}))
     .map((blockId) => ({ id: blockId, ...section.blocks[blockId] }))
     .filter((block) => !block.disabled)
-    .map((block) => ({ ...block, settings: { ...defaultsOf(blockSchemas[block.type]?.settings), ...block.settings } }));
+    .map((block) => ({ ...block, settings: withDefaults(blockSchemas[block.type]?.settings, block.settings) }));
   return {
     id,
     type: section.type,
     className: schema.class ?? '',
-    settings: { ...defaultsOf(schema.settings), ...section.settings },
+    settings: withDefaults(schema.settings, section.settings),
     blocks,
   };
 }
@@ -74,6 +86,17 @@ export function t(key, values = {}) {
   if (text && typeof text === 'object') text = values.count === 1 ? text.one : text.other;
   if (typeof text !== 'string') return key;
   return text.replace(/{{\s*(\w+)\s*}}/g, (_, name) => values[name] ?? '');
+}
+
+// Storefront strings for client components, as { key: template } ({{ name }} placeholders kept; plurals:
+// the "other" form). The client fills them in with lib/format.js.
+export function strings(keys) {
+  return Object.fromEntries(
+    keys.map((key) => {
+      const node = key.split('.').reduce((value, part) => value?.[part], locale());
+      return [key, typeof node === 'object' ? node?.other : (node ?? key)];
+    })
+  );
 }
 
 // Theme images (settings values "shopify://shop_images/<name>") live in the shop's Files on the CDN:

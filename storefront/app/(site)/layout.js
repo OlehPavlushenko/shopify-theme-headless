@@ -12,11 +12,16 @@ import '@ui-css/blocks.css';
 import '@ui-css/sections.css';
 import '@ui-css/promo.css';
 import '@ui-css/footer.css';
+import '@ui-css/cart.css';
+import '@ui-css/search.css';
 import { Bricolage_Grotesque, DM_Sans } from 'next/font/google';
+import CartDrawer from '@/components/CartDrawer.js';
+import SearchPanel from '@/components/SearchPanel.js';
 import Sections from '@/components/Sections.js';
 import UiScripts from '@/components/UiScripts.js';
 import { getShell } from '@/lib/queries.js';
-import { getSections, themeCss } from '@/lib/theme.js';
+import { CART_STRINGS } from '@/lib/strings.js';
+import { getSections, getSettings, strings, themeCss } from '@/lib/theme.js';
 
 // The theme's default fonts (Theme settings > Typography: Bricolage Grotesque, DM Sans)
 const body = DM_Sans({ subsets: ['latin'], display: 'swap' });
@@ -29,6 +34,12 @@ export async function generateMetadata() {
 
 export default async function RootLayout({ children }) {
   const { shop } = await getShell();
+  const settings = getSettings();
+  const headerGroup = getSections('sections/header-group.json');
+  const header = headerGroup.find((section) => section.type === 'header');
+  // The cart drawer section's own settings (theme/sections/cart-drawer.liquid, saved in settings_data)
+  const drawer = settings.sections?.['cart-drawer']?.settings ?? {};
+  const threshold = settings.show_free_shipping !== false ? Number(settings.free_shipping_threshold) || 0 : 0;
   // The token defaults name the font families; next/font serves them under its own names
   const fonts = { '--font-body-family': body.style.fontFamily, '--font-heading-family': heading.style.fontFamily };
   return (
@@ -38,11 +49,13 @@ export default async function RootLayout({ children }) {
         <style dangerouslySetInnerHTML={{ __html: themeCss() }} />
       </head>
       <body>
-        <Sections sections={getSections('sections/header-group.json')} group="header-group" shopName={shop.name} />
+        <Sections sections={headerGroup} group="header-group" shopName={shop.name} />
+        {header && <SearchPanel header={header} />}
         <main id="MainContent" role="main" tabIndex={-1}>
           {children}
         </main>
         <Sections sections={getSections('sections/footer-group.json')} group="footer-group" />
+        <CartDrawer strings={strings(CART_STRINGS)} colorScheme={drawer.color_scheme || 'scheme-1'} freeShippingThreshold={threshold} />
         <UiScripts />
       </body>
     </html>

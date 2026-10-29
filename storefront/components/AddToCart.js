@@ -1,21 +1,28 @@
 'use client';
 // The product page's buy form: quantity and "Add to cart" (theme: the buy_buttons block of
-// sections/main-product.liquid). Runs the addToCart server action; afterwards "✓ Added · View cart".
+// sections/main-product.liquid). Runs the addToCart server action; afterwards "✓ Added · View cart",
+// and with Theme settings > Cart > "After adding to cart": drawer, the cart drawer opens.
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
 import Icon from './Icon.js';
+import { announce } from './CartContents.js';
 import { addToCart } from '@/app/actions.js';
 
-export default function AddToCart({ variantId, available, productTitle }) {
+export default function AddToCart({ variantId, available, productTitle, openDrawer = false }) {
   const [pending, startTransition] = useTransition();
   const [added, setAdded] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
   const submit = (formData) =>
     startTransition(async () => {
-      await addToCart(formData);
+      const cart = await addToCart(formData);
       setAdded(true);
-      dispatchEvent(new Event('cart:changed'));
+      announce(cart);
+      const drawer = document.getElementById('CartDrawer');
+      if (openDrawer && drawer) {
+        const { openDialog } = await import('@ui/dialog');
+        openDialog(drawer);
+      }
     });
 
   return (

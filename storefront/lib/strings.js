@@ -1,0 +1,26 @@
+// Keys of the theme's storefront strings (locales/en.default.json) that client components need; the
+// server passes them in with lib/theme.js strings(keys)
+export const CART_STRINGS = [
+  'accessibility.close',
+  'cart.title',
+  'cart.empty',
+  'cart.continue_shopping',
+  'cart.total',
+  'cart.savings',
+  'cart.taxes_note',
+  'cart.quantity',
+  'cart.decrease',
+  'cart.increase',
+  'cart.remove_item',
+  'cart.discount.toggle',
+  'cart.discount.placeholder',
+  'cart.discount.apply',
+  'cart.discount.remove',
+  'cart.discount.invalid',
+  'cart.checkout',
+  'cart.checkout_total',
+  'cart.view_cart',
+  'cart.free_shipping.remaining_html',
+  'cart.free_shipping.unlocked_html',
+  'cart.free_shipping.label',
+];

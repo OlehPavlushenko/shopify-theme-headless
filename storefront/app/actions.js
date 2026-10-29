@@ -1,8 +1,8 @@
 'use server';
-// Cart changes from forms (they work without JS too). Each one keeps the cart cookies in step;
-// setting cookies in a server action re-renders the current page with the new cart.
+// Cart reads and changes for the cart drawer, the cart page and the buy buttons. Each change keeps the
+// cart cookies in step and returns the cart, so the client renders it without another request.
 import { cookies } from 'next/headers';
-import { CART_COOKIE, COUNT_COOKIE, cartMutation } from '@/lib/cart.js';
+import { CART_COOKIE, COUNT_COOKIE, cartMutation, getCart as readCart } from '@/lib/cart.js';
 
 const YEAR = 60 * 60 * 24 * 365;
 
@@ -10,12 +10,19 @@ async function remember(cart) {
   const jar = await cookies();
   jar.set(CART_COOKIE, cart.id, { httpOnly: true, sameSite: 'lax', secure: true, path: '/', maxAge: YEAR });
   jar.set(COUNT_COOKIE, String(cart.totalQuantity), { sameSite: 'lax', secure: true, path: '/', maxAge: YEAR });
+  return cart;
+}
+
+const cartId = async () => (await cookies()).get(CART_COOKIE)?.value;
+
+export async function getCart() {
+  return readCart();
 }
 
 // formData: merchandiseId, quantity
 export async function addToCart(formData) {
   const line = { merchandiseId: formData.get('merchandiseId'), quantity: Math.max(1, Number(formData.get('quantity')) || 1) };
-  const id = (await cookies()).get(CART_COOKIE)?.value;
+  const id = await cartId();
   let cart = null;
   if (id) {
     // A cart that expired or was checked out: start a new one
@@ -25,22 +32,34 @@ export async function addToCart(formData) {
     }).catch(() => null);
   }
   cart ??= await cartMutation('cartCreate', 'CartCreate($lines: [CartLineInput!]!)', 'input: { lines: $lines }', { lines: [line] });
-  await remember(cart);
+  return remember(cart);
 }
 
-// formData: lineId, quantity (0 removes the line)
-export async function updateLine(formData) {
-  const id = (await cookies()).get(CART_COOKIE)?.value;
-  if (!id) return;
-  const quantity = Math.max(0, Number(formData.get('quantity')) || 0);
+// A line's new quantity (0 removes it)
+export async function updateLine(lineId, quantity) {
+  const id = await cartId();
+  if (!id) return null;
   const cart = await cartMutation(
     'cartLinesUpdate',
     'CartUpdate($id: ID!, $lines: [CartLineUpdateInput!]!)',
     'cartId: $id, lines: $lines',
     {
       id,
-      lines: [{ id: formData.get('lineId'), quantity }],
+      lines: [{ id: lineId, quantity: Math.max(0, Number(quantity) || 0) }],
     }
   );
-  await remember(cart);
+  return remember(cart);
+}
+
+// The cart's discount codes (the whole list: add or remove one by passing the new list)
+export async function setDiscountCodes(codes) {
+  const id = await cartId();
+  if (!id) return null;
+  const cart = await cartMutation(
+    'cartDiscountCodesUpdate',
+    'CartDiscounts($id: ID!, $codes: [String!]!)',
+    'cartId: $id, discountCodes: $codes',
+    { id, codes }
+  );
+  return remember(cart);
 }

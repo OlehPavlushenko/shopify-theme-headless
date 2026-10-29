@@ -218,13 +218,26 @@ export default async function Header({ section, shopName }) {
           )}
 
           <div className="site-header__icons">
-            <Link href="/search" className="btn btn--icon" aria-label={t('search.title')}>
+            {/* Plain links: @ui/dialog opens the panels from them (the href stays as the no-JS fallback) */}
+            <a
+              href="/search"
+              className="btn btn--icon"
+              data-dialog-open="SearchPanel"
+              aria-haspopup="dialog"
+              aria-label={t('search.title')}
+            >
               <Icon name="search" />
-            </Link>
-            <Link href="/cart" className="btn btn--icon site-header__cart" aria-label={t('cart.title')}>
+            </a>
+            <a
+              href="/cart"
+              className="btn btn--icon site-header__cart"
+              data-dialog-open={theme.cart_type === 'drawer' ? 'CartDrawer' : undefined}
+              aria-haspopup={theme.cart_type === 'drawer' ? 'dialog' : undefined}
+              aria-label={t('cart.title')}
+            >
               <Icon name="bag" />
               <CartCount />
-            </Link>
+            </a>
           </div>
         </div>
       </site-header>

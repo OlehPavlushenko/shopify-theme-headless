@@ -4,6 +4,11 @@
 const token = process.env.SHOPIFY_ADMIN_TOKEN;
 const version = process.env.SHOPIFY_API_VERSION || '2026-10';
 
+// Prices include tax (Settings > Taxes and duties): "Tax included." under the product price, as cart.taxes_included
+export async function taxesIncluded() {
+  return Boolean((await admin('{ shop { taxesIncluded } }', {}, { revalidate: 3600 }))?.shop?.taxesIncluded);
+}
+
 export async function admin(query, variables = {}, { revalidate = 300 } = {}) {
   if (!token || !process.env.SHOPIFY_STORE_DOMAIN) return null;
   const response = await fetch(`https://${process.env.SHOPIFY_STORE_DOMAIN}/admin/api/${version}/graphql.json`, {

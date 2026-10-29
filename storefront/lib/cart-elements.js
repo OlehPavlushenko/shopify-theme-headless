@@ -9,7 +9,7 @@
 // [data-in-cart] while the variant (or any of the product's variants) is in the cart. Inside a
 // <product-info>, data-variant-id follows the picked variant (variant:change). After an add it
 // dispatches cart:add ({ detail: { ok } }, bubbles): the quick view closes on it.
-import { addToCart, setDiscountCodes, updateLine } from '@/app/actions.js';
+import { addToCart, buyNow, setDiscountCodes, updateLine } from '@/app/actions.js';
 import { onCart, openDrawer, publish, quantityIn } from './cart-client.js';
 
 const VARIANT = 'gid://shopify/ProductVariant/';
@@ -70,6 +70,17 @@ class CartItemState extends HTMLElement {
   };
 
   #onClick = (event) => {
+    // "Buy it now" ([data-buy-now] in the form): this line alone, straight to checkout
+    const buy = event.target.closest('[data-buy-now]');
+    if (buy && !this.hasAttribute('aria-busy')) {
+      const data = new FormData(buy.form ?? this.querySelector('form'));
+      if (!data.get('merchandiseId')) data.set('merchandiseId', gid(data.get('id')));
+      this.setAttribute('aria-busy', 'true');
+      buyNow(data)
+        .then((url) => location.assign(url))
+        .catch(() => this.removeAttribute('aria-busy'));
+      return;
+    }
     const step = event.target.closest('[data-step]');
     if (!step || this.hasAttribute('aria-busy')) return;
     const line = this.#cart?.lines.nodes.find((item) => item.merchandise.id === this.#variantId);

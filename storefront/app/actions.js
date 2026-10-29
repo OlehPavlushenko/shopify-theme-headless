@@ -35,6 +35,14 @@ export async function addToCart(formData) {
   return remember(cart);
 }
 
+// "Buy it now": a cart of its own with just this line, straight to checkout (the visitor's cart stays as it
+// is). formData: merchandiseId, quantity. Returns the checkout URL.
+export async function buyNow(formData) {
+  const line = { merchandiseId: formData.get('merchandiseId'), quantity: Math.max(1, Number(formData.get('quantity')) || 1) };
+  const cart = await cartMutation('cartCreate', 'CartCreate($lines: [CartLineInput!]!)', 'input: { lines: $lines }', { lines: [line] });
+  return cart.checkoutUrl;
+}
+
 // A line's new quantity (0 removes it)
 export async function updateLine(lineId, quantity) {
   const id = await cartId();

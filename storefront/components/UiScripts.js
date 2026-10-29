@@ -57,6 +57,10 @@ export default function UiScripts() {
     if (document.querySelector('background-video')) import('@ui/background-video');
     if (document.querySelector('saved-products')) import('@ui/saved-pages');
     if (document.querySelector('facet-filters')) import('@ui/facets');
+    if (document.querySelector('product-info')) import('@ui/variant-picker');
+    if (document.querySelector('product-gallery, product-recommendations, sticky-buy-bar')) import('@ui/product');
+    if (document.querySelector('quantity-breaks')) import('@ui/quantity-breaks');
+    if (document.querySelector('contact-form')) import('@ui/contact-form');
     if (document.querySelector('load-more')) import('@ui/load-more');
   }, [pathname]);
 

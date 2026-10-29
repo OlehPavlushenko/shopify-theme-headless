@@ -14,6 +14,8 @@ import Hero from './sections/Hero.js';
 import ImageText from './sections/ImageText.js';
 import MainCollection from './sections/MainCollection.js';
 import MainPage from './sections/MainPage.js';
+import MainProduct from './sections/MainProduct.js';
+import { ProductRecommendations, ProductStory, RecentlyViewed } from './sections/ProductExtras.js';
 import Marquee from './sections/Marquee.js';
 import Newsletter from './sections/Newsletter.js';
 import PageHeader from './sections/PageHeader.js';
@@ -38,6 +40,10 @@ export const SECTIONS = {
   'main-collection': MainCollection,
   'main-compare': MainCompare,
   'main-page': MainPage,
+  'main-product': MainProduct,
+  'product-recommendations': ProductRecommendations,
+  'product-story': ProductStory,
+  'recently-viewed': RecentlyViewed,
   'main-wishlist': MainWishlist,
   marquee: Marquee,
   newsletter: Newsletter,

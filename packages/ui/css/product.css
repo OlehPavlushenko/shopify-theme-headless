@@ -279,7 +279,14 @@
 
   /* Dynamic checkout: the unbranded "Buy it now" in the theme's outline button look */
   .main-product__checkout .shopify-payment-button__button {
-    min-height: var(--control-height-lg);
+    /* Shopify's own base for the button (the headless storefront renders the same markup without it) */
+    display: block;
+    width: 100%;
+    padding: 1em 2em;
+    line-height: 1;
+    text-align: center;
+    cursor: pointer;
+    block-size: var(--shopify-accelerated-checkout-button-block-size, 4.4rem);
     overflow: hidden;
     border-radius: var(--radius-button);
   }

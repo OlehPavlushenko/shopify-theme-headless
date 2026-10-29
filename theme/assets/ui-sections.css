@@ -2702,13 +2702,14 @@
     gap: var(--space-xs);
   }
 
-  .product-story__part > :is(.eyebrow, h2) {
-    margin: 0;
+  .product-story__head {
+    display: grid;
+    align-content: start;
+    gap: var(--space-xs);
   }
 
-  /* A single part (only the steps or only the ingredients) keeps a readable width */
-  .product-story__part:only-child {
-    max-width: 72rem;
+  .product-story__head > * {
+    margin: 0;
   }
 
   .product-story__ingredients,
@@ -2786,6 +2787,17 @@
     .product-story__inner:has(> .product-story__part + .product-story__part) {
       grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
       gap: var(--space-3xl);
+    }
+
+    /* A part on its own (only the steps or only the ingredients) across the page: the heading on the
+       left, the cards or steps on the right */
+    .product-story__part:only-child {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      gap: var(--space-3xl);
+    }
+
+    .product-story__part:only-child > :is(ul, ol) {
+      margin-top: 0;
     }
   }
 }

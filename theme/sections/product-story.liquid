@@ -5,7 +5,8 @@
   - custom.key_ingredients — list of single-line texts, "Name — what it does" (the part before " — "
     is the card's title);
   - custom.how_to_use — list of single-line texts, one step each.
-  A part without its metafield is left out; without both the section renders nothing.
+  A part without its metafield is left out; without both the section renders nothing. A part on its own
+  spreads across the page from 990px: its heading on the left, the cards or steps on the right.
   Styles: .product-story in sections.css.
 {% endcomment %}
 {%- liquid
@@ -17,8 +18,10 @@
     <div class="page-width product-story__inner">
       {%- if ingredients.size > 0 -%}
         <section class="product-story__part" aria-labelledby="StoryIngredients-{{ section.id }}">
-          <p class="eyebrow">{{ section.settings.ingredients_eyebrow | escape }}</p>
-          <h2 id="StoryIngredients-{{ section.id }}" class="h3">{{ section.settings.ingredients_heading | escape }}</h2>
+          <div class="product-story__head">
+            <p class="eyebrow">{{ section.settings.ingredients_eyebrow | escape }}</p>
+            <h2 id="StoryIngredients-{{ section.id }}" class="h3">{{ section.settings.ingredients_heading | escape }}</h2>
+          </div>
           <ul class="product-story__ingredients" role="list">
             {%- for item in ingredients -%}
               {%- assign parts = item | split: ' — ' -%}
@@ -35,8 +38,10 @@
       {%- endif -%}
       {%- if steps.size > 0 -%}
         <section class="product-story__part product-story__part--steps" aria-labelledby="StorySteps-{{ section.id }}">
-          <p class="eyebrow">{{ section.settings.steps_eyebrow | escape }}</p>
-          <h2 id="StorySteps-{{ section.id }}" class="h3">{{ section.settings.steps_heading | escape }}</h2>
+          <div class="product-story__head">
+            <p class="eyebrow">{{ section.settings.steps_eyebrow | escape }}</p>
+            <h2 id="StorySteps-{{ section.id }}" class="h3">{{ section.settings.steps_heading | escape }}</h2>
+          </div>
           <ol class="product-story__steps" role="list">
             {%- for step in steps -%}
               <li class="product-story__step">

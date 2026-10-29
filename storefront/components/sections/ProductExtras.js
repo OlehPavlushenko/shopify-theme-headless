@@ -21,10 +21,12 @@ export function ProductStory({ section, context = {} }) {
       <div className="page-width product-story__inner">
         {ingredients.length > 0 && (
           <section className="product-story__part" aria-labelledby={`StoryIngredients-${id}`}>
-            <p className="eyebrow">{settings.ingredients_eyebrow}</p>
-            <h2 id={`StoryIngredients-${id}`} className="h3">
-              {settings.ingredients_heading}
-            </h2>
+            <div className="product-story__head">
+              <p className="eyebrow">{settings.ingredients_eyebrow}</p>
+              <h2 id={`StoryIngredients-${id}`} className="h3">
+                {settings.ingredients_heading}
+              </h2>
+            </div>
             <ul className="product-story__ingredients" role="list">
               {ingredients.map((item) => {
                 const [name, ...rest] = item.split(' — ');
@@ -41,10 +43,12 @@ export function ProductStory({ section, context = {} }) {
         )}
         {steps.length > 0 && (
           <section className="product-story__part product-story__part--steps" aria-labelledby={`StorySteps-${id}`}>
-            <p className="eyebrow">{settings.steps_eyebrow}</p>
-            <h2 id={`StorySteps-${id}`} className="h3">
-              {settings.steps_heading}
-            </h2>
+            <div className="product-story__head">
+              <p className="eyebrow">{settings.steps_eyebrow}</p>
+              <h2 id={`StorySteps-${id}`} className="h3">
+                {settings.steps_heading}
+              </h2>
+            </div>
             <ol className="product-story__steps" role="list">
               {steps.map((step, index) => (
                 <li key={step} className="product-story__step">

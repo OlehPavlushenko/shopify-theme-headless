@@ -62,7 +62,7 @@ export default function Header({ shopName, menu }) {
       <site-header class="site-header site-header--logo-left" data-sticky="scroll-up" data-menu={hasMenu ? 'MenuPanel' : undefined}>
         <div className="site-header__inner page-width">
           {hasMenu && (
-            <button type="button" className="btn btn--icon site-header__toggle" popovertarget="MenuPanel" aria-label="Menu">
+            <button type="button" className="btn btn--icon site-header__toggle" popoverTarget="MenuPanel" aria-label="Menu">
               <Icon name="menu" />
               <Icon name="close" />
             </button>

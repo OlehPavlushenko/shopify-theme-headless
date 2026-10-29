@@ -73,10 +73,12 @@ the list isn't checked (local development only).
   Use a token of the store the theme runs on: the development store while developing.
 - Production needs hosting with HTTPS (any Node 22 host); its URL goes into the theme settings.
 
-## Deploy on Render
+## Deploy on Vercel
 
-`render.yaml` in the repository root is a Blueprint: Render > New > Blueprint, pick the repository,
-fill in the values it asks for (from `.env.local`; `ALLOWED_ORIGINS` = the store's domain only, PORT is
-set by Render). Then Theme settings > Integrations: API URL = `https://<service>.onrender.com`,
-API secret = `THEME_SECRET`. The free plan sleeps after 15 minutes idle; the first request wakes it
-in up to a minute.
+The app runs as one Vercel function (`api/index.js`; `vercel.json` sends every path to it; `server.js`
+listens only off Vercel). Vercel > Add New > Project, import the repository, **Root Directory:
+`project-server`**, Framework Preset: Other, no build command. Environment Variables: the ones in
+`.env.example` except `PORT` (values from `.env.local`); `ALLOWED_ORIGINS` = the store's domain and the
+headless storefront's address, e.g. `https://your-store.myshopify.com,https://your-storefront.vercel.app`.
+Then Theme settings > Integrations: API URL = the project's `https://<project>.vercel.app`, API secret =
+`THEME_SECRET`. The rate limit is kept per function instance (reCAPTCHA stays the main guard).

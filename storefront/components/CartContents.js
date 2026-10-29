@@ -3,7 +3,7 @@
 // cart-summary — shared by the cart drawer and the cart page. Changes go through the server actions
 // (app/actions.js), which return the new cart: onChange(cart) renders it and cart:changed tells the
 // header's count. Strings: lib/theme.js strings(CART_STRINGS from lib/strings.js).
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Icon from './Icon.js';
@@ -201,9 +201,11 @@ function Summary({ cart, strings, showTotal }) {
   );
 }
 
-// layout 'drawer': lines in the scrolling body, footer with promo codes, totals and the checkout button
-// holding the total; 'page': lines, then the summary aside
-export default function CartContents({ cart, strings, layout = 'drawer', onChange }) {
+// layout 'drawer': lines (or the empty state) and the upsell in the scrolling body, footer with promo
+// codes, totals and the checkout button holding the total; 'page': lines, then the summary aside.
+// upsell: CartUpsell (server-rendered); the products already in the cart are hidden in it.
+// loginUrl: "Log in to check out faster" under the empty state.
+export default function CartContents({ cart, strings, layout = 'drawer', onChange, upsell, loginUrl }) {
   const [pending, startTransition] = useTransition();
   const run = (action) =>
     startTransition(async () => {
@@ -215,6 +217,13 @@ export default function CartContents({ cart, strings, layout = 'drawer', onChang
     });
   const lines = cart?.lines.nodes ?? [];
 
+  useEffect(() => {
+    const handles = new Set(lines.map((line) => line.merchandise.product.handle));
+    for (const item of document.querySelectorAll('.cart-upsell li[data-product-handle]')) {
+      item.hidden = handles.has(item.dataset.productHandle);
+    }
+  });
+
   if (!lines.length) {
     const empty = (
       <div className="cart-empty stack">
@@ -222,9 +231,20 @@ export default function CartContents({ cart, strings, layout = 'drawer', onChang
         <Link href="/collections/all" className="btn">
           {strings['cart.continue_shopping']}
         </Link>
+        {loginUrl && <p className="text-sm" dangerouslySetInnerHTML={{ __html: format(strings['cart.login_html'], { link: loginUrl }) }} />}
       </div>
     );
-    return layout === 'drawer' ? <div className="drawer__body cart-drawer__body">{empty}</div> : empty;
+    return layout === 'drawer' ? (
+      <div className="drawer__body cart-drawer__body">
+        {empty}
+        {upsell}
+      </div>
+    ) : (
+      <>
+        {empty}
+        {upsell && <div className="main-cart__upsell">{upsell}</div>}
+      </>
+    );
   }
 
   const list = (
@@ -244,19 +264,25 @@ export default function CartContents({ cart, strings, layout = 'drawer', onChang
 
   if (layout === 'page') {
     return (
-      <div className="main-cart__layout">
-        <div className="main-cart__lines">{list}</div>
-        <aside className="main-cart__summary card stack sticky-column">
-          <Discounts cart={cart} strings={strings} run={run} />
-          <Summary cart={cart} strings={strings} showTotal />
-          {checkout}
-        </aside>
-      </div>
+      <>
+        <div className="main-cart__layout">
+          <div className="main-cart__lines">{list}</div>
+          <aside className="main-cart__summary card stack sticky-column">
+            <Discounts cart={cart} strings={strings} run={run} />
+            <Summary cart={cart} strings={strings} showTotal />
+            {checkout}
+          </aside>
+        </div>
+        {upsell && <div className="main-cart__upsell">{upsell}</div>}
+      </>
     );
   }
   return (
     <>
-      <div className="drawer__body cart-drawer__body">{list}</div>
+      <div className="drawer__body cart-drawer__body">
+        {list}
+        {upsell}
+      </div>
       <div className="drawer__footer cart-drawer__footer">
         <Discounts cart={cart} strings={strings} run={run} />
         <Summary cart={cart} strings={strings} />

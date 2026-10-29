@@ -8,6 +8,7 @@ import Icon from '../Icon.js';
 import MegaSlider from '../MegaSlider.js';
 import PromoCard from '../PromoCard.js';
 import ThemeImage from '../ThemeImage.js';
+import UtilityPanel from '../UtilityPanel.js';
 import { getMenu } from '@/lib/queries.js';
 import { localPath } from '@/lib/shopify.js';
 import { getSettings, t } from '@/lib/theme.js';
@@ -228,6 +229,7 @@ export default async function Header({ section, shopName }) {
             >
               <Icon name="search" />
             </a>
+            {settings.show_utility_panel && <UtilityPanel settings={settings} inMobileMenu={hasMenu} />}
             <a
               href="/cart"
               className="btn btn--icon site-header__cart"

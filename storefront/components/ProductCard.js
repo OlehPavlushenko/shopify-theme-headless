@@ -1,16 +1,65 @@
 // Product card: the same markup as theme/snippets/product-card.liquid (styles: packages/ui/css/product-card.css),
-// with Theme settings > Product cards: image shape and fit, second image on hover, vendor.
-// Image, sold-out / "−X%" / sale badge, vendor, title, price. Data: the ProductCard fragment (lib/queries.js).
+// with Theme settings > Product cards: image shape and fit, second image on hover, label, vendor, rating,
+// option values, offer timer. Badge: sold out / "Offer" (metafield custom.offer_ends ahead) / "−X%" / sale /
+// the product's label (custom.label). The first option's values on one line: color swatches (5 at most,
+// then "+N") or text, unavailable ones marked. quickAdd: QuickAdd under the price.
+// Data: the ProductCard fragment (lib/queries.js).
 import Image from 'next/image';
 import Link from 'next/link';
+import Icon from './Icon.js';
+import Countdown from './Countdown.js';
 import Price from './Price.js';
-import { getSettings, t } from '@/lib/theme.js';
+import QuickAdd from './QuickAdd.js';
+import Rating from './Rating.js';
+import { getSettings, strings, t } from '@/lib/theme.js';
 
 const SIZES = '(min-width: 990px) calc((100vw - 10rem) / 4), (min-width: 750px) calc((100vw - 6rem) / 3), calc((100vw - 4rem) / 2)';
+const COLOR_NAMES = ['color', 'colour', 'колір', 'цвет'];
+const QUICK_ADD_STRINGS = [
+  'products.add_to_cart',
+  'products.choose_options',
+  'products.in_cart',
+  'products.in_cart_short',
+  'cart.decrease',
+  'cart.increase',
+];
 
 function discountPercent(price, compareAt) {
   if (!compareAt || Number(compareAt.amount) <= Number(price.amount)) return 0;
   return Math.round((1 - Number(price.amount) / Number(compareAt.amount)) * 100);
+}
+
+// The first option's values: swatches (snippets/swatch: Shopify's swatch, else the name as a CSS color) or text
+function OptionValues({ product }) {
+  const option = product.options[0];
+  const swatches = COLOR_NAMES.includes(option.name.toLowerCase()) || option.optionValues.some((value) => value.swatch);
+  const shown = swatches ? 5 : 50;
+  const available = (name) =>
+    product.variants.nodes.some(
+      (variant) => variant.availableForSale && variant.selectedOptions.some((o) => o.name === option.name && o.value === name)
+    );
+  return (
+    <ul className={`product-card__values${swatches ? ' product-card__values--swatches' : ''}`} role="list" aria-label={option.name}>
+      {option.optionValues.slice(0, shown).map((value) => {
+        const image = value.swatch?.image?.previewImage?.url;
+        const background = image ? `url(${image}&width=64)` : value.swatch?.color || value.name.toLowerCase().replace(/[^a-z]/g, '');
+        return (
+          <li key={value.name} className={`product-card__value${available(value.name) ? '' : ' product-card__value--unavailable'}`}>
+            {swatches ? (
+              <span className="swatch" style={{ '--swatch': background }} title={value.name}>
+                <span className="visually-hidden">{value.name}</span>
+              </span>
+            ) : (
+              <span>{value.name}</span>
+            )}
+          </li>
+        );
+      })}
+      {option.optionValues.length > shown && (
+        <li className="product-card__value product-card__value--more">+{option.optionValues.length - shown}</li>
+      )}
+    </ul>
+  );
 }
 
 export default function ProductCard({
@@ -19,6 +68,7 @@ export default function ProductCard({
   headingTag: Heading = 'h3',
   showVendor = false,
   secondImage = true,
+  quickAdd = false,
   sizes = SIZES,
 }) {
   const settings = getSettings();
@@ -29,6 +79,9 @@ export default function ProductCard({
   const onSale =
     !discount && Number(product.compareAtPriceRange.maxVariantPrice.amount) > Number(product.priceRange.minVariantPrice.amount);
   const differentPrices = product.priceRange.minVariantPrice.amount !== product.priceRange.maxVariantPrice.amount;
+  const single = product.variants.nodes.length === 1 && product.options[0]?.optionValues[0]?.name === 'Default Title';
+  const offerEnds = product.offerEnds?.value;
+  const offerActive = offerEnds && new Date(offerEnds).getTime() > Date.now();
   const url = `/products/${product.handle}`;
   // Image shape: a ratio, or the first image's own
   let ratio = settings.card_image_ratio || '1';
@@ -36,8 +89,11 @@ export default function ProductCard({
 
   let badge = null;
   if (!product.availableForSale) badge = <span className="pill pill--soft product-card__badge">{t('products.sold_out')}</span>;
+  else if (offerActive) badge = <span className="pill pill--offer product-card__badge">{t('products.offer.badge')}</span>;
   else if (discount > 0) badge = <span className="pill product-card__badge">−{discount}%</span>;
   else if (onSale) badge = <span className="pill product-card__badge">{t('products.sale')}</span>;
+  else if (settings.card_show_label && product.label?.value)
+    badge = <span className="pill pill--soft product-card__badge">{product.label.value}</span>;
 
   const imageProps = { width: image?.width, height: image?.height, sizes };
   return (
@@ -76,12 +132,30 @@ export default function ProductCard({
       <div className="product-card__info">
         {(showVendor || settings.card_show_vendor) && product.vendor && <p className="product-card__vendor">{product.vendor}</p>}
         <Heading className="product-card__title line-clamp">{product.title}</Heading>
+        {settings.card_show_rating !== false && <Rating product={product} className="product-card__rating" />}
         <Price
           price={differentPrices ? product.priceRange.minVariantPrice : (variant?.price ?? product.priceRange.minVariantPrice)}
           compareAt={variant?.compareAtPrice}
           from={differentPrices}
         />
+        {product.availableForSale && settings.card_show_timer !== false && offerActive && (
+          <p className="offer-timer product-card__offer" data-countdown-section>
+            <Icon name="clock" />
+            <Countdown end={offerEnds} labelText={t('products.offer.expires_in')} />
+          </p>
+        )}
+        {!single && settings.card_show_options !== false && product.options[0] && <OptionValues product={product} />}
       </div>
+
+      {quickAdd && product.availableForSale && variant && (
+        <QuickAdd
+          product={{ handle: product.handle, title: product.title }}
+          variantId={variant.id}
+          single={single}
+          strings={strings(QUICK_ADD_STRINGS)}
+          openDrawer={settings.cart_type === 'drawer'}
+        />
+      )}
     </article>
   );
 }

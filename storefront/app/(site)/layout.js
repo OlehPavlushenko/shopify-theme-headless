@@ -16,10 +16,12 @@ import '@ui-css/cart.css';
 import '@ui-css/search.css';
 import { Bricolage_Grotesque, DM_Sans } from 'next/font/google';
 import CartDrawer from '@/components/CartDrawer.js';
+import CartUpsell from '@/components/CartUpsell.js';
 import SearchPanel from '@/components/SearchPanel.js';
 import Sections from '@/components/Sections.js';
 import UiScripts from '@/components/UiScripts.js';
 import { getShell } from '@/lib/queries.js';
+import { accountUrl } from '@/lib/shopify.js';
 import { CART_STRINGS } from '@/lib/strings.js';
 import { getSections, getSettings, strings, themeCss } from '@/lib/theme.js';
 
@@ -55,7 +57,13 @@ export default async function RootLayout({ children }) {
           {children}
         </main>
         <Sections sections={getSections('sections/footer-group.json')} group="footer-group" />
-        <CartDrawer strings={strings(CART_STRINGS)} colorScheme={drawer.color_scheme || 'scheme-1'} freeShippingThreshold={threshold} />
+        <CartDrawer
+          strings={strings(CART_STRINGS)}
+          colorScheme={drawer.color_scheme || 'scheme-1'}
+          freeShippingThreshold={threshold}
+          upsell={<CartUpsell />}
+          loginUrl={accountUrl()}
+        />
         <UiScripts />
       </body>
     </html>

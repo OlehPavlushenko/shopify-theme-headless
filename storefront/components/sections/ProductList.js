@@ -27,7 +27,7 @@ export default async function ProductList({ section }) {
     <div className="deal-card">
       <p className="deal-card__label">{settings.deal_label}</p>
       <div className="deal-card__body">
-        <ProductCard product={deal} sizes="(min-width: 750px) 25vw, 40vw" />
+        <ProductCard product={deal} quickAdd={settings.quick_add} sizes="(min-width: 750px) 25vw, 40vw" />
       </div>
       {settings.deal_end && (
         <div className="deal-card__timer" data-countdown-section>
@@ -38,7 +38,7 @@ export default async function ProductList({ section }) {
   );
   const cards = products.map((product, index) => (
     <li key={product.id} data-more={!slider && index + (deal ? 1 : 0) >= 4 ? '' : undefined}>
-      <ProductCard product={product} sizes={sizes} />
+      <ProductCard product={product} quickAdd={settings.quick_add} sizes={sizes} />
     </li>
   ));
 

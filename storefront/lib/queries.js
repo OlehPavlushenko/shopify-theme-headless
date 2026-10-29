@@ -13,9 +13,16 @@ export const PRODUCT_CARD = `#graphql
     priceRange { minVariantPrice { amount currencyCode } maxVariantPrice { amount currencyCode } }
     compareAtPriceRange { maxVariantPrice { amount currencyCode } }
     selectedOrFirstAvailableVariant {
+      id
       price { amount currencyCode }
       compareAtPrice { amount currencyCode }
     }
+    options(first: 1) { name optionValues { name swatch { color image { previewImage { url } } } } }
+    variants(first: 50) { nodes { availableForSale selectedOptions { name value } } }
+    rating: metafield(namespace: "reviews", key: "rating") { value }
+    ratingCount: metafield(namespace: "reviews", key: "rating_count") { value }
+    label: metafield(namespace: "custom", key: "label") { value }
+    offerEnds: metafield(namespace: "custom", key: "offer_ends") { value }
   }
 `;
 

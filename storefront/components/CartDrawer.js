@@ -38,7 +38,7 @@ function FreeShipping({ cart, threshold, strings }) {
   );
 }
 
-export default function CartDrawer({ strings, colorScheme, freeShippingThreshold }) {
+export default function CartDrawer({ strings, colorScheme, freeShippingThreshold, upsell, loginUrl }) {
   const dialog = useRef(null);
   // undefined: not loaded yet (nothing shown); null: no cart (the empty state)
   const [cart, setCart] = useState(undefined);
@@ -78,7 +78,7 @@ export default function CartDrawer({ strings, colorScheme, freeShippingThreshold
           </button>
           <FreeShipping cart={cart} threshold={freeShippingThreshold} strings={strings} />
         </div>
-        {cart !== undefined && <CartContents cart={cart} strings={strings} onChange={setCart} />}
+        {cart !== undefined && <CartContents cart={cart} strings={strings} onChange={setCart} upsell={upsell} loginUrl={loginUrl} />}
       </div>
     </dialog>
   );

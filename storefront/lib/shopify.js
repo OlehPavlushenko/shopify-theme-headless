@@ -36,4 +36,7 @@ export function localPath(url) {
   }
 }
 
+// Shopify's customer accounts (login, orders) live on the store's domain: /account redirects there
+export const accountUrl = () => (domain && !mock ? `https://${domain}/account` : null);
+
 export { formatMoney } from './format.js';

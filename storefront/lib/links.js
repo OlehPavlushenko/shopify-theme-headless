@@ -13,8 +13,36 @@ export function linkUrl(value) {
   }
 }
 
-// Dates as typed in the theme editor ("2026-12-24 23:59"); blank = no limit (snippets/schedule-active)
-export const toTime = (value) => (value ? new Date(value.replace(' ', 'T')).getTime() : NaN);
+// The store's time zone (Settings > General), in which Liquid reads the dates typed in the theme editor
+const TIME_ZONE = process.env.SHOPIFY_TIMEZONE || 'UTC';
+
+// Minutes the zone is ahead of UTC at that moment
+function zoneOffset(time) {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: TIME_ZONE,
+      hourCycle: 'h23',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    })
+      .formatToParts(time)
+      .map(({ type, value }) => [type, Number(value)])
+  );
+  return (Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second) - time) / 60000;
+}
+
+// Dates as typed in the theme editor ("2026-12-24 23:59", store time) or ISO with a zone; blank = no
+// limit (snippets/schedule-active)
+export function toTime(value) {
+  if (!value) return NaN;
+  if (/[zZ]|[+-]\d\d:?\d\d$/.test(value)) return new Date(value).getTime();
+  const wall = new Date(`${value.replace(' ', 'T')}Z`).getTime();
+  return wall - zoneOffset(wall) * 60000;
+}
 
 export function scheduleActive(from, until, now = Date.now()) {
   if (from && toTime(from) > now) return false;

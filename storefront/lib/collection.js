@@ -5,14 +5,18 @@
 // filter.v.availability=1), filter.v.price.gte / .lte, sort_by (Shopify's values), after (cursor) + page.
 import { admin } from './admin.js';
 import { storefront } from './shopify.js';
-import { PRODUCT_CARD } from './queries.js';
+import { pageParam } from './links.js';
+import { COLLECTION_CARD, IMAGE, PRODUCT_CARD, SWATCH, withProductsCount } from './queries.js';
 import { richTextHtml } from './richtext.js';
 
-const IMAGE = 'url altText width height';
+// A list's filters as the facets read them (with each value's count and swatch)
+const FILTERS = `id label type presentation values { id label count input ${SWATCH} }`;
+// Without counts: enough to read the URL's filters (inputsFor)
+const FILTER_INPUTS = 'id label type values { id label input }';
 
 // Shopify's sort options (collection.sort_options): key — ProductCollectionSortKeys (a collection),
 // allKey — ProductSortKeys (every product), order — the Admin API's sort order of a collection
-export const SORT_OPTIONS = [
+const SORT_OPTIONS = [
   { value: 'manual', name: 'Featured', key: 'COLLECTION_DEFAULT', allKey: 'TITLE', order: 'MANUAL' },
   { value: 'most-relevant', name: 'Most relevant', key: 'RELEVANCE', allKey: 'TITLE', order: 'MOST_RELEVANT' },
   { value: 'best-selling', name: 'Best selling', key: 'BEST_SELLING', allKey: 'BEST_SELLING', order: 'BEST_SELLING' },
@@ -84,13 +88,13 @@ export async function getCollectionList() {
 // price). The search also gives the filters and the exact count.
 const ALL = { id: 'all', handle: 'all', title: 'Products', description: '', descriptionHtml: '', seo: {}, image: null };
 
+// "all" without a filter on: its filters (to read the URL) and the product count
 async function getAllBase() {
-  const data = await storefront(
-    `{ search(query: "", first: 1, types: PRODUCT) { totalCount productFilters { id label type values { id label input } } } }`
-  );
+  const data = await storefront(`{ search(query: "", first: 1, types: PRODUCT) { totalCount productFilters { ${FILTER_INPUTS} } } }`);
   return data ? { ...ALL, totalCount: data.search.totalCount, products: { filters: data.search.productFilters } } : null;
 }
 
+// A page of "all" (or of a type's / vendor's collection: query, filters) in the collection's shape
 async function getAllProducts({ first, after, sort, filters, base, query = '' }) {
   if (!filters.length && !query) {
     const [list, search] = await Promise.all([
@@ -105,9 +109,7 @@ async function getAllProducts({ first, after, sort, filters, base, query = '' })
         ${PRODUCT_CARD}`,
         { first, after, sortKey: sort.allKey, reverse: Boolean(sort.reverse) }
       ),
-      storefront(
-        `{ search(query: "", first: 1, types: PRODUCT) { productFilters { id label type presentation values { id label count input swatch { color image { previewImage { url } } } } } } }`
-      ),
+      storefront(`{ search(query: "", first: 1, types: PRODUCT) { productFilters { ${FILTERS} } } }`),
     ]);
     return { filters: search.search.productFilters, ...list.products, totalCount: base.totalCount };
   }
@@ -116,7 +118,7 @@ async function getAllProducts({ first, after, sort, filters, base, query = '' })
     query AllProducts($query: String!, $first: Int!, $after: String, $sortKey: SearchSortKeys!, $reverse: Boolean!, $filters: [ProductFilter!]) {
       search(query: $query, first: $first, after: $after, types: PRODUCT, sortKey: $sortKey, reverse: $reverse, productFilters: $filters) {
         totalCount
-        productFilters { id label type presentation values { id label count input swatch { color image { previewImage { url } } } } }
+        productFilters { ${FILTERS} }
         pageInfo { hasNextPage endCursor }
         nodes { ... on Product { ...ProductCard } }
       }
@@ -160,20 +162,12 @@ async function getCollectionBase(handle) {
         image { ${IMAGE} }
         subcollections: metafield(namespace: "theme", key: "subcollections") {
           references(first: 20) {
-            nodes {
-              ... on Collection {
-                handle
-                title
-                image { ${IMAGE} }
-                products(first: 1) { nodes { featuredImage { ${IMAGE} } } }
-                count: products(first: 250) { nodes { id } }
-              }
-            }
+            nodes { ... on Collection { ${COLLECTION_CARD} } }
           }
         }
         seoText: metafield(namespace: "theme", key: "seo_text") { value }
         seoHeading: metafield(namespace: "theme", key: "seo_heading") { value }
-        products(first: 1) { filters { id label type values { id label input } } }
+        products(first: 1) { filters { ${FILTER_INPUTS} } }
       }
     }`,
     { handle }
@@ -209,6 +203,8 @@ function urlWith(path, params, change) {
   return `${path}${query ? `?${query}` : ''}`;
 }
 
+// The collection page's listing for /collections/<handle> and the URL's parameters (also "all" and a
+// type's or vendor's collection); null when there is no such collection
 export async function getCollectionPage(handle, params, { perPage = 16 } = {}) {
   const automatic = AUTOMATIC[handle] && (params.get('q') ?? '').trim();
   if (AUTOMATIC[handle] && !automatic) return null;
@@ -222,30 +218,33 @@ export async function getCollectionPage(handle, params, { perPage = 16 } = {}) {
   const byValue = (value) => SORT_OPTIONS.find((option) => option.value === value);
   const sort = byValue(params.get('sort_by')) ?? byValue(facts.defaultSort) ?? SORT_OPTIONS[0];
   const after = params.get('after');
-  const page = Math.max(1, Number(params.get('page')) || 1);
+  const page = pageParam(params);
   const filtersIn = inputsFor(params, base.products.filters);
 
   // A type's or vendor's collection: the search for it (the search's total is its count)
   const { query = '', filter } = automatic ? AUTOMATIC[handle](automatic) : {};
   const filtersAll = filter ? [filter, ...filtersIn] : filtersIn;
-  const data =
+  const list =
     handle === 'all' || automatic
-      ? { collection: { products: await getAllProducts({ first: perPage, after, sort, filters: filtersAll, base, query }) } }
-      : await storefront(
-          `#graphql
+      ? await getAllProducts({ first: perPage, after, sort, filters: filtersAll, base, query })
+      : (
+          await storefront(
+            `#graphql
     query CollectionPage($handle: String!, $first: Int!, $after: String, $sortKey: ProductCollectionSortKeys!, $reverse: Boolean!, $filters: [ProductFilter!]) {
       collection(handle: $handle) {
         products(first: $first, after: $after, sortKey: $sortKey, reverse: $reverse, filters: $filters) {
-          filters { id label type presentation values { id label count input swatch { color image { previewImage { url } } } } }
+          filters { ${FILTERS} }
           pageInfo { hasNextPage endCursor }
           nodes { ...ProductCard }
         }
       }
     }
     ${PRODUCT_CARD}`,
-          { handle, first: perPage, after, sortKey: sort.key, reverse: Boolean(sort.reverse), filters: filtersIn }
-        );
-  const { filters: rawFilters, pageInfo, nodes: products, totalCount } = data.collection.products;
+            { handle, first: perPage, after, sortKey: sort.key, reverse: Boolean(sort.reverse), filters: filtersIn }
+          )
+        )?.collection?.products;
+  if (!list) return null;
+  const { filters: rawFilters, pageInfo, nodes: products, totalCount } = list;
   // A type or vendor without products has no collection (Shopify answers 404)
   if (automatic && totalCount === 0 && filtersIn.length === 0) return null;
   const filters = shapeFilters(rawFilters, params, path);
@@ -265,9 +264,7 @@ export async function getCollectionPage(handle, params, { perPage = 16 } = {}) {
   return {
     collection: {
       ...base,
-      subcollections: (base.subcollections?.references?.nodes ?? [])
-        .filter((sub) => sub.handle)
-        .map(({ count: all, ...sub }) => ({ ...sub, productsCount: all.nodes.length })),
+      subcollections: (base.subcollections?.references?.nodes ?? []).filter((sub) => sub.handle).map(withProductsCount),
       seoTextHtml: richTextHtml(base.seoText?.value),
       seoHeading: base.seoHeading?.value ?? '',
     },
@@ -361,7 +358,7 @@ function shapeFilters(rawFilters, params, path) {
 }
 
 // Shopify's search sort options (search.sort_options); relevance by default
-export const SEARCH_SORT_OPTIONS = [
+const SEARCH_SORT_OPTIONS = [
   { value: 'relevance', name: 'Relevance', key: 'RELEVANCE' },
   { value: 'price-ascending', name: 'Price, low to high', key: 'PRICE' },
   { value: 'price-descending', name: 'Price, high to low', key: 'PRICE', reverse: true },
@@ -375,7 +372,7 @@ const SEARCH = `#graphql
     search(query: $q, first: $first, after: $after, types: PRODUCT, prefix: LAST, unavailableProducts: LAST,
       sortKey: $sortKey, reverse: $reverse, productFilters: $filters) {
       totalCount
-      productFilters { id label type presentation values { id label count input swatch { color image { previewImage { url } } } } }
+      productFilters { ${FILTERS} }
       pageInfo { hasNextPage endCursor }
       nodes { ... on Product { ...ProductCard } }
     }
@@ -390,7 +387,7 @@ export async function getSearchPage(params, { perPage = 24 } = {}) {
   const path = '/search';
   const sort = SEARCH_SORT_OPTIONS.find((option) => option.value === params.get('sort_by')) ?? SEARCH_SORT_OPTIONS[0];
   const after = params.get('after');
-  const page = Math.max(1, Number(params.get('page')) || 1);
+  const page = pageParam(params);
   const variables = { q: terms, first: perPage, after, sortKey: sort.key, reverse: Boolean(sort.reverse) };
   // The filters' inputs come from the unfiltered search: a second request only when a filter is on
   let data = await storefront(SEARCH, variables);

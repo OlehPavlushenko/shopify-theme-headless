@@ -11,7 +11,7 @@ export default function Brands({ section }) {
       <div className="page-width">
         <ui-slider class="slider" style={{ '--slider-columns': settings.columns, '--slider-columns-mobile': 2.5 }}>
           <SectionHead heading={settings.heading} linkLabel={settings.link_label} link={linkUrl(settings.link)} nav />
-          <ul className="scroll-track slider__track" data-slider-track role="list">
+          <ul className="scroll-track slider__track" data-slider-track="" role="list">
             {blocks.map((block) => {
               const { name, image, link } = block.settings;
               const content = image ? (

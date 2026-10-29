@@ -4,11 +4,9 @@
 // A blog's articles come in one request (the newest 250) and are filtered by topic and paged here, so
 // the URLs are the theme's: /blogs/<blog>/tagged/<a>+<b>?page=<n>.
 import { storefront } from './shopify.js';
-import { PRODUCT_CARD } from './queries.js';
-import { getTemplate } from './theme.js';
-
-const IMAGE = 'url altText width height';
-const ARTICLE = `handle title excerpt content publishedAt tags image { ${IMAGE} } blog { handle }`;
+import { ARTICLE, PRODUCT_CARD } from './queries.js';
+import { findSection } from './theme.js';
+import { pageParam } from './links.js';
 
 // Liquid's handleize: lowercase, runs of other characters to one "-"
 export const handleize = (text) =>
@@ -24,6 +22,11 @@ export function topicUrl(blogUrl, chosen, tag) {
   return next.length ? `${blogUrl}/tagged/${next.join('+')}` : blogUrl;
 }
 
+// A blog's own URL and the fields the pages show of it
+const blogUrl = (handle) => `/blogs/${handle}`;
+const blogInfo = (blog) => ({ handle: blog.handle, title: blog.title, url: blogUrl(blog.handle) });
+
+// A blog with its newest 250 articles
 async function getBlog(handle) {
   const data = await storefront(
     `#graphql
@@ -42,7 +45,7 @@ async function getBlog(handle) {
 
 // A page of a list: the items on ?page=<n> and the next page's URL (with the rest of the query)
 function paginate(items, params, path, perPage) {
-  const page = Math.max(1, Number(params.get('page')) || 1);
+  const page = pageParam(params);
   const shown = items.slice((page - 1) * perPage, page * perPage);
   const next = new URLSearchParams(params);
   next.set('page', page + 1);
@@ -56,10 +59,10 @@ function paginate(items, params, path, perPage) {
 }
 
 // The blog page: tags are handles from the URL (/tagged/a+b), articles with all of them
-export async function getBlogPage(handle, tags, params, { perPage = 9 } = {}) {
+async function getBlogPage(handle, tags, params, { perPage = 9 } = {}) {
   const blog = await getBlog(handle);
   if (!blog) return null;
-  const blogUrl = `/blogs/${blog.handle}`;
+  const url = blogUrl(blog.handle);
   // The chosen topics by their names (current_tags), in the URL's order
   const names = new Map(blog.articles.nodes.flatMap((article) => article.tags).map((tag) => [handleize(tag), tag]));
   const chosen = tags.map(handleize).filter((tag) => names.has(tag));
@@ -67,9 +70,9 @@ export async function getBlogPage(handle, tags, params, { perPage = 9 } = {}) {
     const own = article.tags.map(handleize);
     return chosen.every((tag) => own.includes(tag));
   });
-  const path = chosen.length ? `${blogUrl}/tagged/${chosen.join('+')}` : blogUrl;
+  const path = chosen.length ? `${url}/tagged/${chosen.join('+')}` : url;
   return {
-    blog: { handle: blog.handle, title: blog.title, seo: blog.seo, url: blogUrl },
+    blog: { ...blogInfo(blog), seo: blog.seo },
     chosen,
     chosenNames: chosen.map((tag) => names.get(tag)),
     path,
@@ -86,11 +89,11 @@ export function blogTitle(listing) {
 
 // The blog's search results (templates/search.blog.json): articles matching ?q= (Shopify searches the
 // articles of every blog), the last word as a prefix
-export async function getArticleSearch(blogHandle, params, { perPage = 9 } = {}) {
+async function getArticleSearch(blogHandle, params, { perPage = 9 } = {}) {
   const terms = (params.get('q') ?? '').trim();
   const blog = blogHandle ? await getBlog(blogHandle) : null;
-  const blogInfo = blog && { handle: blog.handle, title: blog.title, url: `/blogs/${blog.handle}` };
-  if (!terms) return { blog: blogInfo, terms: '', articles: [], count: 0, page: 1, shown: 0, nextUrl: null, path: '/search' };
+  const info = blog && blogInfo(blog);
+  if (!terms) return { blog: info, terms: '', articles: [], count: 0, page: 1, shown: 0, nextUrl: null, path: '/search' };
   const data = await storefront(
     `#graphql
     query ArticleSearch($q: String!) {
@@ -101,15 +104,14 @@ export async function getArticleSearch(blogHandle, params, { perPage = 9 } = {})
     { q: terms }
   );
   const found = (data?.search.nodes ?? []).filter((item) => item.handle);
-  return { blog: blogInfo, terms, chosen: [], path: '/search', ...paginate(found, params, '/search', perPage) };
+  return { blog: info, terms, chosen: [], path: '/search', ...paginate(found, params, '/search', perPage) };
 }
 
 // The blog section for a URL path — ['blogs', <blog>] or [..., 'tagged', 'a+b'] (templates/blog.json), or
 // ['search'] (the blog's search results, templates/search.blog.json, its section's blog) — with its listing
 export async function blogListing(path, params) {
   const isSearch = path.length === 1 && path[0] === 'search';
-  const { sections } = isSearch ? getTemplate('search', 'blog') : getTemplate('blog');
-  const section = sections.find((item) => item.type === 'main-blog');
+  const { section, sections } = isSearch ? findSection('search', 'main-blog', 'blog') : findSection('blog', 'main-blog');
   if (!section) return null;
   const perPage = section.settings.per_page;
   if (isSearch) return { section, sections, listing: await getArticleSearch(section.settings.blog, params, { perPage }) };
@@ -130,6 +132,7 @@ function readNext(article, articles) {
     .map(({ item }) => item);
 }
 
+// An article page: the article (with its products), its blog and "Read next"
 export async function getArticlePage(blogHandle, articleHandle) {
   const data = await storefront(
     `#graphql
@@ -156,7 +159,7 @@ export async function getArticlePage(blogHandle, articleHandle) {
   const article = blog?.articleByHandle;
   if (!article) return null;
   return {
-    blog: { handle: blog.handle, title: blog.title, url: `/blogs/${blog.handle}` },
+    blog: blogInfo(blog),
     article: { ...article, products: article.products?.references?.nodes.filter((item) => item.handle) ?? [] },
     related: readNext(article, blog.articles.nodes),
   };

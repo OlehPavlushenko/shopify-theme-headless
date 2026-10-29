@@ -113,10 +113,9 @@ class CartDiscount extends HTMLElement {
 
 if (!customElements.get('cart-discount')) customElements.define('cart-discount', CartDiscount);
 
-// A newsletter sign-up with a discount code (data-discount): the code goes into the cart right away,
-// next to codes already there. With an empty cart Shopify keeps it and applies it once items are added.
-// A code to add to the cart's codes: after a newsletter sign-up (data-discount) or a prize
-// (discount:apply). The answer comes back as discount:result ({ code, applicable }, on document);
+// A code to add to the cart's codes, next to codes already there: after a newsletter sign-up
+// (data-discount) or a prize (discount:apply). With an empty cart Shopify keeps it and applies it once
+// items are added. The answer comes back as discount:result ({ code, applicable }, on document);
 // a code the cart doesn't take is dropped with the usual error, as one typed in by hand.
 const requested = new Set();
 function applyCode(code) {
@@ -384,7 +383,8 @@ document.addEventListener('liquid-ajax-cart:request-end', (event) => {
 
   // Flash the added lines in the re-rendered cart
   const body = requestState.responseData.body;
-  for (const item of body.items ?? [body]) {
+  const items = body.items ?? [body];
+  for (const item of items) {
     document.querySelectorAll(`[data-cart-line="${item.key}"]`).forEach((line) => {
       line.setAttribute('data-just-added', '');
       line.addEventListener('animationend', () => line.removeAttribute('data-just-added'), { once: true });
@@ -396,10 +396,7 @@ document.addEventListener('liquid-ajax-cart:request-end', (event) => {
     return;
   }
 
-  if (settings.type === 'notification') {
-    const body = requestState.responseData.body;
-    if (showNotification(body.items ?? [body])) return;
-  }
+  if (settings.type === 'notification' && showNotification(items)) return;
 
   openDialog(document.getElementById('CartDrawer'));
 });

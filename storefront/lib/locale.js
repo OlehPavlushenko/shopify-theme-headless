@@ -6,6 +6,10 @@ import { cookies } from 'next/headers';
 export const COUNTRY_COOKIE = 'country';
 export const LANGUAGE_COOKIE = 'language';
 
+// Valid codes: a country (ISO 3166, "MX") and a language ("EN", "PT_BR"), uppercase
+export const isCountry = (code) => /^[A-Z]{2}$/.test(code ?? '');
+export const isLanguage = (code) => /^[A-Z]{2}(_[A-Z]{2})?$/.test(code ?? '');
+
 // { country, language } (ISO codes, uppercase) or {} — also outside a request (build, sitemap)
 export async function currentLocale() {
   try {
@@ -13,8 +17,8 @@ export async function currentLocale() {
     const country = jar.get(COUNTRY_COOKIE)?.value;
     const language = jar.get(LANGUAGE_COOKIE)?.value;
     return {
-      ...(/^[A-Z]{2}$/.test(country ?? '') && { country }),
-      ...(/^[A-Z]{2}(_[A-Z]{2})?$/.test(language ?? '') && { language }),
+      ...(isCountry(country) && { country }),
+      ...(isLanguage(language) && { language }),
     };
   } catch {
     return {};

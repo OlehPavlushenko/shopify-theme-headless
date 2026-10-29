@@ -6,10 +6,7 @@ import '@ui-css/facets.css';
 import Sections from '@/components/Sections.js';
 import { blogListing, blogTitle } from '@/lib/blog.js';
 import { getSearchPage } from '@/lib/collection.js';
-import { getTemplate, t } from '@/lib/theme.js';
-
-const perPage = () =>
-  getTemplate('search').sections.find((section) => section.type === 'main-collection')?.settings.products_per_page ?? 24;
+import { findSection, t } from '@/lib/theme.js';
 
 export async function generateMetadata({ searchParams }) {
   const query = new URLSearchParams(await searchParams);
@@ -28,6 +25,7 @@ export default async function SearchPage({ searchParams }) {
     const list = await blogListing(['search'], query);
     if (list) return <Sections sections={list.sections} context={{ template: 'search', blog: list.listing.blog, listing: list.listing }} />;
   }
-  const listing = await getSearchPage(query, { perPage: perPage() });
-  return <Sections sections={getTemplate('search').sections} context={{ template: 'search', listing }} />;
+  const { section, sections } = findSection('search', 'main-collection');
+  const listing = await getSearchPage(query, { perPage: section?.settings.products_per_page ?? 24 });
+  return <Sections sections={sections} context={{ template: 'search', listing }} />;
 }

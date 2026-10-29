@@ -3,11 +3,10 @@
 // or ?variant=<id>), the theme's metafields (label, rating, offer end, bundle offer, key ingredients, how
 // to use), collections, type and vendor.
 import { storefront } from './shopify.js';
-import { PRODUCT_CARD } from './queries.js';
+import { IMAGE, MONEY, OPTION, PRODUCT_CARD } from './queries.js';
 
-const IMAGE = 'url altText width height';
-const MONEY = 'amount currencyCode';
-
+// The product, with the variant matching selectedOptions ([{ name, value }], from the URL; unknown or
+// missing ones fall back to the first available)
 export async function getProductPage(handle, selectedOptions = []) {
   const data = await storefront(
     `#graphql
@@ -33,7 +32,7 @@ export async function getProductPage(handle, selectedOptions = []) {
             ... on ExternalVideo { id embedUrl }
           }
         }
-        options(first: 10) { name optionValues { name swatch { color image { previewImage { url } } } } }
+        options(first: 10) { ${OPTION} }
         variants(first: 100) {
           nodes {
             id
@@ -70,7 +69,8 @@ export async function getProductPage(handle, selectedOptions = []) {
   return data?.product ?? null;
 }
 
-// "Pairs well with": Search & Discovery's complementary products, and Shopify's related ones
+// Shopify's recommendations for a product: COMPLEMENTARY ("Pairs well with", Search & Discovery) or
+// RELATED (related products, the cart's recommendations)
 export async function getProductRecommendations(handle, intent) {
   const data = await storefront(
     `#graphql

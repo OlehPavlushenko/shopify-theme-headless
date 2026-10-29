@@ -33,7 +33,7 @@ export default function RichText({ section, context = {} }) {
             <button
               type="button"
               className="btn btn--link read-more__toggle"
-              data-read-more-toggle
+              data-read-more-toggle=""
               data-label-more={t('general.read_more')}
               data-label-less={t('general.read_less')}
               aria-expanded="false"

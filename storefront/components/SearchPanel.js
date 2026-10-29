@@ -36,7 +36,7 @@ async function ProductsBlock({ block, sizes }) {
           <SliderNav label={s.heading} />
         </div>
       </div>
-      <ul className="scroll-track slider__track" data-slider-track role="list">
+      <ul className="scroll-track slider__track" data-slider-track="" role="list">
         {products.slice(0, s.limit).map((product) => (
           <li key={product.id}>
             <ProductCard product={product} headingTag="p" actions={false} secondImage={false} sizes={sizes} />
@@ -106,8 +106,8 @@ export default function SearchPanel({ header }) {
             <CloseButton />
           </form>
         </form-validate>
-        <div id="SearchPanel-results" className="search-panel__results" data-results aria-live="polite" />
-        <div className="search-panel__empty" data-empty-state>
+        <div id="SearchPanel-results" className="search-panel__results" data-results="" aria-live="polite" />
+        <div className="search-panel__empty" data-empty-state="">
           <div className="search-results__layout">
             <div className="search-results__aside">
               {groups(searchBlocks).map((group) => {

@@ -9,7 +9,7 @@ export default function CountdownBar({ section }) {
   const { settings } = section;
   if (!settings.end || !scheduleActive(settings.show_from, settings.end)) return null;
   return (
-    <div className={`countdown-bar color-${settings.color_scheme}`} data-countdown-section>
+    <div className={`countdown-bar color-${settings.color_scheme}`} data-countdown-section="">
       <ThemeImage
         image={settings.image}
         className="countdown-bar__image"

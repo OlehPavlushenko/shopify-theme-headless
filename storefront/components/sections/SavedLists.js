@@ -10,7 +10,7 @@ function Skeleton({ layout, count, style }) {
     <div
       className={`saved-skeleton saved-skeleton--${layout}${layout === 'grid' ? ' grid' : ''}`}
       style={style}
-      data-saved-skeleton
+      data-saved-skeleton=""
       aria-hidden="true"
     >
       {Array.from({ length: count }, (_, index) => (
@@ -26,7 +26,7 @@ function Skeleton({ layout, count, style }) {
 
 function Empty({ icon, heading, text }) {
   return (
-    <div className="empty-state saved-empty" data-saved-empty>
+    <div className="empty-state saved-empty" data-saved-empty="">
       <span className="icon-circle saved-empty__icon">
         <Icon name={icon} />
       </span>
@@ -53,8 +53,8 @@ export function MainWishlist({ section }) {
           data-state="loading"
         >
           <show-more class="product-list__more" data-step="4">
-            <ul className="grid product-list__grid" role="list" style={gridStyle} data-saved-products />
-            <button type="button" className="btn btn--outline product-list__more-button" data-show-more hidden>
+            <ul className="grid product-list__grid" role="list" style={gridStyle} data-saved-products="" />
+            <button type="button" className="btn btn--outline product-list__more-button" data-show-more="" hidden>
               {t('sections.product_list.show_more')}
             </button>
           </show-more>
@@ -89,7 +89,7 @@ export function MainCompare({ section }) {
           data-endpoint="/saved"
           data-state="loading"
         >
-          <div className="compare-table" data-saved-products>
+          <div className="compare-table" data-saved-products="">
             <div className="compare-table__column compare-table__labels" aria-hidden="true">
               {COMPARE_ROWS.map((key, index) => (
                 <div key={index} className="compare-table__cell">

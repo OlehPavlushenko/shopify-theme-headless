@@ -5,21 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Icon from './Icon.js';
 import { topicUrl, handleize } from '@/lib/blog.js';
+import { formatDate, truncateWords } from '@/lib/text.js';
 import { t } from '@/lib/theme.js';
-
-export const formatDate = (iso) =>
-  new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: process.env.SHOPIFY_TIMEZONE }).format(
-    new Date(iso)
-  );
 
 // snippets/reading-time: words / 200, at least 1
 export const readingTime = (article) => Math.max(1, Math.floor(article.content.split(' ').length / 200));
-
-// Liquid's truncatewords: the first n words and "..."
-const truncateWords = (text, n) => {
-  const words = text.trim().split(/\s+/);
-  return words.length > n ? `${words.slice(0, n).join(' ')}...` : text.trim();
-};
 
 export default function ArticleCard({
   article,

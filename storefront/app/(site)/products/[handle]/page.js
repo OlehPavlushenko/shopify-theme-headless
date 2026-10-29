@@ -6,11 +6,14 @@ import '@ui-css/product.css';
 import { notFound } from 'next/navigation';
 import JsonLd from '@/components/JsonLd.js';
 import Sections from '@/components/Sections.js';
-import { numericId } from '@/components/VariantPickerInputs.js';
 import { taxesIncluded } from '@/lib/admin.js';
+import { SITE_URL } from '@/lib/env.js';
+import { numericId } from '@/lib/ids.js';
 import { getProductPage } from '@/lib/product.js';
 import { getTemplate } from '@/lib/theme.js';
 
+// The product for the URL (the request's queries are memoized, lib/shopify.js: generateMetadata and the
+// page share them)
 async function load(params, searchParams) {
   const [{ handle }, query] = await Promise.all([params, searchParams]);
   const { variant: variantId, ...options } = query;
@@ -21,8 +24,7 @@ async function load(params, searchParams) {
   if (!product) return null;
   // ?variant=<id>: that variant (with the picked variant's fields the page reads)
   const picked = variantId && product.variants.nodes.find((variant) => numericId(variant.id) === Number(variantId));
-  if (picked) product.selectedOrFirstAvailableVariant = { ...product.selectedOrFirstAvailableVariant, ...picked };
-  return product;
+  return picked ? { ...product, selectedOrFirstAvailableVariant: { ...product.selectedOrFirstAvailableVariant, ...picked } } : product;
 }
 
 export async function generateMetadata({ params, searchParams }) {
@@ -38,17 +40,13 @@ export async function generateMetadata({ params, searchParams }) {
 }
 
 export default async function ProductPage({ params, searchParams }) {
-  const product = await load(params, searchParams);
+  const [product, taxes] = await Promise.all([load(params, searchParams), taxesIncluded()]);
   if (!product) notFound();
   const variant = product.selectedOrFirstAvailableVariant ?? product.variants.nodes[0];
-  const site = process.env.SITE_URL || '';
   const rating = product.rating?.value ? JSON.parse(product.rating.value) : null;
   return (
     <>
-      <Sections
-        sections={getTemplate('product').sections}
-        context={{ template: 'product', product, taxesIncluded: await taxesIncluded() }}
-      />
+      <Sections sections={getTemplate('product').sections} context={{ template: 'product', product, taxesIncluded: taxes }} />
       <JsonLd
         data={{
           '@context': 'https://schema.org',
@@ -58,7 +56,7 @@ export default async function ProductPage({ params, searchParams }) {
           image: product.media.nodes.filter((item) => item.image).map((item) => item.image.url),
           brand: product.vendor ? { '@type': 'Brand', name: product.vendor } : undefined,
           sku: variant.sku || undefined,
-          url: `${site}/products/${product.handle}`,
+          url: `${SITE_URL}/products/${product.handle}`,
           ...(rating && {
             aggregateRating: {
               '@type': 'AggregateRating',
@@ -72,7 +70,7 @@ export default async function ProductPage({ params, searchParams }) {
             price: item.price.amount,
             priceCurrency: item.price.currencyCode,
             availability: `https://schema.org/${item.availableForSale ? 'InStock' : 'OutOfStock'}`,
-            url: `${site}/products/${product.handle}?variant=${numericId(item.id)}`,
+            url: `${SITE_URL}/products/${product.handle}?variant=${numericId(item.id)}`,
           })),
         }}
       />

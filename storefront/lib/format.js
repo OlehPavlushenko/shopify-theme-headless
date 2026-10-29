@@ -1,4 +1,11 @@
 // Formatting shared by server and client components
+import { discountPercent } from '@ui/money';
+
+const cents = (money) => (money ? Math.round(Number(money.amount) * 100) : 0);
+
+// Whole-percent discount of a price against its compare-at price (MoneyV2), 0 without one: the theme's
+// snippets/discount-percent rounding (@ui/money discountPercent, on cents)
+export const discountOf = (price, compareAt) => discountPercent(cents(price), cents(compareAt));
 
 // "$12.50" in the price's own currency (MoneyV2: { amount, currencyCode })
 export function formatMoney({ amount, currencyCode }) {

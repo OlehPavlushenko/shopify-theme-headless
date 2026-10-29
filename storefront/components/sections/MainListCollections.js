@@ -6,13 +6,8 @@ import Link from 'next/link';
 import CollectionCard from '../CollectionCard.js';
 import Icon from '../Icon.js';
 import { getCollectionList } from '@/lib/collection.js';
+import { truncateWords } from '@/lib/text.js';
 import { t } from '@/lib/theme.js';
-
-// Liquid's truncatewords: the first n words and "..."
-const truncateWords = (text, n) => {
-  const words = text.trim().split(/\s+/);
-  return words.length > n ? `${words.slice(0, n).join(' ')}...` : text.trim();
-};
 
 function Row({ collection, index }) {
   return (

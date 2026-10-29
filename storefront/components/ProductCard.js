@@ -9,19 +9,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Icon from './Icon.js';
 import Countdown from './Countdown.js';
-import Price from './Price.js';
+import { ProductPrice } from './Price.js';
 import QuickAdd from './QuickAdd.js';
 import Rating from './Rating.js';
 import SavedToggles from './SavedToggles.js';
 import Swatch, { isColorOption } from './Swatch.js';
+import { discountOf } from '@/lib/format.js';
+import { hasOnlyDefaultVariant } from '@/lib/ids.js';
 import { getSettings, t } from '@/lib/theme.js';
 
 const SIZES = '(min-width: 990px) calc((100vw - 10rem) / 4), (min-width: 750px) calc((100vw - 6rem) / 3), calc((100vw - 4rem) / 2)';
-
-function discountPercent(price, compareAt) {
-  if (!compareAt || Number(compareAt.amount) <= Number(price.amount)) return 0;
-  return Math.round((1 - Number(price.amount) / Number(compareAt.amount)) * 100);
-}
 
 // The first option's values: swatches (snippets/swatch: Shopify's swatch, else the name as a CSS color) or text
 function OptionValues({ product }) {
@@ -60,11 +57,10 @@ export default function ProductCard({
   const image = product.featuredImage;
   const second = secondImage && settings.card_secondary_image !== false ? product.images.nodes[1] : null;
   const variant = product.selectedOrFirstAvailableVariant;
-  const discount = variant ? discountPercent(variant.price, variant.compareAtPrice) : 0;
+  const discount = variant ? discountOf(variant.price, variant.compareAtPrice) : 0;
   const onSale =
     !discount && Number(product.compareAtPriceRange.maxVariantPrice.amount) > Number(product.priceRange.minVariantPrice.amount);
-  const differentPrices = product.priceRange.minVariantPrice.amount !== product.priceRange.maxVariantPrice.amount;
-  const single = product.variants.nodes.length === 1 && product.options[0]?.optionValues[0]?.name === 'Default Title';
+  const single = hasOnlyDefaultVariant(product);
   const offerEnds = product.offerEnds?.value;
   const offerActive = offerEnds && new Date(offerEnds).getTime() > Date.now();
   const url = `/products/${product.handle}`;
@@ -120,13 +116,9 @@ export default function ProductCard({
         {(showVendor || settings.card_show_vendor) && product.vendor && <p className="product-card__vendor">{product.vendor}</p>}
         <Heading className="product-card__title line-clamp">{product.title}</Heading>
         {settings.card_show_rating !== false && <Rating product={product} className="product-card__rating" />}
-        <Price
-          price={differentPrices ? product.priceRange.minVariantPrice : (variant?.price ?? product.priceRange.minVariantPrice)}
-          compareAt={variant?.compareAtPrice}
-          from={differentPrices}
-        />
+        <ProductPrice product={product} />
         {product.availableForSale && settings.card_show_timer !== false && offerActive && (
-          <p className="offer-timer product-card__offer" data-countdown-section>
+          <p className="offer-timer product-card__offer" data-countdown-section="">
             <Icon name="clock" />
             <Countdown end={offerEnds} labelText={t('products.offer.expires_in')} />
           </p>

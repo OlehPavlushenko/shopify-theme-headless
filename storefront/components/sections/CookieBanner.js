@@ -2,6 +2,7 @@
 // (<cookie-banner>, @ui/cookie-banner) — shown where Shopify says consent is needed, and from the
 // footer's "Cookie preferences". Headless: the API's script is loaded by the element (data-api-src) and
 // every answer carries the headless storefront's domains (data-consent), as Shopify asks of a headless store.
+import { SITE_URL, STORE_DOMAIN } from '@/lib/env.js';
 import { t } from '@/lib/theme.js';
 
 const API_SRC = 'https://cdn.shopify.com/shopifycloud/consent-tracking-api/v0.1/consent-tracking-api.js';
@@ -9,8 +10,8 @@ const PURPOSES = ['analytics', 'marketing', 'preferences'];
 
 export default function CookieBanner({ section }) {
   const { settings } = section;
-  const site = process.env.SITE_URL ? new URL(process.env.SITE_URL).hostname : undefined;
-  const consent = { headlessStorefront: true, checkoutRootDomain: process.env.SHOPIFY_STORE_DOMAIN, storefrontRootDomain: site };
+  const site = SITE_URL ? new URL(SITE_URL).hostname : undefined;
+  const consent = { headlessStorefront: true, checkoutRootDomain: STORE_DOMAIN, storefrontRootDomain: site };
   return (
     <cookie-banner
       class={`cookie-banner color-${settings.color_scheme}`}

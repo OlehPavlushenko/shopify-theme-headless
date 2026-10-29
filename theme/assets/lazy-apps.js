@@ -53,12 +53,13 @@ function startJudgeMe(root) {
 class LazyApps extends HTMLElement {
   #observer;
   #abort;
+  #template;
 
   connectedCallback() {
-    this.template = this.querySelector('template');
-    if (!this.template) return;
-    this.#abort = new AbortController();
-    document.addEventListener('click', this.#onClick, { signal: this.#abort.signal });
+    this.#template = this.querySelector('template');
+    if (!this.#template) return;
+    const { signal } = (this.#abort = new AbortController());
+    document.addEventListener('click', this.#onClick, { signal });
     if (location.hash && this.#holds(location.hash.slice(1))) return this.#reveal(location.hash.slice(1));
     this.#observer = new IntersectionObserver(([entry]) => entry.isIntersecting && this.#reveal(), { rootMargin: '600px 0px' });
     this.#observer.observe(this);
@@ -70,7 +71,7 @@ class LazyApps extends HTMLElement {
   }
 
   #holds(id) {
-    return Boolean(id && this.template?.content.getElementById(id));
+    return Boolean(id && this.#template?.content.getElementById(id));
   }
 
   #onClick = (event) => {
@@ -82,11 +83,11 @@ class LazyApps extends HTMLElement {
   };
 
   #reveal(scrollTo) {
-    if (!this.template) return;
+    if (!this.#template) return;
     this.#observer?.disconnect();
     this.#abort?.abort();
-    this.template.replaceWith(this.template.content);
-    this.template = null;
+    this.#template.replaceWith(this.#template.content);
+    this.#template = null;
     startJudgeMe(this);
     if (scrollTo) document.getElementById(scrollTo)?.scrollIntoView({ block: 'start' });
   }

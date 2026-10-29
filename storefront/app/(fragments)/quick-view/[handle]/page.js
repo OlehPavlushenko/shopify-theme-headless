@@ -6,8 +6,9 @@ import { notFound } from 'next/navigation';
 import Icon from '@/components/Icon.js';
 import Image from 'next/image';
 import Price from '@/components/Price.js';
-import VariantPickerInputs, { numericId } from '@/components/VariantPickerInputs.js';
-import { moneyFormat } from '@/lib/format.js';
+import VariantPickerInputs from '@/components/VariantPickerInputs.js';
+import { discountOf, moneyFormat } from '@/lib/format.js';
+import { hasOnlyDefaultVariant, numericId } from '@/lib/ids.js';
 import { getProductWithVariants } from '@/lib/queries.js';
 import { getSettings, t } from '@/lib/theme.js';
 
@@ -16,9 +17,9 @@ export default async function QuickView({ params }) {
   if (!product) notFound();
   const variant = product.selectedOrFirstAvailableVariant ?? product.variants.nodes[0];
   const images = product.images.nodes;
-  const single = product.variants.nodes.length === 1 && product.options[0]?.optionValues[0]?.name === 'Default Title';
+  const single = hasOnlyDefaultVariant(product);
   const sale = variant.compareAtPrice && Number(variant.compareAtPrice.amount) > Number(variant.price.amount);
-  const discount = sale ? Math.round((1 - Number(variant.price.amount) / Number(variant.compareAtPrice.amount)) * 100) : 0;
+  const discount = discountOf(variant.price, variant.compareAtPrice);
   const inCartLabel = t('products.in_cart', { count: '%n' });
   const currency = variant.price.currencyCode;
 

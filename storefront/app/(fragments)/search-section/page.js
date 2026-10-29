@@ -3,10 +3,10 @@
 import { notFound } from 'next/navigation';
 import MainCollection from '@/components/sections/MainCollection.js';
 import { getSearchPage } from '@/lib/collection.js';
-import { getTemplate } from '@/lib/theme.js';
+import { findSection } from '@/lib/theme.js';
 
 export default async function SearchSection({ searchParams }) {
-  const section = getTemplate('search').sections.find((item) => item.type === 'main-collection');
+  const { section } = findSection('search', 'main-collection');
   if (!section) notFound();
   const listing = await getSearchPage(new URLSearchParams(await searchParams), { perPage: section.settings.products_per_page });
   if (!listing) notFound();

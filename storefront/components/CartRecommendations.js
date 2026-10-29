@@ -17,12 +17,17 @@ export default function CartRecommendations() {
           </p>
           <div className="slider__head-end">
             <SliderNav label={title} />
-            <button type="button" className="btn btn--icon cart-recs__close" data-recs-close aria-label={t('cart.recommendations.close')}>
+            <button
+              type="button"
+              className="btn btn--icon cart-recs__close"
+              data-recs-close=""
+              aria-label={t('cart.recommendations.close')}
+            >
               <Icon name="close" />
             </button>
           </div>
         </div>
-        <ul className="scroll-track slider__track product-rows cart-recs__list" role="list" data-slider-track data-recs-list />
+        <ul className="scroll-track slider__track product-rows cart-recs__list" role="list" data-slider-track="" data-recs-list="" />
       </ui-slider>
     </cart-recommendations>
   );

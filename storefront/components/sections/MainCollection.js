@@ -6,18 +6,22 @@
 // context.listing: lib/collection.js getCollectionPage, or getSearchPage on the search page (the terms
 // ride along in the filter form; before a search a prompt; a search that finds nothing, unfiltered, shows
 // only its message), fetched from app/(fragments)/search-section.
+import ChipRemove from '../ChipRemove.js';
+import DialogHeader from '../DialogHeader.js';
 import Icon from '../Icon.js';
+import LoadMoreCell from '../LoadMoreCell.js';
 import ProductCard from '../ProductCard.js';
-import PromoCard from '../PromoCard.js';
-import CloseButton from '../CloseButton.js';
+import PromoCard, { promoCardProps } from '../PromoCard.js';
 import { SearchOptions } from '../SearchForm.js';
 import Swatch, { isColorOption } from '../Swatch.js';
 import { formatMoney } from '@/lib/format.js';
+import { escapeHtml } from '@/lib/text.js';
 import { getSettings, t } from '@/lib/theme.js';
 
-const escapeHtml = (text) => text.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
-
 const SHOWN_VALUES = 6;
+
+// A price range end in the store currency, whole amounts without cents ("$40", "$12.50")
+const rangeMoney = (amount, currency) => formatMoney({ amount, currencyCode: currency }).replace(/\.00$/, '');
 
 // One end of the price range: the store currency's symbol and a number field (<price-range>, @ui/facets)
 function PriceField({ label, symbol, field, max, placeholder, end }) {
@@ -43,16 +47,13 @@ function PriceField({ label, symbol, field, max, placeholder, end }) {
   );
 }
 
-const isSwatch = isColorOption;
-
 // snippets/facets-active: removable chips and "Clear all"
 function ActiveChips({ filters, clearUrl, currency }) {
   const chips = [];
   for (const filter of filters) {
     if (filter.type === 'price_range') {
       if (!filter.min.value && !filter.max.value) continue;
-      const money = (amount) => formatMoney({ amount, currencyCode: currency }).replace(/\.00$/, '');
-      const label = `${money(filter.min.value || 0)}–${money(filter.max.value || filter.rangeMax)}`;
+      const label = `${rangeMoney(filter.min.value || 0, currency)}–${rangeMoney(filter.max.value || filter.rangeMax, currency)}`;
       chips.push({ key: filter.id, url: filter.urlToRemove, label, ariaLabel: t('facets.remove', { filter: label }) });
       continue;
     }
@@ -62,7 +63,7 @@ function ActiveChips({ filters, clearUrl, currency }) {
         url: value.urlToRemove,
         label: (
           <>
-            {isSwatch(filter) && <Swatch value={value} className="facets-active__swatch" />}
+            {isColorOption(filter) && <Swatch value={value} className="facets-active__swatch" />}
             {value.label}
           </>
         ),
@@ -74,12 +75,7 @@ function ActiveChips({ filters, clearUrl, currency }) {
   return (
     <ul className="facets-active" role="list">
       {chips.map((chip) => (
-        <li key={chip.key}>
-          <a href={chip.url} className="chip chip--compact" data-facets-link="" aria-label={chip.ariaLabel}>
-            {chip.label}
-            <Icon name="close" />
-          </a>
-        </li>
+        <ChipRemove key={chip.key} url={chip.url} label={chip.label} ariaLabel={chip.ariaLabel} linkAttr="data-facets-link" />
       ))}
       <li>
         <a href={clearUrl} className="btn btn--link facets-active__clear" data-facets-link="">
@@ -99,7 +95,7 @@ function FilterForm({ filters, formId, layout, sortBy, currency, terms }) {
     filter.type === 'price_range' ? filter.rangeMax > 0 : filter.values.some((value) => value.count > 0 || value.active)
   );
   return (
-    <form id={formId} className="facets__form" data-facets-form>
+    <form id={formId} className="facets__form" data-facets-form="">
       {terms && (
         <>
           <input type="hidden" name="q" value={terms} />
@@ -125,11 +121,7 @@ function FilterForm({ filters, formId, layout, sortBy, currency, terms }) {
             <div className="facet__body">
               {filter.type === 'price_range' ? (
                 <>
-                  <p className="facet__hint">
-                    {t('facets.highest_price', {
-                      price: formatMoney({ amount: filter.rangeMax, currencyCode: currency }).replace(/\.00$/, ''),
-                    })}
-                  </p>
+                  <p className="facet__hint">{t('facets.highest_price', { price: rangeMoney(filter.rangeMax, currency) })}</p>
                   <price-range class="facet__price" data-max={Math.ceil(filter.rangeMax)}>
                     <div className="facet__price-fields">
                       <PriceField
@@ -195,7 +187,7 @@ function FilterForm({ filters, formId, layout, sortBy, currency, terms }) {
                               defaultChecked={value.active}
                               disabled={disabled}
                             />
-                            {isSwatch(filter) ? (
+                            {isColorOption(filter) ? (
                               <Swatch value={value} className="facet__swatch" />
                             ) : (
                               <span className="facet__check" aria-hidden="true">
@@ -352,20 +344,29 @@ export default function MainCollection({ section, context = {} }) {
               aria-labelledby={`${panelId}-title`}
             >
               <div className="drawer__inner facets__panel-inner">
-                <div className="drawer__header facets__panel-header">
-                  <p id={`${panelId}-title`} className="facets__panel-title">
-                    <Icon name="sliders" />
-                    {t('facets.filters')}
-                  </p>
-                  <span className="facets__panel-clear" data-facets-clear="">
-                    {activeCount > 0 && (
-                      <a href={clearUrl} className="btn btn--link" data-facets-link="">
-                        {t('facets.clear_all')}
-                      </a>
-                    )}
-                  </span>
-                  <CloseButton className="facets__panel-close" popover={panelId} />
-                </div>
+                <DialogHeader
+                  className="drawer__header facets__panel-header"
+                  tag="p"
+                  titleId={`${panelId}-title`}
+                  titleClass="facets__panel-title"
+                  title={
+                    <>
+                      <Icon name="sliders" />
+                      {t('facets.filters')}
+                    </>
+                  }
+                  actions={
+                    <span className="facets__panel-clear" data-facets-clear="">
+                      {activeCount > 0 && (
+                        <a href={clearUrl} className="btn btn--link" data-facets-link="">
+                          {t('facets.clear_all')}
+                        </a>
+                      )}
+                    </span>
+                  }
+                  closeClass="facets__panel-close"
+                  popover={panelId}
+                />
                 <div className="drawer__body facets__panel-body" data-facets-body="">
                   <FilterForm
                     filters={filters}
@@ -420,19 +421,7 @@ export default function MainCollection({ section, context = {} }) {
                         </li>
                       </ItemWithPromo>
                     ))}
-                    {settings.pagination === 'load_more' && nextUrl && (
-                      <li className="load-more" data-load-more-cell="">
-                        <p className="load-more__progress">{t('facets.progress', { shown, total: count })}</p>
-                        <span
-                          className="load-more__bar"
-                          style={{ '--progress': `${Math.round((shown * 100) / Math.max(count, 1))}%` }}
-                          aria-hidden="true"
-                        />
-                        <a href={nextUrl} className="btn btn--outline" data-load-more-link="">
-                          {t('facets.load_more')}
-                        </a>
-                      </li>
-                    )}
+                    {settings.pagination === 'load_more' && <LoadMoreCell nextUrl={nextUrl} shown={shown} total={count} />}
                   </ul>
                 </load-more>
               </>
@@ -474,21 +463,10 @@ export default function MainCollection({ section, context = {} }) {
 // The promo tile (a "Promo" block) at its position on the first page, before that product
 function ItemWithPromo({ index, promo, sizes, children }) {
   if (!promo || index + 1 !== Number(promo.settings.position)) return children;
-  const s = promo.settings;
   return (
     <>
       <li className="facets__promo grid-promo">
-        <PromoCard
-          url={s.button_link}
-          image={s.image}
-          eyebrow={s.eyebrow}
-          heading={s.heading}
-          text={s.text}
-          linkLabel={s.button_label}
-          layout="overlay"
-          ratio="4 / 5"
-          sizes={sizes}
-        />
+        <PromoCard {...promoCardProps(promo.settings)} layout="overlay" ratio="4 / 5" sizes={sizes} />
       </li>
       {children}
     </>

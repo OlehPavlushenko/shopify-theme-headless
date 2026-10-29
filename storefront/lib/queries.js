@@ -1,6 +1,25 @@
-﻿// GraphQL documents and the loaders built on them. One fragment per component, named after it.
+﻿// GraphQL documents and the loaders built on them. One fragment per component, named after it; the field
+// lists the other lib/ modules share are exported here too.
 import { storefront } from './shopify.js';
 
+export const IMAGE = 'url altText width height';
+export const MONEY = 'amount currencyCode';
+// Shopify's swatch of an option value or a filter value
+export const SWATCH = `swatch { color image { previewImage { url } } }`;
+// An option with its values (variant pickers, swatches)
+export const OPTION = `name optionValues { name ${SWATCH} }`;
+// An article as the article card and the blog pages read it (snippets/article-card)
+export const ARTICLE = `handle title excerpt content publishedAt tags image { ${IMAGE} } blog { handle }`;
+// A collection card's fields (snippets/collection-card): cover (its image or its first product's) and,
+// through withProductsCount, the product count
+export const COLLECTION_CARD = `handle title image { ${IMAGE} }
+  products(first: 1) { nodes { featuredImage { ${IMAGE} } } }
+  count: products(first: 250) { nodes { id } }`;
+
+// COLLECTION_CARD's count as productsCount
+export const withProductsCount = ({ count, ...collection }) => ({ ...collection, productsCount: count.nodes.length });
+
+// The product card's fields (components/ProductCard.js, ProductRow.js)
 export const PRODUCT_CARD = `#graphql
   fragment ProductCard on Product {
     id
@@ -8,16 +27,16 @@ export const PRODUCT_CARD = `#graphql
     title
     vendor
     availableForSale
-    featuredImage { url altText width height }
-    images(first: 2) { nodes { url altText width height } }
-    priceRange { minVariantPrice { amount currencyCode } maxVariantPrice { amount currencyCode } }
-    compareAtPriceRange { maxVariantPrice { amount currencyCode } }
+    featuredImage { ${IMAGE} }
+    images(first: 2) { nodes { ${IMAGE} } }
+    priceRange { minVariantPrice { ${MONEY} } maxVariantPrice { ${MONEY} } }
+    compareAtPriceRange { maxVariantPrice { ${MONEY} } }
     selectedOrFirstAvailableVariant {
       id
-      price { amount currencyCode }
-      compareAtPrice { amount currencyCode }
+      price { ${MONEY} }
+      compareAtPrice { ${MONEY} }
     }
-    options(first: 1) { name optionValues { name swatch { color image { previewImage { url } } } } }
+    options(first: 1) { ${OPTION} }
     variants(first: 50) { nodes { availableForSale selectedOptions { name value } } }
     rating: metafield(namespace: "reviews", key: "rating") { value }
     ratingCount: metafield(namespace: "reviews", key: "rating_count") { value }
@@ -31,6 +50,9 @@ const MENU = `#graphql
     items { id title url items { id title url } }
   }
 `;
+
+// A policy's title as Liquid's policy.title gives it ("Refund policy"; the API says "Refund Policy")
+const policyTitled = (policy) => ({ ...policy, title: policy.title.charAt(0) + policy.title.slice(1).toLowerCase() });
 
 // The site frame: shop name, header and footer menus, policies
 export async function getShell() {
@@ -77,8 +99,20 @@ export async function getLocalization() {
   return data?.localization ?? null;
 }
 
-// A policy's title as Liquid's policy.title gives it ("Refund policy"; the API says "Refund Policy")
-const policyTitled = (policy) => ({ ...policy, title: policy.title.charAt(0) + policy.title.slice(1).toLowerCase() });
+// The store's accepted card brands and digital wallets (Shopify's codes: VISA, MASTERCARD, SHOPIFY_PAY, …),
+// as Liquid's shop.enabled_payment_types: the footer's payment icons
+export async function getPaymentMethods() {
+  const data = await storefront(
+    `#graphql
+    query PaymentMethods {
+      shop { paymentSettings { acceptedCardBrands supportedDigitalWallets } }
+    }`,
+    {},
+    { revalidate: 3600 }
+  );
+  const settings = data?.shop.paymentSettings;
+  return [...(settings?.acceptedCardBrands ?? []), ...(settings?.supportedDigitalWallets ?? [])];
+}
 
 // A store policy (/policies/<handle>: privacy-policy, refund-policy, shipping-policy, terms-of-service)
 export async function getPolicy(handle) {
@@ -97,21 +131,6 @@ export async function getPolicy(handle) {
   return policy ? policyTitled(policy) : null;
 }
 
-// Products for a list on the home page (best sellers first)
-export async function getProducts(first = 8) {
-  const data = await storefront(
-    `#graphql
-    query Products($first: Int!) {
-      products(first: $first, sortKey: BEST_SELLING) { nodes { ...ProductCard } }
-    }
-    ${PRODUCT_CARD}`,
-    { first }
-  );
-  return data?.products.nodes ?? [];
-}
-
-const IMAGE = 'url altText width height';
-
 // A menu by handle (Admin > Content > Menus), three levels, as [{ id, title, url, items }]
 export async function getMenu(handle) {
   if (!handle) return [];
@@ -127,25 +146,18 @@ export async function getMenu(handle) {
   return data?.menu?.items ?? [];
 }
 
-// Collections picked in a theme setting (handles), in that order: cover (its image or its first
-// product's) and product count (snippets/collection-card)
+// Collections picked in a theme setting (handles), in that order, as collection cards
 export async function getCollectionsByHandles(handles = []) {
   if (!handles.length) return [];
-  const fields = handles.map(
-    (handle, index) => `c${index}: collection(handle: ${JSON.stringify(handle)}) {
-      handle title image { ${IMAGE} }
-      products(first: 1) { nodes { featuredImage { ${IMAGE} } } }
-      count: products(first: 250) { nodes { id } }
-    }`
-  );
+  const fields = handles.map((handle, index) => `c${index}: collection(handle: ${JSON.stringify(handle)}) { ${COLLECTION_CARD} }`);
   const data = await storefront(`query PickedCollections { ${fields.join('\n')} }`);
   return handles
     .map((_, index) => data?.[`c${index}`])
     .filter(Boolean)
-    .map(({ count, ...collection }) => ({ ...collection, productsCount: count.nodes.length }));
+    .map(withProductsCount);
 }
 
-// A product with its images and every variant: the quick view and the product page's form
+// A product with its images and every variant: the quick view
 export async function getProductWithVariants(handle) {
   const data = await storefront(
     `#graphql
@@ -157,7 +169,7 @@ export async function getProductWithVariants(handle) {
         vendor
         availableForSale
         images(first: 20) { nodes { id ${IMAGE} } }
-        options(first: 10) { name optionValues { name swatch { color image { previewImage { url } } } } }
+        options(first: 10) { ${OPTION} }
         variants(first: 100) {
           nodes {
             id
@@ -182,20 +194,6 @@ export async function getProductWithVariants(handle) {
   return data?.product ?? null;
 }
 
-// Shopify's related products for a product (Product Recommendations, intent RELATED)
-export async function getRecommendations(handle) {
-  const data = await storefront(
-    `#graphql
-    query Recommendations($handle: String!) {
-      productRecommendations(productHandle: $handle, intent: RELATED) { ...ProductCard }
-    }
-    ${PRODUCT_CARD}`,
-    { handle },
-    { revalidate: 3600 }
-  );
-  return data?.productRecommendations ?? [];
-}
-
 // A page (Admin > Online Store > Pages)
 export async function getPage(handle) {
   const data = await storefront(
@@ -216,7 +214,7 @@ export async function getCompareProduct(handle) {
         ...ProductCard
         productType
         description
-        allOptions: options(first: 10) { name optionValues { name swatch { color image { previewImage { url } } } } }
+        allOptions: options(first: 10) { ${OPTION} }
         allVariants: variants(first: 100) { nodes { availableForSale selectedOptions { name value } } }
       }
     }
@@ -233,48 +231,8 @@ export async function getProductsByHandles(handles = []) {
   const data = await storefront(`query PickedProducts { ${fields.join('\n')} } ${PRODUCT_CARD}`);
   return handles.map((_, index) => data?.[`p${index}`]).filter(Boolean);
 }
-const MONEY = 'amount currencyCode';
 
-// Product page: the product, its variants and the variant matching the picked options
-// (selectedOptions: [{ name, value }], from the URL; unknown or missing ones fall back to the first available)
-export async function getProduct(handle, selectedOptions = []) {
-  const data = await storefront(
-    `#graphql
-    query Product($handle: String!, $selectedOptions: [SelectedOptionInput!]!) {
-      product(handle: $handle) {
-        id
-        handle
-        title
-        vendor
-        description
-        descriptionHtml
-        availableForSale
-        seo { title description }
-        featuredImage { ${IMAGE} }
-        images(first: 20) { nodes { id ${IMAGE} } }
-        options { name optionValues { name swatch { color } } }
-        variants(first: 100) {
-          nodes { id availableForSale selectedOptions { name value } }
-        }
-        selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
-          id
-          title
-          sku
-          availableForSale
-          selectedOptions { name value }
-          price { ${MONEY} }
-          compareAtPrice { ${MONEY} }
-          image { id ${IMAGE} }
-        }
-        collections(first: 1) { nodes { handle title } }
-      }
-    }`,
-    { handle, selectedOptions }
-  );
-  return data?.product ?? null;
-}
-
-// Collection page: a page of products (24), sorted, after the cursor of the previous page.
+// A collection's products for a product list (24, sorted, after the cursor of the previous page).
 // "all" is every product (as Shopify's /collections/all): allKey is its ProductSortKeys value.
 export async function getCollection(
   handle,
@@ -319,9 +277,7 @@ export async function getCollection(
 
 // The latest articles of a blog (snippets/article-card); without a handle, the store's first blog
 export async function getArticles(handle, first = 6) {
-  const fields = `handle title articles(first: $first, sortKey: PUBLISHED_AT, reverse: true) {
-    nodes { handle title excerpt content publishedAt tags image { ${IMAGE} } blog { handle } }
-  }`;
+  const fields = `handle title articles(first: $first, sortKey: PUBLISHED_AT, reverse: true) { nodes { ${ARTICLE} } }`;
   const data = await storefront(
     handle
       ? `query Articles($handle: String!, $first: Int!) { blog(handle: $handle) { ${fields} } }`
@@ -368,7 +324,8 @@ export async function getCollections() {
   return data?.collections.nodes ?? [];
 }
 
-// Every product and collection URL with its last update, for sitemap.xml (250 each, the API's page size)
+// Every product, collection, page, blog and article URL with its last update, for sitemap.xml (250 each,
+// the API's page size)
 export async function getSitemapEntries() {
   const data = await storefront(
     `#graphql
@@ -390,37 +347,3 @@ export async function getSitemapEntries() {
     blogs: data?.blogs.nodes ?? [],
   };
 }
-
-// The cart (per visitor: never cached)
-export const CART = `#graphql
-  fragment Cart on Cart {
-    id
-    checkoutUrl
-    totalQuantity
-    note
-    attributes { key value }
-    cost { subtotalAmount { ${MONEY} } totalAmount { ${MONEY} } }
-    discountCodes { code applicable }
-    discountAllocations {
-      discountedAmount { ${MONEY} }
-      ... on CartCodeDiscountAllocation { code }
-      ... on CartAutomaticDiscountAllocation { title }
-    }
-    lines(first: 100) {
-      nodes {
-        id
-        quantity
-        cost { totalAmount { ${MONEY} } amountPerQuantity { ${MONEY} } compareAtAmountPerQuantity { ${MONEY} } }
-        merchandise {
-          ... on ProductVariant {
-            id
-            title
-            selectedOptions { name value }
-            image { ${IMAGE} }
-            product { handle title options { name optionValues { name swatch { color image { previewImage { url } } } } } }
-          }
-        }
-      }
-    }
-  }
-`;

@@ -32,7 +32,7 @@ export default function Faq({ section }) {
             if (block.type === 'topic') {
               const Topic = topicTag;
               return (
-                <Topic key={block.id} id={`faq-${id}-${block.id}`} className="h5 faq__topic" data-faq-topic>
+                <Topic key={block.id} id={`faq-${id}-${block.id}`} className="h5 faq__topic" data-faq-topic="">
                   {block.settings.title}
                 </Topic>
               );
@@ -40,7 +40,13 @@ export default function Faq({ section }) {
             const open = firstQuestion && settings.open_first;
             firstQuestion = false;
             return (
-              <details key={block.id} className="accordion" data-faq-item name={settings.single_open ? `faq-${id}` : undefined} open={open}>
+              <details
+                key={block.id}
+                className="accordion"
+                data-faq-item=""
+                name={settings.single_open ? `faq-${id}` : undefined}
+                open={open}
+              >
                 <summary className="accordion__summary">
                   <span className="accordion__title">{block.settings.question}</span>
                   <span className="accordion__icon" aria-hidden="true">

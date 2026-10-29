@@ -13,13 +13,13 @@ export default function QuickAdd({ product, variantId, single }) {
           <a
             href={`/products/${product.handle}`}
             className="btn btn--outline btn--sm btn--full product-card__options"
-            data-quick-view
+            data-quick-view=""
             aria-haspopup="dialog"
           >
             <span className="product-card__options-label">{t('products.choose_options')}</span>
             <span className="product-card__options-in-cart">
               <Icon name="check" />
-              <span data-in-cart-label>{t('products.in_cart_short')}</span>
+              <span data-in-cart-label="">{t('products.in_cart_short')}</span>
             </span>
           </a>
         </cart-item-state>
@@ -43,7 +43,7 @@ export default function QuickAdd({ product, variantId, single }) {
           <button type="button" className="product-card__step" data-step="-1" aria-label={t('cart.decrease', { product: product.title })}>
             <Icon name="minus" />
           </button>
-          <span className="product-card__in-cart-label" data-in-cart-label aria-live="polite">
+          <span className="product-card__in-cart-label" data-in-cart-label="" aria-live="polite">
             {label.replace('%n', 0)}
           </span>
           <button type="button" className="product-card__step" data-step="1" aria-label={t('cart.increase', { product: product.title })}>

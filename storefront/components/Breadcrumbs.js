@@ -2,9 +2,9 @@
 // trail: [{ title, url }] between Home and the current page.
 import Link from 'next/link';
 import JsonLd from './JsonLd.js';
+import { SITE_URL } from '@/lib/env.js';
 
 export default function Breadcrumbs({ trail = [], current, className = '' }) {
-  const siteUrl = process.env.SITE_URL || '';
   const items = [{ title: 'Home', url: '/' }, ...trail];
   return (
     <nav className={`breadcrumbs ${className}`.trim()} aria-label="Breadcrumbs">
@@ -26,7 +26,7 @@ export default function Breadcrumbs({ trail = [], current, className = '' }) {
             '@type': 'ListItem',
             position: index + 1,
             name: item.title,
-            ...(item.url && { item: siteUrl + item.url }),
+            ...(item.url && { item: SITE_URL + item.url }),
           })),
         }}
       />

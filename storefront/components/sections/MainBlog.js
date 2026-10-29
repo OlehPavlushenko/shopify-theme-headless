@@ -5,26 +5,15 @@
 // <section-swap> (@ui/section-swap) re-renders it in place from app/(fragments)/blog-section/<path>
 // (data-endpoint-base) on topic links and the blog search form; <load-more> asks that for the next page.
 import ArticleCard from '../ArticleCard.js';
+import ChipRemove from '../ChipRemove.js';
 import Icon from '../Icon.js';
+import LoadMoreCell from '../LoadMoreCell.js';
 import NewsletterForm from '../NewsletterForm.js';
-import PromoCard from '../PromoCard.js';
+import PromoCard, { promoCardProps } from '../PromoCard.js';
 import { blogTitle, topicUrl } from '@/lib/blog.js';
+import { escapeHtml } from '@/lib/text.js';
 import { getShell } from '@/lib/queries.js';
 import { t } from '@/lib/theme.js';
-
-const escapeHtml = (text) => text.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
-
-// snippets/chip-remove
-function ChipRemove({ url, label, ariaLabel }) {
-  return (
-    <li>
-      <a href={url} className="chip chip--compact" data-section-link="" aria-label={ariaLabel}>
-        {label}
-        <Icon name="close" />
-      </a>
-    </li>
-  );
-}
 
 export default async function MainBlog({ section, context = {} }) {
   const { settings, blocks } = section;
@@ -54,7 +43,7 @@ export default async function MainBlog({ section, context = {} }) {
             <div className="main-blog__active">
               <span className="main-blog__active-label">{t('blog.results_for')}</span>
               <ul className="main-blog__active-list" role="list">
-                <ChipRemove url={blogUrl} label={terms} ariaLabel={t('blog.clear_search', { terms })} />
+                <ChipRemove url={blogUrl} label={terms} ariaLabel={t('blog.clear_search', { terms })} linkAttr="data-section-link" />
               </ul>
               <span className="main-blog__count" role="status">
                 {t('blog.articles_count', { count })}
@@ -71,6 +60,7 @@ export default async function MainBlog({ section, context = {} }) {
                       url={topicUrl(blogUrl, chosen, chosen[index])}
                       label={name}
                       ariaLabel={t('blog.remove_topic', { topic: name })}
+                      linkAttr="data-section-link"
                     />
                   ))}
                   <li>
@@ -134,17 +124,7 @@ export default async function MainBlog({ section, context = {} }) {
                   </li>,
                   promo && page === 1 && index + 1 === Number(promo.settings.position) && (
                     <li key="promo" className="main-blog__promo grid-promo">
-                      <PromoCard
-                        url={promo.settings.button_link}
-                        image={promo.settings.image}
-                        eyebrow={promo.settings.eyebrow}
-                        heading={promo.settings.heading}
-                        text={promo.settings.text}
-                        linkLabel={promo.settings.button_label}
-                        layout="overlay"
-                        ratio="4 / 5"
-                        sizes={cardSizes}
-                      />
+                      <PromoCard {...promoCardProps(promo.settings)} layout="overlay" ratio="4 / 5" sizes={cardSizes} />
                     </li>
                   ),
                   !isSearch && settings.show_signup && page === 1 && index + 1 === Number(settings.signup_position) && (
@@ -161,19 +141,7 @@ export default async function MainBlog({ section, context = {} }) {
                   ),
                 ];
               })}
-              {settings.pagination === 'load_more' && nextUrl && (
-                <li className="load-more" data-load-more-cell="">
-                  <p className="load-more__progress">{t('facets.progress', { shown, total: count })}</p>
-                  <span
-                    className="load-more__bar"
-                    style={{ '--progress': `${Math.floor((shown * 100) / Math.max(count, 1))}%` }}
-                    aria-hidden="true"
-                  />
-                  <a href={nextUrl} className="btn btn--outline" data-load-more-link="">
-                    {t('facets.load_more')}
-                  </a>
-                </li>
-              )}
+              {settings.pagination === 'load_more' && <LoadMoreCell nextUrl={nextUrl} shown={shown} total={count} />}
             </ul>
           )}
         </div>

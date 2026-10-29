@@ -2,6 +2,12 @@
 // `image_url | image_tag: widths:, sizes:`. Nothing when the setting is blank.
 import { imageUrl } from '@/lib/theme.js';
 
+// A Shopify CDN file at a width (image_url: width:)
+export const sizedUrl = (src, width) => `${src}${src.includes('?') ? '&' : '?'}width=${width}`;
+
+// srcset of a CDN file at the given widths
+export const srcSetOf = (src, widths) => widths.map((width) => `${sizedUrl(src, width)} ${width}w`).join(', ');
+
 export default async function ThemeImage({
   image,
   widths = [400, 800, 1200],
@@ -15,14 +21,13 @@ export default async function ThemeImage({
 }) {
   const src = await imageUrl(image);
   if (!src) return null;
-  const at = (width) => `${src}${src.includes('?') ? '&' : '?'}width=${width}`;
   return (
     <img
       className={className}
       width={width}
       height={height}
-      src={at(widths.at(-1))}
-      srcSet={widths.map((width) => `${at(width)} ${width}w`).join(', ')}
+      src={sizedUrl(src, widths.at(-1))}
+      srcSet={srcSetOf(src, widths)}
       sizes={sizes}
       alt={alt}
       loading={loading}

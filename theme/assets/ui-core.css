@@ -4716,7 +4716,9 @@
     padding: var(--space-l) var(--gutter);
   }
 
-  .password__top {
+  /* The top row (logo, …) and the bottom row (social links, legal line) spread across the page */
+  .password__top,
+  .password__bottom {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -4820,7 +4822,7 @@
     font-family: var(--font-heading-family);
     font-size: var(--text-3xl);
     font-weight: var(--font-heading-weight);
-    line-height: 1.1;
+    line-height: var(--leading-tight);
     color: var(--color-heading);
   }
 
@@ -4834,14 +4836,6 @@
   .password__signup-heading {
     font-weight: var(--font-body-weight-semibold);
     color: var(--color-heading);
-  }
-
-  .password__bottom {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-s);
   }
 
   .password__legal {
@@ -5180,7 +5174,8 @@
     gap: var(--space-2xl);
   }
 
-  .main-contact__info {
+  .main-contact__info,
+  .main-contact__form-card {
     display: grid;
     align-content: start;
     gap: var(--space-l);
@@ -5222,12 +5217,6 @@
     font-size: var(--text-xs);
     line-height: var(--leading-xs);
     color: var(--color-text-muted);
-  }
-
-  .main-contact__form-card {
-    display: grid;
-    align-content: start;
-    gap: var(--space-l);
   }
 
   /* Rows leave room for a field's error message (.field-error) */
@@ -6456,6 +6445,7 @@
       font-size: var(--text-md);
     }
   }
+
   /* ------------------------------------------------------ product story */
   /* Key ingredients (cards) and how to use (numbered steps), side by side from 990px */
   .product-story__inner {
@@ -6463,12 +6453,7 @@
     gap: var(--space-2xl);
   }
 
-  .product-story__part {
-    display: grid;
-    align-content: start;
-    gap: var(--space-xs);
-  }
-
+  .product-story__part,
   .product-story__head {
     display: grid;
     align-content: start;

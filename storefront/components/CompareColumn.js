@@ -3,15 +3,15 @@
 // label column of the compare page (CSS subgrid). Data: getCompareProduct (lib/queries.js).
 import Image from 'next/image';
 import Icon from './Icon.js';
-import Price from './Price.js';
+import { ProductPrice } from './Price.js';
 import Swatch, { isColorOption } from './Swatch.js';
+import { hasOnlyDefaultVariant } from '@/lib/ids.js';
 import { getSettings, t } from '@/lib/theme.js';
 
 export default function CompareColumn({ product }) {
   const url = `/products/${product.handle}`;
   const variant = product.selectedOrFirstAvailableVariant;
-  const single = product.allVariants.nodes.length === 1 && product.allOptions[0]?.optionValues[0]?.name === 'Default Title';
-  const differentPrices = product.priceRange.minVariantPrice.amount !== product.priceRange.maxVariantPrice.amount;
+  const single = hasOnlyDefaultVariant(product);
   const available = (option, value) =>
     product.allVariants.nodes.some(
       (item) => item.availableForSale && item.selectedOptions.some((o) => o.name === option && o.value === value)
@@ -21,7 +21,7 @@ export default function CompareColumn({ product }) {
   const image = product.featuredImage;
 
   return (
-    <div className="compare-table__column" data-saved-item>
+    <div className="compare-table__column" data-saved-item="">
       <div className="compare-table__cell compare-table__product">
         <a href={url} className="frame compare-table__media" style={{ '--frame-ratio': 1 }} tabIndex={-1} aria-hidden="true">
           {image && <Image src={image.url} alt="" width={image.width} height={image.height} sizes="(min-width: 750px) 22rem, 45vw" />}
@@ -39,11 +39,7 @@ export default function CompareColumn({ product }) {
         </button>
       </div>
       <div className="compare-table__cell">
-        <Price
-          price={differentPrices ? product.priceRange.minVariantPrice : variant.price}
-          compareAt={variant?.compareAtPrice}
-          from={differentPrices}
-        />
+        <ProductPrice product={product} />
       </div>
       <div className="compare-table__cell">{product.vendor || '—'}</div>
       <div className="compare-table__cell">{product.productType || '—'}</div>
@@ -98,7 +94,7 @@ export default function CompareColumn({ product }) {
             </form>
           </cart-item-state>
         ) : (
-          <a href={url} className="btn btn--sm btn--full" data-quick-view aria-haspopup="dialog">
+          <a href={url} className="btn btn--sm btn--full" data-quick-view="" aria-haspopup="dialog">
             {t('products.choose_options')}
           </a>
         )}

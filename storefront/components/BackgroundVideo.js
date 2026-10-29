@@ -1,5 +1,6 @@
 // One muted <video> for <background-video>: theme/snippets/background-video-file.liquid — the HLS stream
 // first, then the best MP4 not taller than maxHeight (or the smallest one)
+import { sizedUrl } from './ThemeImage.js';
 import { themeVideo } from '@/lib/theme.js';
 
 export default async function BackgroundVideo({ video: value, maxHeight, className, posterWidth = 1600 }) {
@@ -16,7 +17,7 @@ export default async function BackgroundVideo({ video: value, maxHeight, classNa
       loop
       playsInline
       preload="none"
-      poster={video.poster ? `${video.poster}${video.poster.includes('?') ? '&' : '?'}width=${posterWidth}` : undefined}
+      poster={video.poster ? sizedUrl(video.poster, posterWidth) : undefined}
       width={best.width}
       height={best.height}
     >

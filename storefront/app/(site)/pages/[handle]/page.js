@@ -6,15 +6,15 @@ import { pageTemplateSuffix } from '@/lib/admin.js';
 import { getPage } from '@/lib/queries.js';
 import { getTemplate } from '@/lib/theme.js';
 
+// The page's template (its suffix and sections)
 async function template(handle) {
   return getTemplate('page', (await pageTemplateSuffix(handle)) ?? handle);
 }
 
 export async function generateMetadata({ params }) {
   const { handle } = await params;
-  const page = await getPage(handle);
+  const [page, { suffix }] = await Promise.all([getPage(handle), template(handle)]);
   if (!page) return {};
-  const { suffix } = await template(handle);
   return {
     title: page.seo?.title || page.title,
     description: page.seo?.description || page.bodySummary?.slice(0, 160),
@@ -26,8 +26,7 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
   const { handle } = await params;
-  const page = await getPage(handle);
+  const [page, { suffix, sections }] = await Promise.all([getPage(handle), template(handle)]);
   if (!page) notFound();
-  const { suffix, sections } = await template(handle);
   return <Sections sections={sections} context={{ template: 'page', suffix, page }} />;
 }

@@ -1,6 +1,7 @@
 'use client';
 // The "Write a review" form in its popup (components/ProductReviews.js): name, email, a star rating, title
 // and text, sent to Judge.me by the submitReview server action; the theme's success / error notices.
+// Headless only: in the theme Judge.me's widget (an app block) draws the form.
 import { useActionState } from 'react';
 import { submitReview } from '@/app/actions.js';
 

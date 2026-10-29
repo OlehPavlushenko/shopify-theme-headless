@@ -4,10 +4,9 @@
 import Link from 'next/link';
 import BackgroundVideo from '../BackgroundVideo.js';
 import SliderNav from '../SliderNav.js';
+import { sizedUrl, srcSetOf } from '../ThemeImage.js';
 import { imageUrl, t } from '@/lib/theme.js';
 import { linkUrl } from '@/lib/links.js';
-
-const srcset = (src, widths) => widths.map((width) => `${src}?width=${width} ${width}w`).join(', ');
 
 async function SlideMedia({ settings, eager }) {
   const [desktop, mobile] = await Promise.all([imageUrl(settings.image), imageUrl(settings.image_mobile || settings.image)]);
@@ -15,10 +14,10 @@ async function SlideMedia({ settings, eager }) {
     <div className="frame frame--cover hero__media">
       {desktop && (
         <picture>
-          <source media="(min-width: 750px)" srcSet={srcset(desktop, [1500, 2200, 3000])} sizes="100vw" />
+          <source media="(min-width: 750px)" srcSet={srcSetOf(desktop, [1500, 2200, 3000])} sizes="100vw" />
           <img
-            src={`${mobile}?width=1200`}
-            srcSet={srcset(mobile, [600, 900, 1200])}
+            src={sizedUrl(mobile, 1200)}
+            srcSet={srcSetOf(mobile, [600, 900, 1200])}
             sizes="100vw"
             alt=""
             loading={eager ? 'eager' : 'lazy'}
@@ -56,7 +55,7 @@ export default function Hero({ section, index }) {
       aria-roledescription="carousel"
       aria-label={t('sections.hero.label')}
     >
-      <ul className="scroll-track hero__track" data-slider-track role="list">
+      <ul className="scroll-track hero__track" data-slider-track="" role="list">
         {blocks.map((block, slide) => {
           const s = block.settings;
           const caption = s.eyebrow || s.heading || s.text || s.button_label || s.button_label_2 ? s.caption : 'none';
@@ -99,7 +98,7 @@ export default function Hero({ section, index }) {
       </ul>
       {several && (
         <div className={`hero__controls page-width color-${blocks[0].settings.color_scheme}`} style={{ background: 'none' }}>
-          <div className="slider__dots hero__dots" data-slider-dots data-label={t('sections.hero.slide')} />
+          <div className="slider__dots hero__dots" data-slider-dots="" data-label={t('sections.hero.slide')} />
           <SliderNav label={t('sections.hero.label')} />
         </div>
       )}

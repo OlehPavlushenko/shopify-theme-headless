@@ -3,13 +3,14 @@
 // cents, options in order, featured_media.id). Used where the picker works in place (quick view,
 // the product page form); <product-info> around it follows the picks.
 import Swatch, { isColorOption } from './Swatch.js';
+import { numericId } from '@/lib/ids.js';
+import { scriptJson } from '@/lib/text.js';
 
-export const numericId = (gid) => Number(String(gid).split('/').pop().split('?')[0]);
 const cents = (money) => (money ? Math.round(Number(money.amount) * 100) : 0);
 
 // product: options { name, optionValues { name swatch } }, variants { id availableForSale selectedOptions
 // price compareAtPrice image { id } }
-export function variantsJson(product) {
+function variantsJson(product) {
   return product.variants.nodes.map((variant) => ({
     id: numericId(variant.id),
     options: product.options.map((option) => variant.selectedOptions.find((selected) => selected.name === option.name)?.value),
@@ -31,7 +32,7 @@ export default function VariantPickerInputs({ product, selected, id }) {
           <fieldset key={option.name} className="variant-picker__option">
             <legend className="variant-picker__legend">
               {option.name}:{' '}
-              <span className="variant-picker__selected" data-selected-value>
+              <span className="variant-picker__selected" data-selected-value="">
                 {picked[option.name]}
               </span>
             </legend>
@@ -54,8 +55,8 @@ export default function VariantPickerInputs({ product, selected, id }) {
       })}
       <script
         type="application/json"
-        data-variants
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(variantsJson(product)).replace(/</g, '\\u003c') }}
+        data-variants=""
+        dangerouslySetInnerHTML={{ __html: scriptJson(JSON.stringify(variantsJson(product))) }}
       />
     </variant-picker>
   );

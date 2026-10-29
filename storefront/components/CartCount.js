@@ -1,5 +1,5 @@
 'use client';
-// The header's cart count bubble (.count-badge, as in the theme). Read from the cart_count cookie in
+// The header's cart count bubble: theme/sections/header.liquid (.count-badge). Read from the cart_count cookie in
 // the browser, so the pages around it stay static: on load, after every navigation and on
 // cart:changed (CartForm, after a cart action).
 import { useEffect, useState } from 'react';
@@ -21,7 +21,7 @@ export default function CartCount() {
   return (
     <span
       className="count-badge count-badge--sm cart-count"
-      data-cart-count-bubble
+      data-cart-count-bubble=""
       data-empty={count === 0 ? '' : undefined}
       aria-hidden="true"
     >

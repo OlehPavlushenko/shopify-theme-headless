@@ -76,7 +76,7 @@ export async function ProductRecommendations({ section, context = {} }) {
       <div className="page-width">
         <ui-slider class="slider product-list__slider" style={{ '--slider-columns': settings.columns, '--slider-columns-mobile': 2.2 }}>
           <SectionHead heading={settings.heading} nav />
-          <ul className="scroll-track slider__track" data-slider-track role="list">
+          <ul className="scroll-track slider__track" data-slider-track="" role="list">
             {products.map((product) => (
               <li key={product.id}>
                 <ProductCard product={product} quickAdd sizes="(min-width: 990px) 22vw, 45vw" />
@@ -104,7 +104,7 @@ export function RecentlyViewed({ section, context = {} }) {
       >
         <ui-slider class="slider product-list__slider" style={{ '--slider-columns': settings.columns, '--slider-columns-mobile': 2.2 }}>
           <SectionHead heading={settings.heading} nav />
-          <ul className="scroll-track slider__track" data-slider-track role="list" data-saved-products="" />
+          <ul className="scroll-track slider__track" data-slider-track="" role="list" data-saved-products="" />
         </ui-slider>
         <div data-saved-empty="" />
       </saved-products>

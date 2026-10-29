@@ -6,15 +6,19 @@ import '@ui-css/facets.css';
 import { notFound } from 'next/navigation';
 import Sections from '@/components/Sections.js';
 import { getCollectionPage } from '@/lib/collection.js';
-import { getTemplate } from '@/lib/theme.js';
+import { findSection } from '@/lib/theme.js';
 
-const perPage = () =>
-  getTemplate('collection').sections.find((section) => section.type === 'main-collection')?.settings.products_per_page ?? 16;
+// The listing for the URL (the request's queries are memoized: generateMetadata and the page share them)
+async function load(params, searchParams) {
+  const [{ handle }, search] = await Promise.all([params, searchParams]);
+  const query = new URLSearchParams(search);
+  const { section, sections } = findSection('collection', 'main-collection');
+  const listing = await getCollectionPage(handle, query, { perPage: section?.settings.products_per_page ?? 16 });
+  return { handle, query, sections, listing };
+}
 
 export async function generateMetadata({ params, searchParams }) {
-  const { handle } = await params;
-  const query = new URLSearchParams(await searchParams);
-  const listing = await getCollectionPage(handle, query, { perPage: perPage() });
+  const { handle, query, listing } = await load(params, searchParams);
   if (!listing) return {};
   const { collection } = listing;
   const filtered = [...query.keys()].some((key) => key.startsWith('filter.') || key === 'after');
@@ -27,10 +31,8 @@ export async function generateMetadata({ params, searchParams }) {
 }
 
 export default async function CollectionPage({ params, searchParams }) {
-  const { handle } = await params;
-  const listing = await getCollectionPage(handle, new URLSearchParams(await searchParams), { perPage: perPage() });
+  const { sections, listing } = await load(params, searchParams);
   if (!listing) notFound();
-  const { sections } = getTemplate('collection');
   return (
     <Sections
       sections={sections}

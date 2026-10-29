@@ -43,7 +43,7 @@ export default function CartDrawer({ strings, colorScheme, freeShippingThreshold
             {strings['cart.title']}
             {count > 0 && <span className="muted"> ({count})</span>}
           </h2>
-          <button type="button" className="btn btn--icon" data-dialog-close aria-label={strings['accessibility.close']}>
+          <button type="button" className="btn btn--icon" data-dialog-close="" aria-label={strings['accessibility.close']}>
             <Icon name="close" />
           </button>
           <FreeShipping cart={cart} threshold={freeShippingThreshold} strings={strings} />

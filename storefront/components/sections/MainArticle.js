@@ -5,12 +5,14 @@
 // context: lib/blog.js getArticlePage.
 import Image from 'next/image';
 import Link from 'next/link';
-import ArticleCard, { formatDate, readingTime } from '../ArticleCard.js';
+import ArticleCard, { readingTime } from '../ArticleCard.js';
 import Breadcrumbs from '../Breadcrumbs.js';
 import Icon from '../Icon.js';
 import ProductRow from '../ProductRow.js';
 import SectionHead from '../SectionHead.js';
 import { topicUrl } from '@/lib/blog.js';
+import { SITE_URL } from '@/lib/env.js';
+import { formatDate } from '@/lib/text.js';
 import { t } from '@/lib/theme.js';
 
 function Share({ url, title }) {
@@ -39,7 +41,7 @@ export default function MainArticle({ section, context = {} }) {
   const { settings } = section;
   const { article, blog, related = [] } = context;
   if (!article) return null;
-  const shareUrl = `${process.env.SITE_URL || ''}${blog.url}/${article.handle}`;
+  const shareUrl = `${SITE_URL}${blog.url}/${article.handle}`;
   const author = article.authorV2?.name;
   const products = settings.show_products ? article.products.slice(0, 6) : [];
   return (

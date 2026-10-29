@@ -16,6 +16,7 @@ import '@ui-css/cart.css';
 import '@ui-css/search.css';
 import '@ui-css/saved.css';
 import { Bricolage_Grotesque, DM_Sans } from 'next/font/google';
+import { preconnect } from 'react-dom';
 import CartDrawer from '@/components/CartDrawer.js';
 import CartRecommendations from '@/components/CartRecommendations.js';
 import CartUpsell from '@/components/CartUpsell.js';
@@ -26,7 +27,7 @@ import UiScripts from '@/components/UiScripts.js';
 import { getShell } from '@/lib/queries.js';
 import { accountUrl } from '@/lib/shopify.js';
 import { CART_STRINGS } from '@/lib/strings.js';
-import { getSections, getSettings, orderDetails, strings, t, themeCss } from '@/lib/theme.js';
+import { freeShippingThreshold, getSections, getSettings, orderDetails, strings, t, themeCss } from '@/lib/theme.js';
 
 // The theme's default fonts (Theme settings > Typography: Bricolage Grotesque, DM Sans)
 const body = DM_Sans({ subsets: ['latin'], display: 'swap' });
@@ -40,13 +41,14 @@ export async function generateMetadata() {
 }
 
 export default async function RootLayout({ children }) {
+  // Product and theme images come from Shopify's CDN: the connection opens while the HTML still loads
+  preconnect('https://cdn.shopify.com');
   const { shop } = await getShell();
   const settings = getSettings();
   const headerGroup = getSections('sections/header-group.json');
   const header = headerGroup.find((section) => section.type === 'header');
   // The cart drawer section's own settings (theme/sections/cart-drawer.liquid, saved in settings_data)
   const drawer = settings.sections?.['cart-drawer']?.settings ?? {};
-  const threshold = settings.show_free_shipping !== false ? Number(settings.free_shipping_threshold) || 0 : 0;
   // The token defaults name the font families; next/font serves them under its own names
   const fonts = { '--font-body-family': body.style.fontFamily, '--font-heading-family': heading.style.fontFamily };
   return (
@@ -67,7 +69,7 @@ export default async function RootLayout({ children }) {
         <CartDrawer
           strings={strings(CART_STRINGS)}
           colorScheme={drawer.color_scheme || 'scheme-1'}
-          freeShippingThreshold={threshold}
+          freeShippingThreshold={freeShippingThreshold()}
           upsell={<CartUpsell />}
           recommendations={<CartRecommendations />}
           details={orderDetails('drawer')}

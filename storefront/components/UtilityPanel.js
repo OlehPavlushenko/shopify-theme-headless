@@ -2,7 +2,7 @@
 // header opening a drawer on a manual popover (@ui/dialog) with account, wishlist and compare links
 // (counters by @ui/saved-list), the header's utility menu and the currency / language switchers (Shopify
 // Markets). The same content ends the mobile menu's root panel. Nothing, icon included, when empty.
-import CloseButton from './CloseButton.js';
+import DialogHeader from './DialogHeader.js';
 import Icon from './Icon.js';
 import LocalizationForm from './LocalizationForm.js';
 import { getLocalization, getMenu } from '@/lib/queries.js';
@@ -73,12 +73,7 @@ export default async function UtilityPanel({ settings, inMobileMenu }) {
       </button>
       <div id="UtilityPanel" className="drawer utility-panel" popover="manual" aria-labelledby="UtilityPanel-title">
         <div className="drawer__inner">
-          <div className="drawer__header">
-            <p id="UtilityPanel-title" className="h5">
-              {title}
-            </p>
-            <CloseButton popover="UtilityPanel" />
-          </div>
+          <DialogHeader className="drawer__header" tag="p" title={title} titleId="UtilityPanel-title" popover="UtilityPanel" />
           <div className="drawer__body utility-panel__body">
             <UtilityContent settings={settings} id="UtilityPanel" />
           </div>

@@ -1,4 +1,6 @@
-// Theme setting values as storefront paths and checks (the theme's url settings and schedule-active)
+// Theme setting values as storefront paths and checks (the theme's url settings and schedule-active),
+// and the page number of a paged list
+import { TIME_ZONE } from './env.js';
 
 // "shopify://collections/x" -> "/collections/x" (also products, pages, blogs, search); store URLs -> paths
 export function linkUrl(value) {
@@ -12,9 +14,6 @@ export function linkUrl(value) {
     return value;
   }
 }
-
-// The store's time zone (Settings > General), in which Liquid reads the dates typed in the theme editor
-const TIME_ZONE = process.env.SHOPIFY_TIMEZONE || 'UTC';
 
 // Minutes the zone is ahead of UTC at that moment
 function zoneOffset(time) {
@@ -44,8 +43,12 @@ export function toTime(value) {
   return wall - zoneOffset(wall) * 60000;
 }
 
+// Whether now is between the two dates (either may be blank)
 export function scheduleActive(from, until, now = Date.now()) {
   if (from && toTime(from) > now) return false;
   if (until && toTime(until) <= now) return false;
   return true;
 }
+
+// ?page=<n> of a paged list (blog, collection, search), 1 when missing or invalid
+export const pageParam = (params) => Math.max(1, Number(params.get('page')) || 1);

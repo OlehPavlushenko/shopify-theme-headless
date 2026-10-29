@@ -32,7 +32,7 @@ export default async function ProductList({ section, context = {} }) {
         <ProductCard product={deal} quickAdd={settings.quick_add} sizes="(min-width: 750px) 25vw, 40vw" />
       </div>
       {settings.deal_end && (
-        <div className="deal-card__timer" data-countdown-section>
+        <div className="deal-card__timer" data-countdown-section="">
           <Countdown end={settings.deal_end} label={false} />
         </div>
       )}
@@ -60,12 +60,12 @@ export default async function ProductList({ section, context = {} }) {
             {deal ? (
               <div className="product-list__deal-layout">
                 <div className="product-list__deal">{dealCard}</div>
-                <ul className="scroll-track slider__track" data-slider-track role="list">
+                <ul className="scroll-track slider__track" data-slider-track="" role="list">
                   {cards}
                 </ul>
               </div>
             ) : (
-              <ul className="scroll-track slider__track" data-slider-track role="list">
+              <ul className="scroll-track slider__track" data-slider-track="" role="list">
                 {cards}
               </ul>
             )}
@@ -83,7 +83,7 @@ export default async function ProductList({ section, context = {} }) {
                 {cards}
               </ul>
               {total > 4 && (
-                <button type="button" className="btn btn--outline product-list__more-button" data-show-more>
+                <button type="button" className="btn btn--outline product-list__more-button" data-show-more="">
                   {t('sections.product_list.show_more')}
                 </button>
               )}

@@ -1,4 +1,4 @@
-﻿// Renders the sections of a theme JSON template or section group (lib/theme.js getSections) with their
+// Renders the sections of a theme JSON template or section group (lib/theme.js getSections) with their
 // React counterparts, each in the wrapper Shopify adds (.shopify-section + the schema's class + the
 // group class), so the theme's CSS that relies on it applies. Types without a counterpart yet are skipped.
 // Other props reach every section (context: what the template is about — page, collection, …).
@@ -38,7 +38,7 @@ import Stats from './sections/Stats.js';
 import Timeline from './sections/Timeline.js';
 import TrustBar from './sections/TrustBar.js';
 
-export const SECTIONS = {
+const SECTIONS = {
   'announcement-bar': AnnouncementBar,
   apps: Apps,
   'blog-posts': BlogPosts,

@@ -4,9 +4,12 @@
 import { notFound } from 'next/navigation';
 import JsonLd from '@/components/JsonLd.js';
 import Sections from '@/components/Sections.js';
+import { SITE_URL } from '@/lib/env.js';
 import { blogListing, blogTitle, getArticlePage } from '@/lib/blog.js';
 import { getTemplate } from '@/lib/theme.js';
 
+// The article, or the blog listing, for the URL (the request's queries are memoized: generateMetadata and
+// the page share them)
 async function load(params, searchParams) {
   const { blog, rest = [] } = await params;
   if (rest.length === 1) return { article: await getArticlePage(blog, decodeURIComponent(rest[0])) };
@@ -38,7 +41,6 @@ export async function generateMetadata({ params, searchParams }) {
 export default async function BlogPage({ params, searchParams }) {
   const { article, list } = await load(params, searchParams);
   if (article) {
-    const site = process.env.SITE_URL || '';
     const { article: item, blog } = article;
     return (
       <>
@@ -51,7 +53,7 @@ export default async function BlogPage({ params, searchParams }) {
             datePublished: item.publishedAt,
             author: item.authorV2?.name ? { '@type': 'Person', name: item.authorV2.name } : undefined,
             image: item.image?.url,
-            url: `${site}${blog.url}/${item.handle}`,
+            url: `${SITE_URL}${blog.url}/${item.handle}`,
           }}
         />
       </>

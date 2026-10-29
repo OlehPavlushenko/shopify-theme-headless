@@ -4,15 +4,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import Icon from './Icon.js';
-import Price from './Price.js';
+import { ProductPrice } from './Price.js';
+import { hasOnlyDefaultVariant } from '@/lib/ids.js';
 import { t } from '@/lib/theme.js';
 
 export default function ProductRow({ product, add = false }) {
   const url = `/products/${product.handle}`;
   const image = product.featuredImage;
-  const differentPrices = product.priceRange.minVariantPrice.amount !== product.priceRange.maxVariantPrice.amount;
   const variant = product.selectedOrFirstAvailableVariant;
-  const single = product.variants.nodes.length === 1 && product.options[0]?.optionValues[0]?.name === 'Default Title';
+  const single = hasOnlyDefaultVariant(product);
   return (
     <li className="product-row" data-product-handle={product.handle}>
       <Link href={url} className="frame product-row__media" style={{ '--frame-ratio': 1 }} tabIndex={-1} aria-hidden="true">
@@ -22,11 +22,7 @@ export default function ProductRow({ product, add = false }) {
         <Link href={url} className="product-row__title line-clamp">
           {product.title}
         </Link>
-        <Price
-          price={differentPrices ? product.priceRange.minVariantPrice : (variant?.price ?? product.priceRange.minVariantPrice)}
-          compareAt={variant?.compareAtPrice}
-          from={differentPrices}
-        />
+        <ProductPrice product={product} />
       </div>
       {add &&
         (single && variant ? (

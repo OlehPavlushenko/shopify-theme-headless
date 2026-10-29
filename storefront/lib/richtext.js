@@ -1,6 +1,9 @@
 // A rich_text_field metafield (Shopify's JSON tree) as HTML — what Liquid's metafield_tag outputs
-const escape = (text = '') => text.replace(/[&<>"]/g, (char) => `&#${char.charCodeAt(0)};`);
+import { escapeHtml } from './text.js';
 
+const escape = (text) => escapeHtml(text ?? '');
+
+// One node of the tree, with its children
 function node(item) {
   const inner = (item.children ?? []).map(node).join('');
   switch (item.type) {
@@ -27,6 +30,7 @@ function node(item) {
   }
 }
 
+// The metafield's value (JSON) as HTML; '' when blank or invalid
 export function richTextHtml(value) {
   if (!value) return '';
   try {

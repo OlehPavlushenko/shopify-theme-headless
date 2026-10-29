@@ -21,7 +21,7 @@ export default async function CartUpsell({ modifier }) {
           <SliderNav label={title} />
         </div>
       </div>
-      <ul className="scroll-track slider__track" data-slider-track role="list">
+      <ul className="scroll-track slider__track" data-slider-track="" role="list">
         {products.map((product) => (
           <li key={product.id} data-product-handle={product.handle}>
             <ProductCard

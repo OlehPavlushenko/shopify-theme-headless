@@ -3,10 +3,9 @@
 import Link from 'next/link';
 import Breadcrumbs from '../Breadcrumbs.js';
 import SearchForm from '../SearchForm.js';
+import { escapeHtml } from '@/lib/text.js';
 import { getCollectionsByHandles } from '@/lib/queries.js';
 import { t } from '@/lib/theme.js';
-
-const escapeHtml = (text) => text.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
 export default async function MainSearch({ section, context = {} }) {
   const { settings } = section;

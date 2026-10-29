@@ -11,9 +11,7 @@
 // dispatches cart:add ({ detail: { ok } }, bubbles): the quick view closes on it.
 import { addToCart, buyNow, setDiscountCodes, updateLine } from '@/app/actions.js';
 import { onCart, openDrawer, publish, quantityIn } from './cart-client.js';
-
-const VARIANT = 'gid://shopify/ProductVariant/';
-const gid = (id) => (!id || String(id).startsWith('gid://') ? id : VARIANT + id);
+import { numericId, variantGid as gid } from './ids.js';
 
 class CartItemState extends HTMLElement {
   #abort;
@@ -98,7 +96,7 @@ if (!customElements.get('cart-item-state')) customElements.define('cart-item-sta
 // Variant pickers (product page, quick view), as the theme's cart.js: a value whose variant — with the
 // other current picks — is in the cart gets [data-in-cart] on its label (a check mark, components.css)
 function markPickers(current) {
-  const inCart = new Set(current?.lines.nodes.map((line) => line.merchandise.id.split('/').pop()));
+  const inCart = new Set(current?.lines.nodes.map((line) => numericId(line.merchandise.id)));
   document.querySelectorAll('variant-picker').forEach((picker) => {
     if (!picker.variants) return;
     const selected = picker.selected;
@@ -106,7 +104,7 @@ function markPickers(current) {
       fieldset.querySelectorAll('input').forEach((input) => {
         const options = selected.with(i, input.value);
         const variant = picker.variants.find((item) => item.options.every((value, j) => value === options[j]));
-        input.closest('label').toggleAttribute('data-in-cart', Boolean(variant && inCart.has(String(variant.id))));
+        input.closest('label').toggleAttribute('data-in-cart', Boolean(variant && inCart.has(Number(variant.id))));
       });
     });
   });

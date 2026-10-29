@@ -40,10 +40,11 @@ function loadPrivacy(apiSrc) {
 class CookieBanner extends HTMLElement {
   #abort;
   #privacy;
+  #choices;
 
   async connectedCallback() {
     const { signal } = (this.#abort = new AbortController());
-    this.choices = this.querySelector('[data-cookie-choices]');
+    this.#choices = this.querySelector('[data-cookie-choices]');
     this.addEventListener('click', this.#onClick, { signal });
 
     if (window.Shopify?.designMode) {
@@ -78,7 +79,7 @@ class CookieBanner extends HTMLElement {
 
   // Preferences open: the switches, then Accept + Save choices (Decline and the toggle step aside)
   #manage(show) {
-    this.choices.hidden = !show;
+    this.#choices.hidden = !show;
     this.querySelector('[data-consent="save"]').hidden = !show;
     this.querySelector('[data-consent="decline"]').hidden = show;
     const toggle = this.querySelector('[data-consent="manage"]');
@@ -89,10 +90,10 @@ class CookieBanner extends HTMLElement {
   #onClick = (event) => {
     const action = event.target.closest('[data-consent]')?.dataset.consent;
     if (!action) return;
-    if (action === 'manage') return this.#manage(this.choices.hidden);
+    if (action === 'manage') return this.#manage(this.#choices.hidden);
     const all = action === 'accept';
     const consent = Object.fromEntries(
-      PURPOSES.map((purpose) => [purpose, action === 'save' ? this.choices.elements[purpose].checked : all])
+      PURPOSES.map((purpose) => [purpose, action === 'save' ? this.#choices.elements[purpose].checked : all])
     );
     // The sale of data follows marketing
     consent.sale_of_data = consent.marketing;

@@ -1,29 +1,23 @@
-﻿// theme/sections/footer.liquid: columns are blocks in the editor's order — brand (logo, text, social),
+// theme/sections/footer.liquid: columns are blocks in the editor's order — brand (logo, text, social),
 // menu, contacts, products, articles — accordions on phones (<site-footer>, @ui/footer); bottom row with
 // copyright, policies, payment icons and "Back to top".
 import Image from 'next/image';
 import Link from 'next/link';
 import Icon from '../Icon.js';
-import { payment } from '@/lib/icons.js';
-import { storefront } from '@/lib/shopify.js';
 import ProductRow from '../ProductRow.js';
 import ThemeImage from '../ThemeImage.js';
 import { SocialLinks, StoreContacts } from '../StoreContacts.js';
-import { getArticles, getCollection, getMenu, getProductsByHandles, getShell } from '@/lib/queries.js';
+import { payment } from '@/lib/icons.js';
+import { getArticles, getCollection, getMenu, getPaymentMethods, getProductsByHandles, getShell } from '@/lib/queries.js';
 import { localPath } from '@/lib/shopify.js';
+import { formatDate } from '@/lib/text.js';
 import { getSettings, t } from '@/lib/theme.js';
-
-const formatDate = (iso) => new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(new Date(iso));
 
 // Payment icons, drawn by the theme's snippets/payment-icon: the store's card brands and wallets (Storefront
 // API, as shop.enabled_payment_types), else the methods listed in the "Payment icons" setting
 const PAYMENT_NAMES = { MASTERCARD: 'master', SHOPIFY_PAY: 'shopify_pay' };
 async function PaymentIcons({ settings }) {
-  const data = await storefront(`{ shop { paymentSettings { acceptedCardBrands supportedDigitalWallets } } }`, {}, { revalidate: 3600 });
-  const enabled = [
-    ...(data?.shop.paymentSettings.acceptedCardBrands ?? []),
-    ...(data?.shop.paymentSettings.supportedDigitalWallets ?? []),
-  ].map((code) => PAYMENT_NAMES[code] ?? code.toLowerCase());
+  const enabled = (await getPaymentMethods()).map((code) => PAYMENT_NAMES[code] ?? code.toLowerCase());
   const names = (enabled.length ? enabled : (settings.payment_icons ?? '').split(',').map((name) => name.trim())).filter(
     (name) => payment[name]
   );
@@ -49,7 +43,7 @@ async function PaymentIcons({ settings }) {
 
 function Column({ heading, children }) {
   return (
-    <details className="site-footer__column" data-footer-column open>
+    <details className="site-footer__column" data-footer-column="" open>
       <summary className="site-footer__heading eyebrow">
         {heading}
         <Icon name="chevron-down" />
@@ -209,7 +203,7 @@ export default async function Footer({ section }) {
         )}
         {settings.show_payment_icons && <PaymentIcons settings={settings} />}
         {settings.show_back_to_top && (
-          <a href="#" className="site-footer__top" data-back-to-top>
+          <a href="#" className="site-footer__top" data-back-to-top="">
             {t('general.back_to_top')}
             <Icon name="arrow-right" />
           </a>

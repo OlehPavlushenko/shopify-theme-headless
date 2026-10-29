@@ -6,6 +6,7 @@ import ProductCard from '@/components/ProductCard.js';
 import SliderNav from '@/components/SliderNav.js';
 import { predictiveArticles } from '@/lib/blog.js';
 import { predictiveSearch } from '@/lib/queries.js';
+import { escapeHtml } from '@/lib/text.js';
 import { t } from '@/lib/theme.js';
 
 // resources[type]=article (the blog search field): the matching articles alone, as links
@@ -122,8 +123,4 @@ export default async function PredictiveSearch({ searchParams }) {
       )}
     </div>
   );
-}
-
-function escapeHtml(text) {
-  return text.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 }

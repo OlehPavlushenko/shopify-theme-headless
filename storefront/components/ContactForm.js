@@ -3,14 +3,15 @@
 // has no Shopify contact form to fall back to: without Theme settings > Integrations > API URL nothing renders.
 // Fields: the contact fields (name, email, [phone], message) by default, or `fields`.
 import { iconHtml } from './Icon.js';
+import { escapeHtml } from '@/lib/text.js';
 import { getSettings, t } from '@/lib/theme.js';
 
-// The success notice as an HTML string: a <template>'s children live in template.content, so React
-// renders them through dangerouslySetInnerHTML to hydrate
-const escapeHtml = (text) => text.replace(/[&<>"]/g, (char) => `&#${char.charCodeAt(0)};`);
+// The success notice (snippets/form-success) as an HTML string: a <template>'s children live in
+// template.content, so React renders them through dangerouslySetInnerHTML to hydrate
 const successHtml = (text) => `<p class="notice notice--success" role="status" tabindex="-1">${iconHtml('check')}${escapeHtml(text)}</p>`;
 
-export function ContactFields({ idPrefix = 'ContactForm', showPhone, columns, messageLabel, rows = 6 }) {
+// snippets/contact-fields
+function ContactFields({ idPrefix = 'ContactForm', showPhone, columns, messageLabel, rows = 6 }) {
   const nameEmail = (
     <>
       <div className="field">

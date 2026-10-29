@@ -6,19 +6,13 @@ import Link from 'next/link';
 import CartCount from '../CartCount.js';
 import Icon from '../Icon.js';
 import MegaSlider from '../MegaSlider.js';
-import PromoCard from '../PromoCard.js';
+import PromoCard, { promoCardProps } from '../PromoCard.js';
 import ThemeImage from '../ThemeImage.js';
 import UtilityPanel, { UtilityContent, hasUtility } from '../UtilityPanel.js';
+import { handleize } from '@/lib/blog.js';
 import { getMenu } from '@/lib/queries.js';
 import { localPath } from '@/lib/shopify.js';
 import { getSettings, t } from '@/lib/theme.js';
-
-const handleize = (text = '') =>
-  text
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
 
 // Desktop navigation: snippets/site-nav.liquid
 function SiteNav({ menu, blocks }) {
@@ -27,7 +21,7 @@ function SiteNav({ menu, blocks }) {
       <nav aria-label={t('accessibility.menu')}>
         <ul className="site-nav__list" role="list">
           {menu.map((link, index) => {
-            const extras = blocks.filter((block) => handleize(block.settings.menu_item) === handleize(link.title));
+            const extras = blocks.filter((block) => handleize(block.settings.menu_item ?? '') === handleize(link.title));
             const hasMenu = link.items.length > 0 || extras.length > 0;
             const isMega = extras.length > 0 || link.items.some((child) => child.items.length > 0);
             const panelId = `SiteNavPanel-${index + 1}`;
@@ -80,12 +74,7 @@ function SiteNav({ menu, blocks }) {
                                 block.type === 'menu_promo' ? (
                                   <PromoCard
                                     key={block.id}
-                                    url={block.settings.button_link}
-                                    image={block.settings.image}
-                                    eyebrow={block.settings.eyebrow}
-                                    heading={block.settings.heading}
-                                    text={block.settings.text}
-                                    linkLabel={block.settings.button_label}
+                                    {...promoCardProps(block.settings)}
                                     layout={block.settings.layout}
                                     ratio="4 / 5"
                                     sizes="(min-width: 990px) 280px, 100vw"
@@ -148,7 +137,7 @@ function MobileMenu({ menu, utility }) {
       {parents.map((item) => (
         <div key={item.id} className="mobile-nav__panel" data-panel={`MenuPanel-${item.id}`} hidden>
           <div className="mobile-nav__head">
-            <button type="button" className="mobile-nav__back" data-panel-back aria-label={`${t('accessibility.back')}: ${item.title}`}>
+            <button type="button" className="mobile-nav__back" data-panel-back="" aria-label={`${t('accessibility.back')}: ${item.title}`}>
               <Icon name="chevron-left" />
               {item.title}
             </button>

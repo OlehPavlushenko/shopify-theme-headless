@@ -5,6 +5,16 @@ import Icon from './Icon.js';
 import ThemeImage from './ThemeImage.js';
 import { linkUrl } from '@/lib/links.js';
 
+// The card's content props from a promo block's settings (promo grid, menu promo, the promo tile in grids)
+export const promoCardProps = (settings) => ({
+  url: settings.button_link,
+  image: settings.image,
+  eyebrow: settings.eyebrow,
+  heading: settings.heading,
+  text: settings.text,
+  linkLabel: settings.button_label,
+});
+
 export default function PromoCard({
   url,
   image,

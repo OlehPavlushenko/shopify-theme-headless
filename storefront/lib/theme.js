@@ -7,6 +7,8 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cache } from 'react';
 import { admin } from './admin.js';
+import { format } from './format.js';
+import { numericId } from './ids.js';
 import { storefront } from './shopify.js';
 
 const THEME = join(process.cwd(), '..', 'theme');
@@ -88,6 +90,12 @@ export function getTemplate(name, suffix) {
   return { suffix: '', sections: getSections(`templates/${name}.json`) };
 }
 
+// A template's sections and its main section (the first of that type, e.g. main-collection)
+export function findSection(name, type, suffix) {
+  const { sections } = getTemplate(name, suffix);
+  return { sections, section: sections.find((item) => item.type === type) };
+}
+
 // The cart's order details fields: the note setting and the attribute blocks of the cart drawer section
 // (saved in settings_data) or of the cart page's main-cart section (templates/cart.json)
 export function orderDetails(where = 'drawer') {
@@ -97,20 +105,27 @@ export function orderDetails(where = 'drawer') {
     const saved = settings.sections?.['cart-drawer'];
     section = saved && resolveSection('cart-drawer', saved);
   } else {
-    section = getTemplate('cart').sections.find((item) => item.type === 'main-cart');
+    section = findSection('cart', 'main-cart').section;
   }
   const fields = (section?.blocks ?? []).map((block) => ({ id: block.id, type: block.type, ...block.settings }));
   return { showNote: settings.show_cart_note !== false, fields };
 }
 
+// The free shipping bar's goal (Theme settings > Cart), 0 when the bar is off
+export function freeShippingThreshold() {
+  const settings = getSettings();
+  return settings.show_free_shipping !== false ? Number(settings.free_shipping_threshold) || 0 : 0;
+}
+
 // Storefront strings: {{ 'key' | t: name: value }} from locales/en.default.json
-const locale = cache(() => readJSON('locales/en.default.json'));
+const translations = cache(() => readJSON('locales/en.default.json'));
+const lookup = (key) => key.split('.').reduce((node, part) => node?.[part], translations());
 
 export function t(key, values = {}) {
-  let text = key.split('.').reduce((node, part) => node?.[part], locale());
+  let text = lookup(key);
   if (text && typeof text === 'object') text = values.count === 1 ? text.one : text.other;
   if (typeof text !== 'string') return key;
-  return text.replace(/{{\s*(\w+)\s*}}/g, (_, name) => values[name] ?? '');
+  return format(text, values);
 }
 
 // Storefront strings for client components, as { key: template } ({{ name }} placeholders kept; plurals:
@@ -118,7 +133,7 @@ export function t(key, values = {}) {
 export function strings(keys) {
   return Object.fromEntries(
     keys.map((key) => {
-      const node = key.split('.').reduce((value, part) => value?.[part], locale());
+      const node = lookup(key);
       return [key, typeof node === 'object' ? node?.other : (node ?? key)];
     })
   );
@@ -128,10 +143,11 @@ export function strings(keys) {
 // /s/files/1/<shop id, 12 digits as 4/4/4>/files/<name>
 const filesBase = cache(async () => {
   const data = await storefront('{ shop { id } }', {}, { revalidate: 86400 });
-  const id = data?.shop.id.split('/').pop().padStart(12, '0');
+  const id = data && String(numericId(data.shop.id)).padStart(12, '0');
   return id ? `https://cdn.shopify.com/s/files/1/${id.slice(0, 4)}/${id.slice(4, 8)}/${id.slice(8)}/files/` : null;
 });
 
+// A theme image setting as its CDN URL (null when blank or unknown)
 export async function imageUrl(value) {
   if (!value || typeof value !== 'string') return null;
   if (value.startsWith('http')) return value;

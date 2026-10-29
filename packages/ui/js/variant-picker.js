@@ -39,10 +39,11 @@ export function variantTitle(variant) {
 
 class VariantPicker extends HTMLElement {
   #abort;
+  #fieldsets = [];
 
   connectedCallback() {
     this.variants = JSON.parse(this.querySelector('[data-variants]').textContent);
-    this.fieldsets = [...this.querySelectorAll('fieldset')];
+    this.#fieldsets = [...this.querySelectorAll('fieldset')];
     const { signal } = (this.#abort = new AbortController());
     this.addEventListener('change', this.#onChange, { signal });
     this.#update(false);
@@ -56,7 +57,7 @@ class VariantPicker extends HTMLElement {
   #onChange = (event) => this.#pick(event.target);
 
   get selected() {
-    return this.fieldsets.map((fieldset) => fieldset.querySelector('input:checked')?.value);
+    return this.#fieldsets.map((fieldset) => fieldset.querySelector('input:checked')?.value);
   }
 
   #find(options) {
@@ -64,13 +65,13 @@ class VariantPicker extends HTMLElement {
   }
 
   #pick(input) {
-    const index = this.fieldsets.findIndex((fieldset) => fieldset.contains(input));
+    const index = this.#fieldsets.findIndex((fieldset) => fieldset.contains(input));
     const options = this.selected;
     if (!this.#find(options)) {
       const score = (variant) => (variant.available ? 10 : 0) + variant.options.filter((value, i) => value === options[i]).length;
       const closest = this.variants.filter((variant) => variant.options[index] === options[index]).sort((a, b) => score(b) - score(a))[0];
       closest?.options.forEach((value, i) => {
-        const radio = [...this.fieldsets[i].querySelectorAll('input')].find((item) => item.value === value);
+        const radio = [...this.#fieldsets[i].querySelectorAll('input')].find((item) => item.value === value);
         if (radio) radio.checked = true;
       });
     }
@@ -79,7 +80,7 @@ class VariantPicker extends HTMLElement {
 
   #update(notify) {
     const options = this.selected;
-    this.fieldsets.forEach((fieldset, i) => {
+    this.#fieldsets.forEach((fieldset, i) => {
       fieldset.querySelector('[data-selected-value]').textContent = options[i] ?? '';
       fieldset.querySelectorAll('input').forEach((input) => {
         const match = this.#find(options.with(i, input.value));

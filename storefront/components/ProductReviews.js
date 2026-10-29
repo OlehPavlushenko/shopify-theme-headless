@@ -3,15 +3,12 @@
 // average and count, "Write a review" (a popup, components/ReviewForm.js), the reviews with stars
 // (.rating, as on the cards), reviewer, date, title and text. id judgeme_product_reviews: the rating
 // under the product title links here. Styles: .product-reviews in product.css.
-import CloseButton from './CloseButton.js';
+import Popup from './Popup.js';
 import ReviewForm from './ReviewForm.js';
 import { judgeMeReviews } from '@/lib/admin.js';
+import { numericId } from '@/lib/ids.js';
+import { formatDate } from '@/lib/text.js';
 import { t } from '@/lib/theme.js';
-
-const formatDate = (iso) =>
-  new Intl.DateTimeFormat('en-US', { month: '2-digit', day: '2-digit', year: 'numeric', timeZone: process.env.SHOPIFY_TIMEZONE }).format(
-    new Date(iso)
-  );
 
 export default async function ProductReviews({ product }) {
   const data = await judgeMeReviews(product.id);
@@ -63,7 +60,7 @@ export default async function ProductReviews({ product }) {
                 <span>
                   <span className="product-reviews__name">{review.reviewer_name}</span>
                   <time className="product-reviews__date" dateTime={review.created_at}>
-                    {formatDate(review.created_at)}
+                    {formatDate(review.created_at, 'numeric')}
                   </time>
                 </span>
               </div>
@@ -74,19 +71,11 @@ export default async function ProductReviews({ product }) {
         </ol>
       )}
 
-      <dialog className="popup" id={formId} aria-labelledby={`${formId}-title`}>
-        <div className="popup__inner">
-          <div className="popup__header">
-            <h2 id={`${formId}-title`} className="h5">
-              {t('reviews.write')}
-            </h2>
-            <CloseButton />
-          </div>
-          <div className="popup__body">
-            <ReviewForm productId={product.id.split('/').pop()} labels={labels} />
-          </div>
+      <Popup id={formId} title={t('reviews.write')}>
+        <div className="popup__body">
+          <ReviewForm productId={numericId(product.id)} labels={labels} />
         </div>
-      </dialog>
+      </Popup>
     </section>
   );
 }

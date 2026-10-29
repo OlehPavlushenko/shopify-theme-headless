@@ -3,13 +3,13 @@
 import { notFound } from 'next/navigation';
 import MainCollection from '@/components/sections/MainCollection.js';
 import { getCollectionPage } from '@/lib/collection.js';
-import { getTemplate } from '@/lib/theme.js';
+import { findSection } from '@/lib/theme.js';
 
 export default async function CollectionSection({ params, searchParams }) {
-  const { handle } = await params;
-  const section = getTemplate('collection').sections.find((item) => item.type === 'main-collection');
+  const [{ handle }, query] = await Promise.all([params, searchParams]);
+  const { section } = findSection('collection', 'main-collection');
   if (!section) notFound();
-  const listing = await getCollectionPage(handle, new URLSearchParams(await searchParams), { perPage: section.settings.products_per_page });
+  const listing = await getCollectionPage(handle, new URLSearchParams(query), { perPage: section.settings.products_per_page });
   if (!listing) notFound();
   return <MainCollection section={section} context={{ listing }} />;
 }

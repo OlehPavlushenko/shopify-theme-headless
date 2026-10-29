@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 // The cart's lines, promo codes and totals, as theme/snippets/cart-line-item, cart-discount and
 // cart-summary — shared by the cart drawer and the cart page. Changes go through the server actions
 // (app/actions.js), which return the new cart: onChange(cart) renders it and cart:changed tells the
@@ -11,12 +11,9 @@ import Price from './Price.js';
 import Swatch, { isColorOption } from './Swatch.js';
 import { setCartAttributes, setCartNote, setDiscountCodes, updateLine } from '@/app/actions.js';
 import { publish } from '@/lib/cart-client.js';
-import { format, formatMoney } from '@/lib/format.js';
+import { discountOf, format, formatMoney } from '@/lib/format.js';
 
 const money = (amount, currencyCode) => ({ amount, currencyCode });
-
-// Tells the rest of the page (header count, drawer, quick add) about the new cart
-export const announce = publish;
 
 // Free-shipping progress: theme/snippets/cart-free-shipping.liquid (threshold in the store currency)
 export function FreeShipping({ cart, threshold, strings }) {
@@ -179,7 +176,7 @@ function Line({ line, strings, run }) {
   const options = variant.selectedOptions.filter((option) => option.value !== 'Default Title');
   const compareAt = line.cost.compareAtAmountPerQuantity;
   const sale = compareAt && Number(compareAt.amount) > Number(line.cost.amountPerQuantity.amount);
-  const discount = sale ? Math.round((1 - Number(line.cost.amountPerQuantity.amount) / Number(compareAt.amount)) * 100) : 0;
+  const discount = discountOf(line.cost.amountPerQuantity, compareAt);
   const setQuantity = (quantity) => run(() => updateLine(line.id, quantity));
   return (
     <li className="cart-line">
@@ -207,15 +204,18 @@ function Line({ line, strings, run }) {
         </div>
         {options.length > 0 && (
           <dl className="cart-line__options">
-            {options.map((option) => (
-              <div key={option.name} className="cart-line__option">
-                <dt>{option.name}:</dt>
-                <dd>
-                  {swatchOf(variant.product, option) && <Swatch value={swatchOf(variant.product, option)} className="cart-line__swatch" />}
-                  {option.value}
-                </dd>
-              </div>
-            ))}
+            {options.map((option) => {
+              const swatch = swatchOf(variant.product, option);
+              return (
+                <div key={option.name} className="cart-line__option">
+                  <dt>{option.name}:</dt>
+                  <dd>
+                    {swatch && <Swatch value={swatch} className="cart-line__swatch" />}
+                    {option.value}
+                  </dd>
+                </div>
+              );
+            })}
           </dl>
         )}
         <div className="cart-line__actions">
@@ -371,7 +371,8 @@ export default function CartContents({ cart, strings, layout = 'drawer', onChang
       const next = await action();
       if (next) {
         onChange(next);
-        announce(next);
+        // Tells the rest of the page (header count, drawer, quick add) about the new cart
+        publish(next);
       }
     });
   const lines = cart?.lines.nodes ?? [];

@@ -12,7 +12,7 @@ export default async function BlogPosts({ section }) {
       <div className="page-width">
         <ui-slider class="slider" style={{ '--slider-columns': settings.columns, '--slider-columns-mobile': 1.2 }}>
           <SectionHead heading={settings.heading} linkLabel={settings.link_label} link={`/blogs/${handle}`} nav />
-          <ul className="scroll-track slider__track" data-slider-track role="list">
+          <ul className="scroll-track slider__track" data-slider-track="" role="list">
             {articles.map((article) => (
               <li key={article.handle}>
                 <ArticleCard

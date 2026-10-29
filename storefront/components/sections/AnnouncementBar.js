@@ -16,11 +16,11 @@ export default function AnnouncementBar({ section }) {
         aria-label={t('sections.announcements.label')}
       >
         {several && (
-          <button type="button" className="announcement-bar__arrow" data-slider-prev aria-label={t('general.slider.previous')}>
+          <button type="button" className="announcement-bar__arrow" data-slider-prev="" aria-label={t('general.slider.previous')}>
             <Icon name="chevron-left" />
           </button>
         )}
-        <ul className="scroll-track announcement-bar__track" data-slider-track role="list">
+        <ul className="scroll-track announcement-bar__track" data-slider-track="" role="list">
           {blocks.map((block) => (
             <li key={block.id} className="announcement-bar__item">
               {block.settings.link ? (
@@ -36,7 +36,7 @@ export default function AnnouncementBar({ section }) {
           ))}
         </ul>
         {several && (
-          <button type="button" className="announcement-bar__arrow" data-slider-next aria-label={t('general.slider.next')}>
+          <button type="button" className="announcement-bar__arrow" data-slider-next="" aria-label={t('general.slider.next')}>
             <Icon name="chevron-right" />
           </button>
         )}

@@ -11,27 +11,27 @@ import CloseButton from '../CloseButton.js';
 import ContactForm from '../ContactForm.js';
 import Countdown from '../Countdown.js';
 import Icon from '../Icon.js';
+import Popup from '../Popup.js';
 import Price from '../Price.js';
 import ProductRow from '../ProductRow.js';
 import Rating from '../Rating.js';
 import SavedToggles from '../SavedToggles.js';
-import VariantPickerInputs, { numericId } from '../VariantPickerInputs.js';
-import { getPage } from '@/lib/queries.js';
+import VariantPickerInputs from '../VariantPickerInputs.js';
+import { SITE_URL } from '@/lib/env.js';
+import { discountOf, formatMoney, moneyFormat } from '@/lib/format.js';
+import { hasOnlyDefaultVariant, numericId } from '@/lib/ids.js';
 import { getProductRecommendations } from '@/lib/product.js';
-import { formatMoney, moneyFormat } from '@/lib/format.js';
+import { getPage } from '@/lib/queries.js';
 import { getSettings, t } from '@/lib/theme.js';
 
 const MEDIA_SIZES = { grid: '(min-width: 990px) 28vw, 100vw', stacked: '(min-width: 990px) 55vw, 100vw' };
-const SITE = process.env.SITE_URL || '';
 
 // The vendor's and the type's products: Shopify's automatic collections, as link_to_vendor / link_to_type
 const vendorUrl = (vendor) => `/collections/vendors?q=${encodeURIComponent(vendor)}`;
 const typeUrl = (type) => `/collections/types?q=${encodeURIComponent(type)}`;
 
-function discountOf(variant) {
-  const sale = variant.compareAtPrice && Number(variant.compareAtPrice.amount) > Number(variant.price.amount);
-  return sale ? Math.round((1 - Number(variant.price.amount) / Number(variant.compareAtPrice.amount)) * 100) : 0;
-}
+// The product with the picked variant ("Cream / 50 ml"), as the forms send it (back in stock, ask a question)
+const variantLabel = (product, variant) => (hasOnlyDefaultVariant(product) ? product.title : `${product.title} / ${variant.title}`);
 
 function Gallery({ product, layout, ratio, discount }) {
   const media = product.media.nodes;
@@ -163,7 +163,6 @@ function BuyButtons({ block, product, variant, formId, sectionId }) {
   const theme = getSettings();
   const state = variant.availableForSale ? 'in' : 'out';
   const labels = { in: t('products.stock_in'), low: t('products.stock_low', { count: '%n' }), out: t('products.sold_out') };
-  const single = product.variants.nodes.length === 1 && variant.title === 'Default Title';
   return (
     <div className="main-product__buy">
       {s.show_stock && (
@@ -225,12 +224,7 @@ function BuyButtons({ block, product, variant, formId, sectionId }) {
                 <p className="stock-notify__text">{t('products.notify.text')}</p>
                 <variant-fields data-product={product.title}>
                   <input type="hidden" name="variant" value={numericId(variant.id)} data-variant-id="" />
-                  <input
-                    type="hidden"
-                    name="product"
-                    value={single ? product.title : `${product.title} / ${variant.title}`}
-                    data-variant-title=""
-                  />
+                  <input type="hidden" name="product" value={variantLabel(product, variant)} data-variant-title="" />
                 </variant-fields>
                 <p className="form-errors" role="alert" data-contact-message="" />
                 <div className="search-form stock-notify__row">
@@ -302,8 +296,7 @@ function QuantityBreaks({ block, variant, formId, sectionId, hasStepper }) {
 
 async function InfoLinks({ block, product, variant }) {
   const s = block.settings;
-  const single = product.variants.nodes.length === 1 && variant.title === 'Default Title';
-  const askProduct = single ? product.title : `${product.title} / ${variant.title}`;
+  const askProduct = variantLabel(product, variant);
   const pages = await Promise.all([1, 2, 3].map((i) => (s[`page_${i}`] && s[`label_${i}`] ? getPage(s[`page_${i}`]) : null)));
   const askId = `Ask-${block.id}`;
   return (
@@ -319,17 +312,9 @@ async function InfoLinks({ block, product, variant }) {
               {s[`label_${i}`]}
             </a>
             {page.body && (
-              <dialog className="popup" id={popupId} aria-labelledby={`${popupId}-title`}>
-                <div className="popup__inner">
-                  <div className="popup__header">
-                    <h2 id={`${popupId}-title`} className="h5">
-                      {page.title}
-                    </h2>
-                    <CloseButton />
-                  </div>
-                  <div className="popup__body rte" dangerouslySetInnerHTML={{ __html: page.body }} />
-                </div>
-              </dialog>
+              <Popup id={popupId} title={page.title}>
+                <div className="popup__body rte" dangerouslySetInnerHTML={{ __html: page.body }} />
+              </Popup>
             )}
           </Fragment>
         );
@@ -340,33 +325,25 @@ async function InfoLinks({ block, product, variant }) {
             <Icon name="chat" />
             {t('products.ask.title')}
           </button>
-          <dialog className="popup" id={askId} aria-labelledby={`${askId}-title`}>
-            <div className="popup__inner">
-              <div className="popup__header">
-                <h2 id={`${askId}-title`} className="h5">
-                  {t('products.ask.title')}
-                </h2>
-                <CloseButton />
-              </div>
-              <div className="popup__body">
-                <ContactForm
-                  formId={`${askId}-form`}
-                  formClass="ask-form"
-                  idPrefix={askId}
-                  messageLabel={t('products.ask.question')}
-                  rows={5}
-                  intro={
-                    <variant-fields data-product={product.title}>
-                      <p className="ask-form__about">
-                        {t('products.ask.about')} <strong data-variant-title="">{askProduct}</strong>
-                      </p>
-                      <input type="hidden" name="subject" value={askProduct} data-variant-title="" />
-                    </variant-fields>
-                  }
-                />
-              </div>
+          <Popup id={askId} title={t('products.ask.title')}>
+            <div className="popup__body">
+              <ContactForm
+                formId={`${askId}-form`}
+                formClass="ask-form"
+                idPrefix={askId}
+                messageLabel={t('products.ask.question')}
+                rows={5}
+                intro={
+                  <variant-fields data-product={product.title}>
+                    <p className="ask-form__about">
+                      {t('products.ask.about')} <strong data-variant-title="">{askProduct}</strong>
+                    </p>
+                    <input type="hidden" name="subject" value={askProduct} data-variant-title="" />
+                  </variant-fields>
+                }
+              />
             </div>
-          </dialog>
+          </Popup>
         </>
       )}
     </div>
@@ -458,7 +435,7 @@ function Block({ block, product, variant, formId, sectionId, buyBlock, discount,
         />
       ) : null;
     case 'variant_picker':
-      return product.variants.nodes.length > 1 || variant.title !== 'Default Title' ? (
+      return !hasOnlyDefaultVariant(product) ? (
         <div className="main-product__picker">
           <VariantPickerInputs product={product} selected={variant} id={sectionId} />
         </div>
@@ -551,7 +528,7 @@ function Block({ block, product, variant, formId, sectionId, buyBlock, discount,
       return (
         <share-button
           class="main-product__share"
-          data-url={`${SITE}/products/${product.handle}`}
+          data-url={`${SITE_URL}/products/${product.handle}`}
           data-title={product.title}
           data-copied={t('products.link_copied')}
         >
@@ -575,9 +552,9 @@ export default function MainProduct({ section, context = {} }) {
   const formId = `ProductForm-${section.id}`;
   const buyBlock = blocks.find((block) => block.type === 'buy_buttons');
   const titleBlock = blocks.find((block) => block.type === 'title');
-  const discount = discountOf(variant);
+  const discount = discountOf(variant.price, variant.compareAtPrice);
   const images = product.media.nodes.filter((item) => item.mediaContentType === 'IMAGE');
-  const single = product.variants.nodes.length === 1 && variant.title === 'Default Title';
+  const single = hasOnlyDefaultVariant(product);
   const currency = variant.price.currencyCode;
 
   return (
@@ -590,9 +567,11 @@ export default function MainProduct({ section, context = {} }) {
       data-label-sold-out={t('products.sold_out')}
       data-label-unavailable={t('products.unavailable')}
     >
+      {/* Home / product (snippets/breadcrumbs: the collection only when the product is opened from one,
+          which a /products/<handle> URL here never is), with its BreadcrumbList data */}
       {settings.breadcrumbs && (
         <div className="page-width main-product__crumbs">
-          <BreadcrumbsTrail product={product} />
+          <Breadcrumbs current={product.title} />
         </div>
       )}
       <div className="page-width main-product__inner">
@@ -677,10 +656,4 @@ export default function MainProduct({ section, context = {} }) {
       )}
     </product-info>
   );
-}
-
-// Home / product (snippets/breadcrumbs: the collection only when the product is opened from one, which a
-// /products/<handle> URL here never is), with its BreadcrumbList data
-function BreadcrumbsTrail({ product }) {
-  return <Breadcrumbs current={product.title} />;
 }

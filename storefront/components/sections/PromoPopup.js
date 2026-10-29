@@ -3,15 +3,16 @@
 // often: <promo-popup> (@ui/promo-popup); the wheel: <spin-wheel> (@ui/spin-wheel). Pages ("home" /
 // "not on the cart page") are checked in the browser (UiScripts), as the layout is shared.
 import { createHmac } from 'node:crypto';
+import CloseButton from '../CloseButton.js';
+import Countdown from '../Countdown.js';
 import Icon from '../Icon.js';
 import NewsletterForm from '../NewsletterForm.js';
 import ProductCard from '../ProductCard.js';
 import SectionIntro from '../SectionIntro.js';
-import CloseButton from '../CloseButton.js';
-import Countdown from '../Countdown.js';
 import ThemeImage from '../ThemeImage.js';
-import { getProductsByHandles } from '@/lib/queries.js';
 import { linkUrl, scheduleActive } from '@/lib/links.js';
+import { getProductsByHandles } from '@/lib/queries.js';
+import { scriptJson } from '@/lib/text.js';
 import { getSettings, t } from '@/lib/theme.js';
 
 function Wheel({ section, block }) {
@@ -51,7 +52,7 @@ function Wheel({ section, block }) {
     >
       <div className="spin-wheel__stage" aria-hidden="true">
         <span className="spin-wheel__pointer" />
-        <div className="spin-wheel__disc" data-wheel-disc style={{ '--segments': count, background: `conic-gradient(${stops})` }}>
+        <div className="spin-wheel__disc" data-wheel-disc="" style={{ '--segments': count, background: `conic-gradient(${stops})` }}>
           {prizes.map((prize, i) => {
             const onColor = i % 2 === 1 || (odd && i === count - 1);
             // On the left half the text turns over so it reads the right way up
@@ -74,12 +75,12 @@ function Wheel({ section, block }) {
       <p className="visually-hidden">
         {t('wheel.prizes')}: {prizes.map((prize) => prize.label).join(', ')}
       </p>
-      <script type="application/json" data-wheel-prizes dangerouslySetInnerHTML={{ __html: raw.replace(/</g, '\\u003c') }} />
+      <script type="application/json" data-wheel-prizes="" dangerouslySetInnerHTML={{ __html: scriptJson(raw) }} />
 
       <div className="spin-wheel__action">
         {api ? (
           <>
-            <form className="newsletter-form__form" data-wheel-form noValidate>
+            <form className="newsletter-form__form" data-wheel-form="" noValidate>
               <div className="newsletter-form__row">
                 <span className="newsletter-form__field">
                   <Icon name="mail" />
@@ -98,13 +99,13 @@ function Wheel({ section, block }) {
                   {block.settings.button_label}
                 </button>
               </div>
-              <p className="form-error newsletter-form__message" id={messageId} data-wheel-message aria-live="polite" />
+              <p className="form-error newsletter-form__message" id={messageId} data-wheel-message="" aria-live="polite" />
             </form>
             {note}
           </>
         ) : (
           <>
-            <button type="button" className="btn btn--full" data-wheel-spin>
+            <button type="button" className="btn btn--full" data-wheel-spin="">
               {block.settings.button_label}
             </button>
             {note}
@@ -112,18 +113,18 @@ function Wheel({ section, block }) {
         )}
       </div>
 
-      <div className="spin-wheel__result" data-wheel-result role="status" tabIndex={-1} hidden>
+      <div className="spin-wheel__result" data-wheel-result="" role="status" tabIndex={-1} hidden>
         <p className="eyebrow">{t('wheel.won')}</p>
-        <p className="h3 spin-wheel__prize" data-wheel-prize />
+        <p className="h3 spin-wheel__prize" data-wheel-prize="" />
         <div className="spin-wheel__code">
-          <code data-wheel-code />
-          <button type="button" className="btn btn--outline btn--sm" data-wheel-copy data-copied={t('wheel.copied')}>
+          <code data-wheel-code="" />
+          <button type="button" className="btn btn--outline btn--sm" data-wheel-copy="" data-copied={t('wheel.copied')}>
             {t('wheel.copy')}
           </button>
         </div>
         <p
           className="spin-wheel__note"
-          data-wheel-note
+          data-wheel-note=""
           data-applying={t('wheel.applying')}
           data-applied={t('wheel.applied')}
           data-failed={t('wheel.failed')}
@@ -141,7 +142,7 @@ async function Products({ block }) {
   return (
     <ui-slider class="slider promo-popup__products">
       {block.settings.heading && <p className="eyebrow">{block.settings.heading}</p>}
-      <ul className="scroll-track slider__track" data-slider-track role="list">
+      <ul className="scroll-track slider__track" data-slider-track="" role="list">
         {products.map((product) => (
           <li key={product.id}>
             <ProductCard product={product} actions={false} quickAdd secondImage={false} headingTag="p" sizes="160px" />
@@ -205,7 +206,7 @@ export default function PromoPopup({ section }) {
                 }
                 case 'countdown':
                   return s.end ? (
-                    <p key={block.id} className="promo-popup__countdown" data-countdown-section>
+                    <p key={block.id} className="promo-popup__countdown" data-countdown-section="">
                       <Countdown end={s.end} />
                     </p>
                   ) : null;

@@ -1,7 +1,22 @@
+{%- comment -%}
+  Custom section: theme blocks (blocks/*) on an optional background image that covers the section.
+  No JS. Styles: .custom-section in blocks.css.
+{%- endcomment -%}
 <div class="custom-section full-width">
   {% if section.settings.background_image %}
+    {%- liquid
+      # The first section's image is above the fold: eager, as the page's main image
+      assign loading = 'lazy'
+      if section.index == 1
+        assign loading = 'eager'
+      endif
+    -%}
     <div class="frame frame--cover custom-section__background">
-      {{ section.settings.background_image | image_url: width: 2000 | image_tag }}
+      {{
+        section.settings.background_image
+        | image_url: width: 2000
+        | image_tag: loading: loading, sizes: '100vw', widths: '750, 1100, 1500, 2000', alt: ''
+      }}
     </div>
   {% endif %}
 
@@ -9,9 +24,6 @@
     {% content_for 'blocks' %}
   </div>
 </div>
-
-
-
 
 {% schema %}
 {

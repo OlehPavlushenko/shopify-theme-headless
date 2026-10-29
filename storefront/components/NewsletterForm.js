@@ -19,7 +19,7 @@ export default function NewsletterForm({ id, buttonLabel, successText, alreadyTe
       data-message-error={t('newsletter.error')}
     >
       <form id={formId} className="newsletter-form__form" noValidate>
-        <div className="newsletter-form__row" data-newsletter-fields>
+        <div className="newsletter-form__row" data-newsletter-fields="">
           <span className="newsletter-form__field">
             <Icon name="mail" />
             <input
@@ -38,9 +38,9 @@ export default function NewsletterForm({ id, buttonLabel, successText, alreadyTe
             {buttonLabel || t('newsletter.subscribe')}
           </button>
         </div>
-        <template data-newsletter-success dangerouslySetInnerHTML={{ __html: successText || t('newsletter.success') }} />
-        <template data-newsletter-already dangerouslySetInnerHTML={{ __html: alreadyText || t('newsletter.already') }} />
-        <p className="form-error newsletter-form__message" id={`${formId}-message`} data-newsletter-message aria-live="polite" />
+        <template data-newsletter-success="" dangerouslySetInnerHTML={{ __html: successText || t('newsletter.success') }} />
+        <template data-newsletter-already="" dangerouslySetInnerHTML={{ __html: alreadyText || t('newsletter.already') }} />
+        <p className="form-error newsletter-form__message" id={`${formId}-message`} data-newsletter-message="" aria-live="polite" />
       </form>
       {note && <p className="newsletter-form__note" dangerouslySetInnerHTML={{ __html: note }} />}
     </newsletter-form>

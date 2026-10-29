@@ -79,13 +79,17 @@
     color: var(--color-link-hover);
   }
 
+  /* A link (theme) or a button (headless): no browser button frame either way */
   .cart-line__remove {
     display: grid;
     place-items: center;
     width: 3.2rem;
     height: 3.2rem;
     margin: -0.6rem -0.6rem 0 0;
+    padding: 0;
     color: var(--color-text-muted);
+    background: none;
+    border: 0;
     border-radius: 50%;
     transition:
       color var(--duration-short) var(--ease),

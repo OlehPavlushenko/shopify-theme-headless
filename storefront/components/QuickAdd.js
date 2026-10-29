@@ -1,6 +1,6 @@
 // The product card's add button: theme/snippets/product-card.liquid (quick_add), the same markup with
 // <cart-item-state> (lib/cart-elements.js). One variant: "+ Add to cart", then "− 2 in cart +". With
-// options: "Choose options" (the product page), dark "✓ In cart" once any of its variants is in the cart.
+// options: "Choose options" (the quick view; the product page without JS), dark "✓ In cart" once any of its variants is in the cart.
 import Icon from './Icon.js';
 import { getSettings, t } from '@/lib/theme.js';
 
@@ -10,7 +10,12 @@ export default function QuickAdd({ product, variantId, single }) {
     return (
       <div className="product-card__quick-add">
         <cart-item-state class="product-card__cart" data-product-handle={product.handle} data-label={t('products.in_cart_short')}>
-          <a href={`/products/${product.handle}`} className="btn btn--outline btn--sm btn--full product-card__options">
+          <a
+            href={`/products/${product.handle}`}
+            className="btn btn--outline btn--sm btn--full product-card__options"
+            data-quick-view
+            aria-haspopup="dialog"
+          >
             <span className="product-card__options-label">{t('products.choose_options')}</span>
             <span className="product-card__options-in-cart">
               <Icon name="check" />

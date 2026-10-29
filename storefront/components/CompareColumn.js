@@ -107,7 +107,7 @@ export default function CompareColumn({ product }) {
             </form>
           </cart-item-state>
         ) : (
-          <a href={url} className="btn btn--sm btn--full">
+          <a href={url} className="btn btn--sm btn--full" data-quick-view aria-haspopup="dialog">
             {t('products.choose_options')}
           </a>
         )}

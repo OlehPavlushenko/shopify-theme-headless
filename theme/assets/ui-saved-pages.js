@@ -82,7 +82,9 @@ class SavedProducts extends HTMLElement {
     this.style.setProperty('--saved-count', items.length);
     this.querySelectorAll('[data-saved-skeleton] > *').forEach((item, i) => (item.hidden = i >= items.length));
     this.setAttribute('aria-busy', 'true');
-    const nodes = await Promise.all(items.map((item) => fetchItem(item.handle, this.dataset.section, this.dataset.endpoint).catch(() => undefined)));
+    const nodes = await Promise.all(
+      items.map((item) => fetchItem(item.handle, this.dataset.section, this.dataset.endpoint).catch(() => undefined))
+    );
     if (run !== this.#run) return; // a newer change is rendering
     items.forEach((item, i) => nodes[i] === null && remove(this.dataset.list, item.handle));
     const found = nodes.filter(Boolean).map((node) => document.importNode(node, true));

@@ -105,6 +105,43 @@ export async function getCollectionsByHandles(handles = []) {
     .map(({ count, ...collection }) => ({ ...collection, productsCount: count.nodes.length }));
 }
 
+// A product with its images and every variant: the quick view and the product page's form
+export async function getProductWithVariants(handle) {
+  const data = await storefront(
+    `#graphql
+    query ProductVariants($handle: String!) {
+      product(handle: $handle) {
+        id
+        handle
+        title
+        vendor
+        availableForSale
+        images(first: 20) { nodes { id ${IMAGE} } }
+        options(first: 10) { name optionValues { name swatch { color image { previewImage { url } } } } }
+        variants(first: 100) {
+          nodes {
+            id
+            availableForSale
+            selectedOptions { name value }
+            price { ${MONEY} }
+            compareAtPrice { ${MONEY} }
+            image { id }
+          }
+        }
+        selectedOrFirstAvailableVariant {
+          id
+          availableForSale
+          selectedOptions { name value }
+          price { ${MONEY} }
+          compareAtPrice { ${MONEY} }
+        }
+      }
+    }`,
+    { handle }
+  );
+  return data?.product ?? null;
+}
+
 // A page (Admin > Online Store > Pages)
 export async function getPage(handle) {
   const data = await storefront(

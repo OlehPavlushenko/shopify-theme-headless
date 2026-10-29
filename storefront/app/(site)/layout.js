@@ -18,6 +18,7 @@ import '@ui-css/saved.css';
 import { Bricolage_Grotesque, DM_Sans } from 'next/font/google';
 import CartDrawer from '@/components/CartDrawer.js';
 import CartUpsell from '@/components/CartUpsell.js';
+import CloseButton from '@/components/CloseButton.js';
 import SearchPanel from '@/components/SearchPanel.js';
 import Sections from '@/components/Sections.js';
 import UiScripts from '@/components/UiScripts.js';
@@ -65,6 +66,13 @@ export default async function RootLayout({ children }) {
           upsell={<CartUpsell />}
           loginUrl={accountUrl()}
         />
+        {/* Quick view popup shell (theme/snippets/quick-view-dialog): @ui/quick-view fills it from /quick-view */}
+        <dialog id="QuickView" className="popup quick-view-dialog" aria-label={t('products.quick_view')} data-endpoint="/quick-view">
+          <div className="quick-view-dialog__inner">
+            <CloseButton className="quick-view-dialog__close" />
+            <div className="quick-view-dialog__content" data-quick-view-content aria-live="polite" />
+          </div>
+        </dialog>
         {/* Texts of the wishlist / compare toasts (@ui/saved-list), as in theme/layout/theme.liquid */}
         {settings.compare_enabled && (
           <template

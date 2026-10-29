@@ -12,6 +12,10 @@ export default function UiScripts() {
     import('@ui/drill-menu');
     import('@ui/slider');
     import('@ui/countdown');
+    // Loaded by their sections in the theme; here only when such a section is on the page
+    if (document.querySelector('show-more')) import('@ui/show-more');
+    if (document.querySelector('read-more')) import('@ui/read-more');
+    if (document.querySelector('background-video')) import('@ui/background-video');
   }, []);
   return null;
 }

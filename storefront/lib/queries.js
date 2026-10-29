@@ -80,6 +80,24 @@ export async function getMenu(handle) {
   return data?.menu?.items ?? [];
 }
 
+// Collections picked in a theme setting (handles), in that order: cover (its image or its first
+// product's) and product count (snippets/collection-card)
+export async function getCollectionsByHandles(handles = []) {
+  if (!handles.length) return [];
+  const fields = handles.map(
+    (handle, index) => `c${index}: collection(handle: ${JSON.stringify(handle)}) {
+      handle title image { ${IMAGE} }
+      products(first: 1) { nodes { featuredImage { ${IMAGE} } } }
+      count: products(first: 250) { nodes { id } }
+    }`
+  );
+  const data = await storefront(`query PickedCollections { ${fields.join('\n')} }`);
+  return handles
+    .map((_, index) => data?.[`c${index}`])
+    .filter(Boolean)
+    .map(({ count, ...collection }) => ({ ...collection, productsCount: count.nodes.length }));
+}
+
 // Products picked in a theme setting (a list of handles), in that order; missing ones are skipped
 export async function getProductsByHandles(handles = []) {
   if (!handles.length) return [];
@@ -169,6 +187,21 @@ export async function getCollection(
     { handle, sortKey, reverse, after }
   );
   return data?.collection ?? null;
+}
+
+// The latest articles of a blog (snippets/article-card); without a handle, the store's first blog
+export async function getArticles(handle, first = 6) {
+  const fields = `handle articles(first: $first, sortKey: PUBLISHED_AT, reverse: true) {
+    nodes { handle title excerpt content publishedAt image { ${IMAGE} } }
+  }`;
+  const data = await storefront(
+    handle
+      ? `query Articles($handle: String!, $first: Int!) { blog(handle: $handle) { ${fields} } }`
+      : `query Articles($first: Int!) { blogs(first: 1) { nodes { ${fields} } } }`,
+    handle ? { handle, first } : { first }
+  );
+  const blog = handle ? data?.blog : data?.blogs.nodes[0];
+  return blog ? { handle: blog.handle, articles: blog.articles.nodes } : { handle: null, articles: [] };
 }
 
 // Search results (products), 24 at most

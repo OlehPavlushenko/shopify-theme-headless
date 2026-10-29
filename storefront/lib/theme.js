@@ -92,6 +92,29 @@ export async function imageUrl(value) {
   return base ? base + name : null;
 }
 
+// A theme video setting (shopify://files/videos/<name>): its sources and preview through the Admin API
+// (SHOPIFY_ADMIN_TOKEN with read_files; the Storefront API has no access to Files). Null without it.
+export const themeVideo = cache(async (value) => {
+  const name = value?.match(/^shopify:\/\/files\/videos\/(.+)$/)?.[1];
+  const token = process.env.SHOPIFY_ADMIN_TOKEN;
+  if (!name || !token) return null;
+  const response = await fetch(
+    `https://${process.env.SHOPIFY_STORE_DOMAIN}/admin/api/${process.env.SHOPIFY_API_VERSION || '2026-10'}/graphql.json`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Access-Token': token },
+      body: JSON.stringify({
+        query: `query ($q: String!) { files(first: 1, query: $q) { nodes { ... on Video {
+        sources { url format height width mimeType } preview { image { url } } } } } }`,
+        variables: { q: `filename:${name}` },
+      }),
+      next: { revalidate: 86400 },
+    }
+  );
+  const video = (await response.json()).data?.files.nodes[0];
+  return video?.sources ? { sources: video.sources, poster: video.preview?.image?.url } : null;
+});
+
 // Theme settings as CSS: snippets/theme-tokens.liquid (radii, page width, status colors) and
 // snippets/color-schemes.liquid (one .color-<id> class per scheme, the first one also on :root)
 export function themeCss() {

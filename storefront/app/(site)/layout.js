@@ -30,7 +30,9 @@ import { getSections, getSettings, orderDetails, strings, t, themeCss } from '@/
 
 // The theme's default fonts (Theme settings > Typography: Bricolage Grotesque, DM Sans)
 const body = DM_Sans({ subsets: ['latin'], display: 'swap' });
-const heading = Bricolage_Grotesque({ subsets: ['latin'], display: 'swap' });
+// The heading font in its one weight, as Shopify serves the setting (bricolage_grotesque_n7): text in the
+// heading family is bold everywhere, also where the CSS sets no weight (the product story's ingredient names)
+const heading = Bricolage_Grotesque({ subsets: ['latin'], weight: '700', display: 'swap' });
 
 export async function generateMetadata() {
   const { shop } = await getShell();

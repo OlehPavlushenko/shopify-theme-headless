@@ -35,7 +35,7 @@
       "mix-protein-control-shake",
       "mix-protein-slim-shake"
     ],
-    "api_url": "http://127.0.0.1:9292",
+    "api_url": "https://shopify-theme-headless.vercel.app",
     "api_secret": "",
     "seo_country": "US",
     "sections": {

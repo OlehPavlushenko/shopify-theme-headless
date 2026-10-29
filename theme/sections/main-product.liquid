@@ -7,7 +7,7 @@
   dynamic checkout, stock, in-cart note), delivery estimate, highlights, text, collapsible rows,
   complementary products, wishlist / compare, share. The info column sticks while the gallery scrolls.
   Also: a zoom lightbox, a sticky buy bar once the main button scrolls away, recently viewed record.
-  Behavior: assets/product.js. Styles: packages/ui/css/product.css.
+  Behavior: @ui/product. Styles: packages/ui/css/product.css.
 {% endcomment %}
 {%- capture api -%}{% render 'api-url' %}{%- endcapture -%}
 {%- liquid
@@ -292,7 +292,7 @@
                 </cart-item-state>
                 {%- comment -%}
                   Back in stock: for a sold-out variant, an email field sent to project-server (POST /notify,
-                  <contact-form> with data-action="notify"); <stock-notify> (assets/product.js) shows it for
+                  <contact-form> with data-action="notify"); <stock-notify> (@ui/product) shows it for
                   sold-out variants only and keeps the variant fields in step. Needs the API URL.
                 {%- endcomment -%}
                 {%- if block.settings.show_notify and api != blank -%}
@@ -565,7 +565,7 @@
     Sticky bar: what the main form adds — the variant ("Size / Color"), the quantity (a stepper kept
     in step with the main one from 750px; "× 2" in the text line on phones), the price and the add
     button, which submits the main form. A round up-arrow button first takes you back up to the
-    options (to change the variant). <sticky-buy-bar> in assets/product.js.
+    options (to change the variant). <sticky-buy-bar> in @ui/product.
   {%- endcomment -%}
   {%- if section.settings.sticky_bar and buy_block -%}
     <sticky-buy-bar class="sticky-buy" data-form="{{ form_id }}" hidden>
@@ -601,7 +601,7 @@
 </product-info>
 <script type="module">
   import '@ui/variant-picker';
-  import 'product';
+  import '@ui/product';
 </script>
 
 {% schema %}

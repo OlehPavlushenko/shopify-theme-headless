@@ -1,5 +1,7 @@
+/* Generated from packages/ui/js/product.js by scripts/sync-ui.mjs. Do not edit here. */
 /**
- * Theme-only behavior of the product page (sections/main-product and its neighbours).
+ * Behavior of the product page (the theme's sections/main-product and its neighbours; the headless
+ * product page renders the same markup).
  *
  * <product-gallery data-layout="grid|thumbnails|stacked">
  *   [data-gallery-track] > [data-media-id] items; [data-gallery-current] counter (phones, thumbnails);

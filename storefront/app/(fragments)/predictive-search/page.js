@@ -4,12 +4,40 @@
 import Icon from '@/components/Icon.js';
 import ProductCard from '@/components/ProductCard.js';
 import SliderNav from '@/components/SliderNav.js';
+import { predictiveArticles } from '@/lib/blog.js';
 import { predictiveSearch } from '@/lib/queries.js';
 import { t } from '@/lib/theme.js';
 
+// resources[type]=article (the blog search field): the matching articles alone, as links
+async function ArticleResults({ query }) {
+  const articles = await predictiveArticles(query);
+  return (
+    <div data-predictive-results>
+      {articles.length > 0 && (
+        <section className="search-results__group" aria-labelledby="PredictiveArticles">
+          <h2 id="PredictiveArticles" className="eyebrow search-results__heading">
+            {t('search.articles')}
+          </h2>
+          <ul className="link-list" role="list">
+            {articles.map((article) => (
+              <li key={article.handle}>
+                <a href={`/blogs/${article.blog.handle}/${article.handle}`} className="link-list__link">
+                  <span className="link-list__text">{article.title}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </div>
+  );
+}
+
 export default async function PredictiveSearch({ searchParams }) {
-  const query = String((await searchParams).q ?? '').trim();
+  const params = await searchParams;
+  const query = String(params.q ?? '').trim();
   if (!query) return <div data-predictive-results />;
+  if (params['resources[type]'] === 'article') return <ArticleResults query={query} />;
   const { queries, collections, products } = await predictiveSearch(query);
   const searchUrl = (terms) => `/search?q=${encodeURIComponent(terms)}`;
 

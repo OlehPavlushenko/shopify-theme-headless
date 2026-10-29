@@ -17,6 +17,8 @@
  * is used. The element's children are replaced by those of the <section-swap> in the response, and
  * the document title by its data-title (the tab follows the topic / search).
  * State: [aria-busy] while loading.
+ * Headless (no Section Rendering API): data-endpoint-base="<path>" — a route rendering the section on its
+ * own for any page URL; the request is <path><page path>?<page query> (e.g. /blog-section/blogs/news/tagged/x).
  */
 import { fetchHTML, importChildren, latest } from '@ui/fetch-html';
 import { headerOffset, scrollBehavior } from '@ui/scroll';
@@ -63,9 +65,11 @@ class SectionSwap extends HTMLElement {
   };
 
   async #swap(url, push) {
-    const sectionUrl = new URL(url, location.origin);
+    const page = new URL(url, location.origin);
+    const { endpointBase } = this.dataset;
+    const sectionUrl = endpointBase ? new URL(endpointBase + page.pathname + page.search, location.origin) : page;
     // Another template: the whole page (this section's id is unknown there)
-    if (isSearch(url) === this.#onSearch) sectionUrl.searchParams.set('section_id', this.dataset.section);
+    if (!endpointBase && isSearch(url) === this.#onSearch) sectionUrl.searchParams.set('section_id', this.dataset.section);
     // A newer click wins: the one before is aborted, and an older answer is ignored
     const { signal, isCurrent } = this.#requests.next();
     this.setAttribute('aria-busy', 'true');

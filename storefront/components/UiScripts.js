@@ -63,6 +63,8 @@ export default function UiScripts() {
     if (document.querySelector('contact-form')) import('@ui/contact-form');
     if (document.querySelector('load-more')) import('@ui/load-more');
     if (document.querySelector('delivery-steps')) import('@ui/delivery-steps');
+    if (document.querySelector('section-swap')) import('@ui/section-swap');
+    if (document.querySelector('article-toc')) import('@ui/article-toc');
   }, [pathname]);
 
   return null;

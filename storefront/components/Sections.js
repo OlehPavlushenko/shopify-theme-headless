@@ -14,6 +14,8 @@ import Header from './sections/Header.js';
 import Hero from './sections/Hero.js';
 import ImageText from './sections/ImageText.js';
 import Main404 from './sections/Main404.js';
+import MainArticle from './sections/MainArticle.js';
+import MainBlog from './sections/MainBlog.js';
 import MainCollection from './sections/MainCollection.js';
 import MainContact from './sections/MainContact.js';
 import MainListCollections from './sections/MainListCollections.js';
@@ -47,6 +49,8 @@ export const SECTIONS = {
   hero: Hero,
   'image-text': ImageText,
   'main-404': Main404,
+  'main-article': MainArticle,
+  'main-blog': MainBlog,
   'main-collection': MainCollection,
   'main-compare': MainCompare,
   'main-contact': MainContact,

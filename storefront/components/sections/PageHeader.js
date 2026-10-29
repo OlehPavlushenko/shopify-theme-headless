@@ -5,26 +5,53 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import Breadcrumbs from '../Breadcrumbs.js';
+import SearchForm from '../SearchForm.js';
 import ThemeImage from '../ThemeImage.js';
 import { t } from '@/lib/theme.js';
 
-function headingFor(settings, { template, page, collection }) {
+function headingFor(settings, { template, page, collection, blog }) {
   if (settings.heading) return settings.heading;
   if (template === 'collection') return collection?.title;
+  if (template === 'blog') return blog?.title;
   if (template === 'list-collections') return t('general.collections');
-  if (template === 'search') return t('search.title');
+  if (template === 'search') return blog?.title ?? t('search.title');
   return page?.title;
 }
 
-function trailFor({ template, collection }) {
+function trailFor({ template, collection, blog }) {
   if (template === 'collection' && collection?.handle !== 'all') return [{ title: t('general.collections'), url: '/collections' }];
+  // The blog's search results: Home / <blog> / Search
+  if (template === 'search' && blog) return [{ title: blog.title, url: blog.url }];
   return [];
+}
+
+// The blog search field (the blog page and its search results): a search of articles that re-renders the
+// blog's section in place (data-section-form), with matching articles suggested as you type
+function BlogSearch({ id, terms }) {
+  return (
+    <predictive-search
+      class="page-header__search"
+      data-endpoint="/predictive-search"
+      data-params="resources[type]=article&resources[limit]=6"
+    >
+      <SearchForm
+        id={id}
+        value={terms}
+        label={t('blog.search_label')}
+        placeholder={t('blog.search_placeholder')}
+        scope="articles"
+        sectionForm
+      />
+      <div className="page-header__suggest" data-results="" />
+    </predictive-search>
+  );
 }
 
 export default function PageHeader({ section, context = {} }) {
   const { settings } = section;
-  const { template, suffix, collection, subcollections = [] } = context;
+  const { template, suffix, collection, subcollections = [], blog, listing } = context;
   const heading = headingFor(settings, context);
+  const current = template === 'search' ? t('search.title') : heading;
   const text = settings.text || (template === 'collection' ? collection?.descriptionHtml : '');
   // A picked image, or the collection's own
   const image = settings.image || (settings.image_source === 'collection' && template === 'collection' ? collection?.image?.url : null);
@@ -39,9 +66,10 @@ export default function PageHeader({ section, context = {} }) {
       )}
       <div className="page-header__inner page-width">
         <div className="page-header__text-col">
-          {settings.breadcrumbs && <Breadcrumbs className="page-header__breadcrumbs" trail={trailFor(context)} current={heading} />}
+          {settings.breadcrumbs && <Breadcrumbs className="page-header__breadcrumbs" trail={trailFor(context)} current={current} />}
           <h1 className="h1 page-header__heading" dangerouslySetInnerHTML={{ __html: heading }} />
           {text && <div className="text-lead page-header__text" dangerouslySetInnerHTML={{ __html: text }} />}
+          {settings.blog_search && blog && <BlogSearch id={`BlogSearch-${section.id}`} terms={listing?.terms} />}
           {(suffix === 'wishlist' || suffix === 'compare') && (
             <p
               className="page-header__counter"

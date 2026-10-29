@@ -280,7 +280,7 @@ export async function getCollection(
 // The latest articles of a blog (snippets/article-card); without a handle, the store's first blog
 export async function getArticles(handle, first = 6) {
   const fields = `handle title articles(first: $first, sortKey: PUBLISHED_AT, reverse: true) {
-    nodes { handle title excerpt content publishedAt image { ${IMAGE} } }
+    nodes { handle title excerpt content publishedAt tags image { ${IMAGE} } blog { handle } }
   }`;
   const data = await storefront(
     handle
@@ -335,11 +335,20 @@ export async function getSitemapEntries() {
     query Sitemap {
       products(first: 250) { nodes { handle updatedAt } }
       collections(first: 250) { nodes { handle updatedAt } }
+      pages(first: 250) { nodes { handle updatedAt } }
+      articles(first: 250) { nodes { handle publishedAt blog { handle } } }
+      blogs(first: 50) { nodes { handle } }
     }`,
     {},
     { revalidate: 3600 }
   );
-  return { products: data?.products.nodes ?? [], collections: data?.collections.nodes ?? [] };
+  return {
+    products: data?.products.nodes ?? [],
+    collections: data?.collections.nodes ?? [],
+    pages: data?.pages.nodes ?? [],
+    articles: data?.articles.nodes ?? [],
+    blogs: data?.blogs.nodes ?? [],
+  };
 }
 
 // The cart (per visitor: never cached)

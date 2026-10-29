@@ -17,7 +17,6 @@ export default async function BlogPosts({ section }) {
               <li key={article.handle}>
                 <ArticleCard
                   article={article}
-                  blogHandle={handle}
                   showDate={settings.show_date}
                   showExcerpt={settings.show_excerpt}
                   sizes="(min-width: 990px) 33vw, 85vw"

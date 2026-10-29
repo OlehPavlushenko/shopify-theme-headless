@@ -35,6 +35,7 @@ export default function UiScripts() {
     import('@ui/saved-list');
     import('@/lib/cart-elements.js');
     import('@ui/quick-view');
+    import('@/lib/cart-recommendations.js');
   }, []);
 
   useEffect(() => {

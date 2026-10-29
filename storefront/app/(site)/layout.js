@@ -17,6 +17,7 @@ import '@ui-css/search.css';
 import '@ui-css/saved.css';
 import { Bricolage_Grotesque, DM_Sans } from 'next/font/google';
 import CartDrawer from '@/components/CartDrawer.js';
+import CartRecommendations from '@/components/CartRecommendations.js';
 import CartUpsell from '@/components/CartUpsell.js';
 import CloseButton from '@/components/CloseButton.js';
 import SearchPanel from '@/components/SearchPanel.js';
@@ -25,7 +26,7 @@ import UiScripts from '@/components/UiScripts.js';
 import { getShell } from '@/lib/queries.js';
 import { accountUrl } from '@/lib/shopify.js';
 import { CART_STRINGS } from '@/lib/strings.js';
-import { getSections, getSettings, strings, t, themeCss } from '@/lib/theme.js';
+import { getSections, getSettings, orderDetails, strings, t, themeCss } from '@/lib/theme.js';
 
 // The theme's default fonts (Theme settings > Typography: Bricolage Grotesque, DM Sans)
 const body = DM_Sans({ subsets: ['latin'], display: 'swap' });
@@ -64,6 +65,8 @@ export default async function RootLayout({ children }) {
           colorScheme={drawer.color_scheme || 'scheme-1'}
           freeShippingThreshold={threshold}
           upsell={<CartUpsell />}
+          recommendations={<CartRecommendations />}
+          details={orderDetails('drawer')}
           loginUrl={accountUrl()}
         />
         {/* Quick view popup shell (theme/snippets/quick-view-dialog): @ui/quick-view fills it from /quick-view */}

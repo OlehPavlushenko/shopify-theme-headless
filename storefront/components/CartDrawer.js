@@ -5,40 +5,10 @@
 // follows cart:changed (detail.cart) from the buy buttons and the cart page.
 import { useEffect, useRef, useState } from 'react';
 import Icon from './Icon.js';
-import CartContents from './CartContents.js';
+import CartContents, { FreeShipping } from './CartContents.js';
 import { getCart } from '@/app/actions.js';
-import { format, formatMoney } from '@/lib/format.js';
 
-function FreeShipping({ cart, threshold, strings }) {
-  if (!threshold || !cart?.totalQuantity) return null;
-  const total = Number(cart.cost.totalAmount.amount);
-  const remaining = threshold - total;
-  const progress = Math.min(100, Math.round((total / threshold) * 100));
-  const text =
-    remaining > 0
-      ? format(strings['cart.free_shipping.remaining_html'], {
-          amount: formatMoney({ amount: remaining, currencyCode: cart.cost.totalAmount.currencyCode }),
-        })
-      : strings['cart.free_shipping.unlocked_html'];
-  return (
-    <div className={`free-shipping${remaining <= 0 ? ' free-shipping--done' : ''}`} style={{ '--progress': `${progress}%` }}>
-      <p className="free-shipping__text">
-        <Icon name="truck" />
-        <span dangerouslySetInnerHTML={{ __html: text }} />
-      </p>
-      <div
-        className="free-shipping__bar"
-        role="progressbar"
-        aria-valuemin="0"
-        aria-valuemax="100"
-        aria-valuenow={progress}
-        aria-label={strings['cart.free_shipping.label']}
-      />
-    </div>
-  );
-}
-
-export default function CartDrawer({ strings, colorScheme, freeShippingThreshold, upsell, loginUrl }) {
+export default function CartDrawer({ strings, colorScheme, freeShippingThreshold, upsell, loginUrl, recommendations, details }) {
   const dialog = useRef(null);
   // undefined: not loaded yet (nothing shown); null: no cart (the empty state)
   const [cart, setCart] = useState(undefined);
@@ -78,8 +48,12 @@ export default function CartDrawer({ strings, colorScheme, freeShippingThreshold
           </button>
           <FreeShipping cart={cart} threshold={freeShippingThreshold} strings={strings} />
         </div>
-        {cart !== undefined && <CartContents cart={cart} strings={strings} onChange={setCart} upsell={upsell} loginUrl={loginUrl} />}
+        {cart !== undefined && (
+          <CartContents cart={cart} strings={strings} onChange={setCart} upsell={upsell} loginUrl={loginUrl} details={details} />
+        )}
       </div>
+      {/* Outside the re-rendered contents, so it stays put while the cart updates */}
+      {recommendations}
     </dialog>
   );
 }

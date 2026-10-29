@@ -57,12 +57,16 @@ class CartItemState extends HTMLElement {
     }
   }
 
-  #onSubmit = (event) => {
+  #onSubmit = async (event) => {
     event.preventDefault();
     if (this.hasAttribute('aria-busy')) return;
     const data = new FormData(event.target);
     if (!data.get('merchandiseId')) data.set('merchandiseId', gid(data.get('id')));
-    this.#run(() => addToCart(data), true);
+    await this.#run(() => addToCart(data), true);
+    // A check on the button for a moment (.btn[data-added] .btn__state--done, compact rows)
+    const button = event.target.querySelector('[type="submit"]');
+    button?.setAttribute('data-added', '');
+    setTimeout(() => button?.removeAttribute('data-added'), 1500);
   };
 
   #onClick = (event) => {

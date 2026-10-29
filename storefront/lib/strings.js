@@ -21,6 +21,8 @@ export const CART_STRINGS = [
   'cart.checkout_total',
   'cart.view_cart',
   'cart.login_html',
+  'cart.note',
+  'cart.order_details',
   'cart.free_shipping.remaining_html',
   'cart.free_shipping.unlocked_html',
   'cart.free_shipping.label',

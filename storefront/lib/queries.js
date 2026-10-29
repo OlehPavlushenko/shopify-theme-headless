@@ -142,6 +142,20 @@ export async function getProductWithVariants(handle) {
   return data?.product ?? null;
 }
 
+// Shopify's related products for a product (Product Recommendations, intent RELATED)
+export async function getRecommendations(handle) {
+  const data = await storefront(
+    `#graphql
+    query Recommendations($handle: String!) {
+      productRecommendations(productHandle: $handle, intent: RELATED) { ...ProductCard }
+    }
+    ${PRODUCT_CARD}`,
+    { handle },
+    { revalidate: 3600 }
+  );
+  return data?.productRecommendations ?? [];
+}
+
 // A page (Admin > Online Store > Pages)
 export async function getPage(handle) {
   const data = await storefront(
@@ -350,6 +364,8 @@ export const CART = `#graphql
     id
     checkoutUrl
     totalQuantity
+    note
+    attributes { key value }
     cost { subtotalAmount { ${MONEY} } totalAmount { ${MONEY} } }
     discountCodes { code applicable }
     discountAllocations {

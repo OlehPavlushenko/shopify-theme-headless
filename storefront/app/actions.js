@@ -51,6 +51,30 @@ export async function updateLine(lineId, quantity) {
   return remember(cart);
 }
 
+// The order note (Theme settings > Cart > "Show cart note")
+export async function setCartNote(note) {
+  const id = await cartId();
+  if (!id) return null;
+  const cart = await cartMutation('cartNoteUpdate', 'CartNote($id: ID!, $note: String!)', 'cartId: $id, note: $note', {
+    id,
+    note: String(note ?? ''),
+  });
+  return remember(cart);
+}
+
+// The order details fields (cart attributes): the whole list, [{ key, value }]
+export async function setCartAttributes(attributes) {
+  const id = await cartId();
+  if (!id) return null;
+  const cart = await cartMutation(
+    'cartAttributesUpdate',
+    'CartAttributes($id: ID!, $attributes: [AttributeInput!]!)',
+    'cartId: $id, attributes: $attributes',
+    { id, attributes: attributes.map(({ key, value }) => ({ key: String(key), value: String(value ?? '') })) }
+  );
+  return remember(cart);
+}
+
 // The cart's discount codes (the whole list: add or remove one by passing the new list)
 export async function setDiscountCodes(codes) {
   const id = await cartId();

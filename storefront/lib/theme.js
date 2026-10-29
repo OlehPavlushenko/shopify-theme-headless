@@ -87,6 +87,21 @@ export function getTemplate(name, suffix) {
   return { suffix: '', sections: getSections(`templates/${name}.json`) };
 }
 
+// The cart's order details fields: the note setting and the attribute blocks of the cart drawer section
+// (saved in settings_data) or of the cart page's main-cart section (templates/cart.json)
+export function orderDetails(where = 'drawer') {
+  const settings = getSettings();
+  let section;
+  if (where === 'drawer') {
+    const saved = settings.sections?.['cart-drawer'];
+    section = saved && resolveSection('cart-drawer', saved);
+  } else {
+    section = getTemplate('cart').sections.find((item) => item.type === 'main-cart');
+  }
+  const fields = (section?.blocks ?? []).map((block) => ({ id: block.id, type: block.type, ...block.settings }));
+  return { showNote: settings.show_cart_note !== false, fields };
+}
+
 // Storefront strings: {{ 'key' | t: name: value }} from locales/en.default.json
 const locale = cache(() => readJSON('locales/en.default.json'));
 

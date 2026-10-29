@@ -2854,9 +2854,9 @@
   --jm-btn-hover-bg: var(--color-surface);
 }
 
-/* Filters and sort: the quiet border of the theme's inputs */
-.jdgm-review-widget .jm-review-widget .jm-sort-filter__select {
-  border-color: var(--color-border);
+/* No filter and sort buttons next to "Write a review": a product has a handful of reviews */
+.jdgm-review-widget .jm-review-widget .jm-filters {
+  display: none;
 }
 
 /* Stars in the theme's star color (the app colors them inline), a step smaller */

@@ -95,11 +95,32 @@ class CartItemState extends HTMLElement {
 
 if (!customElements.get('cart-item-state')) customElements.define('cart-item-state', CartItemState);
 
+// Variant pickers (product page, quick view), as the theme's cart.js: a value whose variant — with the
+// other current picks — is in the cart gets [data-in-cart] on its label (a check mark, components.css)
+function markPickers(current) {
+  const inCart = new Set(current?.lines.nodes.map((line) => line.merchandise.id.split('/').pop()));
+  document.querySelectorAll('variant-picker').forEach((picker) => {
+    if (!picker.variants) return;
+    const selected = picker.selected;
+    picker.querySelectorAll('fieldset').forEach((fieldset, i) => {
+      fieldset.querySelectorAll('input').forEach((input) => {
+        const options = selected.with(i, input.value);
+        const variant = picker.variants.find((item) => item.options.every((value, j) => value === options[j]));
+        input.closest('label').toggleAttribute('data-in-cart', Boolean(variant && inCart.has(String(variant.id))));
+      });
+    });
+  });
+}
+
 // Discount codes from the promos, as the theme's cart.js: discount:apply ({ detail: { code } }, the Spin to
 // win wheel) and a newsletter sign-up with a discount (newsletter:subscribed, detail.discount) add the code
 // to the cart; discount:result ({ detail: { code, applicable } }) tells whether it applies to this cart.
 let cart = null;
-onCart((next) => (cart = next));
+onCart((next) => {
+  cart = next;
+  markPickers(cart);
+});
+for (const type of ['variant:change', 'variant-picker:connect']) document.addEventListener(type, () => markPickers(cart));
 
 async function applyCode(code) {
   if (!code) return;

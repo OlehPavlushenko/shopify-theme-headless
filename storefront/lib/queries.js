@@ -398,7 +398,7 @@ export const CART = `#graphql
             title
             selectedOptions { name value }
             image { ${IMAGE} }
-            product { handle title }
+            product { handle title options { name optionValues { name swatch { color image { previewImage { url } } } } } }
           }
         }
       }

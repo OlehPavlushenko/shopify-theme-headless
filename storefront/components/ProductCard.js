@@ -13,10 +13,10 @@ import Price from './Price.js';
 import QuickAdd from './QuickAdd.js';
 import Rating from './Rating.js';
 import SavedToggles from './SavedToggles.js';
+import Swatch, { isColorOption } from './Swatch.js';
 import { getSettings, t } from '@/lib/theme.js';
 
 const SIZES = '(min-width: 990px) calc((100vw - 10rem) / 4), (min-width: 750px) calc((100vw - 6rem) / 3), calc((100vw - 4rem) / 2)';
-const COLOR_NAMES = ['color', 'colour', 'колір', 'цвет'];
 
 function discountPercent(price, compareAt) {
   if (!compareAt || Number(compareAt.amount) <= Number(price.amount)) return 0;
@@ -26,7 +26,7 @@ function discountPercent(price, compareAt) {
 // The first option's values: swatches (snippets/swatch: Shopify's swatch, else the name as a CSS color) or text
 function OptionValues({ product }) {
   const option = product.options[0];
-  const swatches = COLOR_NAMES.includes(option.name.toLowerCase()) || option.optionValues.some((value) => value.swatch);
+  const swatches = isColorOption(option);
   const shown = swatches ? 5 : 50;
   const available = (name) =>
     product.variants.nodes.some(
@@ -34,21 +34,11 @@ function OptionValues({ product }) {
     );
   return (
     <ul className={`product-card__values${swatches ? ' product-card__values--swatches' : ''}`} role="list" aria-label={option.name}>
-      {option.optionValues.slice(0, shown).map((value) => {
-        const image = value.swatch?.image?.previewImage?.url;
-        const background = image ? `url(${image}&width=64)` : value.swatch?.color || value.name.toLowerCase().replace(/[^a-z]/g, '');
-        return (
-          <li key={value.name} className={`product-card__value${available(value.name) ? '' : ' product-card__value--unavailable'}`}>
-            {swatches ? (
-              <span className="swatch" style={{ '--swatch': background }} title={value.name}>
-                <span className="visually-hidden">{value.name}</span>
-              </span>
-            ) : (
-              <span>{value.name}</span>
-            )}
-          </li>
-        );
-      })}
+      {option.optionValues.slice(0, shown).map((value) => (
+        <li key={value.name} className={`product-card__value${available(value.name) ? '' : ' product-card__value--unavailable'}`}>
+          {swatches ? <Swatch value={value} /> : <span>{value.name}</span>}
+        </li>
+      ))}
       {option.optionValues.length > shown && (
         <li className="product-card__value product-card__value--more">+{option.optionValues.length - shown}</li>
       )}

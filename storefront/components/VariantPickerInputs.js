@@ -2,7 +2,7 @@
 // and the variants as JSON in the shape @ui/variant-picker reads (Shopify's: numeric ids, prices in
 // cents, options in order, featured_media.id). Used where the picker works in place (quick view,
 // the product page form); <product-info> around it follows the picks.
-const COLOR_NAMES = ['color', 'colour', 'колір', 'цвет'];
+import Swatch, { isColorOption } from './Swatch.js';
 
 export const numericId = (gid) => Number(String(gid).split('/').pop().split('?')[0]);
 const cents = (money) => (money ? Math.round(Number(money.amount) * 100) : 0);
@@ -26,7 +26,7 @@ export default function VariantPickerInputs({ product, selected, id }) {
   return (
     <variant-picker class="variant-picker">
       {product.options.map((option, position) => {
-        const swatches = COLOR_NAMES.includes(option.name.toLowerCase()) || option.optionValues.some((value) => value.swatch);
+        const swatches = isColorOption(option);
         return (
           <fieldset key={option.name} className="variant-picker__option">
             <legend className="variant-picker__legend">
@@ -45,21 +45,7 @@ export default function VariantPickerInputs({ product, selected, id }) {
                     value={value.name}
                     defaultChecked={picked[option.name] === value.name}
                   />
-                  {swatches ? (
-                    <span
-                      className="swatch"
-                      style={{
-                        '--swatch': value.swatch?.image?.previewImage?.url
-                          ? `url(${value.swatch.image.previewImage.url}&width=64)`
-                          : value.swatch?.color || value.name.toLowerCase().replace(/[^a-z]/g, ''),
-                      }}
-                      title={value.name}
-                    >
-                      <span className="visually-hidden">{value.name}</span>
-                    </span>
-                  ) : (
-                    value.name
-                  )}
+                  {swatches ? <Swatch value={value} /> : value.name}
                 </label>
               ))}
             </div>

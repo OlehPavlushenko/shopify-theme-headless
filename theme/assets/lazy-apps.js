@@ -6,13 +6,35 @@
  *   <lazy-apps> <template> …the app blocks… </template> </lazy-apps>
  * - 600px before it scrolls into view, the template's content is put in place.
  * - Judge.me's loader looks for its widgets once, on page load: the widgets put in later get their
- *   entry module here (jdgm.CDN_BASE_URL + data-entry-point), each once.
+ *   entry module here (jdgm.CDN_BASE_URL + data-entry-point), each once, and — as its loader does —
+ *   the stylesheets its manifest lists for the entry (data-entry-key) and its imports: the layout one
+ *   holds the widget's spacing tokens (--jm-space-*), without it the widget has no gaps.
  * - A link to an id inside it (the rating's "#judgeme_product_reviews") puts it in place first, then
  *   scrolls there; so does a page opened with that hash.
  */
 const loaded = new Set();
 
-// Judge.me widgets added after its loader ran: load their entry modules
+// The stylesheets Judge.me's manifest lists for an entry and its imports, each linked once
+async function judgeMeStyles(base, entryKey) {
+  try {
+    const manifest = await (await fetch(base + 'manifest.json')).json();
+    const link = (key) => {
+      const item = manifest[key];
+      if (!item) return;
+      for (const file of item.css ?? []) {
+        const href = base + file;
+        if (document.querySelector(`link[href="${href}"]`)) continue;
+        document.head.append(Object.assign(document.createElement('link'), { rel: 'stylesheet', href }));
+      }
+      item.imports?.forEach(link);
+    };
+    link(entryKey);
+  } catch {
+    // The widget still works, without its spacing
+  }
+}
+
+// Judge.me widgets added after its loader ran: load their entry modules and stylesheets
 function startJudgeMe(root) {
   const base = window.jdgm?.CDN_BASE_URL;
   if (!base) return;
@@ -20,6 +42,7 @@ function startJudgeMe(root) {
     const src = base + widget.dataset.entryPoint;
     if (loaded.has(src)) continue;
     loaded.add(src);
+    if (widget.dataset.entryKey) judgeMeStyles(base, widget.dataset.entryKey);
     const script = document.createElement('script');
     script.type = 'module';
     script.src = src;

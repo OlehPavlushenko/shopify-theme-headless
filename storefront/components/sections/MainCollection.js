@@ -11,23 +11,13 @@ import ProductCard from '../ProductCard.js';
 import PromoCard from '../PromoCard.js';
 import CloseButton from '../CloseButton.js';
 import { SearchOptions } from '../SearchForm.js';
+import Swatch, { isColorOption } from '../Swatch.js';
 import { formatMoney } from '@/lib/format.js';
 import { getSettings, t } from '@/lib/theme.js';
 
 const escapeHtml = (text) => text.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
-const COLOR_NAMES = ['color', 'colour', 'колір', 'цвет'];
 const SHOWN_VALUES = 6;
-
-function Swatch({ value, className }) {
-  const image = value.swatch?.image?.previewImage?.url;
-  const background = image ? `url(${image}&width=64)` : value.swatch?.color || value.label.toLowerCase().replace(/[^a-z]/g, '');
-  return (
-    <span className={`swatch ${className}`} style={{ '--swatch': background }} title={value.label}>
-      <span className="visually-hidden">{value.label}</span>
-    </span>
-  );
-}
 
 // One end of the price range: the store currency's symbol and a number field (<price-range>, @ui/facets)
 function PriceField({ label, symbol, field, max, placeholder, end }) {
@@ -53,7 +43,7 @@ function PriceField({ label, symbol, field, max, placeholder, end }) {
   );
 }
 
-const isSwatch = (filter) => filter.presentation === 'SWATCH' || COLOR_NAMES.includes(filter.label.toLowerCase());
+const isSwatch = isColorOption;
 
 // snippets/facets-active: removable chips and "Clear all"
 function ActiveChips({ filters, clearUrl, currency }) {

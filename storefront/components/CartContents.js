@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Icon from './Icon.js';
 import Price from './Price.js';
+import Swatch, { isColorOption } from './Swatch.js';
 import { setCartAttributes, setCartNote, setDiscountCodes, updateLine } from '@/app/actions.js';
 import { publish } from '@/lib/cart-client.js';
 import { format, formatMoney } from '@/lib/format.js';
@@ -165,6 +166,12 @@ function OrderFields({ cart, details, strings, run, noteField = 'extras' }) {
   );
 }
 
+// A color option's value with its swatch, as on the product card (the product's option of that name)
+function swatchOf(product, picked) {
+  const option = product.options?.find((item) => item.name === picked.name);
+  return option && isColorOption(option) ? option.optionValues.find((value) => value.name === picked.value) : null;
+}
+
 function Line({ line, strings, run }) {
   const { merchandise: variant } = line;
   const title = variant.product.title;
@@ -203,7 +210,10 @@ function Line({ line, strings, run }) {
             {options.map((option) => (
               <div key={option.name} className="cart-line__option">
                 <dt>{option.name}:</dt>
-                <dd>{option.value}</dd>
+                <dd>
+                  {swatchOf(variant.product, option) && <Swatch value={swatchOf(variant.product, option)} className="cart-line__swatch" />}
+                  {option.value}
+                </dd>
               </div>
             ))}
           </dl>

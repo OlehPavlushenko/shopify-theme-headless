@@ -4,9 +4,8 @@
 import Image from 'next/image';
 import Icon from './Icon.js';
 import Price from './Price.js';
+import Swatch, { isColorOption } from './Swatch.js';
 import { getSettings, t } from '@/lib/theme.js';
-
-const COLOR_NAMES = ['color', 'colour', 'колір', 'цвет'];
 
 export default function CompareColumn({ product }) {
   const url = `/products/${product.handle}`;
@@ -61,7 +60,7 @@ export default function CompareColumn({ product }) {
         ) : (
           <dl className="compare-table__options">
             {product.allOptions.map((option) => {
-              const color = COLOR_NAMES.includes(option.name.toLowerCase());
+              const color = isColorOption(option);
               return (
                 <div key={option.name}>
                   <dt>{option.name}</dt>
@@ -71,15 +70,7 @@ export default function CompareColumn({ product }) {
                         key={value.name}
                         className={`compare-table__value${available(option.name, value.name) ? '' : ' compare-table__value--unavailable'}`}
                       >
-                        {(color || value.swatch) && (
-                          <span
-                            className="swatch"
-                            style={{ '--swatch': value.swatch?.color || value.name.toLowerCase().replace(/[^a-z]/g, '') }}
-                            title={value.name}
-                          >
-                            <span className="visually-hidden">{value.name}</span>
-                          </span>
-                        )}
+                        {(color || value.swatch) && <Swatch value={value} />}
                         {value.name}
                       </span>
                     ))}

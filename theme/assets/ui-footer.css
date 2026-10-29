@@ -243,6 +243,11 @@
     color: var(--color-heading);
   }
 
+  /* At the row's end on its own too (no payment icons to push it there) */
+  .site-footer__top:not(.site-footer__payment + .site-footer__top) {
+    margin-inline-start: auto;
+  }
+
   @media (hover: hover) {
     .site-footer__top:hover {
       border-color: var(--color-heading);

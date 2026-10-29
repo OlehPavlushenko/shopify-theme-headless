@@ -161,10 +161,16 @@ export default async function Footer({ section }) {
         {settings.show_policies && policies.length > 0 && (
           <ul className="site-footer__policies" role="list">
             {policies.map((policy) => (
-              <li key={policy.url}>
-                <Link href={localPath(policy.url)}>{policy.title}</Link>
+              <li key={policy.handle}>
+                <Link href={`/policies/${policy.handle}`}>{policy.title}</Link>
               </li>
             ))}
+            {/* Shown and wired by the cookie banner (@ui/cookie-banner) when it is on */}
+            <li>
+              <button type="button" className="site-footer__link-button" data-cookie-settings="" hidden>
+                {t('cookies.settings')}
+              </button>
+            </li>
           </ul>
         )}
         {settings.show_back_to_top && (

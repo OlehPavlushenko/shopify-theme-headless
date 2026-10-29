@@ -2790,14 +2790,15 @@
 }
 
 /* Unlayered on purpose: Shopify's policy-page CSS is unlayered and would beat @layer rules —
-   the reading column's width and padding, and titles start-aligned like every other page heading */
-.shopify-policy__container {
+   the reading column's width and padding, and titles start-aligned like every other page heading.
+   :root raises the specificity: Shopify's stylesheet comes after this one */
+:root .shopify-policy__container {
   max-width: calc(var(--page-width-narrow) + var(--gutter) * 2);
   margin-inline: auto;
   padding: var(--space-2xl) var(--gutter) var(--space-4xl);
 }
 
-.shopify-policy__container .shopify-policy__title {
+:root .shopify-policy__container .shopify-policy__title {
   text-align: start;
 }
 

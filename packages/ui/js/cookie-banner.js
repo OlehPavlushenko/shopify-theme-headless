@@ -10,16 +10,20 @@
  * - Any [data-cookie-settings] on the page (the footer's "Cookie preferences") opens it again; they
  *   are shown once the API is there.
  * In the theme editor it shows while its section is selected.
+ * Headless (no Shopify loader on the page): data-api-src — the Customer Privacy API script to load —
+ * and data-consent — JSON merged into every setTrackingConsent call (headlessStorefront, the domains).
  */
 const PURPOSES = ['analytics', 'marketing', 'preferences'];
 
 // Shopify's Customer Privacy API (null where it doesn't come). Requested after the page has loaded
 // (Shopify's loader may not be ready while it is parsed, and its callback isn't always called), then
-// waited for until it is there, 10 s at most.
+// waited for until it is there, 10 s at most. apiSrc: the script itself, where there is no loader.
 const PRIVACY_WAIT = 10_000;
-function loadPrivacy() {
+function loadPrivacy(apiSrc) {
   return new Promise((resolve) => {
-    const request = () => window.Shopify?.loadFeatures?.([{ name: 'consent-tracking-api', version: '0.1' }], () => {});
+    const request = apiSrc
+      ? () => document.head.append(Object.assign(document.createElement('script'), { src: apiSrc, async: true }))
+      : () => window.Shopify?.loadFeatures?.([{ name: 'consent-tracking-api', version: '0.1' }], () => {});
     if (document.readyState === 'complete') request();
     else addEventListener('load', request, { once: true });
     const started = Date.now();
@@ -47,7 +51,7 @@ class CookieBanner extends HTMLElement {
       document.addEventListener('shopify:section:deselect', (event) => event.target === section && (this.hidden = true), { signal });
     }
 
-    this.#privacy = await loadPrivacy();
+    this.#privacy = await loadPrivacy(this.dataset.apiSrc);
     if (!this.#privacy || signal.aborted) return;
     // The banner may run before the footer is parsed: links are shown once the page is, clicks delegated
     const reveal = () => document.querySelectorAll('[data-cookie-settings]').forEach((link) => (link.hidden = false));
@@ -92,7 +96,7 @@ class CookieBanner extends HTMLElement {
     // The sale of data follows marketing
     consent.sale_of_data = consent.marketing;
     this.hidden = true;
-    this.#privacy?.setTrackingConsent(consent, () => {});
+    this.#privacy?.setTrackingConsent({ ...consent, ...JSON.parse(this.dataset.consent ?? '{}') }, () => {});
   };
 }
 

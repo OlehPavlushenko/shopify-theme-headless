@@ -6,6 +6,7 @@ import AnnouncementBar from './sections/AnnouncementBar.js';
 import BlogPosts from './sections/BlogPosts.js';
 import Brands from './sections/Brands.js';
 import CollectionList from './sections/CollectionList.js';
+import CookieBanner from './sections/CookieBanner.js';
 import CountdownBar from './sections/CountdownBar.js';
 import DeliveryEstimate from './sections/DeliveryEstimate.js';
 import Faq from './sections/Faq.js';
@@ -41,6 +42,7 @@ export const SECTIONS = {
   'blog-posts': BlogPosts,
   brands: Brands,
   'collection-list': CollectionList,
+  'cookie-banner': CookieBanner,
   'countdown-bar': CountdownBar,
   'delivery-estimate': DeliveryEstimate,
   faq: Faq,

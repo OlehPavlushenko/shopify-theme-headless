@@ -5,7 +5,7 @@
   Customer events (Google, Meta, Tag Manager…) follow it. Accept / Decline, and Preferences with a
   switch per purpose. Any [data-cookie-settings] (the footer's "Cookie preferences") opens it again.
   Turn off Shopify's own banner in Settings > Customer privacy when this one is on.
-  Behavior: <cookie-banner> (assets/cookie-banner.js). Styles: .cookie-banner in promo.css.
+  Behavior: <cookie-banner> (@ui/cookie-banner). Styles: .cookie-banner in promo.css.
 {% endcomment %}
 <cookie-banner class="cookie-banner color-{{ section.settings.color_scheme }}" role="region" aria-labelledby="CookieBanner-{{ section.id }}" hidden>
   <div class="cookie-banner__text">
@@ -44,7 +44,7 @@
     <button type="button" class="btn btn--sm" data-consent="save" hidden>{{ 'cookies.save' | t }}</button>
   </div>
 </cookie-banner>
-<script type="module">import 'cookie-banner';</script>
+<script type="module">import '@ui/cookie-banner';</script>
 
 {% schema %}
 {

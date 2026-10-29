@@ -44,6 +44,7 @@ export default function UiScripts() {
     import('@/lib/cart-elements.js');
     import('@ui/quick-view');
     import('@/lib/cart-recommendations.js');
+    if (document.querySelector('cookie-banner')) import('@ui/cookie-banner');
   }, []);
 
   useEffect(() => {

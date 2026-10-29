@@ -40,10 +40,10 @@ export async function getShell() {
       shop {
         name
         description
-        privacyPolicy { title url }
-        refundPolicy { title url }
-        shippingPolicy { title url }
-        termsOfService { title url }
+        privacyPolicy { title handle }
+        refundPolicy { title handle }
+        shippingPolicy { title handle }
+        termsOfService { title handle }
       }
       header: menu(handle: $header) { ...Menu }
       footer: menu(handle: $footer) { ...Menu }
@@ -53,8 +53,29 @@ export async function getShell() {
   );
   if (!data) return { shop: { name: 'Storefront' }, header: [], footer: [], policies: [] };
   const { shop, header, footer } = data;
-  const policies = [shop.privacyPolicy, shop.refundPolicy, shop.shippingPolicy, shop.termsOfService].filter(Boolean);
+  // In shop.policies' order, as the theme's footer lists them
+  const policies = [shop.refundPolicy, shop.privacyPolicy, shop.shippingPolicy, shop.termsOfService].filter(Boolean).map(policyTitled);
   return { shop, header: header?.items ?? [], footer: footer?.items ?? [], policies };
+}
+
+// A policy's title as Liquid's policy.title gives it ("Refund policy"; the API says "Refund Policy")
+const policyTitled = (policy) => ({ ...policy, title: policy.title.charAt(0) + policy.title.slice(1).toLowerCase() });
+
+// A store policy (/policies/<handle>: privacy-policy, refund-policy, shipping-policy, terms-of-service)
+export async function getPolicy(handle) {
+  const data = await storefront(
+    `#graphql
+    query Policies {
+      shop {
+        privacyPolicy { title handle body }
+        refundPolicy { title handle body }
+        shippingPolicy { title handle body }
+        termsOfService { title handle body }
+      }
+    }`
+  );
+  const policy = Object.values(data?.shop ?? {}).find((item) => item?.handle === handle);
+  return policy ? policyTitled(policy) : null;
 }
 
 // Products for a list on the home page (best sellers first)

@@ -13,6 +13,21 @@ import { addToCart, buyNow, setDiscountCodes, updateLine } from '@/app/actions.j
 import { onCart, openDrawer, publish, quantityIn } from './cart-client.js';
 import { numericId, variantGid as gid } from './ids.js';
 
+const ADDED_FOR = 2000;
+const addedTimers = new WeakMap();
+
+// The added line, once the cart has re-rendered it: a short flash ([data-just-added], cart.css)
+function flashLine(lineId) {
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => {
+      for (const row of document.querySelectorAll(`[data-cart-line="${CSS.escape(lineId)}"]`)) {
+        row.setAttribute('data-just-added', '');
+        row.addEventListener('animationend', () => row.removeAttribute('data-just-added'), { once: true });
+      }
+    })
+  );
+}
+
 class CartItemState extends HTMLElement {
   #abort;
   #off;
@@ -43,6 +58,7 @@ class CartItemState extends HTMLElement {
     if (label && this.dataset.label) label.textContent = this.dataset.label.replace('%n', count);
   }
 
+  // Runs a cart action (the element busy meanwhile); returns the new cart (null when it failed)
   async #run(action, added = false) {
     this.setAttribute('aria-busy', 'true');
     try {
@@ -50,21 +66,38 @@ class CartItemState extends HTMLElement {
       if (cart) publish(cart);
       if (added) this.dispatchEvent(new CustomEvent('cart:add', { bubbles: true, detail: { ok: Boolean(cart) } }));
       if (cart && added && this.hasAttribute('data-open-drawer')) openDrawer();
+      return cart;
     } finally {
       this.removeAttribute('aria-busy');
     }
   }
 
+  // As the theme's add buttons (cart.js): a spinner on the button while the item is added, then "Added"
+  // for a moment (.btn[data-added] .btn__state--done) and a flash on its line in the cart
   #onSubmit = async (event) => {
     event.preventDefault();
     if (this.hasAttribute('aria-busy')) return;
     const data = new FormData(event.target);
     if (!data.get('merchandiseId')) data.set('merchandiseId', gid(data.get('id')));
-    await this.#run(() => addToCart(data), true);
-    // A check on the button for a moment (.btn[data-added] .btn__state--done, compact rows)
     const button = event.target.querySelector('[type="submit"]');
-    button?.setAttribute('data-added', '');
-    setTimeout(() => button?.removeAttribute('data-added'), 1500);
+    button?.setAttribute('aria-busy', 'true');
+    let cart = null;
+    try {
+      cart = await this.#run(() => addToCart(data), true);
+    } finally {
+      button?.removeAttribute('aria-busy');
+    }
+    if (!cart) return;
+    if (button) {
+      button.setAttribute('data-added', '');
+      clearTimeout(addedTimers.get(button));
+      addedTimers.set(
+        button,
+        setTimeout(() => button.removeAttribute('data-added'), ADDED_FOR)
+      );
+    }
+    const line = cart.lines.nodes.find((item) => item.merchandise.id === data.get('merchandiseId'));
+    if (line) flashLine(line.id);
   };
 
   #onClick = (event) => {

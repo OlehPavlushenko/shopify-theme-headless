@@ -179,7 +179,7 @@ function Line({ line, strings, run }) {
   const discount = discountOf(line.cost.amountPerQuantity, compareAt);
   const setQuantity = (quantity) => run(() => updateLine(line.id, quantity));
   return (
-    <li className="cart-line">
+    <li className="cart-line" data-cart-line={line.id}>
       <div className="cart-line__media-col">
         <Link href={url} className="cart-line__media frame" tabIndex={-1} aria-hidden="true" style={{ '--frame-ratio': 1 }}>
           {variant.image && (

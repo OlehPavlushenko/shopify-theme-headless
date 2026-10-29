@@ -13,8 +13,10 @@ async function productsOf(settings) {
   return collection?.products.nodes ?? [];
 }
 
-export default async function ProductList({ section }) {
+export default async function ProductList({ section, context = {} }) {
   const { settings } = section;
+  // "Only when the search finds nothing": hidden on a search page with results
+  if (settings.search_empty_only && context.template === 'search' && context.listing?.count > 0) return null;
   const dealActive = settings.deal_product && !(settings.deal_end && toTime(settings.deal_end) <= Date.now());
   const [list, [deal]] = await Promise.all([productsOf(settings), dealActive ? getProductsByHandles([settings.deal_product]) : []]);
   const slider = settings.layout === 'slider';

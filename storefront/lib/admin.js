@@ -9,6 +9,15 @@ export async function taxesIncluded() {
   return Boolean((await admin('{ shop { taxesIncluded } }', {}, { revalidate: 3600 }))?.shop?.taxesIncluded);
 }
 
+// The template a page uses (page.<suffix>.json, set on the page in the admin), as page.template_suffix:
+// '' for the default one, null without the token
+export async function pageTemplateSuffix(handle) {
+  const data = await admin('query ($q: String) { pages(first: 1, query: $q) { nodes { templateSuffix } } }', {
+    q: `handle:${handle}`,
+  });
+  return data ? (data.pages.nodes[0]?.templateSuffix ?? '') : null;
+}
+
 export async function admin(query, variables = {}, { revalidate = 300 } = {}) {
   if (!token || !process.env.SHOPIFY_STORE_DOMAIN) return null;
   const response = await fetch(`https://${process.env.SHOPIFY_STORE_DOMAIN}/admin/api/${version}/graphql.json`, {

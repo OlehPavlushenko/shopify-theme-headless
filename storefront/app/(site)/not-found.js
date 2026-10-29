@@ -1,23 +1,9 @@
-// 404: the theme's main-404 — heading, text, links home and to all products
-import Link from 'next/link';
+// 404: the theme's templates/404.json — main-404 (heading, text, search, links) and the sections after it
+import Sections from '@/components/Sections.js';
+import { getTemplate, t } from '@/lib/theme.js';
 
-export const metadata = { title: 'Page not found' };
+export const metadata = { title: t('404.title') };
 
 export default function NotFound() {
-  return (
-    <div className="section-spacing">
-      <div className="page-width empty-state">
-        <h1 className="h2">Page not found</h1>
-        <p>The page you were looking for doesn’t exist or has moved.</p>
-        <div className="cluster">
-          <Link href="/" className="btn">
-            Go to the home page
-          </Link>
-          <Link href="/collections/all" className="btn btn--outline">
-            Shop all products
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+  return <Sections sections={getTemplate('404').sections} context={{ template: '404' }} />;
 }

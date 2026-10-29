@@ -36,6 +36,49 @@ async function collectionFacts(handle) {
   return { defaultSort: SORT_OPTIONS.find((option) => option.order === facts?.sortOrder)?.value, count: facts?.productsCount?.count };
 }
 
+// The collections page (main-list-collections): every collection with its description, image, the first
+// four products' images (in the collection's own sort order, as collection.products) and the theme's
+// metafields (theme.hidden, theme.featured); the product count and the sort order from the Admin API
+// (as collection.products_count), else the products the storefront sees and the default order
+export async function getCollectionList() {
+  const [data, facts] = await Promise.all([
+    storefront(
+      `#graphql
+      query CollectionList {
+        collections(first: 100, sortKey: TITLE) {
+          nodes {
+            handle
+            title
+            description
+            image { ${IMAGE} }
+            hidden: metafield(namespace: "theme", key: "hidden") { value }
+            featured: metafield(namespace: "theme", key: "featured") { value }
+            all: products(first: 250) { nodes { id } }
+          }
+        }
+      }`
+    ),
+    admin(`{ collections(first: 250) { nodes { handle sortOrder productsCount { count } } } }`),
+  ]);
+  const nodes = data?.collections.nodes ?? [];
+  const factsOf = new Map(facts?.collections.nodes.map((item) => [item.handle, item]));
+  const sortOf = (handle) => SORT_OPTIONS.find((option) => option.order === factsOf.get(handle)?.sortOrder) ?? SORT_OPTIONS[0];
+  const fields = nodes.map(({ handle }, index) => {
+    const sort = sortOf(handle);
+    return `c${index}: collection(handle: ${JSON.stringify(handle)}) {
+      products(first: 4, sortKey: ${sort.key}, reverse: ${Boolean(sort.reverse)}) { nodes { featuredImage { ${IMAGE} } } }
+    }`;
+  });
+  const products = fields.length ? await storefront(`query CollectionListProducts { ${fields.join('\n')} }`) : null;
+  return nodes.map(({ all, hidden, featured, ...collection }, index) => ({
+    ...collection,
+    hidden: hidden?.value === 'true',
+    featured: featured?.value === 'true',
+    products: products?.[`c${index}`]?.products ?? { nodes: [] },
+    productsCount: factsOf.get(collection.handle)?.productsCount.count ?? all.nodes.length,
+  }));
+}
+
 // "all" (Shopify's /collections/all) has no collection in the Storefront API. Unfiltered: the product
 // list, A-Z by default as in Shopify; filtered: an empty search (it takes filters, sorts by relevance or
 // price). The search also gives the filters and the exact count.
@@ -181,9 +224,68 @@ export async function getCollectionPage(handle, params, { perPage = 16 } = {}) {
           { handle, first: perPage, after, sortKey: sort.key, reverse: Boolean(sort.reverse), filters: filtersIn }
         );
   const { filters: rawFilters, pageInfo, nodes: products, totalCount } = data.collection.products;
+  const filters = shapeFilters(rawFilters, params, path);
+  const activeCount = countActive(filters);
+  // The count: the search's total ("all"), the collection's own (Admin API) while nothing is filtered,
+  // else the availability filter's values, which add up to every product of the list
+  const availability = filters.find((filter) => filter.id === 'filter.v.availability');
+  const count =
+    totalCount ??
+    (activeCount === 0 ? facts.count : undefined) ??
+    (availability
+      ? availability.values
+          .filter((value) => !availability.values.some((item) => item.active) || value.active)
+          .reduce((sum, value) => sum + value.count, 0)
+      : products.length);
 
-  // Filters in the theme's shape: values with param_name / value / active / url_to_remove
-  const filters = rawFilters.map((filter) => {
+  return {
+    collection: {
+      ...base,
+      subcollections: (base.subcollections?.references?.nodes ?? [])
+        .filter((sub) => sub.handle)
+        .map(({ count: all, ...sub }) => ({ ...sub, productsCount: all.nodes.length })),
+      seoTextHtml: richTextHtml(base.seoText?.value),
+      seoHeading: base.seoHeading?.value ?? '',
+    },
+    filters,
+    products,
+    sortBy: sort.value,
+    sortOptions: SORT_OPTIONS,
+    activeCount,
+    count,
+    page,
+    shown: (page - 1) * perPage + products.length,
+    nextUrl: nextPageUrl(path, params, pageInfo, page),
+    clearUrl: urlWith(path, new URLSearchParams(params.has('sort_by') ? { sort_by: params.get('sort_by') } : {}), () => {}),
+  };
+}
+
+// The next page's URL (the cursor and the page number), or null on the last page
+function nextPageUrl(path, params, pageInfo, page) {
+  if (!pageInfo.hasNextPage) return null;
+  const next = new URLSearchParams(params);
+  next.set('after', pageInfo.endCursor);
+  next.set('page', page + 1);
+  return `${path}?${next}`;
+}
+
+// How many filter values are on (a price range counts once)
+function countActive(filters) {
+  return filters.reduce(
+    (sum, filter) =>
+      sum +
+      (filter.type === 'price_range'
+        ? filter.min.value || filter.max.value
+          ? 1
+          : 0
+        : filter.values.filter((value) => value.active).length),
+    0
+  );
+}
+
+// Filters in the theme's shape: values with param_name / value / active / url_to_remove
+function shapeFilters(rawFilters, params, path) {
+  return rawFilters.map((filter) => {
     if (filter.type === 'PRICE_RANGE') {
       const range = JSON.parse(filter.values[0]?.input ?? '{"price":{"max":0}}').price;
       const min = params.get(`${PRICE}.gte`);
@@ -227,55 +329,60 @@ export async function getCollectionPage(handle, params, { perPage = 16 } = {}) {
       values,
     };
   });
+}
 
-  const activeCount = filters.reduce(
-    (sum, filter) =>
-      sum +
-      (filter.type === 'price_range'
-        ? filter.min.value || filter.max.value
-          ? 1
-          : 0
-        : filter.values.filter((value) => value.active).length),
-    0
-  );
-  // The count: the search's total ("all"), the collection's own (Admin API) while nothing is filtered,
-  // else the availability filter's values, which add up to every product of the list
-  const availability = filters.find((filter) => filter.id === 'filter.v.availability');
-  const count =
-    totalCount ??
-    (activeCount === 0 ? facts.count : undefined) ??
-    (availability
-      ? availability.values
-          .filter((value) => !availability.values.some((item) => item.active) || value.active)
-          .reduce((sum, value) => sum + value.count, 0)
-      : products.length);
-  const shown = (page - 1) * perPage + products.length;
-  const nextUrl = pageInfo.hasNextPage
-    ? (() => {
-        const next = new URLSearchParams(params);
-        next.set('after', pageInfo.endCursor);
-        next.set('page', page + 1);
-        return `${path}?${next}`;
-      })()
-    : null;
+// Shopify's search sort options (search.sort_options); relevance by default
+export const SEARCH_SORT_OPTIONS = [
+  { value: 'relevance', name: 'Relevance', key: 'RELEVANCE' },
+  { value: 'price-ascending', name: 'Price, low to high', key: 'PRICE' },
+  { value: 'price-descending', name: 'Price, high to low', key: 'PRICE', reverse: true },
+];
 
+// The search's own options, as snippets/search-options adds them to every search link
+const SEARCH_OPTIONS = { type: 'product', 'options[prefix]': 'last', 'options[unavailable_products]': 'last' };
+
+const SEARCH = `#graphql
+  query SearchPage($q: String!, $first: Int!, $after: String, $sortKey: SearchSortKeys!, $reverse: Boolean!, $filters: [ProductFilter!]) {
+    search(query: $q, first: $first, after: $after, types: PRODUCT, prefix: LAST, unavailableProducts: LAST,
+      sortKey: $sortKey, reverse: $reverse, productFilters: $filters) {
+      totalCount
+      productFilters { id label type presentation values { id label count input swatch { color image { previewImage { url } } } } }
+      pageInfo { hasNextPage endCursor }
+      nodes { ... on Product { ...ProductCard } }
+    }
+  }
+  ${PRODUCT_CARD}`;
+
+// The search page's results in the collection page's shape (main-collection on templates/search.json):
+// the products found for ?q=, their filters, sort and count. { performed: false } without terms.
+export async function getSearchPage(params, { perPage = 24 } = {}) {
+  const terms = (params.get('q') ?? '').trim();
+  if (!terms) return { performed: false, terms: '' };
+  const path = '/search';
+  const sort = SEARCH_SORT_OPTIONS.find((option) => option.value === params.get('sort_by')) ?? SEARCH_SORT_OPTIONS[0];
+  const after = params.get('after');
+  const page = Math.max(1, Number(params.get('page')) || 1);
+  const variables = { q: terms, first: perPage, after, sortKey: sort.key, reverse: Boolean(sort.reverse) };
+  // The filters' inputs come from the unfiltered search: a second request only when a filter is on
+  let data = await storefront(SEARCH, variables);
+  if (!data) return null;
+  const filtersIn = inputsFor(params, data.search.productFilters);
+  if (filtersIn.length) data = await storefront(SEARCH, { ...variables, filters: filtersIn });
+  const { totalCount, productFilters, pageInfo, nodes: products } = data.search;
+  const filters = shapeFilters(productFilters, params, path);
   return {
-    collection: {
-      ...base,
-      subcollections: (base.subcollections?.references?.nodes ?? [])
-        .filter((sub) => sub.handle)
-        .map(({ count: all, ...sub }) => ({ ...sub, productsCount: all.nodes.length })),
-      seoTextHtml: richTextHtml(base.seoText?.value),
-      seoHeading: base.seoHeading?.value ?? '',
-    },
+    performed: true,
+    terms,
+    collection: { handle: 'search' },
     filters,
     products,
     sortBy: sort.value,
-    activeCount,
-    count,
+    sortOptions: SEARCH_SORT_OPTIONS,
+    activeCount: countActive(filters),
+    count: totalCount,
     page,
-    shown,
-    nextUrl,
-    clearUrl: urlWith(path, new URLSearchParams(params.has('sort_by') ? { sort_by: params.get('sort_by') } : {}), () => {}),
+    shown: (page - 1) * perPage + products.length,
+    nextUrl: nextPageUrl(path, params, pageInfo, page),
+    clearUrl: `${path}?${new URLSearchParams({ q: terms, ...SEARCH_OPTIONS, sort_by: sort.value })}`,
   };
 }

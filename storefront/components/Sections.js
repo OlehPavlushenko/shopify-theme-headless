@@ -7,12 +7,17 @@ import BlogPosts from './sections/BlogPosts.js';
 import Brands from './sections/Brands.js';
 import CollectionList from './sections/CollectionList.js';
 import CountdownBar from './sections/CountdownBar.js';
+import DeliveryEstimate from './sections/DeliveryEstimate.js';
 import Faq from './sections/Faq.js';
 import Footer from './sections/Footer.js';
 import Header from './sections/Header.js';
 import Hero from './sections/Hero.js';
 import ImageText from './sections/ImageText.js';
+import Main404 from './sections/Main404.js';
 import MainCollection from './sections/MainCollection.js';
+import MainContact from './sections/MainContact.js';
+import MainListCollections from './sections/MainListCollections.js';
+import MainSearch from './sections/MainSearch.js';
 import MainPage from './sections/MainPage.js';
 import MainProduct from './sections/MainProduct.js';
 import { ProductRecommendations, ProductStory, RecentlyViewed } from './sections/ProductExtras.js';
@@ -22,8 +27,11 @@ import PageHeader from './sections/PageHeader.js';
 import ProductList from './sections/ProductList.js';
 import PromoPopup from './sections/PromoPopup.js';
 import PromoGrid from './sections/PromoGrid.js';
+import Quote from './sections/Quote.js';
 import RichText from './sections/RichText.js';
 import { MainCompare, MainWishlist } from './sections/SavedLists.js';
+import Stats from './sections/Stats.js';
+import Timeline from './sections/Timeline.js';
 import TrustBar from './sections/TrustBar.js';
 
 export const SECTIONS = {
@@ -32,13 +40,18 @@ export const SECTIONS = {
   brands: Brands,
   'collection-list': CollectionList,
   'countdown-bar': CountdownBar,
+  'delivery-estimate': DeliveryEstimate,
   faq: Faq,
   footer: Footer,
   header: Header,
   hero: Hero,
   'image-text': ImageText,
+  'main-404': Main404,
   'main-collection': MainCollection,
   'main-compare': MainCompare,
+  'main-contact': MainContact,
+  'main-list-collections': MainListCollections,
+  'main-search': MainSearch,
   'main-page': MainPage,
   'main-product': MainProduct,
   'product-recommendations': ProductRecommendations,
@@ -51,7 +64,10 @@ export const SECTIONS = {
   'product-list': ProductList,
   'promo-grid': PromoGrid,
   'promo-popup': PromoPopup,
+  quote: Quote,
   'rich-text': RichText,
+  stats: Stats,
+  timeline: Timeline,
   'trust-bar': TrustBar,
 };
 

@@ -310,23 +310,7 @@ export async function predictiveSearch(query) {
   return data?.predictiveSearch ?? { queries: [], collections: [], products: [] };
 }
 
-// Search results (products), 24 at most
-export async function searchProducts(query) {
-  const data = await storefront(
-    `#graphql
-    query Search($query: String!) {
-      search(query: $query, first: 24, types: PRODUCT) {
-        totalCount
-        nodes { ... on Product { ...ProductCard } }
-      }
-    }
-    ${PRODUCT_CARD}`,
-    { query }
-  );
-  return data?.search ?? { totalCount: 0, nodes: [] };
-}
-
-// Collections page: every collection with its image (or its first product's) and product count
+// Every collection with its image (or its first product's): the collection list section without picks
 export async function getCollections() {
   const data = await storefront(
     `#graphql

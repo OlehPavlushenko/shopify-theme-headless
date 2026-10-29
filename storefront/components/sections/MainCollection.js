@@ -3,14 +3,18 @@
 // dropdowns / drawer; a drawer on phones) and the grid with the promo tile, then "Load more". The same
 // markup and the shared modules: <facet-filters> (@ui/facets) and <load-more> (@ui/load-more) fetch this
 // section on its own from app/(fragments)/collection-section/<handle> (data-endpoint) with the page's query.
-// context.listing: lib/collection.js getCollectionPage.
+// context.listing: lib/collection.js getCollectionPage, or getSearchPage on the search page (the terms
+// ride along in the filter form; before a search a prompt; a search that finds nothing, unfiltered, shows
+// only its message), fetched from app/(fragments)/search-section.
 import Icon from '../Icon.js';
 import ProductCard from '../ProductCard.js';
 import PromoCard from '../PromoCard.js';
 import CloseButton from '../CloseButton.js';
-import { SORT_OPTIONS } from '@/lib/collection.js';
+import { SearchOptions } from '../SearchForm.js';
 import { formatMoney } from '@/lib/format.js';
 import { getSettings, t } from '@/lib/theme.js';
+
+const escapeHtml = (text) => text.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
 const COLOR_NAMES = ['color', 'colour', 'колір', 'цвет'];
 const SHOWN_VALUES = 6;
@@ -97,7 +101,7 @@ function ActiveChips({ filters, clearUrl, currency }) {
 }
 
 // snippets/facets: the filter form
-function FilterForm({ filters, formId, layout, sortBy, currency }) {
+function FilterForm({ filters, formId, layout, sortBy, currency, terms }) {
   const symbol = new Intl.NumberFormat('en-US', { style: 'currency', currency })
     .formatToParts(0)
     .find((part) => part.type === 'currency')?.value;
@@ -106,6 +110,12 @@ function FilterForm({ filters, formId, layout, sortBy, currency }) {
   );
   return (
     <form id={formId} className="facets__form" data-facets-form>
+      {terms && (
+        <>
+          <input type="hidden" name="q" value={terms} />
+          <SearchOptions />
+        </>
+      )}
       {groups.map((filter, index) => {
         const activeCount =
           filter.type === 'price_range'
@@ -239,13 +249,28 @@ export default function MainCollection({ section, context = {} }) {
   const { settings, blocks } = section;
   const listing = context.listing;
   if (!listing) return null;
-  const { filters, products, sortBy, activeCount, count, shown, nextUrl, clearUrl, page } = listing;
+  if (listing.performed === false) {
+    return (
+      <div className={`main-collection color-${settings.color_scheme} section-spacing`}>
+        <div className="page-width">
+          <div className="empty-state">
+            <Icon name="search" />
+            <p className="h5">{t('search.start_title')}</p>
+            <p>{t('search.start_text')}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  const { filters, products, sortBy, sortOptions, activeCount, count, shown, nextUrl, clearUrl, page, terms } = listing;
   const handle = listing.collection.handle;
   const currency = products[0]?.priceRange.minVariantPrice.currencyCode ?? 'USD';
   const layout = settings.filters_layout;
   const formId = `FacetsForm-${section.id}`;
   const panelId = `FacetsPanel-${section.id}`;
-  const hasFilters = settings.show_filters && filters.length > 0;
+  // A search with no results and no filter on: only its message (nothing to filter or sort)
+  const bare = Boolean(terms) && count === 0 && activeCount === 0;
+  const hasFilters = settings.show_filters && filters.length > 0 && !bare;
   const columns = settings.columns_desktop;
   const fewColumns = Math.max(2, columns - 1);
   const tabletColumns = Math.min(3, columns);
@@ -255,9 +280,9 @@ export default function MainCollection({ section, context = {} }) {
     hasFilters && layout === 'sidebar'
       ? `(min-width: 1200px) calc((100vw - 36rem) / ${columns}), (min-width: 990px) calc((100vw - 36rem) / ${tabletColumns}), (min-width: 750px) ${tabletSize}, 50vw`
       : `(min-width: 990px) calc((100vw - 10rem) / ${columns}), (min-width: 750px) ${tabletSize}, 50vw`;
-  const promo = blocks.find((block) => block.type === 'promo');
-  const countLabel = t('collections.product_count', { count });
-  const endpoint = `/collection-section/${handle}`;
+  const promo = terms ? null : blocks.find((block) => block.type === 'promo');
+  const countLabel = terms ? t('search.results_count', { count }) : t('collections.product_count', { count });
+  const endpoint = terms ? '/search-section' : `/collection-section/${handle}`;
   const theme = getSettings();
 
   return (
@@ -267,62 +292,66 @@ export default function MainCollection({ section, context = {} }) {
       data-endpoint={endpoint}
     >
       <div className="page-width">
-        <div className="facets__toolbar">
-          {hasFilters && (
-            <button type="button" className="btn btn--outline btn--sm facets__toggle" popoverTarget={panelId}>
-              <Icon name="sliders" />
-              {t('facets.filters')}
-              <span className="count-badge facets__toggle-count" data-facets-active-count="" hidden={activeCount === 0}>
-                {activeCount}
-              </span>
-            </button>
-          )}
-          <p className="facets__count" data-facets-count="" role="status">
-            {countLabel}
-          </p>
-          <div className="facets__tools">
-            {settings.show_sort && (
-              <label className="facets__sort">
-                <span className="facets__sort-label">{t('facets.sort_by')}</span>
-                <select name="sort_by" className="facets__sort-select" form={formId} data-facets-sort="" defaultValue={sortBy}>
-                  {SORT_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.name}
-                    </option>
+        {!bare && (
+          <div className="facets__toolbar">
+            {hasFilters && (
+              <button type="button" className="btn btn--outline btn--sm facets__toggle" popoverTarget={panelId}>
+                <Icon name="sliders" />
+                {t('facets.filters')}
+                <span className="count-badge facets__toggle-count" data-facets-active-count="" hidden={activeCount === 0}>
+                  {activeCount}
+                </span>
+              </button>
+            )}
+            <p className="facets__count" data-facets-count="" role="status">
+              {countLabel}
+            </p>
+            <div className="facets__tools">
+              {settings.show_sort && (
+                <label className="facets__sort">
+                  <span className="facets__sort-label">{t('facets.sort_by')}</span>
+                  <select name="sort_by" className="facets__sort-select" form={formId} data-facets-sort="" defaultValue={sortBy}>
+                    {sortOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.name}
+                      </option>
+                    ))}
+                  </select>
+                  <Icon name="chevron-down" />
+                </label>
+              )}
+              {settings.show_density && (
+                <div className="facets__density" role="group" aria-label={t('facets.density')}>
+                  {[
+                    ['few', fewColumns, fewTabletColumns, 'false'],
+                    ['many', columns, tabletColumns, 'true'],
+                  ].map(([density, total, tablet, pressed]) => (
+                    <button
+                      key={density}
+                      type="button"
+                      className={`facets__density-button facets__density-button--${density}`}
+                      data-density={density}
+                      aria-label={t(`facets.density_${density}`)}
+                      aria-pressed={pressed}
+                    >
+                      <span className="facets__density-icon" aria-hidden="true">
+                        {Array.from({ length: total }, (_, i) => (
+                          <span key={i} data-wide={i + 1 > tablet ? '' : undefined} />
+                        ))}
+                      </span>
+                    </button>
                   ))}
-                </select>
-                <Icon name="chevron-down" />
-              </label>
-            )}
-            {settings.show_density && (
-              <div className="facets__density" role="group" aria-label={t('facets.density')}>
-                {[
-                  ['few', fewColumns, fewTabletColumns, 'false'],
-                  ['many', columns, tabletColumns, 'true'],
-                ].map(([density, total, tablet, pressed]) => (
-                  <button
-                    key={density}
-                    type="button"
-                    className={`facets__density-button facets__density-button--${density}`}
-                    data-density={density}
-                    aria-label={t(`facets.density_${density}`)}
-                    aria-pressed={pressed}
-                  >
-                    <span className="facets__density-icon" aria-hidden="true">
-                      {Array.from({ length: total }, (_, i) => (
-                        <span key={i} data-wide={i + 1 > tablet ? '' : undefined} />
-                      ))}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="facets__active" data-facets-active="">
-          {hasFilters && <ActiveChips filters={filters} clearUrl={clearUrl} currency={currency} />}
-        </div>
+        {!bare && (
+          <div className="facets__active" data-facets-active="">
+            {hasFilters && <ActiveChips filters={filters} clearUrl={clearUrl} currency={currency} />}
+          </div>
+        )}
 
         <div className="facets__layout">
           {hasFilters && (
@@ -354,6 +383,7 @@ export default function MainCollection({ section, context = {} }) {
                     layout={layout}
                     sortBy={settings.show_sort ? null : sortBy}
                     currency={currency}
+                    terms={terms}
                   />
                 </div>
                 <div className="drawer__footer facets__panel-footer">
@@ -425,6 +455,13 @@ export default function MainCollection({ section, context = {} }) {
                     <p>{t('facets.no_results_text')}</p>
                     <a href={clearUrl} className="btn" data-facets-link="">
                       {t('facets.clear_all')}
+                    </a>
+                  </>
+                ) : terms ? (
+                  <>
+                    <p className="h5" dangerouslySetInnerHTML={{ __html: t('search.no_results_html', { terms: escapeHtml(terms) }) }} />
+                    <a href="/collections/all" className="btn">
+                      {t('search.browse_all')}
                     </a>
                   </>
                 ) : (

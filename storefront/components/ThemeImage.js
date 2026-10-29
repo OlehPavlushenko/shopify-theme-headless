@@ -11,6 +11,7 @@ export default async function ThemeImage({
   loading = 'lazy',
   fetchPriority,
   width,
+  height,
 }) {
   const src = await imageUrl(image);
   if (!src) return null;
@@ -19,6 +20,7 @@ export default async function ThemeImage({
     <img
       className={className}
       width={width}
+      height={height}
       src={at(widths.at(-1))}
       srcSet={widths.map((width) => `${at(width)} ${width}w`).join(', ')}
       sizes={sizes}

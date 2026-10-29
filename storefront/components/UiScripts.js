@@ -62,6 +62,7 @@ export default function UiScripts() {
     if (document.querySelector('quantity-breaks')) import('@ui/quantity-breaks');
     if (document.querySelector('contact-form')) import('@ui/contact-form');
     if (document.querySelector('load-more')) import('@ui/load-more');
+    if (document.querySelector('delivery-steps')) import('@ui/delivery-steps');
   }, [pathname]);
 
   return null;

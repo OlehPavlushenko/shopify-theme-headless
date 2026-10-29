@@ -64,6 +64,29 @@ export async function getProducts(first = 8) {
 }
 
 const IMAGE = 'url altText width height';
+
+// A menu by handle (Admin > Content > Menus), three levels, as [{ id, title, url, items }]
+export async function getMenu(handle) {
+  if (!handle) return [];
+  const data = await storefront(
+    `#graphql
+    query Menu($handle: String!) {
+      menu(handle: $handle) {
+        items { id title url items { id title url items { id title url } } }
+      }
+    }`,
+    { handle }
+  );
+  return data?.menu?.items ?? [];
+}
+
+// Products picked in a theme setting (a list of handles), in that order; missing ones are skipped
+export async function getProductsByHandles(handles = []) {
+  if (!handles.length) return [];
+  const fields = handles.map((handle, index) => `p${index}: product(handle: ${JSON.stringify(handle)}) { ...ProductCard }`);
+  const data = await storefront(`query PickedProducts { ${fields.join('\n')} } ${PRODUCT_CARD}`);
+  return handles.map((_, index) => data?.[`p${index}`]).filter(Boolean);
+}
 const MONEY = 'amount currencyCode';
 
 // Product page: the product, its variants and the variant matching the picked options

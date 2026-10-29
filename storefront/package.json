@@ -7,7 +7,9 @@
     "node": ">=22"
   },
   "scripts": {
+    "predev": "node scripts/icons.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/icons.mjs",
     "build": "next build",
     "start": "next start"
   },

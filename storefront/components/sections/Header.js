@@ -120,53 +120,59 @@ function SiteNav({ menu, blocks, sectionId }) {
   );
 }
 
-// The mobile menu: one panel per level (snippets/mobile-menu.liquid); the root panel ends with the utility
-// content (below 990px the utility panel's icon is hidden)
+// The mobile menu: one panel per level (snippets/mobile-menu.liquid) — the root, then a panel for every
+// link with children on the first and second level; the root panel ends with the utility content (below
+// 990px the utility panel's icon is hidden)
+function MenuList({ items }) {
+  return (
+    <ul className="mobile-nav__list" role="list">
+      {items.map((item) => (
+        <li key={item.id}>
+          {item.items?.length > 0 ? (
+            <button type="button" className="mobile-nav__link" data-panel-open={`MenuPanel-${item.id}`}>
+              {item.title}
+              <Icon name="chevron-right" />
+            </button>
+          ) : (
+            <Link href={localPath(item.url)} className="mobile-nav__link">
+              {item.title}
+            </Link>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function MenuPanel({ item }) {
+  return (
+    <div className="mobile-nav__panel" data-panel={`MenuPanel-${item.id}`} hidden>
+      <div className="mobile-nav__head">
+        <button type="button" className="mobile-nav__back" data-panel-back="" aria-label={`${t('accessibility.back')}: ${item.title}`}>
+          <Icon name="chevron-left" />
+          {t('accessibility.back')}
+        </button>
+        <Link href={localPath(item.url)} className="mobile-nav__all">
+          {t('general.all_title', { title: item.title })}
+        </Link>
+      </div>
+      <MenuList items={item.items} />
+    </div>
+  );
+}
+
 function MobileMenu({ menu, utility }) {
   const parents = menu.filter((item) => item.items.length > 0);
   return (
     <drill-menu class="mobile-nav">
       <div className="mobile-nav__panel" data-panel="root">
-        <ul className="mobile-nav__list" role="list">
-          {menu.map((item) => (
-            <li key={item.id}>
-              {item.items.length > 0 ? (
-                <button type="button" className="mobile-nav__link" data-panel-open={`MenuPanel-${item.id}`}>
-                  {item.title}
-                  <Icon name="chevron-right" />
-                </button>
-              ) : (
-                <Link href={localPath(item.url)} className="mobile-nav__link">
-                  {item.title}
-                </Link>
-              )}
-            </li>
-          ))}
-        </ul>
+        <MenuList items={menu} />
         {utility && <div className="mobile-nav__utility utility-panel__body">{utility}</div>}
       </div>
-      {parents.map((item) => (
-        <div key={item.id} className="mobile-nav__panel" data-panel={`MenuPanel-${item.id}`} hidden>
-          <div className="mobile-nav__head">
-            <button type="button" className="mobile-nav__back" data-panel-back="" aria-label={`${t('accessibility.back')}: ${item.title}`}>
-              <Icon name="chevron-left" />
-              {item.title}
-            </button>
-            <Link href={localPath(item.url)} className="mobile-nav__all">
-              {t('general.all_title', { title: item.title })}
-            </Link>
-          </div>
-          <ul className="mobile-nav__list" role="list">
-            {item.items.map((child) => (
-              <li key={child.id}>
-                <Link href={localPath(child.url)} className="mobile-nav__link">
-                  {child.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      {parents.map((item) => [
+        <MenuPanel key={item.id} item={item} />,
+        ...item.items.filter((child) => child.items?.length > 0).map((child) => <MenuPanel key={child.id} item={child} />),
+      ])}
     </drill-menu>
   );
 }

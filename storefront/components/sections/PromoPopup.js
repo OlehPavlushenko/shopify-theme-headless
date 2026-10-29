@@ -28,7 +28,9 @@ function Wheel({ section, block }) {
     }));
   const count = prizes.length;
   if (count < 2) return null;
-  // The list exactly as Liquid prints it: the server checks its signature (THEME_SECRET, the theme's API secret)
+  // The list exactly as Liquid prints it: the server checks its signature with the theme's API secret
+  // (THEME_SECRET, else the setting in the local settings_data.json)
+  const secret = THEME_SECRET || settings.api_secret;
   const raw = `[${prizes.map((prize) => `{"label":${JSON.stringify(prize.label)},"code":${JSON.stringify(prize.code)},"weight":${prize.weight}}`).join(',')}]`;
   const odd = count % 2 === 1;
   const stops = prizes
@@ -46,7 +48,7 @@ function Wheel({ section, block }) {
       class="spin-wheel"
       data-key={section.id}
       data-endpoint={api ? `${api}/spin` : undefined}
-      data-signature={api && THEME_SECRET ? createHmac('sha256', THEME_SECRET).update(raw).digest('hex') : undefined}
+      data-signature={api && secret ? createHmac('sha256', secret).update(raw).digest('hex') : undefined}
       data-recaptcha={api && settings.recaptcha_site_key ? settings.recaptcha_site_key : undefined}
       data-message-email={api ? t('newsletter.invalid_email') : undefined}
       data-message-error={api ? t('newsletter.error') : undefined}

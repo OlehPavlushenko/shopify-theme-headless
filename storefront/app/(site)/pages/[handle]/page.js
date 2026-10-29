@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Sections from '@/components/Sections.js';
 import { pageTemplateSuffix } from '@/lib/admin.js';
 import { getPage } from '@/lib/queries.js';
+import { pageMetadata } from '@/lib/seo.js';
 import { getTemplate } from '@/lib/theme.js';
 
 // The page's template (its suffix and sections)
@@ -15,13 +16,13 @@ export async function generateMetadata({ params }) {
   const { handle } = await params;
   const [page, { suffix }] = await Promise.all([getPage(handle), template(handle)]);
   if (!page) return {};
-  return {
+  return pageMetadata({
     title: page.seo?.title || page.title,
     description: page.seo?.description || page.bodySummary?.slice(0, 160),
-    alternates: { canonical: `/pages/${handle}` },
+    path: `/pages/${handle}`,
     // The wishlist and compare pages are personal: as in the theme, kept out of search engines
-    ...((suffix === 'wishlist' || suffix === 'compare') && { robots: { index: false, follow: true } }),
-  };
+    noindex: suffix === 'wishlist' || suffix === 'compare',
+  });
 }
 
 export default async function Page({ params }) {

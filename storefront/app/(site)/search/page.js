@@ -6,17 +6,17 @@ import '@ui-css/facets.css';
 import Sections from '@/components/Sections.js';
 import { blogListing, blogTitle } from '@/lib/blog.js';
 import { getSearchPage } from '@/lib/collection.js';
+import { pageMetadata } from '@/lib/seo.js';
 import { findSection, t } from '@/lib/theme.js';
 
 export async function generateMetadata({ searchParams }) {
   const query = new URLSearchParams(await searchParams);
   const q = (query.get('q') ?? '').trim();
-  const robots = { index: false, follow: true };
   if (query.get('view') === 'blog') {
     const list = await blogListing(['search'], query);
-    if (list) return { title: blogTitle(list.listing), robots };
+    if (list) return pageMetadata({ title: blogTitle(list.listing), noindex: true });
   }
-  return { title: q ? `${t('search.title')}: ${q}` : t('search.title'), robots };
+  return pageMetadata({ title: q ? `${t('search.title')}: ${q}` : t('search.title'), noindex: true });
 }
 
 export default async function SearchPage({ searchParams }) {

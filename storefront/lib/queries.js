@@ -62,6 +62,7 @@ export async function getShell() {
       shop {
         name
         description
+        paymentSettings { currencyCode }
         privacyPolicy { title handle }
         refundPolicy { title handle }
         shippingPolicy { title handle }

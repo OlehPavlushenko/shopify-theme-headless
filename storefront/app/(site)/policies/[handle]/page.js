@@ -2,10 +2,11 @@
 // styled in sections.css) — the title and the policy's text from Settings > Policies
 import { notFound } from 'next/navigation';
 import { getPolicy } from '@/lib/queries.js';
+import { pageMetadata } from '@/lib/seo.js';
 
 export async function generateMetadata({ params }) {
   const policy = await getPolicy((await params).handle);
-  return policy ? { title: policy.title, alternates: { canonical: `/policies/${policy.handle}` } } : {};
+  return policy ? pageMetadata({ title: policy.title, path: `/policies/${policy.handle}` }) : {};
 }
 
 export default async function PolicyPage({ params }) {

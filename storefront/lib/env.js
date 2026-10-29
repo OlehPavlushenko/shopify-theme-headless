@@ -5,8 +5,10 @@
 export const STORE_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN;
 export const API_VERSION = process.env.SHOPIFY_API_VERSION || '2026-10';
 
-// This site's public address for absolute URLs (structured data); blank: URLs stay relative
-export const SITE_URL = process.env.SITE_URL || '';
+// This site's public address for absolute URLs (canonical, sitemap, structured data): SITE_URL, else the
+// Vercel project's production domain; blank: URLs stay relative
+const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+export const SITE_URL = (process.env.SITE_URL || (vercel ? `https://${vercel}` : '')).replace(/\/$/, '');
 
 // The theme's API secret (Theme settings > Integrations, the server's THEME_SECRET): signs the Spin to win
 // prize list. Needed where the theme folder has no secret: settings_data.json is committed without it

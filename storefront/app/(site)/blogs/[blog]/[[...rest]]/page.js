@@ -6,6 +6,7 @@ import JsonLd from '@/components/JsonLd.js';
 import Sections from '@/components/Sections.js';
 import { SITE_URL } from '@/lib/env.js';
 import { blogListing, blogTitle, getArticlePage } from '@/lib/blog.js';
+import { pageMetadata } from '@/lib/seo.js';
 import { getTemplate } from '@/lib/theme.js';
 
 // The article, or the blog listing, for the URL (the request's queries are memoized: generateMetadata and
@@ -21,21 +22,22 @@ export async function generateMetadata({ params, searchParams }) {
   const { article, list, query } = await load(params, searchParams);
   if (article) {
     const { article: item, blog } = article;
-    return {
+    return pageMetadata({
       title: item.seo?.title || item.title,
       description: item.seo?.description || item.excerpt || item.content.slice(0, 160),
-      alternates: { canonical: `${blog.url}/${item.handle}` },
-      openGraph: { type: 'article', images: item.image ? [{ url: item.image.url }] : [] },
-    };
+      path: `${blog.url}/${item.handle}`,
+      type: 'article',
+      image: item.image && { url: item.image.url },
+    });
   }
   if (!list) return {};
   const { listing } = list;
-  return {
+  return pageMetadata({
     title: blogTitle(listing),
-    description: listing.blog.seo?.description || undefined,
-    alternates: { canonical: listing.blog.url },
-    ...((listing.chosen.length > 0 || query.has('page')) && { robots: { index: false, follow: true } }),
-  };
+    description: listing.blog.seo?.description,
+    path: listing.blog.url,
+    noindex: listing.chosen.length > 0 || query.has('page'),
+  });
 }
 
 export default async function BlogPage({ params, searchParams }) {

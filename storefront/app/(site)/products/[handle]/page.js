@@ -10,6 +10,7 @@ import { taxesIncluded } from '@/lib/admin.js';
 import { SITE_URL } from '@/lib/env.js';
 import { numericId } from '@/lib/ids.js';
 import { getProductPage } from '@/lib/product.js';
+import { pageMetadata } from '@/lib/seo.js';
 import { getTemplate } from '@/lib/theme.js';
 
 // The product for the URL (the request's queries are memoized, lib/shopify.js: generateMetadata and the
@@ -31,12 +32,12 @@ export async function generateMetadata({ params, searchParams }) {
   const product = await load(params, searchParams);
   if (!product) return {};
   const image = product.featuredImage;
-  return {
+  return pageMetadata({
     title: product.seo.title || product.title,
     description: product.seo.description || product.description.slice(0, 160),
-    alternates: { canonical: `/products/${product.handle}` },
-    openGraph: { type: 'website', images: image ? [{ url: image.url, width: image.width, height: image.height }] : [] },
-  };
+    path: `/products/${product.handle}`,
+    image: image && { url: image.url, width: image.width, height: image.height },
+  });
 }
 
 export default async function ProductPage({ params, searchParams }) {

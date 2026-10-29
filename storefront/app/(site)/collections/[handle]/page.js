@@ -4,8 +4,10 @@
 // the theme. Styles: packages/ui/css/facets.css.
 import '@ui-css/facets.css';
 import { notFound } from 'next/navigation';
+import JsonLd from '@/components/JsonLd.js';
 import Sections from '@/components/Sections.js';
 import { getCollectionPage } from '@/lib/collection.js';
+import { collectionPage, pageMetadata } from '@/lib/seo.js';
 import { findSection } from '@/lib/theme.js';
 
 // The listing for the URL (the request's queries are memoized: generateMetadata and the page share them)
@@ -22,21 +24,25 @@ export async function generateMetadata({ params, searchParams }) {
   if (!listing) return {};
   const { collection } = listing;
   const filtered = [...query.keys()].some((key) => key.startsWith('filter.') || key === 'after');
-  return {
+  return pageMetadata({
     title: collection.seo?.title || collection.title,
     description: collection.seo?.description || collection.description?.slice(0, 160),
-    alternates: { canonical: `/collections/${handle}` },
-    ...(filtered && { robots: { index: false, follow: true } }),
-  };
+    path: `/collections/${handle}`,
+    image: collection.image && { url: collection.image.url },
+    noindex: filtered,
+  });
 }
 
 export default async function CollectionPage({ params, searchParams }) {
   const { sections, listing } = await load(params, searchParams);
   if (!listing) notFound();
   return (
-    <Sections
-      sections={sections}
-      context={{ template: 'collection', collection: listing.collection, subcollections: listing.collection.subcollections, listing }}
-    />
+    <>
+      <Sections
+        sections={sections}
+        context={{ template: 'collection', collection: listing.collection, subcollections: listing.collection.subcollections, listing }}
+      />
+      {listing.count > 0 && <JsonLd data={collectionPage(listing.collection, listing.products, listing.count)} />}
+    </>
   );
 }

@@ -25,7 +25,10 @@ import SearchPanel from '@/components/SearchPanel.js';
 import Sections from '@/components/Sections.js';
 import UiScripts from '@/components/UiScripts.js';
 import { sizedUrl } from '@/components/ThemeImage.js';
+import JsonLd from '@/components/JsonLd.js';
+import { SITE_URL } from '@/lib/env.js';
 import { getShell } from '@/lib/queries.js';
+import { organization, pageMetadata } from '@/lib/seo.js';
 import { accountUrl } from '@/lib/shopify.js';
 import { CART_STRINGS } from '@/lib/strings.js';
 import { freeShippingThreshold, getSections, getSettings, imageUrl, orderDetails, strings, t, themeCss } from '@/lib/theme.js';
@@ -36,13 +39,14 @@ const body = DM_Sans({ subsets: ['latin'], display: 'swap' });
 // heading family is bold everywhere, also where the CSS sets no weight (the product story's ingredient names)
 const heading = Bricolage_Grotesque({ subsets: ['latin'], weight: '700', display: 'swap' });
 
-// Title, description and the favicon (Theme settings > Brand > Favicon, 32×32 as in theme.liquid)
+// The defaults of every page (lib/seo.js), the title template and the favicon (Theme settings > Brand >
+// Favicon, 32×32 as in theme.liquid)
 export async function generateMetadata() {
-  const { shop } = await getShell();
-  const favicon = await imageUrl(getSettings().favicon);
+  const [{ shop }, defaults, favicon] = await Promise.all([getShell(), pageMetadata({}), imageUrl(getSettings().favicon)]);
   return {
+    ...defaults,
+    ...(SITE_URL && { metadataBase: new URL(SITE_URL) }),
     title: { default: shop.name, template: `%s | ${shop.name}` },
-    description: shop.description,
     ...(favicon && { icons: { icon: { url: `${sizedUrl(favicon, 32)}&height=32`, type: 'image/png' } } }),
   };
 }
@@ -71,6 +75,7 @@ export default async function RootLayout({ children }) {
           {children}
         </main>
         <Sections sections={getSections('sections/footer-group.json')} group="footer-group" />
+        <JsonLd data={await organization()} />
         {/* Popups and other overlays (theme editor: "Overlays") */}
         <Sections sections={getSections('sections/overlay-group.json')} group="overlay-group" />
         <CartDrawer

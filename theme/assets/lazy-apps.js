@@ -8,7 +8,9 @@
  * - Judge.me's loader looks for its widgets once, on page load: the widgets put in later get their
  *   entry module here (jdgm.CDN_BASE_URL + data-entry-point), each once, and — as its loader does —
  *   the stylesheets its manifest lists for the entry (data-entry-key) and its imports: the layout one
- *   holds the widget's spacing tokens (--jm-space-*), without it the widget has no gaps.
+ *   holds the widget's spacing tokens (--jm-space-*), without it the widget has no gaps. Its core
+ *   scripts too (jdgm.$, "jdgm.finishLoadingCore"): the loader loads them only when a widget is on
+ *   the page at load, and "Write a review" waits for them to open its form.
  * - A link to an id inside it (the rating's "#judgeme_product_reviews") puts it in place first, then
  *   scrolls there; so does a page opened with that hash.
  */
@@ -34,11 +36,27 @@ async function judgeMeStyles(base, entryKey) {
   }
 }
 
-// Judge.me widgets added after its loader ran: load their entry modules and stylesheets
+// Judge.me's core scripts, as its loader loads them (split into base + common, or one bundle); then the
+// event its widgets wait for
+function judgeMeCore(jdgm) {
+  if (jdgm.$ || !jdgm.loadScript) return;
+  const done = () => document.dispatchEvent(new CustomEvent('jdgm.finishLoadingCore'));
+  if (window.jdgmSettings?.widget_load_with_code_splitting) {
+    jdgm.loadCSS?.(jdgm.widgetPath('base.css'));
+    jdgm.loadScript('widget/base.js', () => jdgm.loadScript('widget/common.js', done));
+  } else {
+    jdgm.loadCSS?.(jdgm.CDN_HOST + 'shopify_v2.css');
+    jdgm.loadScript(jdgm.CDN_HOST + 'shopify_v2.js', done);
+  }
+}
+
+// Judge.me widgets added after its loader ran: load their entry modules, stylesheets and its core
 function startJudgeMe(root) {
   const base = window.jdgm?.CDN_BASE_URL;
   if (!base) return;
-  for (const widget of root.querySelectorAll('.jdgm-widget[data-entry-point]')) {
+  const widgets = root.querySelectorAll('.jdgm-widget[data-entry-point]');
+  if (widgets.length) judgeMeCore(window.jdgm);
+  for (const widget of widgets) {
     const src = base + widget.dataset.entryPoint;
     if (loaded.has(src)) continue;
     loaded.add(src);

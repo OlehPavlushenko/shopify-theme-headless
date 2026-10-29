@@ -226,7 +226,7 @@ export function themeCss() {
   --color-input-background: ${c.input_background};
   --color-input-text: ${c.input_text};
 }
-.shopify-section:has(> .color-${id}.section-spacing) + .shopify-section > .color-${id}.section-spacing { padding-top: 0; }`;
+.shopify-section:has(> .color-${id}.section-spacing):not(:has(.product-recommendations--empty, .recently-viewed saved-products:not([data-state="filled"]))) + .shopify-section > .color-${id}.section-spacing { padding-top: 0; }`;
   });
   return [tokens, ...schemes].join('\n');
 }

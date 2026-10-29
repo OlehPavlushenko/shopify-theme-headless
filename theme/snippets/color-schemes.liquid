@@ -30,8 +30,8 @@
       --color-input-background: {{ s.input_background }};
       --color-input-text: {{ s.input_text }};
     }
-    {%- comment -%} Two sections in a row on the same background: no double padding between them {%- endcomment %}
-    .shopify-section:has(> .color-{{ scheme.id }}.section-spacing) + .shopify-section > .color-{{ scheme.id }}.section-spacing {
+    {%- comment -%} Two sections in a row on the same background: no double padding between them. Not after a section hidden while empty (recommendations, recently viewed: product.css) {%- endcomment %}
+    .shopify-section:has(> .color-{{ scheme.id }}.section-spacing):not(:has(.product-recommendations--empty, .recently-viewed saved-products:not([data-state="filled"]))) + .shopify-section > .color-{{ scheme.id }}.section-spacing {
       padding-top: 0;
     }
   {%- endfor %}

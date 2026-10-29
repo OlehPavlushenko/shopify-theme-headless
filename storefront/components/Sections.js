@@ -12,6 +12,7 @@ import Footer from './sections/Footer.js';
 import Header from './sections/Header.js';
 import Hero from './sections/Hero.js';
 import ImageText from './sections/ImageText.js';
+import MainCollection from './sections/MainCollection.js';
 import MainPage from './sections/MainPage.js';
 import Marquee from './sections/Marquee.js';
 import Newsletter from './sections/Newsletter.js';
@@ -34,6 +35,7 @@ export const SECTIONS = {
   header: Header,
   hero: Hero,
   'image-text': ImageText,
+  'main-collection': MainCollection,
   'main-compare': MainCompare,
   'main-page': MainPage,
   'main-wishlist': MainWishlist,

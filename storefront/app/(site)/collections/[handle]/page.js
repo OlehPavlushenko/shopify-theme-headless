@@ -1,92 +1,40 @@
-// Collection page: page header (breadcrumbs, h1, description), the theme's facets toolbar (count, sort)
-// and product grid, 24 per page with a link to the next page. Styles: packages/ui/css/facets.css.
-// Filters come with Search & Discovery on the real store (mock.shop has none).
+// Collection page: the theme's templates/collection.json — page header (image, subcollections), the
+// product grid with filters, sort, density and "Load more" (main-collection), the collection's SEO text
+// and the FAQ, with the same settings as in the theme editor. Filtered and paged lists are noindex, as in
+// the theme. Styles: packages/ui/css/facets.css.
 import '@ui-css/facets.css';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import PageHeader from '@/components/PageHeader.js';
-import ProductCard from '@/components/ProductCard.js';
-import SortSelect from '@/components/SortSelect.js';
-import { getCollection } from '@/lib/queries.js';
-import { SORTS } from '@/lib/sorts.js';
+import Sections from '@/components/Sections.js';
+import { getCollectionPage } from '@/lib/collection.js';
+import { getTemplate } from '@/lib/theme.js';
 
-export async function generateMetadata({ params }) {
-  const collection = await getCollection((await params).handle);
-  if (!collection) return {};
+const perPage = () =>
+  getTemplate('collection').sections.find((section) => section.type === 'main-collection')?.settings.products_per_page ?? 16;
+
+export async function generateMetadata({ params, searchParams }) {
+  const { handle } = await params;
+  const query = new URLSearchParams(await searchParams);
+  const listing = await getCollectionPage(handle, query, { perPage: perPage() });
+  if (!listing) return {};
+  const { collection } = listing;
+  const filtered = [...query.keys()].some((key) => key.startsWith('filter.') || key === 'after');
   return {
-    title: collection.seo.title || collection.title,
-    description: collection.seo.description || collection.description.slice(0, 160),
-    alternates: { canonical: `/collections/${collection.handle}` },
+    title: collection.seo?.title || collection.title,
+    description: collection.seo?.description || collection.description?.slice(0, 160),
+    alternates: { canonical: `/collections/${handle}` },
+    ...(filtered && { robots: { index: false, follow: true } }),
   };
 }
 
 export default async function CollectionPage({ params, searchParams }) {
   const { handle } = await params;
-  const { sort = 'featured', after } = await searchParams;
-  const order = SORTS.find((option) => option.value === sort) ?? SORTS[0];
-  const collection = await getCollection(handle, {
-    sortKey: order.sortKey,
-    allKey: order.allKey,
-    reverse: Boolean(order.reverse),
-    after: after ?? null,
-  });
-  if (!collection) notFound();
-
-  const { nodes: products, pageInfo } = collection.products;
-  const query = (extra) => `?${new URLSearchParams({ ...(sort !== 'featured' && { sort }), ...extra })}`;
-
+  const listing = await getCollectionPage(handle, new URLSearchParams(await searchParams), { perPage: perPage() });
+  if (!listing) notFound();
+  const { sections } = getTemplate('collection');
   return (
-    <>
-      <PageHeader
-        heading={collection.title}
-        textHtml={collection.descriptionHtml}
-        trail={handle === 'all' ? [] : [{ title: 'Collections', url: '/collections' }]}
-      />
-
-      <div className="main-collection section-spacing">
-        <div className="page-width">
-          <div className="facets__toolbar">
-            <p className="facets__count" role="status">
-              {products.length} {products.length === 1 ? 'product' : 'products'}
-              {after ? ' on this page' : ''}
-            </p>
-            <div className="facets__tools">
-              <SortSelect value={order.value} />
-            </div>
-          </div>
-
-          <div className="facets__results">
-            <h2 className="visually-hidden">Products</h2>
-            {products.length > 0 ? (
-              <ul className="grid facets__grid" role="list" style={{ '--cols': 4, '--cols-tablet': 3, '--cols-mobile': 2 }}>
-                {products.map((product, index) => (
-                  <li key={product.id}>
-                    <ProductCard product={product} eager={!after && index < 4} />
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="empty-state">
-                <p className="h5">No products here yet</p>
-              </div>
-            )}
-            {(pageInfo.hasNextPage || after) && (
-              <div className="load-more">
-                {after && (
-                  <Link href={query({})} className="btn btn--outline">
-                    First page
-                  </Link>
-                )}
-                {pageInfo.hasNextPage && (
-                  <Link href={query({ after: pageInfo.endCursor })} className="btn btn--outline">
-                    Next page
-                  </Link>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </>
+    <Sections
+      sections={sections}
+      context={{ template: 'collection', collection: listing.collection, subcollections: listing.collection.subcollections, listing }}
+    />
   );
 }

@@ -4,6 +4,8 @@
  * (Shopify: the Section Rendering API; headless: any route rendering the same markup).
  *
  *   sectionUrl(url, sectionId) → the URL (absolute string) with ?section_id=<sectionId>
+ *   partUrl(url, { section, endpoint }) → where a page's section is rendered on its own: with an
+ *     endpoint (headless) <endpoint> plus the page URL's query, else sectionUrl(url, section)
  *   fetchHTML(url, { signal, cache }) → Promise<Document>; rejects on a network error, an abort or an
  *     error status (error.status). cache (optional): a Map url → pending text shared between calls;
  *     every call parses its own Document. A failed or aborted request leaves the cache at once, so
@@ -24,6 +26,13 @@ async function request(url, signal) {
 export function sectionUrl(url, sectionId) {
   const result = new URL(url, location.origin);
   result.searchParams.set('section_id', sectionId);
+  return result.toString();
+}
+
+export function partUrl(url, { section, endpoint } = {}) {
+  if (!endpoint) return sectionUrl(url, section);
+  const result = new URL(endpoint, location.origin);
+  result.search = new URL(url, location.origin).search;
   return result.toString();
 }
 

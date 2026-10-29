@@ -13,7 +13,6 @@
     "favicon": "shopify://shop_images/logo-small-new-finish.png",
     "share_image": "shopify://shop_images/socail-sharing-new.png",
     "store_phone": "+380 44 123 45 67",
-    "seo_country": "US",
     "store_email": "hello@example.com",
     "store_address": "Kyiv, Ukraine",
     "store_hours": "Mon – Fri, 9:00 – 18:00",
@@ -36,7 +35,9 @@
       "mix-protein-control-shake",
       "mix-protein-slim-shake"
     ],
-    "api_url": "http://localhost:5000",
+    "api_url": "http://127.0.0.1:9292",
+    "api_secret": "4f9a4b10d688e300a4e99e07456abaa5c5b47dbc8458f4f9cebd54d8e0f74ed1",
+    "seo_country": "US",
     "sections": {
       "cart-drawer": {
         "type": "cart-drawer",

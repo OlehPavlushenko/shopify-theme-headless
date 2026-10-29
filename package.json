@@ -18,8 +18,8 @@
     "server:install": "cd project-server && npm install",
     "shoot": "node tools/screenshot/shoot.mjs",
     "shoot:install": "cd tools/screenshot && npm install && npx playwright install chromium",
-    "format": "prettier --write \"packages/ui/js/*.js\" \"theme/assets/{cart,facets,product}.js\" \"scripts/*.mjs\" \"packages/tokens/*.mjs\" \"storefront/{app,components,lib}/**/*.js\"",
-    "format:check": "prettier --check \"packages/ui/js/*.js\" \"theme/assets/{cart,facets,product}.js\" \"storefront/{app,components,lib}/**/*.js\"",
+    "format": "prettier --write \"packages/ui/js/*.js\" \"theme/assets/{cart,product}.js\" \"scripts/*.mjs\" \"packages/tokens/*.mjs\" \"storefront/{app,components,lib}/**/*.js\"",
+    "format:check": "prettier --check \"packages/ui/js/*.js\" \"theme/assets/{cart,product}.js\" \"storefront/{app,components,lib}/**/*.js\"",
     "lint": "npm run format:check && npm run check"
   },
   "engines": {

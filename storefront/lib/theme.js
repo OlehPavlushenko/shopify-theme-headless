@@ -6,6 +6,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cache } from 'react';
+import { admin } from './admin.js';
 import { storefront } from './shopify.js';
 
 const THEME = join(process.cwd(), '..', 'theme');
@@ -143,22 +144,14 @@ export async function imageUrl(value) {
 // (SHOPIFY_ADMIN_TOKEN with read_files; the Storefront API has no access to Files). Null without it.
 export const themeVideo = cache(async (value) => {
   const name = value?.match(/^shopify:\/\/files\/videos\/(.+)$/)?.[1];
-  const token = process.env.SHOPIFY_ADMIN_TOKEN;
-  if (!name || !token) return null;
-  const response = await fetch(
-    `https://${process.env.SHOPIFY_STORE_DOMAIN}/admin/api/${process.env.SHOPIFY_API_VERSION || '2026-10'}/graphql.json`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Shopify-Access-Token': token },
-      body: JSON.stringify({
-        query: `query ($q: String!) { files(first: 1, query: $q) { nodes { ... on Video {
-        sources { url format height width mimeType } preview { image { url } } } } } }`,
-        variables: { q: `filename:${name}` },
-      }),
-      next: { revalidate: 86400 },
-    }
+  if (!name) return null;
+  const data = await admin(
+    `query ($q: String!) { files(first: 1, query: $q) { nodes { ... on Video {
+      sources { url format height width mimeType } preview { image { url } } } } } }`,
+    { q: `filename:${name}` },
+    { revalidate: 86400 }
   );
-  const video = (await response.json()).data?.files.nodes[0];
+  const video = data?.files.nodes[0];
   return video?.sources ? { sources: video.sources, poster: video.preview?.image?.url } : null;
 });
 

@@ -5,13 +5,13 @@
  * row (items spanning a whole row, e.g. a featured article, count as a full row).
  *
  * Markup contract (cell: snippets/load-more-cell):
- *   <load-more data-section="<section id>">
+ *   <load-more data-section="<section id>" [data-endpoint="<headless route rendering the section>"]>
  *     <ul data-load-more-grid> <li data-load-more-item>… <li data-load-more-cell> <a data-load-more-link href="?page=2"> </ul>
  *   </load-more>
  * fit() recomputes the span (call it when the grid's column count changes). Without JS the link
  * opens the next page.
  */
-import { fetchHTML, sectionUrl } from '@ui/fetch-html';
+import { fetchHTML, partUrl } from '@ui/fetch-html';
 
 class LoadMore extends HTMLElement {
   #abort;
@@ -62,7 +62,7 @@ class LoadMore extends HTMLElement {
     if (link.hasAttribute('aria-busy')) return;
     link.setAttribute('aria-busy', 'true');
     try {
-      const html = await fetchHTML(sectionUrl(link.href, this.dataset.section));
+      const html = await fetchHTML(partUrl(link.href, this.dataset));
       const cell = this.querySelector('[data-load-more-cell]');
       const items = [...html.querySelectorAll('[data-load-more-grid] > [data-load-more-item]')].map((item) =>
         document.importNode(item, true)

@@ -56,6 +56,8 @@ export default function UiScripts() {
     if (document.querySelector('read-more')) import('@ui/read-more');
     if (document.querySelector('background-video')) import('@ui/background-video');
     if (document.querySelector('saved-products')) import('@ui/saved-pages');
+    if (document.querySelector('facet-filters')) import('@ui/facets');
+    if (document.querySelector('load-more')) import('@ui/load-more');
   }, [pathname]);
 
   return null;

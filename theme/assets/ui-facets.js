@@ -1,7 +1,9 @@
+/* Generated from packages/ui/js/facets.js by scripts/sync-ui.mjs. Do not edit here. */
 /**
- * Theme-only storefront filters for sections/main-collection (and the search page later).
+ * Storefront filters for a product grid: the theme's sections/main-collection (collection and search
+ * pages) and the headless collection page.
  *
- *   <facet-filters data-section="<section id>">
+ *   <facet-filters data-section="<section id>" [data-endpoint="<headless route rendering it>"]>
  *     [data-facets-form] (snippets/facets) — the filter groups; the toolbar's sort select joins it
  *     [data-facets-body] [data-facets-clear] [data-facets-active] [data-facets-count] [data-facets-results]
  *     [data-facets-active-count] [data-facets-show] — parts replaced after every change
@@ -12,13 +14,13 @@
  *   </facet-filters>
  *
  * A change in the form (checkbox, sort, price after a pause) builds the URL from the form, fetches
- * it with ?section_id=<section>, replaces the parts above and pushes the URL to the history (back
+ * that section on its own (?section_id=<section>, or the endpoint with the same query), replaces the parts above and pushes the URL to the history (back
  * and forward re-render). Open filter groups and the open drawer stay as they are. Responses are
  * cached per URL; only the latest change renders (an older request is aborted or ignored: @ui/fetch-html).
  * Without JS the form submits and every link is a real URL.
  * <price-range>: two number fields + a dual range slider kept in sync.
  */
-import { fetchHTML, latest, sectionUrl } from '@ui/fetch-html';
+import { fetchHTML, latest, partUrl } from '@ui/fetch-html';
 import { headerOffset, scrollBehavior } from '@ui/scroll';
 import * as storage from '@ui/storage';
 
@@ -154,7 +156,7 @@ class FacetFilters extends HTMLElement {
     const { signal, isCurrent } = this.#requests.next();
     this.setAttribute('aria-busy', 'true');
     try {
-      const html = await fetchHTML(sectionUrl(url, this.dataset.section), { signal, cache });
+      const html = await fetchHTML(partUrl(url, this.dataset), { signal, cache });
       if (!isCurrent()) return;
       const next = html.querySelector('facet-filters');
       if (!next) throw new Error('No facets markup');

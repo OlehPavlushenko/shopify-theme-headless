@@ -95,6 +95,7 @@ export default function UiScripts() {
     if (document.querySelector('lazy-section')) import('@ui/lazy-section');
     if (document.querySelector('section-swap')) import('@ui/section-swap');
     if (document.querySelector('article-toc')) import('@ui/article-toc');
+    if (document.querySelector('faq-search')) import('@ui/faq-search');
   }, [pathname]);
 
   return null;

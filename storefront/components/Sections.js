@@ -1,4 +1,4 @@
-// Renders the sections of a theme JSON template or section group (lib/theme.js getSections) with their
+﻿// Renders the sections of a theme JSON template or section group (lib/theme.js getSections) with their
 // React counterparts, each in the wrapper Shopify adds (.shopify-section + the schema's class + the
 // group class), so the theme's CSS that relies on it applies. Types without a counterpart yet are skipped.
 import AnnouncementBar from './sections/AnnouncementBar.js';
@@ -7,9 +7,12 @@ import Brands from './sections/Brands.js';
 import CollectionList from './sections/CollectionList.js';
 import CountdownBar from './sections/CountdownBar.js';
 import Faq from './sections/Faq.js';
+import Footer from './sections/Footer.js';
 import Header from './sections/Header.js';
 import Hero from './sections/Hero.js';
 import ImageText from './sections/ImageText.js';
+import Marquee from './sections/Marquee.js';
+import Newsletter from './sections/Newsletter.js';
 import ProductList from './sections/ProductList.js';
 import PromoGrid from './sections/PromoGrid.js';
 import RichText from './sections/RichText.js';
@@ -22,9 +25,12 @@ export const SECTIONS = {
   'collection-list': CollectionList,
   'countdown-bar': CountdownBar,
   faq: Faq,
+  footer: Footer,
   header: Header,
   hero: Hero,
   'image-text': ImageText,
+  marquee: Marquee,
+  newsletter: Newsletter,
   'product-list': ProductList,
   'promo-grid': PromoGrid,
   'rich-text': RichText,

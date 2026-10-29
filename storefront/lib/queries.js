@@ -1,4 +1,4 @@
-// GraphQL documents and the loaders built on them. One fragment per component, named after it.
+﻿// GraphQL documents and the loaders built on them. One fragment per component, named after it.
 import { storefront } from './shopify.js';
 
 export const PRODUCT_CARD = `#graphql
@@ -191,7 +191,7 @@ export async function getCollection(
 
 // The latest articles of a blog (snippets/article-card); without a handle, the store's first blog
 export async function getArticles(handle, first = 6) {
-  const fields = `handle articles(first: $first, sortKey: PUBLISHED_AT, reverse: true) {
+  const fields = `handle title articles(first: $first, sortKey: PUBLISHED_AT, reverse: true) {
     nodes { handle title excerpt content publishedAt image { ${IMAGE} } }
   }`;
   const data = await storefront(
@@ -201,7 +201,7 @@ export async function getArticles(handle, first = 6) {
     handle ? { handle, first } : { first }
   );
   const blog = handle ? data?.blog : data?.blogs.nodes[0];
-  return blog ? { handle: blog.handle, articles: blog.articles.nodes } : { handle: null, articles: [] };
+  return blog ? { handle: blog.handle, title: blog.title, articles: blog.articles.nodes } : { handle: null, title: '', articles: [] };
 }
 
 // Search results (products), 24 at most

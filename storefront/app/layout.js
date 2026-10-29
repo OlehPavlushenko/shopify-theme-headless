@@ -1,6 +1,6 @@
 // The site frame, as theme/layout/theme.liquid: shared CSS from packages/ui (the theme's ui-core.css list,
 // in cascade order; the layer order comes from tokens.css), Theme settings as CSS (tokens and color
-// schemes), the header group's sections, the page, the footer.
+// schemes), the header group's sections, the page, the footer group's sections.
 import '@ui-css/tokens.css';
 import '@ui-css/base.css';
 import '@ui-css/components.css';
@@ -13,7 +13,6 @@ import '@ui-css/sections.css';
 import '@ui-css/promo.css';
 import '@ui-css/footer.css';
 import { Bricolage_Grotesque, DM_Sans } from 'next/font/google';
-import Footer from '@/components/Footer.js';
 import Sections from '@/components/Sections.js';
 import UiScripts from '@/components/UiScripts.js';
 import { getShell } from '@/lib/queries.js';
@@ -29,7 +28,7 @@ export async function generateMetadata() {
 }
 
 export default async function RootLayout({ children }) {
-  const { shop, footer, policies } = await getShell();
+  const { shop } = await getShell();
   // The token defaults name the font families; next/font serves them under its own names
   const fonts = { '--font-body-family': body.style.fontFamily, '--font-heading-family': heading.style.fontFamily };
   return (
@@ -43,7 +42,7 @@ export default async function RootLayout({ children }) {
         <main id="MainContent" role="main" tabIndex={-1}>
           {children}
         </main>
-        <Footer shopName={shop.name} menu={footer} policies={policies} />
+        <Sections sections={getSections('sections/footer-group.json')} group="footer-group" />
         <UiScripts />
       </body>
     </html>

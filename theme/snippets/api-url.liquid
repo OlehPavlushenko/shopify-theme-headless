@@ -1,12 +1,18 @@
 {% doc %}
   The project-server base URL from Theme settings > Integrations > "API URL", without a trailing
-  slash; nothing when it isn't set (forms then fall back to Shopify's own). Capture it and strip.
+  slash and with https:// when typed without a scheme (else the browser would ask the store's own
+  path); nothing when it isn't set (forms then fall back to Shopify's own). Capture it and strip.
 {% enddoc %}
 {%- liquid
   assign api = settings.api_url | strip
   assign api_end = api | slice: -1
   if api_end == '/'
     assign api = api | remove_last: '/'
+  endif
+  if api != blank
+    unless api contains '://'
+      assign api = 'https://' | append: api
+    endunless
   endif
   echo api
 -%}

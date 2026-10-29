@@ -81,6 +81,13 @@ export const getSections = cache((path) => {
   return file.order.filter((id) => !file.sections[id].disabled).map((id) => resolveSection(id, file.sections[id]));
 });
 
+// The project-server base URL (Theme settings > Integrations > API URL), as snippets/api-url: no trailing
+// slash, https:// when typed without a scheme; '' when not set
+export function apiUrl() {
+  const api = (getSettings().api_url ?? '').trim().replace(/\/$/, '');
+  return api && !api.includes('://') ? `https://${api}` : api;
+}
+
 // A template's sections: templates/<name>.<suffix>.json when the theme has it (an alternate template,
 // e.g. page.wishlist), else templates/<name>.json. Also which one was used (the suffix or '').
 export function getTemplate(name, suffix) {

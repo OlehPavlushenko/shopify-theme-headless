@@ -22,7 +22,7 @@ import { discountOf, formatMoney, moneyFormat } from '@/lib/format.js';
 import { hasOnlyDefaultVariant, numericId } from '@/lib/ids.js';
 import { getProductRecommendations } from '@/lib/product.js';
 import { getPage } from '@/lib/queries.js';
-import { getSettings, t } from '@/lib/theme.js';
+import { apiUrl, getSettings, t } from '@/lib/theme.js';
 
 const MEDIA_SIZES = { grid: '(min-width: 990px) 28vw, 100vw', stacked: '(min-width: 990px) 55vw, 100vw' };
 
@@ -318,7 +318,7 @@ async function InfoLinks({ block, product, variant }) {
           </Fragment>
         );
       })}
-      {s.show_ask && getSettings().api_url && (
+      {s.show_ask && apiUrl() && (
         <>
           <button type="button" className="btn btn--link info-links__link" data-dialog-open={askId}>
             <Icon name="chat" />

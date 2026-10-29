@@ -15,11 +15,11 @@ import { THEME_SECRET } from '@/lib/env.js';
 import { linkUrl, scheduleActive } from '@/lib/links.js';
 import { getProductsByHandles } from '@/lib/queries.js';
 import { scriptJson } from '@/lib/text.js';
-import { getSettings, t } from '@/lib/theme.js';
+import { apiUrl, getSettings, t } from '@/lib/theme.js';
 
 function Wheel({ section, block }) {
   const settings = getSettings();
-  const api = settings.api_url?.replace(/\/$/, '');
+  const api = apiUrl();
   const prizes = section.blocks
     .filter((item) => item.type === 'prize' && item.settings.label?.trim())
     .map((item) => ({

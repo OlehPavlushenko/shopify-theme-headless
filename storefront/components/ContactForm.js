@@ -4,7 +4,7 @@
 // Fields: the contact fields (name, email, [phone], message) by default, or `fields`.
 import { iconHtml } from './Icon.js';
 import { escapeHtml } from '@/lib/text.js';
-import { getSettings, t } from '@/lib/theme.js';
+import { apiUrl, getSettings, t } from '@/lib/theme.js';
 
 // The success notice (snippets/form-success) as an HTML string: a <template>'s children live in
 // template.content, so React renders them through dangerouslySetInnerHTML to hydrate
@@ -74,7 +74,7 @@ export default function ContactForm({
   ...fieldProps
 }) {
   const settings = getSettings();
-  const api = settings.api_url?.replace(/\/$/, '');
+  const api = apiUrl();
   if (!api) return null;
   return (
     <contact-form

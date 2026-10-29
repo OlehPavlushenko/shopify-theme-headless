@@ -2,11 +2,11 @@
 // project-server POST /newsletter at Theme settings > Integrations > API URL). The headless storefront
 // has no Shopify customer form to fall back to: without the API URL the form is not rendered.
 import Icon from './Icon.js';
-import { getSettings, t } from '@/lib/theme.js';
+import { apiUrl, getSettings, t } from '@/lib/theme.js';
 
 export default function NewsletterForm({ id, buttonLabel, successText, alreadyText, discountCode, note }) {
   const settings = getSettings();
-  const api = settings.api_url?.replace(/\/$/, '');
+  const api = apiUrl();
   if (!api) return null;
   const formId = `Newsletter-${id}`;
   return (

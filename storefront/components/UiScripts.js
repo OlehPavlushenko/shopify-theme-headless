@@ -7,6 +7,14 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
+// Promo popups for some pages only (their "Pages" setting): left out elsewhere, before they arm
+function limitPopups(pathname) {
+  for (const popup of document.querySelectorAll('promo-popup[data-pages]')) {
+    const { pages } = popup.dataset;
+    if ((pages === 'home' && pathname !== '/') || (pages === 'not_cart' && pathname === '/cart')) popup.remove();
+  }
+}
+
 function markCurrent(pathname) {
   for (const link of document.querySelectorAll('.site-nav a, .mobile-nav a')) {
     if (new URL(link.href).pathname === pathname) link.setAttribute('aria-current', 'page');
@@ -40,7 +48,10 @@ export default function UiScripts() {
 
   useEffect(() => {
     markCurrent(pathname);
+    limitPopups(pathname);
     // Loaded by their sections in the theme; here only when such a section is on the page
+    if (document.querySelector('promo-popup')) import('@ui/promo-popup');
+    if (document.querySelector('spin-wheel')) import('@ui/spin-wheel');
     if (document.querySelector('show-more')) import('@ui/show-more');
     if (document.querySelector('read-more')) import('@ui/read-more');
     if (document.querySelector('background-video')) import('@ui/background-video');

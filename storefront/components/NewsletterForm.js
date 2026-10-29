@@ -4,7 +4,7 @@
 import Icon from './Icon.js';
 import { getSettings, t } from '@/lib/theme.js';
 
-export default function NewsletterForm({ id, buttonLabel, successText, alreadyText, discountCode }) {
+export default function NewsletterForm({ id, buttonLabel, successText, alreadyText, discountCode, note }) {
   const settings = getSettings();
   const api = settings.api_url?.replace(/\/$/, '');
   if (!api) return null;
@@ -42,6 +42,7 @@ export default function NewsletterForm({ id, buttonLabel, successText, alreadyTe
         <template data-newsletter-already dangerouslySetInnerHTML={{ __html: alreadyText || t('newsletter.already') }} />
         <p className="form-error newsletter-form__message" id={`${formId}-message`} data-newsletter-message aria-live="polite" />
       </form>
+      {note && <p className="newsletter-form__note" dangerouslySetInnerHTML={{ __html: note }} />}
     </newsletter-form>
   );
 }

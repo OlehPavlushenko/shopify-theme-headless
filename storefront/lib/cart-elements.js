@@ -9,7 +9,7 @@
 // [data-in-cart] while the variant (or any of the product's variants) is in the cart. Inside a
 // <product-info>, data-variant-id follows the picked variant (variant:change). After an add it
 // dispatches cart:add ({ detail: { ok } }, bubbles): the quick view closes on it.
-import { addToCart, updateLine } from '@/app/actions.js';
+import { addToCart, setDiscountCodes, updateLine } from '@/app/actions.js';
 import { onCart, openDrawer, publish, quantityIn } from './cart-client.js';
 
 const VARIANT = 'gid://shopify/ProductVariant/';
@@ -83,3 +83,21 @@ class CartItemState extends HTMLElement {
 }
 
 if (!customElements.get('cart-item-state')) customElements.define('cart-item-state', CartItemState);
+
+// Discount codes from the promos, as the theme's cart.js: discount:apply ({ detail: { code } }, the Spin to
+// win wheel) and a newsletter sign-up with a discount (newsletter:subscribed, detail.discount) add the code
+// to the cart; discount:result ({ detail: { code, applicable } }) tells whether it applies to this cart.
+let cart = null;
+onCart((next) => (cart = next));
+
+async function applyCode(code) {
+  if (!code) return;
+  const codes = (cart?.discountCodes ?? []).filter((item) => item.applicable).map((item) => item.code);
+  const next = await setDiscountCodes([...new Set([...codes, code])]).catch(() => null);
+  if (next) publish(next);
+  const applicable = Boolean(next?.discountCodes.some((item) => item.code.toLowerCase() === code.toLowerCase() && item.applicable));
+  document.dispatchEvent(new CustomEvent('discount:result', { detail: { code, applicable } }));
+}
+
+document.addEventListener('discount:apply', (event) => applyCode(event.detail?.code));
+document.addEventListener('newsletter:subscribed', (event) => applyCode(event.detail?.discount));

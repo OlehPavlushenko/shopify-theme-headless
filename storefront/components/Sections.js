@@ -17,6 +17,7 @@ import Marquee from './sections/Marquee.js';
 import Newsletter from './sections/Newsletter.js';
 import PageHeader from './sections/PageHeader.js';
 import ProductList from './sections/ProductList.js';
+import PromoPopup from './sections/PromoPopup.js';
 import PromoGrid from './sections/PromoGrid.js';
 import RichText from './sections/RichText.js';
 import { MainCompare, MainWishlist } from './sections/SavedLists.js';
@@ -41,6 +42,7 @@ export const SECTIONS = {
   'page-header': PageHeader,
   'product-list': ProductList,
   'promo-grid': PromoGrid,
+  'promo-popup': PromoPopup,
   'rich-text': RichText,
   'trust-bar': TrustBar,
 };

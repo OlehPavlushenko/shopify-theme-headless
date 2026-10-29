@@ -60,6 +60,8 @@ export default async function RootLayout({ children }) {
           {children}
         </main>
         <Sections sections={getSections('sections/footer-group.json')} group="footer-group" />
+        {/* Popups and other overlays (theme editor: "Overlays") */}
+        <Sections sections={getSections('sections/overlay-group.json')} group="overlay-group" />
         <CartDrawer
           strings={strings(CART_STRINGS)}
           colorScheme={drawer.color_scheme || 'scheme-1'}

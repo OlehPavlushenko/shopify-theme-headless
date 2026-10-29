@@ -78,12 +78,12 @@ export async function setCartAttributes(attributes) {
 // The cart's discount codes (the whole list: add or remove one by passing the new list)
 export async function setDiscountCodes(codes) {
   const id = await cartId();
-  if (!id) return null;
-  const cart = await cartMutation(
-    'cartDiscountCodesUpdate',
-    'CartDiscounts($id: ID!, $codes: [String!]!)',
-    'cartId: $id, discountCodes: $codes',
-    { id, codes }
-  );
+  // No cart yet (a promo code before the first add): a new, empty cart holding the code
+  const cart = id
+    ? await cartMutation('cartDiscountCodesUpdate', 'CartDiscounts($id: ID!, $codes: [String!]!)', 'cartId: $id, discountCodes: $codes', {
+        id,
+        codes,
+      })
+    : await cartMutation('cartCreate', 'CartCreate($codes: [String!])', 'input: { discountCodes: $codes }', { codes });
   return remember(cart);
 }

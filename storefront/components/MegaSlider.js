@@ -18,7 +18,7 @@ export default async function MegaSlider({ heading, handles }) {
       <ul className="scroll-track slider__track" data-slider-track role="list">
         {products.map((product) => (
           <li key={product.id}>
-            <ProductCard product={product} headingTag="p" secondImage={false} sizes="(min-width: 990px) 200px, 45vw" />
+            <ProductCard product={product} headingTag="p" actions={false} secondImage={false} sizes="(min-width: 990px) 200px, 45vw" />
           </li>
         ))}
       </ul>

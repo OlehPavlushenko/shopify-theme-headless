@@ -14,6 +14,7 @@ import '@ui-css/promo.css';
 import '@ui-css/footer.css';
 import '@ui-css/cart.css';
 import '@ui-css/search.css';
+import '@ui-css/saved.css';
 import { Bricolage_Grotesque, DM_Sans } from 'next/font/google';
 import CartDrawer from '@/components/CartDrawer.js';
 import CartUpsell from '@/components/CartUpsell.js';
@@ -23,7 +24,7 @@ import UiScripts from '@/components/UiScripts.js';
 import { getShell } from '@/lib/queries.js';
 import { accountUrl } from '@/lib/shopify.js';
 import { CART_STRINGS } from '@/lib/strings.js';
-import { getSections, getSettings, strings, themeCss } from '@/lib/theme.js';
+import { getSections, getSettings, strings, t, themeCss } from '@/lib/theme.js';
 
 // The theme's default fonts (Theme settings > Typography: Bricolage Grotesque, DM Sans)
 const body = DM_Sans({ subsets: ['latin'], display: 'swap' });
@@ -64,6 +65,28 @@ export default async function RootLayout({ children }) {
           upsell={<CartUpsell />}
           loginUrl={accountUrl()}
         />
+        {/* Texts of the wishlist / compare toasts (@ui/saved-list), as in theme/layout/theme.liquid */}
+        {settings.compare_enabled && (
+          <template
+            data-saved-toast="compare"
+            data-added={t('compare.added')}
+            data-removed={t('compare.removed')}
+            data-full={t('compare.full', { max: '%n' })}
+            data-view={t('compare.title')}
+            data-undo={t('wishlist.undo')}
+            data-href="/pages/compare"
+          />
+        )}
+        {settings.wishlist_enabled && (
+          <template
+            data-saved-toast="wishlist"
+            data-added={t('wishlist.added')}
+            data-removed={t('wishlist.removed')}
+            data-view={t('wishlist.view')}
+            data-undo={t('wishlist.undo')}
+            data-href="/pages/wishlist"
+          />
+        )}
         <UiScripts />
       </body>
     </html>

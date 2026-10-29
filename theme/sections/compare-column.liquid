@@ -1,5 +1,5 @@
 {% comment %}
-  One product column of the compare table: saved-pages.js fetches
+  One product column of the compare table: @ui/saved-pages fetches
   /products/<handle>?section_id=compare-column for every compared product. Its cells line up with
   the label column of sections/main-compare (same order, CSS subgrid): product, price, brand, type,
   availability, options, description, add button. Styles: packages/ui/css/saved.css.
@@ -7,7 +7,7 @@
 {%- liquid
   assign variant = product.selected_or_first_available_variant
 -%}
-{%- comment -%} A removed product renders nothing (Shopify answers 200 with an empty product): saved-pages.js then drops it from the list {%- endcomment -%}
+{%- comment -%} A removed product renders nothing (Shopify answers 200 with an empty product): @ui/saved-pages then drops it from the list {%- endcomment -%}
 {%- if product.id -%}
 <div class="compare-table__column" data-saved-item>
   <div class="compare-table__cell compare-table__product">

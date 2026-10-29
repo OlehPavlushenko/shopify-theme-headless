@@ -9,13 +9,13 @@ import Link from 'next/link';
 import Icon from './Icon.js';
 import Price from './Price.js';
 import { setDiscountCodes, updateLine } from '@/app/actions.js';
+import { publish } from '@/lib/cart-client.js';
 import { format, formatMoney } from '@/lib/format.js';
 
 const money = (amount, currencyCode) => ({ amount, currencyCode });
 
-export function announce(cart) {
-  dispatchEvent(new CustomEvent('cart:changed', { detail: { cart } }));
-}
+// Tells the rest of the page (header count, drawer, quick add) about the new cart
+export const announce = publish;
 
 function Line({ line, strings, run }) {
   const { merchandise: variant } = line;

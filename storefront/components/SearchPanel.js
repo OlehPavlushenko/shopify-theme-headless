@@ -39,7 +39,7 @@ async function ProductsBlock({ block, sizes }) {
       <ul className="scroll-track slider__track" data-slider-track role="list">
         {products.slice(0, s.limit).map((product) => (
           <li key={product.id}>
-            <ProductCard product={product} headingTag="p" secondImage={false} sizes={sizes} />
+            <ProductCard product={product} headingTag="p" actions={false} secondImage={false} sizes={sizes} />
           </li>
         ))}
       </ul>

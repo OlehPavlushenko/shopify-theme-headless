@@ -105,6 +105,36 @@ export async function getCollectionsByHandles(handles = []) {
     .map(({ count, ...collection }) => ({ ...collection, productsCount: count.nodes.length }));
 }
 
+// A page (Admin > Online Store > Pages)
+export async function getPage(handle) {
+  const data = await storefront(
+    `#graphql
+    query Page($handle: String!) { page(handle: $handle) { handle title body bodySummary seo { title description } } }`,
+    { handle }
+  );
+  return data?.page ?? null;
+}
+
+// One product with what the compare table shows (sections/compare-column): the card's data, type,
+// description, every option with its values
+export async function getCompareProduct(handle) {
+  const data = await storefront(
+    `#graphql
+    query CompareProduct($handle: String!) {
+      product(handle: $handle) {
+        ...ProductCard
+        productType
+        description
+        allOptions: options(first: 10) { name optionValues { name swatch { color image { previewImage { url } } } } }
+        allVariants: variants(first: 100) { nodes { availableForSale selectedOptions { name value } } }
+      }
+    }
+    ${PRODUCT_CARD}`,
+    { handle }
+  );
+  return data?.product ?? null;
+}
+
 // Products picked in a theme setting (a list of handles), in that order; missing ones are skipped
 export async function getProductsByHandles(handles = []) {
   if (!handles.length) return [];

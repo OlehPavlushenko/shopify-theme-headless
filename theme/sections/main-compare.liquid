@@ -1,7 +1,7 @@
 {% comment %}
   Compare page body (templates/page.compare.json, under the page header section): a table with a
   label column and one column per compared product (sections/compare-column, fetched by
-  <saved-products> in saved-pages.js), or an empty state. Rows line up through CSS subgrid; the table
+  <saved-products>, @ui/saved-pages), or an empty state. Rows line up through CSS subgrid; the table
   grows with the number of products up to the page width and scrolls sideways on narrow screens,
   labels pinned. Styles: packages/ui/css/saved.css.
 {% endcomment %}
@@ -30,7 +30,7 @@
     </saved-products>
   </div>
 </div>
-<script type="module">import 'saved-pages';</script>
+<script type="module">import '@ui/saved-pages';</script>
 
 {% schema %}
 {

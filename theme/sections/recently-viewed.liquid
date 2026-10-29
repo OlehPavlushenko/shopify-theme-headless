@@ -1,7 +1,7 @@
 {% comment %}
   Recently viewed products: the last products a shopper opened (kept in the browser by product.js,
   list "recent" of @ui/saved-list) as a slider of product cards, the current product left out.
-  Cards come from sections/saved-product through <saved-products> (assets/saved-pages.js); the
+  Cards come from sections/saved-product through <saved-products> (@ui/saved-pages); the
   section hides itself while the list is empty. Styles: sections.css (product list), saved.css.
 {% endcomment %}
 <div class="product-list recently-viewed color-{{ section.settings.color_scheme }} section-spacing">
@@ -13,7 +13,7 @@
     <div data-saved-empty></div>
   </saved-products>
 </div>
-<script type="module">import 'saved-pages';</script>
+<script type="module">import '@ui/saved-pages';</script>
 
 {% schema %}
 {

@@ -1,7 +1,7 @@
 {% comment %}
   Wishlist page body (templates/page.wishlist.json, under the page header section): the saved
   products as product cards, or an empty state. The list lives in the browser (@ui/saved-list);
-  <saved-products> (saved-pages.js) fetches a card per product (sections/saved-product).
+  <saved-products> (@ui/saved-pages) fetches a card per product (sections/saved-product).
   Styles: packages/ui/css/saved.css.
 {% endcomment %}
 <div class="main-saved color-{{ section.settings.color_scheme }} section-spacing">
@@ -26,7 +26,7 @@
   </div>
 </div>
 <script type="module">
-  import 'saved-pages';
+  import '@ui/saved-pages';
   import '@ui/show-more';
 </script>
 

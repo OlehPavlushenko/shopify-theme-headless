@@ -3,7 +3,7 @@
 // `shopify theme dev --theme-editor-sync` and `npm run pull:live`). Missing values get the defaults of
 // the section's {% schema %} / config/settings_schema.json, as Shopify does.
 // Server only (reads files).
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cache } from 'react';
 import { storefront } from './shopify.js';
@@ -77,6 +77,15 @@ export const getSections = cache((path) => {
   const file = readJSON(path);
   return file.order.filter((id) => !file.sections[id].disabled).map((id) => resolveSection(id, file.sections[id]));
 });
+
+// A template's sections: templates/<name>.<suffix>.json when the theme has it (an alternate template,
+// e.g. page.wishlist), else templates/<name>.json. Also which one was used (the suffix or '').
+export function getTemplate(name, suffix) {
+  if (suffix && existsSync(join(THEME, 'templates', `${name}.${suffix}.json`))) {
+    return { suffix, sections: getSections(`templates/${name}.${suffix}.json`) };
+  }
+  return { suffix: '', sections: getSections(`templates/${name}.json`) };
+}
 
 // Storefront strings: {{ 'key' | t: name: value }} from locales/en.default.json
 const locale = cache(() => readJSON('locales/en.default.json'));

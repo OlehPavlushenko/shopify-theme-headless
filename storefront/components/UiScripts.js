@@ -33,6 +33,7 @@ export default function UiScripts() {
     import('@ui/footer');
     import('@ui/newsletter');
     import('@ui/saved-list');
+    import('@/lib/cart-elements.js');
   }, []);
 
   useEffect(() => {
@@ -41,6 +42,7 @@ export default function UiScripts() {
     if (document.querySelector('show-more')) import('@ui/show-more');
     if (document.querySelector('read-more')) import('@ui/read-more');
     if (document.querySelector('background-video')) import('@ui/background-video');
+    if (document.querySelector('saved-products')) import('@ui/saved-pages');
   }, [pathname]);
 
   return null;

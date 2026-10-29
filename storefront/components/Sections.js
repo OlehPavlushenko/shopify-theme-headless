@@ -1,6 +1,7 @@
 ﻿// Renders the sections of a theme JSON template or section group (lib/theme.js getSections) with their
 // React counterparts, each in the wrapper Shopify adds (.shopify-section + the schema's class + the
 // group class), so the theme's CSS that relies on it applies. Types without a counterpart yet are skipped.
+// Other props reach every section (context: what the template is about — page, collection, …).
 import AnnouncementBar from './sections/AnnouncementBar.js';
 import BlogPosts from './sections/BlogPosts.js';
 import Brands from './sections/Brands.js';
@@ -11,11 +12,14 @@ import Footer from './sections/Footer.js';
 import Header from './sections/Header.js';
 import Hero from './sections/Hero.js';
 import ImageText from './sections/ImageText.js';
+import MainPage from './sections/MainPage.js';
 import Marquee from './sections/Marquee.js';
 import Newsletter from './sections/Newsletter.js';
+import PageHeader from './sections/PageHeader.js';
 import ProductList from './sections/ProductList.js';
 import PromoGrid from './sections/PromoGrid.js';
 import RichText from './sections/RichText.js';
+import { MainCompare, MainWishlist } from './sections/SavedLists.js';
 import TrustBar from './sections/TrustBar.js';
 
 export const SECTIONS = {
@@ -29,8 +33,12 @@ export const SECTIONS = {
   header: Header,
   hero: Hero,
   'image-text': ImageText,
+  'main-compare': MainCompare,
+  'main-page': MainPage,
+  'main-wishlist': MainWishlist,
   marquee: Marquee,
   newsletter: Newsletter,
+  'page-header': PageHeader,
   'product-list': ProductList,
   'promo-grid': PromoGrid,
   'rich-text': RichText,

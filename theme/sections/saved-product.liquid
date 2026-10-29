@@ -1,8 +1,8 @@
 {% comment %}
-  One product card for the wishlist page: saved-pages.js fetches /products/<handle>?section_id=saved-product
+  One product card for the wishlist page: @ui/saved-pages fetches /products/<handle>?section_id=saved-product
   for every saved product and puts the [data-saved-item] into the grid.
 {% endcomment %}
-{%- comment -%} A removed product renders nothing: saved-pages.js then drops it from the list {%- endcomment -%}
+{%- comment -%} A removed product renders nothing: @ui/saved-pages then drops it from the list {%- endcomment -%}
 {%- if product.id -%}
   <li data-saved-item>
     {%- render 'product-card', product: product, quick_add: true -%}

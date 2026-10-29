@@ -67,6 +67,7 @@ export default async function PredictiveSearch({ searchParams }) {
                   <ProductCard
                     product={product}
                     headingTag="p"
+                    actions={false}
                     secondImage={false}
                     sizes="(min-width: 1280px) 260px, (min-width: 750px) 30vw, 45vw"
                   />

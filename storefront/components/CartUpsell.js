@@ -24,7 +24,14 @@ export default async function CartUpsell({ modifier }) {
       <ul className="scroll-track slider__track" data-slider-track role="list">
         {products.map((product) => (
           <li key={product.id} data-product-handle={product.handle}>
-            <ProductCard product={product} quickAdd secondImage={false} headingTag="p" sizes="(min-width: 990px) 200px, 45vw" />
+            <ProductCard
+              product={product}
+              quickAdd
+              secondImage={false}
+              headingTag="p"
+              actions={false}
+              sizes="(min-width: 990px) 200px, 45vw"
+            />
           </li>
         ))}
       </ul>

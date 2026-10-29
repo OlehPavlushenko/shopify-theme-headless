@@ -2,7 +2,8 @@
 // with Theme settings > Product cards: image shape and fit, second image on hover, label, vendor, rating,
 // option values, offer timer. Badge: sold out / "Offer" (metafield custom.offer_ends ahead) / "−X%" / sale /
 // the product's label (custom.label). The first option's values on one line: color swatches (5 at most,
-// then "+N") or text, unavailable ones marked. quickAdd: QuickAdd under the price.
+// then "+N") or text, unavailable ones marked. quickAdd: QuickAdd under the price. actions: the wishlist /
+// compare buttons over the image (off in small cards: menus, search, cart).
 // Data: the ProductCard fragment (lib/queries.js).
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,18 +12,11 @@ import Countdown from './Countdown.js';
 import Price from './Price.js';
 import QuickAdd from './QuickAdd.js';
 import Rating from './Rating.js';
-import { getSettings, strings, t } from '@/lib/theme.js';
+import SavedToggles from './SavedToggles.js';
+import { getSettings, t } from '@/lib/theme.js';
 
 const SIZES = '(min-width: 990px) calc((100vw - 10rem) / 4), (min-width: 750px) calc((100vw - 6rem) / 3), calc((100vw - 4rem) / 2)';
 const COLOR_NAMES = ['color', 'colour', 'колір', 'цвет'];
-const QUICK_ADD_STRINGS = [
-  'products.add_to_cart',
-  'products.choose_options',
-  'products.in_cart',
-  'products.in_cart_short',
-  'cart.decrease',
-  'cart.increase',
-];
 
 function discountPercent(price, compareAt) {
   if (!compareAt || Number(compareAt.amount) <= Number(price.amount)) return 0;
@@ -69,6 +63,7 @@ export default function ProductCard({
   showVendor = false,
   secondImage = true,
   quickAdd = false,
+  actions = true,
   sizes = SIZES,
 }) {
   const settings = getSettings();
@@ -127,6 +122,8 @@ export default function ProductCard({
       {/* One link over the whole card; buttons inside the card sit above it */}
       <Link href={url} className="product-card__overlay" aria-label={product.title} />
 
+      {actions && <SavedToggles product={product} className="product-card__actions" />}
+
       {badge}
 
       <div className="product-card__info">
@@ -147,15 +144,7 @@ export default function ProductCard({
         {!single && settings.card_show_options !== false && product.options[0] && <OptionValues product={product} />}
       </div>
 
-      {quickAdd && product.availableForSale && variant && (
-        <QuickAdd
-          product={{ handle: product.handle, title: product.title }}
-          variantId={variant.id}
-          single={single}
-          strings={strings(QUICK_ADD_STRINGS)}
-          openDrawer={settings.cart_type === 'drawer'}
-        />
-      )}
+      {quickAdd && product.availableForSale && variant && <QuickAdd product={product} variantId={variant.id} single={single} />}
     </article>
   );
 }

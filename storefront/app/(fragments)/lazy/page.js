@@ -16,7 +16,7 @@ export default async function LazyPart({ searchParams }) {
   const section = getSections(`sections/${GROUPS[part]}.json`).find((item) => item.id === sectionId);
   const block = section?.blocks.find((item) => item.id === key);
   if (!block) notFound();
-  if (part === 'menu') return <MegaSlider heading={block.settings.heading} handles={block.settings.products} lazyKey={block.id} />;
-  if (part === 'search') return <ProductsBlock block={block} sizes={productSizes(section.settings.search_style || 'top')} />;
+  if (part === 'menu') return <MegaSlider block={block} />;
+  if (part === 'search') return <ProductsBlock block={block} sizes={productSizes(section.settings.search_style)} />;
   return <PopupProducts block={block} />;
 }

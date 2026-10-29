@@ -30,11 +30,11 @@
     --color-rating: #c9772b;
     --color-offer: color-mix(in srgb, var(--color-warning) 70%, #000);
     --color-offer-label: #ffffff;
-    --font-body-family: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-body-family: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-body-style: normal;
     --font-body-weight: 400;
     --font-body-weight-bold: 600;
-    --font-heading-family: 'Bricolage Grotesque', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-heading-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-heading-style: normal;
     --font-heading-weight: 700;
     --font-body-scale: 1;

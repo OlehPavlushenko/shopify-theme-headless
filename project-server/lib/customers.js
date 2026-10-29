@@ -31,7 +31,15 @@ export async function addNote(email, entry, tag, name = '') {
     `mutation ($input: CustomerInput!) {
       customerCreate(input: $input) { userErrors { message } }
     }`,
-    { input: { email, firstName: firstName || undefined, lastName: rest.join(' ') || undefined, note: entry.slice(0, MAX_NOTE), tags: [tag] } },
+    {
+      input: {
+        email,
+        firstName: firstName || undefined,
+        lastName: rest.join(' ') || undefined,
+        note: entry.slice(0, MAX_NOTE),
+        tags: [tag],
+      },
+    },
     'customerCreate'
   );
 }

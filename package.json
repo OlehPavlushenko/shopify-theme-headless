@@ -12,13 +12,13 @@
     "check": "shopify theme check --path theme",
     "release": "npm run sync && npm run lint && shopify theme push --path theme --store education-checkout-extensibility --unpublished",
     "release:live": "npm run pull:live && npm run sync && npm run lint && shopify theme push --path theme --store education-checkout-extensibility --live",
-    "pull:live":"shopify theme pull --path theme --store education-checkout-extensibility --live --only config/settings_data.json --only \"templates/*.json\" --only \"sections/*.json\"",
+    "pull:live": "shopify theme pull --path theme --store education-checkout-extensibility --live --only config/settings_data.json --only \"templates/*.json\" --only \"sections/*.json\"",
     "storefront": "npm --prefix storefront run dev",
     "storefront:install": "cd storefront && npm install",
     "server": "npm --prefix project-server run dev",
     "server:install": "cd project-server && npm install",
-    "format": "prettier --write \"packages/ui/js/*.js\" \"theme/assets/cart.js\" \"scripts/*.mjs\" \"packages/tokens/*.mjs\" \"storefront/{app,components,lib}/**/*.js\"",
-    "format:check": "prettier --check \"packages/ui/js/*.js\" \"theme/assets/cart.js\" \"storefront/{app,components,lib}/**/*.js\"",
+    "format": "prettier --write \"packages/ui/{js,css}/*.{js,css}\" \"packages/tokens/*.mjs\" \"theme/assets/{cart,deferred-scripts,lazy-apps}.js\" \"scripts/*.mjs\" \"storefront/{app,components,lib}/**/*.js\" \"storefront/scripts/*.mjs\" \"storefront/next.config.mjs\" \"project-server/*.js\" \"project-server/{api,lib,routes}/*.js\"",
+    "format:check": "prettier --check \"packages/ui/{js,css}/*.{js,css}\" \"packages/tokens/*.mjs\" \"theme/assets/{cart,deferred-scripts,lazy-apps}.js\" \"scripts/*.mjs\" \"storefront/{app,components,lib}/**/*.js\" \"storefront/scripts/*.mjs\" \"storefront/next.config.mjs\" \"project-server/*.js\" \"project-server/{api,lib,routes}/*.js\"",
     "lint": "npm run format:check && npm run check"
   },
   "engines": {

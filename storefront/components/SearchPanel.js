@@ -23,8 +23,8 @@ function groups(blocks) {
   return result;
 }
 
-// The product cards' sizes for the panel's style (header setting search_style)
-export const productSizes = (style) =>
+// The product cards' sizes for the panel's style (header setting search_style; top by default)
+export const productSizes = (style = 'top') =>
   style === 'drawer' ? '(min-width: 750px) 180px, 45vw' : '(min-width: 1280px) 260px, (min-width: 750px) 30vw, 45vw';
 
 // A "Products" block's slider: the full element replacing its <lazy-section> placeholder (app/(fragments)/lazy)

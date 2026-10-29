@@ -11,11 +11,10 @@ import NewsletterForm from '../NewsletterForm.js';
 import ProductCard from '../ProductCard.js';
 import SectionIntro from '../SectionIntro.js';
 import ThemeImage from '../ThemeImage.js';
-import { THEME_SECRET } from '@/lib/env.js';
 import { linkUrl, scheduleActive } from '@/lib/links.js';
 import { getProductsByHandles } from '@/lib/queries.js';
 import { scriptJson } from '@/lib/text.js';
-import { apiUrl, getSettings, t } from '@/lib/theme.js';
+import { apiUrl, getSettings, t, themeSecret } from '@/lib/theme.js';
 
 function Wheel({ section, block }) {
   const settings = getSettings();
@@ -30,8 +29,7 @@ function Wheel({ section, block }) {
   const count = prizes.length;
   if (count < 2) return null;
   // The list exactly as Liquid prints it: the server checks its signature with the theme's API secret
-  // (THEME_SECRET, else the setting in the local settings_data.json)
-  const secret = THEME_SECRET || settings.api_secret;
+  const secret = themeSecret();
   const raw = `[${prizes.map((prize) => `{"label":${JSON.stringify(prize.label)},"code":${JSON.stringify(prize.code)},"weight":${prize.weight}}`).join(',')}]`;
   const odd = count % 2 === 1;
   const stops = prizes

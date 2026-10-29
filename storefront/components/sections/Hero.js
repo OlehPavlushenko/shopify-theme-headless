@@ -17,20 +17,18 @@ async function SlideMedia({ settings, eager }) {
   // The page's main image: preloaded from the <head>, so it starts before the body (header, menus) is parsed —
   // each variant only where its <source> applies
   if (eager && desktop && !settings.video) {
-    preload(sizedUrl(desktop, 1500), {
-      as: 'image',
-      imageSrcSet: srcSetOf(desktop, DESKTOP_WIDTHS),
-      imageSizes: '100vw',
-      media: '(min-width: 750px)',
-      fetchPriority: 'high',
-    });
-    preload(sizedUrl(mobile, 1200), {
-      as: 'image',
-      imageSrcSet: srcSetOf(mobile, MOBILE_WIDTHS),
-      imageSizes: '100vw',
-      media: '(max-width: 749px)',
-      fetchPriority: 'high',
-    });
+    for (const [src, widths, media] of [
+      [desktop, DESKTOP_WIDTHS, '(min-width: 750px)'],
+      [mobile, MOBILE_WIDTHS, '(max-width: 749px)'],
+    ]) {
+      preload(sizedUrl(src, widths.at(-1)), {
+        as: 'image',
+        imageSrcSet: srcSetOf(src, widths),
+        imageSizes: '100vw',
+        media,
+        fetchPriority: 'high',
+      });
+    }
   }
   return (
     <div className="frame frame--cover hero__media">

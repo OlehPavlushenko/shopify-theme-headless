@@ -7,6 +7,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cache } from 'react';
 import { admin } from './admin.js';
+import { THEME_SECRET } from './env.js';
 import { format } from './format.js';
 import { numericId } from './ids.js';
 import { storefront } from './shopify.js';
@@ -87,6 +88,10 @@ export function apiUrl() {
   const api = (getSettings().api_url ?? '').trim().replace(/\/$/, '');
   return api && !api.includes('://') ? `https://${api}` : api;
 }
+
+// The theme's API secret (signs the Spin to win prizes): THEME_SECRET, else the setting in the local
+// settings_data.json (committed without it); '' when neither is set
+export const themeSecret = () => THEME_SECRET || getSettings().api_secret || '';
 
 // A template's sections: templates/<name>.<suffix>.json when the theme has it (an alternate template,
 // e.g. page.wishlist), else templates/<name>.json. Also which one was used (the suffix or '').

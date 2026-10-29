@@ -177,8 +177,7 @@ and the list of mistakes we already made once. Read both before adding code.
 ## Verifying
 
 - `npm run lint` — Prettier check + `shopify theme check`.
-- Screenshots: `npm run shoot <scenario>` (Playwright) at desktop and mobile; for responsive work
-  also 768 and 1024.
+- Check layouts at desktop and mobile; for responsive work also 768 and 1024.
 - Lighthouse against `theme dev` measures the local proxy (no compression, no CDN cache, slow first
   byte): use it to compare before/after and to read the audits (render-blocking, alt, contrast, tap
   targets), not as the real score. Real numbers come from the published theme.

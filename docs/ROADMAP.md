@@ -19,7 +19,6 @@ easy to manage in the theme editor, correct for SEO, and ready for a future Next
 - Typography system in the shadcn proportions, one set of components (button, chip, link list,
   product card, slider, drawer, price).
 - SEO base: structured data, meta tags, one `h1` per page, `noindex` on search.
-- Playwright screenshot tool: `npm run shoot <scenario>`.
 
 ### Header
 - Three layouts, sticky (always / on scroll up), transparent over the first section.

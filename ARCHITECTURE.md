@@ -18,8 +18,6 @@ packages/
     css/             framework-agnostic CSS (base + one file per component area)
     js/              framework-agnostic ES modules (imported as @ui/<name>)
 theme/               the Shopify theme (Online Store 2.0: sections, JSON templates, theme blocks)
-reference/
-  loyalty-theme/     the previous theme, kept as a working reference for behavior and features
 scripts/
   sync-ui.mjs        copies packages/ui/{css,js}/<file> -> theme/assets/ui-<file>
                      and joins the always-loaded CSS (CORE) into theme/assets/ui-core.css
@@ -190,9 +188,6 @@ npm run watch      # re-sync packages/ui into theme/assets on every change (seco
 npm run check      # shopify theme check on theme/
 npm run format     # Prettier on the JS (2 spaces, single quotes, width 140; .prettierrc.json)
 npm run lint       # format:check + check — run before every commit
-npm run dev:reference   # run the previous theme for comparison
-npm run shoot <scenario> [arg] <outDir>   # Playwright screenshots (desktop + mobile) of the dev store:
-                   # home | menu <n> | mobile-menu [n] | utility | cart-drawer | search-empty | search <q> | cart | collection
 ```
 
 Never edit `theme/assets/ui-*` directly: they are generated from `packages/ui`.

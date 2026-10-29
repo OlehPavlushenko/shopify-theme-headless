@@ -13,13 +13,10 @@
     "release": "npm run sync && npm run lint && shopify theme push --path theme --store education-checkout-extensibility --unpublished",
     "release:live": "npm run pull:live && npm run sync && npm run lint && shopify theme push --path theme --store education-checkout-extensibility --live",
     "pull:live":"shopify theme pull --path theme --store education-checkout-extensibility --live --only config/settings_data.json --only \"templates/*.json\" --only \"sections/*.json\"",
-    "dev:reference": "shopify theme dev --path reference/loyalty-theme --store education-checkout-extensibility",
     "storefront": "npm --prefix storefront run dev",
     "storefront:install": "cd storefront && npm install",
     "server": "npm --prefix project-server run dev",
     "server:install": "cd project-server && npm install",
-    "shoot": "node tools/screenshot/shoot.mjs",
-    "shoot:install": "cd tools/screenshot && npm install && npx playwright install chromium",
     "format": "prettier --write \"packages/ui/js/*.js\" \"theme/assets/cart.js\" \"scripts/*.mjs\" \"packages/tokens/*.mjs\" \"storefront/{app,components,lib}/**/*.js\"",
     "format:check": "prettier --check \"packages/ui/js/*.js\" \"theme/assets/cart.js\" \"storefront/{app,components,lib}/**/*.js\"",
     "lint": "npm run format:check && npm run check"

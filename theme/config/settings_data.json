@@ -36,7 +36,7 @@
       "mix-protein-slim-shake"
     ],
     "api_url": "http://127.0.0.1:9292",
-    "api_secret": "4f9a4b10d688e300a4e99e07456abaa5c5b47dbc8458f4f9cebd54d8e0f74ed1",
+    "api_secret": "",
     "seo_country": "US",
     "sections": {
       "cart-drawer": {

@@ -4,6 +4,7 @@
   "type": "module",
   "description": "Shopify theme + shared UI packages (headless-ready).",
   "scripts": {
+    "setup:git": "git config filter.strip-secrets.clean \"node scripts/strip-secrets.mjs\" && git config filter.strip-secrets.smudge cat && git config filter.strip-secrets.required true",
     "tokens": "node packages/tokens/build.mjs",
     "sync": "npm run tokens && node scripts/sync-ui.mjs",
     "watch": "node scripts/sync-ui.mjs --watch",

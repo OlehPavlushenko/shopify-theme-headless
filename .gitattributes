@@ -4,3 +4,6 @@
 *.gif binary
 *.woff binary
 *.woff2 binary
+
+# The theme's API secret stays out of git (scripts/strip-secrets.mjs; set up with `npm run setup:git`)
+theme/config/settings_data.json filter=strip-secrets

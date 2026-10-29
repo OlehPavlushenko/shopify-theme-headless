@@ -12,7 +12,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { Router } from 'express';
 import { admin } from '../lib/shopify.js';
-import { verifyRecaptcha } from '../lib/recaptcha.js';
+import { captchaFailure } from '../lib/recaptcha.js';
 import { EMAIL, subscribe, addTags } from '../lib/subscribers.js';
 
 const TAG = 'spin-wheel';
@@ -49,13 +49,14 @@ function pick(prizes) {
 }
 
 router.post('/', async (req, res) => {
-  const email = String(req.body?.email ?? '').trim().toLowerCase();
+  const email = String(req.body?.email ?? '')
+    .trim()
+    .toLowerCase();
   if (email.length > 254 || !EMAIL.test(email)) return res.status(400).json({ ok: false, error: 'invalid_email' });
   const prizes = readPrizes(req.body?.prizes, req.body?.signature);
   if (!prizes) return res.status(400).json({ ok: false, error: 'invalid_prizes' });
-  if (!(await verifyRecaptcha(req.body?.token, 'spin'))) {
-    return res.status(403).json({ ok: false, error: 'captcha_failed' });
-  }
+  const captcha = await captchaFailure(req.body?.token, 'spin');
+  if (captcha) return res.status(403).json({ ok: false, error: 'captcha_failed', reason: captcha });
 
   try {
     const { customer, status: subscribed } = await subscribe(email);

@@ -6,7 +6,7 @@
 // invalid_email | invalid_message | invalid_phone | captcha_failed | server_error.
 import { Router } from 'express';
 import { addNote, stamp } from '../lib/customers.js';
-import { verifyRecaptcha } from '../lib/recaptcha.js';
+import { captchaFailure } from '../lib/recaptcha.js';
 
 const EMAIL = /^[^\s@"'\\]+@[^\s@"'\\]+\.[^\s@"'\\]+$/;
 const PHONE = /^\+?[0-9\s().-]{7,20}$/;
@@ -15,7 +15,10 @@ const MAX_MESSAGE = 5000;
 const router = Router();
 
 router.post('/', async (req, res) => {
-  const text = (key, max) => String(req.body?.[key] ?? '').trim().slice(0, max);
+  const text = (key, max) =>
+    String(req.body?.[key] ?? '')
+      .trim()
+      .slice(0, max);
   const email = text('email', 255).toLowerCase();
   const name = text('name', 100);
   const phone = text('phone', 30);
@@ -24,9 +27,8 @@ router.post('/', async (req, res) => {
   if (email.length > 254 || !EMAIL.test(email)) return res.status(400).json({ ok: false, error: 'invalid_email' });
   if (phone && !PHONE.test(phone)) return res.status(400).json({ ok: false, error: 'invalid_phone' });
   if (!message || message.length > MAX_MESSAGE) return res.status(400).json({ ok: false, error: 'invalid_message' });
-  if (!(await verifyRecaptcha(req.body?.token, 'contact'))) {
-    return res.status(403).json({ ok: false, error: 'captcha_failed' });
-  }
+  const captcha = await captchaFailure(req.body?.token, 'contact');
+  if (captcha) return res.status(403).json({ ok: false, error: 'captcha_failed', reason: captcha });
 
   const entry = `— ${subject ? `Question about ${subject}` : 'Contact form'}, ${stamp()}${phone ? `, phone ${phone}` : ''}${name ? `, ${name}` : ''}\n${message}`;
   try {

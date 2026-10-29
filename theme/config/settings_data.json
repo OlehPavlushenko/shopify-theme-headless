@@ -36,6 +36,7 @@
       "mix-protein-slim-shake"
     ],
     "api_url": "https://shopify-theme-headless.vercel.app",
+    "recaptcha_site_key": "6Lc7yQYuAAAAAKLAz7hFeZrnEobGxXgjwJsZzrwM",
     "api_secret": "",
     "seo_country": "US",
     "sections": {

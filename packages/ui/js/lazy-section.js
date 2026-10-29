@@ -11,6 +11,8 @@
  * the placeholder. It loads when the placeholder gets a box on screen (its overlay opened, near the
  * viewport), or earlier when the pointer or focus reaches an element matching data-prefetch (the
  * button that opens it). Placeholders of one section share one request.
+ * Headless (no Section Rendering API): data-endpoint="<url>" — a route rendering the full element; asked
+ * as it is instead of data-url + section_id.
  */
 import { fetchHTML, sectionUrl } from '@ui/fetch-html';
 
@@ -48,7 +50,8 @@ class LazySection extends HTMLElement {
     this.#abort?.abort();
     this.#observer?.disconnect();
     try {
-      const html = await fetchHTML(sectionUrl(this.dataset.url || '/', this.dataset.section), { cache });
+      const url = this.dataset.endpoint || sectionUrl(this.dataset.url || '/', this.dataset.section);
+      const html = await fetchHTML(url, { cache });
       const content = html.querySelector(`[data-lazy-key="${CSS.escape(this.dataset.key)}"]`);
       if (content && this.isConnected) this.replaceWith(document.importNode(content, true));
     } catch {

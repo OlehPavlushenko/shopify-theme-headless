@@ -383,6 +383,14 @@
   .section-spacing {
     padding-block: var(--section-padding-top, var(--space-3xl)) var(--section-padding-bottom, var(--space-3xl));
   }
+
+  /* A page's sections from the third on are laid out only near the screen (the first two hold what the
+     first screen shows): the browser skips their style and layout work on load. The size they last had
+     stands in meanwhile, so the scrollbar doesn't jump */
+  main > .shopify-section ~ .shopify-section ~ .shopify-section {
+    content-visibility: auto;
+    contain-intrinsic-block-size: auto 60rem;
+  }
 }
 
 /* ------------------------------------------------------------ utilities */

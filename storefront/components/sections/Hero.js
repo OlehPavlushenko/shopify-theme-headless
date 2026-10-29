@@ -2,22 +2,44 @@
 // card / split / overlay, tint, buttons; two or more slides make a <ui-slider> (autoplay, loop, dots).
 // The first slide of the first section loads eagerly (LCP). Headings are h2 styled as h1.
 import Link from 'next/link';
+import { preload } from 'react-dom';
 import BackgroundVideo from '../BackgroundVideo.js';
 import SliderNav from '../SliderNav.js';
 import { sizedUrl, srcSetOf } from '../ThemeImage.js';
 import { imageUrl, t } from '@/lib/theme.js';
 import { linkUrl } from '@/lib/links.js';
 
+const DESKTOP_WIDTHS = [1500, 2200, 3000];
+const MOBILE_WIDTHS = [600, 900, 1200];
+
 async function SlideMedia({ settings, eager }) {
   const [desktop, mobile] = await Promise.all([imageUrl(settings.image), imageUrl(settings.image_mobile || settings.image)]);
+  // The page's main image: preloaded from the <head>, so it starts before the body (header, menus) is parsed —
+  // each variant only where its <source> applies
+  if (eager && desktop && !settings.video) {
+    preload(sizedUrl(desktop, 1500), {
+      as: 'image',
+      imageSrcSet: srcSetOf(desktop, DESKTOP_WIDTHS),
+      imageSizes: '100vw',
+      media: '(min-width: 750px)',
+      fetchPriority: 'high',
+    });
+    preload(sizedUrl(mobile, 1200), {
+      as: 'image',
+      imageSrcSet: srcSetOf(mobile, MOBILE_WIDTHS),
+      imageSizes: '100vw',
+      media: '(max-width: 749px)',
+      fetchPriority: 'high',
+    });
+  }
   return (
     <div className="frame frame--cover hero__media">
       {desktop && (
         <picture>
-          <source media="(min-width: 750px)" srcSet={srcSetOf(desktop, [1500, 2200, 3000])} sizes="100vw" />
+          <source media="(min-width: 750px)" srcSet={srcSetOf(desktop, DESKTOP_WIDTHS)} sizes="100vw" />
           <img
             src={sizedUrl(mobile, 1200)}
-            srcSet={srcSetOf(mobile, [600, 900, 1200])}
+            srcSet={srcSetOf(mobile, MOBILE_WIDTHS)}
             sizes="100vw"
             alt=""
             loading={eager ? 'eager' : 'lazy'}

@@ -5,6 +5,7 @@
 import Link from 'next/link';
 import CloseButton from './CloseButton.js';
 import Icon from './Icon.js';
+import LazySection from './LazySection.js';
 import ProductCard from './ProductCard.js';
 import SliderNav from './SliderNav.js';
 import { getCollection, getCollectionsByHandles, getProductsByHandles } from '@/lib/queries.js';
@@ -22,14 +23,19 @@ function groups(blocks) {
   return result;
 }
 
-async function ProductsBlock({ block, sizes }) {
+// The product cards' sizes for the panel's style (header setting search_style)
+export const productSizes = (style) =>
+  style === 'drawer' ? '(min-width: 750px) 180px, 45vw' : '(min-width: 1280px) 260px, (min-width: 750px) 30vw, 45vw';
+
+// A "Products" block's slider: the full element replacing its <lazy-section> placeholder (app/(fragments)/lazy)
+export async function ProductsBlock({ block, sizes }) {
   const s = block.settings;
   const products = s.products?.length
     ? await getProductsByHandles(s.products)
     : ((await getCollection(s.collection))?.products.nodes ?? []);
   if (!products.length) return null;
   return (
-    <ui-slider class="slider search-slider">
+    <ui-slider class="slider search-slider" data-lazy-key={block.id}>
       <div className="slider__head">
         <h2 className="eyebrow search-results__heading">{s.heading}</h2>
         <div className="slider__head-end">
@@ -69,7 +75,6 @@ async function CollectionsBlock({ block }) {
 export default function SearchPanel({ header }) {
   const { settings, blocks } = header;
   const style = settings.search_style || 'top';
-  const sizes = style === 'drawer' ? '(min-width: 750px) 180px, 45vw' : '(min-width: 1280px) 260px, (min-width: 750px) 30vw, 45vw';
   const searchBlocks = blocks.filter((block) => block.type.startsWith('search_'));
 
   return (
@@ -137,10 +142,22 @@ export default function SearchPanel({ header }) {
               })}
             </div>
             <div className="search-results__main">
+              {/* The product sliders: fetched when the panel opens (app/(fragments)/lazy) */}
               {searchBlocks
-                .filter((block) => block.type === 'search_products')
+                .filter((block) => block.type === 'search_products' && (block.settings.products?.length || block.settings.collection))
                 .map((block) => (
-                  <ProductsBlock key={block.id} block={block} sizes={sizes} />
+                  <LazySection
+                    key={block.id}
+                    part="search"
+                    sectionId={header.id}
+                    lazyKey={block.id}
+                    className="slider search-slider"
+                    heading={block.settings.heading}
+                    headingTag="h2"
+                    headingClass="eyebrow search-results__heading"
+                    link={block.settings.collection ? `/collections/${block.settings.collection}` : undefined}
+                    prefetch='[data-dialog-open="SearchPanel"]'
+                  />
                 ))}
             </div>
           </div>

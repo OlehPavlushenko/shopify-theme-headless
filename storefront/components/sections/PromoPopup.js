@@ -6,6 +6,7 @@ import { createHmac } from 'node:crypto';
 import CloseButton from '../CloseButton.js';
 import Countdown from '../Countdown.js';
 import Icon from '../Icon.js';
+import LazySection from '../LazySection.js';
 import NewsletterForm from '../NewsletterForm.js';
 import ProductCard from '../ProductCard.js';
 import SectionIntro from '../SectionIntro.js';
@@ -139,11 +140,12 @@ function Wheel({ section, block }) {
   );
 }
 
-async function Products({ block }) {
+// A "Products" block's slider: the full element replacing its <lazy-section> placeholder (app/(fragments)/lazy)
+export async function PopupProducts({ block }) {
   const products = await getProductsByHandles(block.settings.products ?? []);
   if (!products.length) return null;
   return (
-    <ui-slider class="slider promo-popup__products">
+    <ui-slider class="slider promo-popup__products" data-lazy-key={block.id}>
       {block.settings.heading && <p className="eyebrow">{block.settings.heading}</p>}
       <ul className="scroll-track slider__track" data-slider-track="" role="list">
         {products.map((product) => (
@@ -229,7 +231,17 @@ export default function PromoPopup({ section }) {
                 case 'wheel':
                   return <Wheel key={block.id} section={section} block={block} />;
                 case 'products':
-                  return <Products key={block.id} block={block} />;
+                  // Fetched when the popup opens (app/(fragments)/lazy)
+                  return block.settings.products?.length ? (
+                    <LazySection
+                      key={block.id}
+                      part="popup"
+                      sectionId={id}
+                      lazyKey={block.id}
+                      className="slider promo-popup__products"
+                      heading={block.settings.heading}
+                    />
+                  ) : null;
                 case 'button':
                   return s.button_label ? (
                     <a key={block.id} href={linkUrl(s.button_link) || '/collections/all'} className="btn btn--full">

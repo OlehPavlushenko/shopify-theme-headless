@@ -59,8 +59,7 @@ function Gallery({ product, layout, ratio, discount }) {
                     width={image.width}
                     height={image.height}
                     sizes={sizes}
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                    fetchPriority={index === 0 ? 'high' : undefined}
+                    {...(index === 0 ? { preload: true } : { loading: 'lazy' })}
                   />
                   <span className="product-gallery__zoom-icon" aria-hidden="true">
                     <Icon name="zoom" />

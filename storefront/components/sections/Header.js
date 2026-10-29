@@ -5,7 +5,7 @@
 import Link from 'next/link';
 import CartCount from '../CartCount.js';
 import Icon from '../Icon.js';
-import MegaSlider from '../MegaSlider.js';
+import LazySection from '../LazySection.js';
 import PromoCard, { promoCardProps } from '../PromoCard.js';
 import ThemeImage from '../ThemeImage.js';
 import UtilityPanel, { UtilityContent, hasUtility } from '../UtilityPanel.js';
@@ -15,7 +15,7 @@ import { localPath } from '@/lib/shopify.js';
 import { getSettings, t } from '@/lib/theme.js';
 
 // Desktop navigation: snippets/site-nav.liquid
-function SiteNav({ menu, blocks }) {
+function SiteNav({ menu, blocks, sectionId }) {
   return (
     <nav-menu class="site-nav">
       <nav aria-label={t('accessibility.menu')}>
@@ -80,7 +80,18 @@ function SiteNav({ menu, blocks }) {
                                     sizes="(min-width: 990px) 280px, 100vw"
                                   />
                                 ) : (
-                                  <MegaSlider key={block.id} heading={block.settings.heading} handles={block.settings.products} />
+                                  // The products slider: fetched when the menu opens (app/(fragments)/lazy)
+                                  block.settings.products?.length > 0 && (
+                                    <LazySection
+                                      key={block.id}
+                                      part="menu"
+                                      sectionId={sectionId}
+                                      lazyKey={block.id}
+                                      className="slider mega-slider"
+                                      heading={block.settings.heading}
+                                      prefetch=".site-nav__item--mega"
+                                    />
+                                  )
                                 )
                               )}
                             </div>
@@ -205,7 +216,7 @@ export default async function Header({ section, shopName }) {
 
           {hasMenu && (
             <div className="site-header__nav">
-              <SiteNav menu={menu} blocks={menuBlocks} />
+              <SiteNav menu={menu} blocks={menuBlocks} sectionId={section.id} />
             </div>
           )}
 

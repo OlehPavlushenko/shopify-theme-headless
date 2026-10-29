@@ -4,11 +4,12 @@ import ProductCard from './ProductCard.js';
 import SliderNav from './SliderNav.js';
 import { getProductsByHandles } from '@/lib/queries.js';
 
-export default async function MegaSlider({ heading, handles }) {
+// lazyKey: the block id, as the full element replacing its <lazy-section> placeholder (app/(fragments)/lazy)
+export default async function MegaSlider({ heading, handles, lazyKey }) {
   const products = await getProductsByHandles(handles);
   if (!products.length) return null;
   return (
-    <ui-slider class="slider mega-slider">
+    <ui-slider class="slider mega-slider" data-lazy-key={lazyKey}>
       <div className="slider__head">
         <p className="eyebrow">{heading}</p>
         <div className="slider__head-end">

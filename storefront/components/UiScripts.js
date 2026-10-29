@@ -5,7 +5,7 @@
 // Also the menus' current-page marks, which Liquid renders (link.active / child_active, link.current):
 // here they follow the path after every navigation, so the layout stays static.
 import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { unstable_isUnrecognizedActionError, usePathname } from 'next/navigation';
 
 // Promo popups for some pages only (their "Pages" setting): left out elsewhere, before they arm
 function limitPopups(pathname) {
@@ -29,22 +29,50 @@ function markCurrent(pathname) {
 export default function UiScripts() {
   const pathname = usePathname();
 
+  // A page from an earlier deploy calls server actions the new one doesn't have (add to cart after a
+  // release): reload it once to get the current build (not again within 30 s, so it can't loop)
   useEffect(() => {
+    const onRejection = (event) => {
+      if (!unstable_isUnrecognizedActionError(event.reason)) return;
+      try {
+        if (Date.now() - Number(sessionStorage.getItem('action-reload') ?? 0) < 30_000) return;
+        sessionStorage.setItem('action-reload', String(Date.now()));
+      } catch {
+        // Storage off: reload anyway
+      }
+      location.reload();
+    };
+    addEventListener('unhandledrejection', onRejection);
+    return () => removeEventListener('unhandledrejection', onRejection);
+  }, []);
+
+  useEffect(() => {
+    // What the first screen uses: panels and menus, sliders, timers, the add-to-cart buttons
     import('@ui/dialog');
     import('@ui/header');
     import('@ui/nav-menu');
     import('@ui/drill-menu');
-    import('@ui/predictive-search');
-    import('@ui/form-validate');
     import('@ui/slider');
     import('@ui/countdown');
-    import('@ui/footer');
-    import('@ui/newsletter');
-    import('@ui/saved-list');
     import('@/lib/cart-elements.js');
-    import('@ui/quick-view');
-    import('@/lib/cart-recommendations.js');
-    if (document.querySelector('cookie-banner')) import('@ui/cookie-banner');
+    // The rest once the page is idle (2 s at most), off the load's main thread: live search, form checks,
+    // footer accordions, sign-up, wishlist / compare toggles, quick view, the cart's recommendations
+    const later = () => {
+      import('@ui/predictive-search');
+      import('@ui/form-validate');
+      import('@ui/footer');
+      import('@ui/newsletter');
+      import('@ui/saved-list');
+      import('@ui/quick-view');
+      import('@/lib/cart-recommendations.js');
+      if (document.querySelector('cookie-banner')) import('@ui/cookie-banner');
+    };
+    if ('requestIdleCallback' in window) {
+      const id = requestIdleCallback(later, { timeout: 2000 });
+      return () => cancelIdleCallback(id);
+    }
+    const id = setTimeout(later, 1);
+    return () => clearTimeout(id);
   }, []);
 
   useEffect(() => {
@@ -64,6 +92,7 @@ export default function UiScripts() {
     if (document.querySelector('contact-form')) import('@ui/contact-form');
     if (document.querySelector('load-more')) import('@ui/load-more');
     if (document.querySelector('delivery-steps')) import('@ui/delivery-steps');
+    if (document.querySelector('lazy-section')) import('@ui/lazy-section');
     if (document.querySelector('section-swap')) import('@ui/section-swap');
     if (document.querySelector('article-toc')) import('@ui/article-toc');
   }, [pathname]);

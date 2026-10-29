@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Headless storefront (Next.js) on the Shopify Storefront API; shares packages/tokens and packages/ui with the theme.",
   "engines": {
-    "node": ">=22"
+    "node": "22.x"
   },
   "scripts": {
     "predev": "node scripts/icons.mjs",

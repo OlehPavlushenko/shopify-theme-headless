@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Small API next to the theme: newsletter sign-up and contact form messages into Shopify customers",
   "engines": {
-    "node": ">=22"
+    "node": "22.x"
   },
   "scripts": {
     "start": "node --env-file-if-exists=.env.local server.js",

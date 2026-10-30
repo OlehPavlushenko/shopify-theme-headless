@@ -1590,4 +1590,32 @@
   .form-errors:empty {
     display: none;
   }
+
+  /* Headless storefront: the bar at the top of the window while a link loads the next page in place
+     (components/RouteProgress.js) — grows towards 90% while loading, fills up and fades once it is in */
+  .route-progress {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: var(--z-skip);
+    height: 0.3rem;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .route-progress[data-state="loading"] {
+    opacity: 1;
+    transform: scaleX(0.9);
+    transition: transform 8s cubic-bezier(0.1, 0.8, 0.2, 1);
+  }
+
+  .route-progress[data-state="done"] {
+    opacity: 0;
+    transform: scaleX(1);
+    transition:
+      transform var(--duration-default) var(--ease),
+      opacity var(--duration-default) var(--duration-default);
+  }
 }

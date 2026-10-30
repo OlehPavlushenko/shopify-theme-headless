@@ -16,6 +16,7 @@ import '@ui-css/cart.css';
 import '@ui-css/search.css';
 import '@ui-css/saved.css';
 import { Bricolage_Grotesque, DM_Sans } from 'next/font/google';
+import { Suspense } from 'react';
 import { preconnect } from 'react-dom';
 import CartDrawer from '@/components/CartDrawer.js';
 import CartRecommendations from '@/components/CartRecommendations.js';
@@ -23,6 +24,7 @@ import CartUpsell from '@/components/CartUpsell.js';
 import CloseButton from '@/components/CloseButton.js';
 import SearchPanel from '@/components/SearchPanel.js';
 import Sections from '@/components/Sections.js';
+import RouteProgress from '@/components/RouteProgress.js';
 import UiScripts from '@/components/UiScripts.js';
 import { sizedUrl } from '@/components/ThemeImage.js';
 import JsonLd from '@/components/JsonLd.js';
@@ -117,6 +119,10 @@ export default async function RootLayout({ children }) {
           />
         )}
         <UiScripts />
+        {/* useSearchParams: in a Suspense boundary, so pages stay static */}
+        <Suspense>
+          <RouteProgress />
+        </Suspense>
       </body>
     </html>
   );

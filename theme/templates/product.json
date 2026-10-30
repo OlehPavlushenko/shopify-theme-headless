@@ -91,18 +91,6 @@
             "text_3": "<strong>14-day returns</strong>, easy and free"
           }
         },
-        "description": {
-          "type": "collapsible",
-          "settings": {
-            "heading": "Description",
-            "icon": "none",
-            "source": "description",
-            "metafield": "",
-            "page": "",
-            "content": "",
-            "open": true
-          }
-        },
         "complementary": {
           "type": "complementary",
           "settings": {
@@ -130,13 +118,12 @@
         "info_links",
         "pickup",
         "highlights",
-        "description",
         "complementary",
         "meta",
         "share"
       ],
       "settings": {
-        "gallery_layout": "grid",
+        "gallery_layout": "thumbnails",
         "ratio": "1",
         "info_style": "plain",
         "breadcrumbs": true,
@@ -209,9 +196,15 @@
         "color_scheme": "scheme-1"
       }
     },
-    "17931764247569e44a": {
-      "type": "apps",
+    "tabs": {
+      "type": "product-tabs",
       "blocks": {
+        "description": {
+          "type": "description",
+          "settings": {
+            "title": "Description"
+          }
+        },
         "judge_me_reviews_review_widget_ExBBVb": {
           "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {
@@ -223,21 +216,21 @@
         }
       },
       "block_order": [
+        "description",
         "judge_me_reviews_review_widget_ExBBVb"
       ],
       "settings": {
-        "full_width": false,
-        "lazy": true,
-        "color_scheme": ""
+        "app_title": "Reviews",
+        "color_scheme": "scheme-1"
       }
     }
   },
   "order": [
     "main",
+    "tabs",
     "story",
     "related",
     "faq",
-    "recent",
-    "17931764247569e44a"
+    "recent"
   ]
 }

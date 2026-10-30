@@ -54,6 +54,8 @@ class NavMenu extends HTMLElement {
 
   #onFocusOut = (event) => {
     const item = event.currentTarget;
+    // Focus dropped to the page (no new target) while the pointer is still over the item: not leaving it
+    if (!event.relatedTarget && item.matches(':hover')) return;
     if (!item.contains(event.relatedTarget)) this.#set(item, false);
   };
 

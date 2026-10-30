@@ -1,0 +1,119 @@
+{% comment %}
+  Product tabs: the product page's content under the buying area as tabs, one panel shown at a time
+  (<ui-tabs>, @ui/tabs). Each block is a tab: the product's description, a text (rich text; connect a
+  metafield for specifications, care or ingredients), or an app block (a reviews widget) under the
+  section's "App tab title". A text tab without text is left out. Styles: packages/ui/css/sections.css.
+{% endcomment %}
+{%- liquid
+  assign tabs = ''
+  for block in section.blocks
+    case block.type
+      when 'description'
+        if product.description != blank
+          assign tabs = tabs | append: block.id | append: ','
+        endif
+      when 'text'
+        if block.settings.content != blank
+          assign tabs = tabs | append: block.id | append: ','
+        endif
+      else
+        assign tabs = tabs | append: block.id | append: ','
+    endcase
+  endfor
+  assign tab_ids = tabs | split: ','
+-%}
+{%- if tab_ids.size > 0 -%}
+  <div class="product-tabs color-{{ section.settings.color_scheme }} section-spacing">
+    <ui-tabs class="page-width product-tabs__inner">
+      <div class="product-tabs__list scrollbar-hidden" role="tablist" aria-label="{{ product.title | escape }}">
+        {%- assign index = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- unless tab_ids contains block.id -%}{%- continue -%}{%- endunless -%}
+          {%- liquid
+            assign index = index | plus: 1
+            case block.type
+              when 'description', 'text'
+                assign tab_title = block.settings.title
+              else
+                assign tab_title = section.settings.app_title
+            endcase
+          -%}
+          <button
+            type="button"
+            class="product-tabs__tab"
+            role="tab"
+            id="Tab-{{ section.id }}-{{ index }}"
+            aria-controls="TabPanel-{{ section.id }}-{{ index }}"
+            aria-selected="{% if index == 1 %}true{% else %}false{% endif %}"
+            {% if index > 1 %}
+              tabindex="-1"
+            {% endif %}
+            {{ block.shopify_attributes }}
+          >
+            {{- tab_title | escape -}}
+          </button>
+        {%- endfor -%}
+      </div>
+      {%- assign index = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- unless tab_ids contains block.id -%}{%- continue -%}{%- endunless -%}
+        {%- assign index = index | plus: 1 -%}
+        <div
+          class="product-tabs__panel"
+          role="tabpanel"
+          id="TabPanel-{{ section.id }}-{{ index }}"
+          aria-labelledby="Tab-{{ section.id }}-{{ index }}"
+          tabindex="0"
+          {% if index > 1 %}
+            hidden
+          {% endif %}
+        >
+          {%- case block.type -%}
+            {%- when 'description' -%}
+              <div class="rte">{{ product.description }}</div>
+            {%- when 'text' -%}
+              <div class="rte">{{ block.settings.content }}</div>
+            {%- else -%}
+              {% render block %}
+          {%- endcase -%}
+        </div>
+      {%- endfor -%}
+    </ui-tabs>
+    <script type="module">import '@ui/tabs';</script>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.product_tabs.name",
+  "class": "product-tabs-section",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [
+    { "type": "text", "id": "app_title", "label": "t:sections.product_tabs.app_title", "default": "Reviews" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+  ],
+  "blocks": [
+    {
+      "type": "description",
+      "name": "t:sections.product_tabs.description",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "title", "label": "t:sections.product_tabs.tab_title", "default": "Description" }]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.product_tabs.text",
+      "settings": [
+        { "type": "text", "id": "title", "label": "t:sections.product_tabs.tab_title", "default": "Specifications" },
+        { "type": "richtext", "id": "content", "label": "t:labels.text", "info": "t:sections.product_tabs.content_info" }
+      ]
+    },
+    { "type": "@app" }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.product_tabs.name",
+      "blocks": [{ "type": "description" }]
+    }
+  ]
+}
+{% endschema %}

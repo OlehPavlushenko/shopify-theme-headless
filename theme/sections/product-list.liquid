@@ -6,6 +6,7 @@
   page hides the timer). Not repeated if it's in the list too.
   On the search page (setting): only while there are no results to show — before a search and when it
   finds nothing (templates/search.json).
+  Tabs (blocks, slider layout): one tab per collection, one slider shown at a time (@ui/tabs).
 {% endcomment %}
 {%- liquid
   if section.settings.products.count > 0
@@ -72,7 +73,60 @@
       {%- endfor -%}
     {%- endcapture -%}
 
-    {%- if slider -%}
+    {%- assign tabs = section.blocks | where: 'type', 'tab' -%}
+    {%- if slider and tabs.size > 0 -%}
+      {%- comment -%}
+        Tabs (blocks "Tab"): one slider per tab with its collection's products, one shown at a time
+        (@ui/tabs); the section's own products and deal aren't used
+      {%- endcomment -%}
+      <ui-tabs class="product-list__tabs">
+        {%- render 'section-head', heading: section.settings.heading, link_label: section.settings.link_label, link: link -%}
+        <div class="product-list__tablist scrollbar-hidden" role="tablist" aria-label="{{ section.settings.heading | strip_html | escape }}">
+          {%- for block in tabs -%}
+            <button
+              type="button"
+              class="chip"
+              role="tab"
+              id="Tab-{{ section.id }}-{{ forloop.index }}"
+              aria-controls="TabPanel-{{ section.id }}-{{ forloop.index }}"
+              aria-selected="{{ forloop.first }}"
+              {% unless forloop.first %}
+                tabindex="-1"
+              {% endunless %}
+              {{ block.shopify_attributes }}
+            >
+              {{- block.settings.title | default: block.settings.collection.title | escape -}}
+            </button>
+          {%- endfor -%}
+        </div>
+        {%- for block in tabs -%}
+          <div
+            role="tabpanel"
+            id="TabPanel-{{ section.id }}-{{ forloop.index }}"
+            aria-labelledby="Tab-{{ section.id }}-{{ forloop.index }}"
+            {% unless forloop.first %}
+              hidden
+            {% endunless %}
+          >
+            <ui-slider
+              class="slider product-list__slider"
+              style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 2.2;"
+            >
+              {%- assign tab_title = block.settings.title | default: block.settings.collection.title -%}
+              {%- render 'section-head', nav: true, heading: tab_title, heading_class: 'visually-hidden' -%}
+              <ul class="scroll-track slider__track" data-slider-track role="list">
+                {%- for product in block.settings.collection.products limit: section.settings.limit -%}
+                  <li>
+                    {%- render 'product-card', product: product, quick_add: section.settings.quick_add, sizes: card_sizes -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </ui-slider>
+          </div>
+        {%- endfor -%}
+      </ui-tabs>
+      <script type="module">import '@ui/tabs';</script>
+    {%- elsif slider -%}
       {%- comment -%}
         With a deal: the deal card stays put on the left (one column wide; above the slider on phones)
         and the slider of the other products, one column less, scrolls next to it
@@ -150,6 +204,16 @@
     { "type": "product", "id": "deal_product", "label": "t:sections.product_list.deal_product", "info": "t:sections.product_list.deal_product_info" },
     { "type": "text", "id": "deal_label", "label": "t:sections.product_list.deal_label", "default": "Deal of the week" },
     { "type": "text", "id": "deal_end", "label": "t:sections.product_list.deal_end", "info": "t:sections.product_list.deal_end_info", "placeholder": "2026-12-24 23:59" }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "t:sections.product_list.tab",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "t:labels.collection" },
+        { "type": "text", "id": "title", "label": "t:sections.product_list.tab_title", "info": "t:sections.product_list.tab_title_info" }
+      ]
+    }
   ],
   "presets": [{ "name": "t:sections.product_list.name" }]
 }

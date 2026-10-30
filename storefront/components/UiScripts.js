@@ -96,6 +96,7 @@ export default function UiScripts() {
     if (document.querySelector('section-swap')) import('@ui/section-swap');
     if (document.querySelector('article-toc')) import('@ui/article-toc');
     if (document.querySelector('faq-search')) import('@ui/faq-search');
+    if (document.querySelector('ui-tabs')) import('@ui/tabs');
   }, [pathname]);
 
   return null;

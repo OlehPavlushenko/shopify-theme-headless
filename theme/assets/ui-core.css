@@ -1515,6 +1515,7 @@
 
   .chip[aria-pressed="true"],
   .chip[aria-checked="true"],
+  .chip[aria-selected="true"],
   .chip[aria-current] {
     color: var(--color-button-label);
     background: var(--color-button);
@@ -3839,6 +3840,70 @@
   /* Inside a slider the head already has the slider's spacing */
   .slider > .section-head {
     margin-bottom: var(--space-xs);
+  }
+
+  /* Tabs (@ui/tabs) */
+  ui-tabs {
+    display: block;
+  }
+
+  /* A product list's collection tabs: a row of chips under the heading, one slider per tab */
+  .product-list__tablist {
+    display: flex;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-m);
+    overflow-x: auto;
+  }
+
+  .product-list__tablist .chip {
+    flex: none;
+  }
+
+  /* The tab's slider has only the arrows in its head */
+  .product-list__tabs .slider > .section-head {
+    min-height: 0;
+    margin: 0;
+  }
+
+  /* Product tabs: centered tab titles on a line, the selected one underlined in the accent color */
+  .product-tabs__list {
+    display: flex;
+    justify-content: safe center;
+    gap: var(--space-l);
+    margin-bottom: var(--space-l);
+    overflow-x: auto;
+    border-bottom: 0.1rem solid var(--color-border);
+  }
+
+  .product-tabs__tab {
+    flex: none;
+    min-height: var(--control-height-lg);
+    padding: 0 var(--space-xs);
+    font-size: var(--text-sm);
+    font-weight: var(--font-body-weight-bold);
+    color: var(--color-heading);
+    text-transform: uppercase;
+    cursor: pointer;
+    background: none;
+    border: 0;
+    border-bottom: 0.2rem solid transparent;
+    transition:
+      color var(--duration-short) var(--ease),
+      border-color var(--duration-short) var(--ease);
+  }
+
+  .product-tabs__tab:hover,
+  .product-tabs__tab[aria-selected="true"] {
+    color: var(--color-accent);
+  }
+
+  .product-tabs__tab[aria-selected="true"] {
+    border-bottom-color: var(--color-accent);
+  }
+
+  .product-tabs__panel:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 0.4rem;
   }
 
   /* ------------------------------------------------------------- hero */

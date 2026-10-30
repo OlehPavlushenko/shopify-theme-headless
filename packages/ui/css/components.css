@@ -928,6 +928,7 @@
 
   .chip[aria-pressed="true"],
   .chip[aria-checked="true"],
+  .chip[aria-selected="true"],
   .chip[aria-current] {
     color: var(--color-button-label);
     background: var(--color-button);

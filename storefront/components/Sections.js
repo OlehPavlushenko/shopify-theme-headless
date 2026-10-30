@@ -29,6 +29,7 @@ import Marquee from './sections/Marquee.js';
 import Newsletter from './sections/Newsletter.js';
 import PageHeader from './sections/PageHeader.js';
 import ProductList from './sections/ProductList.js';
+import ProductTabs from './sections/ProductTabs.js';
 import PromoPopup from './sections/PromoPopup.js';
 import PromoGrid from './sections/PromoGrid.js';
 import Quote from './sections/Quote.js';
@@ -70,6 +71,7 @@ const SECTIONS = {
   newsletter: Newsletter,
   'page-header': PageHeader,
   'product-list': ProductList,
+  'product-tabs': ProductTabs,
   'promo-grid': PromoGrid,
   'promo-popup': PromoPopup,
   quote: Quote,

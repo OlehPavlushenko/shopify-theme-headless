@@ -429,8 +429,19 @@
       "loop_info": "After the last slide the arrows and autoplay go back to the first one. Off: the slider stops at the ends.",
       "preset_banner": "Image banner"
     },
+    "product_tabs": {
+      "name": "Product tabs",
+      "app_title": "App tab title",
+      "description": "Description",
+      "text": "Text",
+      "tab_title": "Tab title",
+      "content_info": "Connect a product metafield (specifications, care, ingredients) with the dynamic source button. Empty: the tab is left out."
+    },
     "product_list": {
       "name": "Product list",
+      "tab": "Tab",
+      "tab_title": "Tab title",
+      "tab_title_info": "Empty: the collection's title. With tabs (Slider layout) each tab shows its collection's products; the section's own products and deal aren't used.",
       "layout": "Layout",
       "layout_slider": "Slider",
       "layout_grid": "Grid",

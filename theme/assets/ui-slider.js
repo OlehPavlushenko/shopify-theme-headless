@@ -149,9 +149,16 @@ class UiSlider extends HTMLElement {
       current = offsets.indexOf(Math.min(...offsets));
     }
     const loop = this.hasAttribute('data-loop');
+    const prevOff = !loop && position <= 1;
+    const nextOff = !loop && position >= max - 1;
     this.toggleAttribute('data-overflow', max > 1);
-    if (this.#prev) this.#prev.disabled = !loop && position <= 1;
-    if (this.#next) this.#next.disabled = !loop && position >= max - 1;
+    // An arrow disabled while focused would drop the focus to the page (and close a menu or panel
+    // around the slider, which takes that for leaving): the focus goes to the other arrow first
+    const focused = document.activeElement;
+    if (focused === this.#next && nextOff && !prevOff) this.#prev?.focus({ preventScroll: true });
+    if (focused === this.#prev && prevOff && !nextOff) this.#next?.focus({ preventScroll: true });
+    if (this.#prev) this.#prev.disabled = prevOff;
+    if (this.#next) this.#next.disabled = nextOff;
     if (this.#dots) [...this.#dots.children].forEach((dot, index) => dot.toggleAttribute('aria-current', index === current));
   }
 }

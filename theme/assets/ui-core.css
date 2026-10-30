@@ -3859,10 +3859,28 @@
     flex: none;
   }
 
-  /* The tab's slider has only the arrows in its head */
+  /* The tab's slider has only the arrows in its head: they sit at the end of the section's heading row
+     (phones swipe, without arrows) */
+  .product-list__tabs {
+    position: relative;
+  }
+
+  .product-list__tabs > .section-head {
+    min-height: var(--control-height-sm);
+  }
+
   .product-list__tabs .slider > .section-head {
-    min-height: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-height: var(--control-height-sm);
     margin: 0;
+  }
+
+  @media (min-width: 750px) {
+    .product-list__tabs > .section-head {
+      padding-inline-end: calc(var(--control-height-sm) * 2 + var(--space-l));
+    }
   }
 
   /* Product tabs: centered tab titles on a line, the selected one underlined in the accent color */

@@ -193,6 +193,17 @@
       "transit_min": "Delivery days, from",
       "transit_max": "Delivery days, up to"
     },
+    "age_gate": {
+      "name": "Age verification",
+      "enabled": "Ask visitors to confirm their age",
+      "enabled_info": "A window over the store on the first visit (alcohol, tobacco, adult products). The answer is kept in the visitor's browser.",
+      "eyebrow": "Small title",
+      "yes": "Confirm button",
+      "no": "Decline button",
+      "exit": "Where \"Decline\" leads",
+      "exit_info": "Empty: back to the previous site, else google.com.",
+      "days": "Ask again after"
+    },
     "saved": {
       "name": "Wishlist & compare",
       "wishlist_enabled": "Wishlist",

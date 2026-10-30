@@ -1,0 +1,29 @@
+{% doc %}
+  Age verification (Theme settings > Age verification): a modal window over the store until the visitor
+  confirms their age; the answer is kept for the set number of days, "Decline" leaves the site.
+  Esc doesn't close it. <age-gate> (@ui/age-gate) opens it when there is no answer yet; without JS it
+  stays closed. Styles: .age-gate in packages/ui/css/components.css.
+{% enddoc %}
+<age-gate data-days="{{ settings.age_gate_days }}" data-exit="{{ settings.age_gate_exit }}">
+  <dialog
+    class="popup age-gate color-{{ settings.age_gate_color_scheme }}"
+    aria-labelledby="AgeGate-title"
+    aria-describedby="AgeGate-text"
+    data-dialog-locked
+  >
+    <div class="age-gate__inner">
+      {%- if settings.age_gate_eyebrow != blank -%}
+        <p class="eyebrow age-gate__eyebrow">{{ settings.age_gate_eyebrow | escape }}</p>
+      {%- endif -%}
+      <h2 id="AgeGate-title" class="h3 age-gate__heading">{{ settings.age_gate_heading | escape }}</h2>
+      {%- if settings.age_gate_text != blank -%}
+        <p id="AgeGate-text" class="age-gate__text">{{ settings.age_gate_text | escape | newline_to_br }}</p>
+      {%- endif -%}
+      <div class="age-gate__actions">
+        <button type="button" class="btn age-gate__yes" data-age-yes>{{ settings.age_gate_yes | escape }}</button>
+        <button type="button" class="btn btn--outline age-gate__no" data-age-no>{{ settings.age_gate_no | escape }}</button>
+      </div>
+    </div>
+  </dialog>
+</age-gate>
+<script type="module">import '@ui/age-gate';</script>

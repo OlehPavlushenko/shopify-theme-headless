@@ -97,6 +97,7 @@ export default function UiScripts() {
     if (document.querySelector('article-toc')) import('@ui/article-toc');
     if (document.querySelector('faq-search')) import('@ui/faq-search');
     if (document.querySelector('ui-tabs')) import('@ui/tabs');
+    if (document.querySelector('age-gate')) import('@ui/age-gate');
   }, [pathname]);
 
   return null;

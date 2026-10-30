@@ -8,6 +8,8 @@
  * - [data-dialog-close] closes the closest dialog.
  * - A click on the backdrop closes the dialog: the dialog's single child fills it, so a click
  *   whose target is the <dialog> itself landed on the backdrop.
+ * - [data-dialog-locked] on a dialog: neither Esc nor the backdrop closes it, only its own buttons
+ *   (the age verification).
  * - Panels: <div popover="manual"> opened by [popovertarget] buttons (popovertargetaction="hide"
  *   closes). This module handles those clicks, Esc and clicks outside the panel (light dismiss),
  *   and keeps one panel open at a time.
@@ -129,7 +131,7 @@ document.addEventListener('click', (event) => {
     return;
   }
 
-  if (event.target instanceof HTMLDialogElement) closeDialog(event.target);
+  if (event.target instanceof HTMLDialogElement && !event.target.hasAttribute('data-dialog-locked')) closeDialog(event.target);
 });
 
 // Light dismiss for panels: a press outside the panel (and outside its own buttons) closes it
@@ -147,7 +149,7 @@ document.addEventListener(
   (event) => {
     if (!(event.target instanceof HTMLDialogElement)) return;
     event.preventDefault();
-    closeDialog(event.target);
+    if (!event.target.hasAttribute('data-dialog-locked')) closeDialog(event.target);
   },
   true
 );

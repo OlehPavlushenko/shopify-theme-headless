@@ -18,6 +18,7 @@ import '@ui-css/saved.css';
 import { Bricolage_Grotesque, DM_Sans } from 'next/font/google';
 import { Suspense } from 'react';
 import { preconnect } from 'react-dom';
+import AgeGate from '@/components/AgeGate.js';
 import CartDrawer from '@/components/CartDrawer.js';
 import CartRecommendations from '@/components/CartRecommendations.js';
 import CartUpsell from '@/components/CartUpsell.js';
@@ -80,6 +81,8 @@ export default async function RootLayout({ children }) {
         <JsonLd data={await organization()} />
         {/* Popups and other overlays (theme editor: "Overlays") */}
         <Sections sections={getSections('sections/overlay-group.json')} group="overlay-group" />
+        {/* Theme settings > Age verification */}
+        <AgeGate />
         <CartDrawer
           strings={strings(CART_STRINGS)}
           colorScheme={drawer.color_scheme || 'scheme-1'}

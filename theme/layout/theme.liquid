@@ -155,6 +155,7 @@
 
     {%- comment -%} Popups and other overlays (theme editor: "Overlays") {%- endcomment -%}
     {% sections 'overlay-group' %}
+    {%- if settings.age_gate_enabled -%}{%- render 'age-gate' -%}{%- endif -%}
     {% render 'quick-view-dialog' %}
     {%- if settings.compare_enabled -%}
       {%- comment -%} Texts of the compare toasts (@ui/saved-list): added, removed, "up to 4" {%- endcomment -%}

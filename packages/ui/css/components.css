@@ -1212,6 +1212,34 @@
     }
   }
 
+  /* Age verification (snippets/age-gate): a small centered window, the backdrop hides the store */
+  .age-gate {
+    width: min(40rem, calc(100vw - var(--space-xl)));
+    text-align: center;
+    border: 0.1rem solid var(--color-border);
+  }
+
+  .age-gate::backdrop {
+    background: rgb(0 0 0 / 0.85);
+    backdrop-filter: blur(0.6rem);
+  }
+
+  .age-gate__inner {
+    display: grid;
+    gap: var(--space-s);
+    padding: var(--space-xl) var(--space-l) var(--space-l);
+  }
+
+  .age-gate__eyebrow {
+    color: var(--color-accent);
+  }
+
+  .age-gate__actions {
+    display: grid;
+    gap: var(--space-s);
+    margin-top: var(--space-s);
+  }
+
   /* A popup with a title bar: the header stays on top while the dialog scrolls */
   .popup__header {
     position: sticky;

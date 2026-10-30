@@ -537,6 +537,20 @@
     ]
   },
   {
+    "name": "t:settings.age_gate.name",
+    "settings": [
+      { "type": "checkbox", "id": "age_gate_enabled", "label": "t:settings.age_gate.enabled", "info": "t:settings.age_gate.enabled_info", "default": false },
+      { "type": "text", "id": "age_gate_eyebrow", "label": "t:settings.age_gate.eyebrow", "default": "Age verification" },
+      { "type": "text", "id": "age_gate_heading", "label": "t:labels.heading", "default": "Are you 18 or older?" },
+      { "type": "textarea", "id": "age_gate_text", "label": "t:labels.text", "default": "This site sells products for adults. Please confirm your age to continue." },
+      { "type": "text", "id": "age_gate_yes", "label": "t:settings.age_gate.yes", "default": "Yes, I am 18 or older" },
+      { "type": "text", "id": "age_gate_no", "label": "t:settings.age_gate.no", "default": "No, I am under 18" },
+      { "type": "url", "id": "age_gate_exit", "label": "t:settings.age_gate.exit", "info": "t:settings.age_gate.exit_info" },
+      { "type": "range", "id": "age_gate_days", "label": "t:settings.age_gate.days", "min": 1, "max": 90, "step": 1, "unit": "d", "default": 30 },
+      { "type": "color_scheme", "id": "age_gate_color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1" }
+    ]
+  },
+  {
     "name": "t:settings.saved.name",
     "settings": [
       { "type": "paragraph", "content": "t:settings.saved.info" },

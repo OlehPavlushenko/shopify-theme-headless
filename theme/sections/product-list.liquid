@@ -77,9 +77,16 @@
     {%- if slider and tabs.size > 0 -%}
       {%- comment -%}
         Tabs (blocks "Tab"): one slider per tab with its collection's products, one shown at a time
-        (@ui/tabs); the section's own products and deal aren't used
+        (@ui/tabs); the section's own products aren't used. The deal of the week stays in the first column
+        whichever tab is shown, the sliders one column narrower next to it.
       {%- endcomment -%}
-      <ui-tabs class="product-list__tabs">
+      {%- liquid
+        assign tab_columns = section.settings.columns
+        if deal_card != blank
+          assign tab_columns = tab_columns | minus: 1
+        endif
+      -%}
+      <ui-tabs class="product-list__tabs" style="--list-columns: {{ section.settings.columns }};">
         {%- render 'section-head', heading: section.settings.heading, link_label: section.settings.link_label, link: link -%}
         <div class="product-list__tablist scrollbar-hidden" role="tablist" aria-label="{{ section.settings.heading | strip_html | escape }}">
           {%- for block in tabs -%}
@@ -99,6 +106,11 @@
             </button>
           {%- endfor -%}
         </div>
+        {%- if deal_card != blank -%}
+          <div class="product-list__deal-layout">
+          <div class="product-list__deal">{{ deal_card }}</div>
+          <div class="product-list__panels">
+        {%- endif -%}
         {%- for block in tabs -%}
           <div
             role="tabpanel"
@@ -110,12 +122,16 @@
           >
             <ui-slider
               class="slider product-list__slider"
-              style="--slider-columns: {{ section.settings.columns }}; --slider-columns-mobile: 2.2;"
+              style="--slider-columns: {{ tab_columns }}; --slider-columns-mobile: 2.2;"
             >
               {%- assign tab_title = block.settings.title | default: block.settings.collection.title -%}
               {%- render 'section-head', nav: true, heading: tab_title, heading_class: 'visually-hidden' -%}
               <ul class="scroll-track slider__track" data-slider-track role="list">
-                {%- for product in block.settings.collection.products limit: section.settings.limit -%}
+                {%- assign shown = 0 -%}
+                {%- for product in block.settings.collection.products -%}
+                  {%- if product.id == deal.id -%}{%- continue -%}{%- endif -%}
+                  {%- if shown >= section.settings.limit -%}{%- break -%}{%- endif -%}
+                  {%- assign shown = shown | plus: 1 -%}
                   <li>
                     {%- render 'product-card', product: product, quick_add: section.settings.quick_add, sizes: card_sizes -%}
                   </li>
@@ -124,6 +140,10 @@
             </ui-slider>
           </div>
         {%- endfor -%}
+        {%- if deal_card != blank -%}
+          </div>
+          </div>
+        {%- endif -%}
       </ui-tabs>
       <script type="module">import '@ui/tabs';</script>
     {%- elsif slider -%}

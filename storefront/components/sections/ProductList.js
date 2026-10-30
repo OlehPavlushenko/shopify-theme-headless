@@ -14,15 +14,36 @@ async function productsOf(settings) {
   return collection?.products.nodes ?? [];
 }
 
-// Collection tabs: a row of chips, one slider per tab, the first one shown
-async function Tabs({ section, link, sizes }) {
+// Collection tabs: a row of chips, one slider per tab, the first one shown; a deal of the week stays in the
+// first column whichever tab is shown, the sliders one column narrower
+async function Tabs({ section, link, sizes, deal, dealCard }) {
   const { settings, blocks } = section;
   const tabs = blocks.filter((block) => block.type === 'tab');
   const collections = await Promise.all(tabs.map((tab) => (tab.settings.collection ? getCollection(tab.settings.collection) : null)));
   const titleOf = (index) => tabs[index].settings.title || collections[index]?.title || '';
   const id = (kind, index) => `${kind}-${section.id}-${index + 1}`;
+  const panels = tabs.map((tab, index) => (
+    <div key={tab.id} role="tabpanel" id={id('TabPanel', index)} aria-labelledby={id('Tab', index)} hidden={index > 0}>
+      <ui-slider
+        class="slider product-list__slider"
+        style={{ '--slider-columns': settings.columns - (deal ? 1 : 0), '--slider-columns-mobile': 2.2 }}
+      >
+        <SectionHead heading={titleOf(index)} headingClass="visually-hidden" nav />
+        <ul className="scroll-track slider__track" data-slider-track="" role="list">
+          {(collections[index]?.products.nodes ?? [])
+            .filter((product) => product.id !== deal?.id)
+            .slice(0, settings.limit)
+            .map((product) => (
+              <li key={product.id}>
+                <ProductCard product={product} quickAdd={settings.quick_add} sizes={sizes} />
+              </li>
+            ))}
+        </ul>
+      </ui-slider>
+    </div>
+  ));
   return (
-    <ui-tabs class="product-list__tabs">
+    <ui-tabs class="product-list__tabs" style={{ '--list-columns': settings.columns }}>
       <SectionHead heading={settings.heading} linkLabel={settings.link_label} link={link} />
       <div className="product-list__tablist scrollbar-hidden" role="tablist" aria-label={settings.heading?.replace(/<[^>]*>/g, '')}>
         {tabs.map((tab, index) => (
@@ -40,20 +61,14 @@ async function Tabs({ section, link, sizes }) {
           </button>
         ))}
       </div>
-      {tabs.map((tab, index) => (
-        <div key={tab.id} role="tabpanel" id={id('TabPanel', index)} aria-labelledby={id('Tab', index)} hidden={index > 0}>
-          <ui-slider class="slider product-list__slider" style={{ '--slider-columns': settings.columns, '--slider-columns-mobile': 2.2 }}>
-            <SectionHead heading={titleOf(index)} headingClass="visually-hidden" nav />
-            <ul className="scroll-track slider__track" data-slider-track="" role="list">
-              {(collections[index]?.products.nodes ?? []).slice(0, settings.limit).map((product) => (
-                <li key={product.id}>
-                  <ProductCard product={product} quickAdd={settings.quick_add} sizes={sizes} />
-                </li>
-              ))}
-            </ul>
-          </ui-slider>
+      {dealCard ? (
+        <div className="product-list__deal-layout">
+          <div className="product-list__deal">{dealCard}</div>
+          <div className="product-list__panels">{panels}</div>
         </div>
-      ))}
+      ) : (
+        panels
+      )}
     </ui-tabs>
   );
 }
@@ -62,19 +77,12 @@ export default async function ProductList({ section, context = {} }) {
   const { settings } = section;
   // "Only when the search finds nothing": hidden on a search page with results
   if (settings.search_empty_only && context.template === 'search' && context.listing?.count > 0) return null;
-  if (settings.layout === 'slider' && section.blocks?.some((block) => block.type === 'tab')) {
-    const link = linkUrl(settings.link) || (settings.collection ? `/collections/${settings.collection}` : null);
-    const sizes = `(min-width: 990px) calc((100vw - 10rem) / ${settings.columns}), (min-width: 750px) 33vw, 50vw`;
-    return (
-      <div className={`product-list color-${settings.color_scheme} section-spacing`}>
-        <div className="page-width">
-          <Tabs section={section} link={link} sizes={sizes} />
-        </div>
-      </div>
-    );
-  }
   const dealActive = settings.deal_product && !(settings.deal_end && toTime(settings.deal_end) <= Date.now());
-  const [list, [deal]] = await Promise.all([productsOf(settings), dealActive ? getProductsByHandles([settings.deal_product]) : []]);
+  const tabbed = settings.layout === 'slider' && section.blocks?.some((block) => block.type === 'tab');
+  const [list, [deal]] = await Promise.all([
+    tabbed ? [] : productsOf(settings),
+    dealActive ? getProductsByHandles([settings.deal_product]) : [],
+  ]);
   const slider = settings.layout === 'slider';
   const link = linkUrl(settings.link) || (settings.collection ? `/collections/${settings.collection}` : null);
   const sizes = `(min-width: 990px) calc((100vw - 10rem) / ${settings.columns}), (min-width: 750px) 33vw, 50vw`;
@@ -94,6 +102,15 @@ export default async function ProductList({ section, context = {} }) {
       )}
     </div>
   );
+  if (tabbed) {
+    return (
+      <div className={`product-list color-${settings.color_scheme} section-spacing`}>
+        <div className="page-width">
+          <Tabs section={section} link={link} sizes={sizes} deal={deal} dealCard={dealCard} />
+        </div>
+      </div>
+    );
+  }
   const cards = products.map((product, index) => (
     <li key={product.id} data-more={!slider && index + (deal ? 1 : 0) >= 4 ? '' : undefined}>
       <ProductCard product={product} quickAdd={settings.quick_add} sizes={sizes} />

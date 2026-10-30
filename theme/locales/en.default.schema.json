@@ -441,7 +441,7 @@
       "name": "Product list",
       "tab": "Tab",
       "tab_title": "Tab title",
-      "tab_title_info": "Empty: the collection's title. With tabs (Slider layout) each tab shows its collection's products; the section's own products and deal aren't used.",
+      "tab_title_info": "Empty: the collection's title. With tabs (Slider layout) each tab shows its collection's products, the section's own products aren't used; the deal of the week stays first whichever tab is shown.",
       "layout": "Layout",
       "layout_slider": "Slider",
       "layout_grid": "Grid",

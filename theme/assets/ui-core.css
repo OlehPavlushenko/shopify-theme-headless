@@ -3862,7 +3862,14 @@
   /* The tab's slider has only the arrows in its head: they sit at the end of the section's heading row
      (phones swipe, without arrows) */
   .product-list__tabs {
+    --slider-gap: var(--space-m);
+
     position: relative;
+  }
+
+  /* With a deal of the week: the deal in the first column, the tab panels in the rest */
+  .product-list__panels {
+    min-width: 0;
   }
 
   .product-list__tabs > .section-head {

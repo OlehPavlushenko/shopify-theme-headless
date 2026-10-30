@@ -13,7 +13,6 @@
   "sections": {
     "christmas_popup": {
       "type": "promo-popup",
-      "name": "Christmas popup",
       "blocks": {
         "text": {
           "type": "text",
@@ -57,9 +56,10 @@
         "newsletter",
         "products"
       ],
+      "name": "Christmas popup",
       "settings": {
-        "delay": 8,
-        "scroll": 40,
+        "delay": 10,
+        "scroll": 10,
         "exit_intent": true,
         "days": 3,
         "pages": "not_cart",
@@ -70,7 +70,6 @@
     },
     "spin_popup": {
       "type": "promo-popup",
-      "name": "Spin to win popup",
       "blocks": {
         "text": {
           "type": "text",
@@ -164,6 +163,7 @@
         "prize_7",
         "prize_8"
       ],
+      "name": "Spin to win popup",
       "settings": {
         "delay": 0,
         "scroll": 60,
